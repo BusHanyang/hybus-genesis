@@ -1,10 +1,6 @@
 import './App.css'
 
 import React, { useState } from 'react'
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// WIP : There is type definition bugs on 'vite-plugin-pwa' module.
-// I just opend an issue : https://github.com/antfu/vite-plugin-pwa/issues/113
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import logo from './logo.svg'
