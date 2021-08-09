@@ -1,11 +1,30 @@
 import './App.css'
 
 import React, { useState } from 'react'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+// WIP : There is type definition bugs on 'vite-plugin-pwa' module.
+// I just opend an issue : https://github.com/antfu/vite-plugin-pwa/issues/113
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import logo from './logo.svg'
 
 function App() {
   const [count, setCount] = useState(0)
+
+  const {
+    offlineReady: [offlineReady, setOfflineReady],
+    needRefresh: [needRefresh, setNeedRefresh],
+    updateServiceWorker,
+  } = useRegisterSW({
+    onRegistered(r: any) {
+      // eslint-disable-next-line prefer-template
+      console.log('SW Registered: ' + r)
+    },
+    onRegisterError(error: any) {
+      console.log('SW registration error', error)
+    },
+  })
 
   return (
     <div className="App">
