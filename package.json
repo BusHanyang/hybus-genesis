@@ -6,7 +6,9 @@
     "build": "tsc && vite build",
     "serve": "vite preview",
     "validate": "eslint src/**/*.{ts,tsx}",
-    "https-preview": "serve dist"
+    "https-preview": "serve dist",
+    "precommit": "yarn run validate",
+    "prepush": "yarn run validate"
   },
   "dependencies": {
     "react": "^17.0.0",
