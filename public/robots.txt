@@ -1,2 +1,6 @@
-User-agent: *
+User-agent: Googlebot, Yeti
 Allow: /
+Disallow: /*.png$
+Disallow: /*.svg$
+Disallow: /*.jpg$
+Disallow: /*.jpeg$
