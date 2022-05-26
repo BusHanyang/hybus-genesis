@@ -40,5 +40,6 @@
       "pre-commit": "yarn run precommit",
       "pre-push": "yarn run prepush"
     }
-  }
+  },
+  "packageManager": "yarn@3.2.1"
 }
