@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import reactRefresh from '@vitejs/plugin-react-refresh'
-import * as path from 'path'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -41,9 +40,4 @@ export default defineConfig({
     }),
   ],
   publicDir: './public',
-  resolve: {
-    alias: {
-      src: path.resolve('src/'),
-    }
-  }
 })
