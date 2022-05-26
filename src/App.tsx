@@ -1,9 +1,9 @@
 import './App.css'
 
 import React, { useState } from 'react'
-import Card from "src/app/components/Card"
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
+import { Card } from './app/components'
 import logo from './logo.svg'
 
 function App() {
@@ -53,7 +53,7 @@ function App() {
           </a>
         </p>
       </header>
-      <Card title="This is title"></Card>
+      <Card />
     </div>
   )
 }

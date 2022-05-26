@@ -1,16 +1,5 @@
-import React, { FC } from 'react'
+import React from 'react'
 
-type props = {
-    title: string;
-};
-
-const Card: FC<props> = ({title}) =>  {
-
-    return (
-        <div className="Card">
-            <h1>title: { title }</h1>
-        </div>
-    );
-};
-
-export default Card;
+export const Card = () => {
+  return <div>CARD</div>
+}
