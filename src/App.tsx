@@ -3,6 +3,7 @@ import './App.css'
 import React, { useState } from 'react'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
+import { Card } from './app/components'
 import logo from './logo.svg'
 
 function App() {
@@ -33,9 +34,6 @@ function App() {
           </button>
         </p>
         <p>
-          Edit <code>App.tsx</code> and save to test HMR updates.
-        </p>
-        <p>
           <a
             className="App-link"
             href="https://reactjs.org"
@@ -55,6 +53,7 @@ function App() {
           </a>
         </p>
       </header>
+      <Card />
     </div>
   )
 }
