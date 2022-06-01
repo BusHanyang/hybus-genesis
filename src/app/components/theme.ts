@@ -49,4 +49,4 @@ const fontWeights = {
     regular: 400,
 };
 
-export { dark, light, fontSizes, fontWeights };
+export { dark, fontSizes, fontWeights,light };

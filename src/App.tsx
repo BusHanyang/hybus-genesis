@@ -1,10 +1,12 @@
+import './App.css'
+
 import React, { useState } from 'react'
 import styled, { ThemeProvider } from "styled-components";
-import { useDarkMode } from './app/components/useDarkMode';
-import { light, dark, fontSizes, fontWeights } from './app/components/theme';
-import { useRegisterSW } from 'virtual:pwa-register/react'
 import { Reset } from "styled-reset";
-import './App.css'
+import { useRegisterSW } from 'virtual:pwa-register/react'
+
+import { dark, fontSizes, fontWeights,light } from './app/components/theme';
+import { useDarkMode } from './app/components/useDarkMode';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -26,7 +28,9 @@ function App() {
   const [themeMode, toggleTheme] = useDarkMode();
   const theme =
     themeMode === "light" ? {mode: light, fontSizes, fontWeights} : {mode: dark, fontSizes, fontWeights}
-  
+
+  const [tab, setTab] = useState<string>('shuttlecoke_o');
+
   return (
     <>
       <ThemeProvider theme = {theme}>
@@ -42,21 +46,26 @@ function App() {
               <div id="time" className="card" style={{height: '200px'}}>버스 정보</div>
               
               <div className="btn_group">
-                <div id="shuttlecoke_o" className="card" onClick={() => location.href="#shuttlecoke_o"}>
+                <div id="shuttlecoke_o" className={`card ${tab === 'shuttlecoke_o' ? 'active' : ''}`} 
+                onClick={() => setTab('shuttlecoke_o')}>
                     <p id="btn_text">셔틀콕</p>
                   </div>
-                  <div id="subway" className="card" onClick={() => location.href="#subway"}>
+                  <div id="subway" className={`card ${tab === 'subway' ? 'active' : ''}`} 
+                onClick={() => setTab('subway')}>
                     <p id="btn_text">한대앞</p>
                   </div>
-                  <div id="giksa" className="card" onClick={() => location.href="#giksa"}>
+                  <div id="giksa" className={`card ${tab === 'giksa' ? 'active' : ''}`} 
+                onClick={() => setTab('giksa')}>
                   <p id="btn_text">기숙사</p>
                   </div>
               </div>
               <div className="btn_group">
-                <div id="shuttlecoke_i" className="card" onClick={() => location.href="#shuttlecoke_i"}>
+                <div id="shuttlecoke_i" className={`card ${tab === 'shuttlecoke_i' ? 'active' : ''}`} 
+                onClick={() => setTab('shuttlecoke_i')}>
                   <p id="btn_text">셔틀콕 건너편</p>
                 </div>
-                <div id="yesulin" className="card" onClick={() => location.href="#yesulin"}>
+                <div id="yesulin" className={`card ${tab === 'yesulin' ? 'active' : ''}`} 
+                onClick={() => setTab('yesulin')}>
                   <p id="btn_text">예술인APT</p>
                 </div>
               </div>
