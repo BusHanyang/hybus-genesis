@@ -266,8 +266,7 @@ dist
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
-# yarn v2
-.yarn/cache
+# yarn v3
 .yarn/unplugged
 .yarn/build-state.yml
 .yarn/install-state.gz
