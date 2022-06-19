@@ -1,10 +1,16 @@
 import axios, { AxiosResponse } from 'axios'
 import moment from 'moment'
-import React, { useEffect, useState } from 'react'
+import React, { ClassAttributes, useEffect, useState } from 'react'
 
 type SingleSchedule = {
   time: string
   type: string
+}
+
+type ScheduleInfo = {
+  season: string
+  week: string
+  location: string
 }
 
 async function api(url: string): Promise<Array<SingleSchedule>> {
@@ -75,28 +81,84 @@ const secondToTimeFormat = (n: number): string => {
 }
 
 const busTypeToText = (busType: string): string => {
-  if (busType == 'DH') {
-    return '한대앞행'
-  } else if (busType == 'DY') {
-    return '예술인행'
-  } else if (busType == 'C') {
-    return '순환노선'
-  } else if (busType == 'R') {
-    return '기숙사행'
+  if (busType == 'C') {
+    return '순환'
   } else if (busType == 'NA') {
-    return '운행안함'
+    return '미운행'
   } else {
-    return '셔틀콕행'
+    return '직행'
   }
 }
 
-export const Card = () => {
+const getBusDestination = (busType: string, currentLoc: string): string => {
+  if (currentLoc == 'shuttlecoke_o') {
+    if (busType == 'C' || busType == 'DH') {
+      return '한대앞역'
+    } else if (busType == 'DY') {
+      return '예술인 아파트'
+    } else {
+      return '???'
+    }
+  } else if (currentLoc == 'subway') {
+    if (busType == 'C') {
+      return '예술인 아파트'
+    } else {
+      return '셔틀콕 건너편'
+    }
+  } else if (currentLoc == 'yesulin') {
+    return '셔틀콕 건너편'
+  } else if (currentLoc == 'shuttlecoke_i') {
+    if (busType == 'NA') {
+      return '행선지 없음'
+    } else if (busType == 'R') {
+      return '기숙사'
+    } else {
+      return '???'
+    }
+  } else if (currentLoc == 'residence') {
+    return '셔틀콕'
+  }
+}
+
+const titleText = (location: string): string => {
+  if (location == 'shuttlecoke_o') {
+    return '셔틀콕'
+  } else if (location == 'subway') {
+    return '한대앞역 (4호선)'
+  } else if (location == 'yesulin') {
+    return '예술인 아파트'
+  } else if (location == 'shuttlecoke_i') {
+    return '셔틀콕 건너편 (기숙사행)'
+  } else if (location == 'residence') {
+    return '기숙사 (셔틀콕행)'
+  } else {
+    return '알수없음'
+  }
+}
+
+const getColoredElement = (type: string) => {
+  if (type == 'C') {
+    return (
+      <div className="bg-chip-red w-12 rounded-full inline-block">
+        {busTypeToText(type)}
+      </div>
+    )
+  } else {
+    return (
+      <div className="bg-chip-blue w-12 rounded-full inline-block">
+        {busTypeToText(type)}
+      </div>
+    )
+  }
+}
+
+export const Card = (props: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
 
   useEffect(() => {
     if (timetable.length == 0) {
-      getTimetable('semester', 'week', 'shuttlecoke_o').then((res) => {
+      getTimetable(props.season, props.week, props.location).then((res) => {
         setTimetable(res)
       })
     }
@@ -111,21 +173,28 @@ export const Card = () => {
   }, [timetable, currentTime])
 
   return (
-    <div>
+    <div className="flex-auto items-center">
+      <h2 className="font-bold">{titleText(props.location)}</h2>
       {timetable
         .filter((val) => isAfterCurrentTime(val))
         .map((val, idx) =>
           idx < 5 ? (
-            <>
-              <span key={idx}>
-                {val.type} :{' '}
-                {secondToTimeFormat(
-                  Math.floor(Number(val.time) - Number(currentTime) / 1000)
-                )}
-              </span>
-              <br />
-            </>
-          ) : null
+            <React.Fragment key={idx}>
+              <div className="">
+                {getColoredElement(val.type)}
+                <span className="font-mono inline-block">
+                  {secondToTimeFormat(
+                    Math.floor(Number(val.time) - Number(currentTime) / 1000)
+                  )}
+                </span>
+                <span>
+                  {' 후 출발 ▶ ' + getBusDestination(val.type, props.location)}
+                </span>
+              </div>
+            </React.Fragment>
+          ) : (
+            <></>
+          )
         )}
     </div>
   )
