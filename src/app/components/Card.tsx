@@ -74,6 +74,22 @@ const secondToTimeFormat = (n: number): string => {
   }
 }
 
+const busTypeToText = (busType: string): string => {
+  if (busType == 'DH') {
+    return '한대앞행'
+  } else if (busType == 'DY') {
+    return '예술인행'
+  } else if (busType == 'C') {
+    return '순환노선'
+  } else if (busType == 'R') {
+    return '기숙사행'
+  } else if (busType == 'NA') {
+    return '운행안함'
+  } else {
+    return '셔틀콕행'
+  }
+}
+
 export const Card = () => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
