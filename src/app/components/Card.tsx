@@ -164,7 +164,7 @@ export const Card = (props: ScheduleInfo) => {
         setTimetable(res)
       })
     }
-  }, [timetable])
+  }, [props.location, props.season, props.week, timetable])
 
   useEffect(() => {
     const timer = setTimeout(() => {
