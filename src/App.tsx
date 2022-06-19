@@ -41,7 +41,8 @@ function App() {
               <h1 id="title">버스하냥</h1> 
               <div id="notice" className="card">
                 <p id="gong">공지</p>
-                <p id="notice_text">집에 보내주세요.</p>
+                <p id="notice_text">2022-여름학기 반영완료</p>
+                <p id="notice_date">06/19</p>
               </div>
               <div id="time" className="card" style={{height: '200px'}}>버스 정보</div>
               
