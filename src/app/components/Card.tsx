@@ -117,6 +117,8 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
     }
   } else if (currentLoc == 'residence') {
     return '셔틀콕'
+  } else {
+    return '???'
   }
 }
 
