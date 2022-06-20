@@ -141,13 +141,13 @@ const titleText = (location: string): string => {
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
     return (
-      <div className="bg-chip-red w-12 rounded-full inline-block">
+      <div className="bg-chip-red w-12 rounded-full inline-block text-center">
         {busTypeToText(type)}
       </div>
     )
   } else {
     return (
-      <div className="bg-chip-blue w-12 rounded-full inline-block">
+      <div className="bg-chip-blue w-12 rounded-full inline-block text-center">
         {busTypeToText(type)}
       </div>
     )
@@ -175,29 +175,33 @@ export const Card = (props: ScheduleInfo) => {
   }, [timetable, currentTime])
 
   return (
-    <div className="flex-auto items-center">
+    <div className="">
       <h2 className="font-bold">{titleText(props.location)}</h2>
-      {timetable
-        .filter((val) => isAfterCurrentTime(val))
-        .map((val, idx) =>
-          idx < 5 ? (
-            <React.Fragment key={idx}>
-              <div className="">
-                {getColoredElement(val.type)}
-                <span className="font-mono inline-block">
-                  {secondToTimeFormat(
-                    Math.floor(Number(val.time) - Number(currentTime) / 1000)
-                  )}
-                </span>
-                <span>
-                  {' 후 출발 ▶ ' + getBusDestination(val.type, props.location)}
-                </span>
-              </div>
-            </React.Fragment>
-          ) : (
-            <></>
-          )
-        )}
+      <div className="inline-block">
+        {timetable
+          .filter((val) => isAfterCurrentTime(val))
+          .map((val, idx) =>
+            idx < 5 ? (
+              <React.Fragment key={idx}>
+                <div className="text-left mx-auto w-82 py-1.5">
+                  {getColoredElement(val.type)}
+                  <span className="font-mono inline-block px-1 w-40 text-right">
+                    {secondToTimeFormat(
+                      Math.floor(Number(val.time) - Number(currentTime) / 1000)
+                    )}{' '}
+                    후 출발
+                  </span>
+                  <div className="text-center inline-block w-8 mx-2">▶</div>
+                  <span className="float-right text-left">
+                    {getBusDestination(val.type, props.location)}
+                  </span>
+                </div>
+              </React.Fragment>
+            ) : (
+              <></>
+            )
+          )}
+      </div>
     </div>
   )
 }
