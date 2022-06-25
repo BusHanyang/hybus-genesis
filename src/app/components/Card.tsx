@@ -182,7 +182,7 @@ export const Card = (props: ScheduleInfo) => {
   return (
     <div onClick={() => toggleExpand()}>
       <h2 className="font-bold">{titleText(props.location)}</h2>
-      <div className="inline-block">
+      <div className="inline-block select-none">
         {timetable
           .filter((val) => isAfterCurrentTime(val))
           .map((val, idx) =>
