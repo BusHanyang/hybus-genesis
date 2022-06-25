@@ -157,6 +157,7 @@ const getColoredElement = (type: string): JSX.Element => {
 export const Card = (props: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
+  const [expand, setExpand] = useState<boolean>(false)
 
   useEffect(() => {
     if (timetable.length == 0) {
@@ -174,29 +175,57 @@ export const Card = (props: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
+  const toggleExpand = () => {
+    setExpand(!expand)
+  }
+
   return (
-    <div className="">
+    <div onClick={() => toggleExpand()}>
       <h2 className="font-bold">{titleText(props.location)}</h2>
       <div className="inline-block">
         {timetable
           .filter((val) => isAfterCurrentTime(val))
           .map((val, idx) =>
             idx < 5 ? (
-              <React.Fragment key={idx}>
-                <div className="text-left mx-auto w-82 py-1.5">
-                  {getColoredElement(val.type)}
-                  <span className="font-mono inline-block px-1 w-40 text-right">
-                    {secondToTimeFormat(
-                      Math.floor(Number(val.time) - Number(currentTime) / 1000)
-                    )}{' '}
-                    후 출발
-                  </span>
-                  <div className="text-center inline-block w-8 mx-2">▶</div>
-                  <span className="float-right text-left">
-                    {getBusDestination(val.type, props.location)}
-                  </span>
-                </div>
-              </React.Fragment>
+              idx < 2 ? (
+                <React.Fragment key={idx}>
+                  <div className="text-left mx-auto w-82 py-1.5">
+                    {getColoredElement(val.type)}
+                    <span className="font-mono inline-block px-1 w-40 text-right">
+                      {secondToTimeFormat(
+                        Math.floor(
+                          Number(val.time) - Number(currentTime) / 1000
+                        )
+                      )}{' '}
+                      후 출발
+                    </span>
+                    <div className="text-center inline-block w-8 mx-2">▶</div>
+                    <span className="float-right text-left">
+                      {getBusDestination(val.type, props.location)}
+                    </span>
+                  </div>
+                </React.Fragment>
+              ) : expand ? (
+                <React.Fragment key={idx}>
+                  <div className="text-left mx-auto w-82 py-1.5">
+                    {getColoredElement(val.type)}
+                    <span className="font-mono inline-block px-1 w-40 text-right">
+                      {secondToTimeFormat(
+                        Math.floor(
+                          Number(val.time) - Number(currentTime) / 1000
+                        )
+                      )}{' '}
+                      후 출발
+                    </span>
+                    <div className="text-center inline-block w-8 mx-2">▶</div>
+                    <span className="float-right text-left">
+                      {getBusDestination(val.type, props.location)}
+                    </span>
+                  </div>
+                </React.Fragment>
+              ) : (
+                <></>
+              )
             ) : (
               <></>
             )
