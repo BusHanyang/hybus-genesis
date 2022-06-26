@@ -11,6 +11,7 @@ type ScheduleInfo = {
   season: string
   week: string
   location: string
+  expanded: boolean
 }
 
 async function api(url: string): Promise<Array<SingleSchedule>> {
@@ -157,7 +158,7 @@ const getColoredElement = (type: string): JSX.Element => {
 export const Card = (props: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
-  const [expand, setExpand] = useState<boolean>(false)
+  const [expand, setExpand] = useState<boolean>(props.expanded)
 
   useEffect(() => {
     if (timetable.length == 0) {
