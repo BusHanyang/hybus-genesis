@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div className="App">
-      <Card season="semester" week="week" location="shuttlecoke_o" />
+      <Card season="semester" week="week" location="yesulin" expanded={false} />
     </div>
   )
 }
