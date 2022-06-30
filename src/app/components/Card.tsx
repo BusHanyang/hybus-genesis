@@ -14,7 +14,7 @@ type ScheduleInfo = {
   expanded: boolean
 }
 
-async function api(url: string): Promise<Array<SingleSchedule>> {
+const api = async (url: string): Promise<Array<SingleSchedule>> => {
   return await axios
     .get(url)
     .then((response) => {
