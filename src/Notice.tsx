@@ -8,17 +8,17 @@ const Notice = () => {
     'https://huchu.link/0XaPgDF',
   ]
   return (
-    <div
+    <a
       id="notice"
       className="card"
       onClick={() => {
-        window.location.href = url[0]
+        window.open(url[0])
       }}
     >
       <p id="gong">공지</p>
       <p id="notice_text">2022-여름학기 반영완료</p>
       <p id="notice_date">06/19</p>
-    </div>
+    </a>
   )
 }
 
