@@ -1,5 +1,6 @@
-import React from 'react';
 import './refreshing-content.scss';
+
+import React from 'react';
 
 // Source: https://loading.io/css/
 

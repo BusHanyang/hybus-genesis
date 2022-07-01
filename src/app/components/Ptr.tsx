@@ -1,11 +1,11 @@
-import PullToRefresh from 'react-simple-pull-to-refresh';
 import React from 'react';
-import Refreshing from './refreshing-content'
+import PullToRefresh from 'react-simple-pull-to-refresh';
+
 import App from '../../App';
+import Refreshing from './refreshing-content'
 const dark = true;
 
-let colorDarkMod = '#5D5D5D'
-
+const colorDarkMod = "#5D5D5D"
 
 export const Ptr = () => {
   let color = "white";
@@ -21,10 +21,10 @@ export const Ptr = () => {
     <PullToRefresh 
     onRefresh={handleRefresh}
     backgroundColor={color}
+    canFetchMore={true}
+    pullingContent=""
     refreshingContent={<Refreshing mode = {dark} />}>
-    <div>
       <App/>
-    </div>
     </PullToRefresh>
   );
 }
