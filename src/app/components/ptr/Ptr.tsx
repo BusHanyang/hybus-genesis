@@ -21,6 +21,7 @@ export const Ptr = () => {
     <PullToRefresh
       onRefresh={handleRefresh}
       backgroundColor={color}
+      pullingContent=""
       refreshingContent={<Refreshing mode={dark} />}
     >
       <App />
