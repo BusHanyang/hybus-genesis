@@ -1,16 +1,17 @@
-import React from 'react';
-import './refreshing-content.scss';
+import './refreshing-content.scss'
+
+import React from 'react'
 
 // Source: https://loading.io/css/
 
-interface RefreshingContentProps{
-  mode?: boolean;
+interface RefreshingContentProps {
+  mode?: boolean
 }
 
-const RefreshingContent:React.FC<RefreshingContentProps> = ({
-  mode = false
+const RefreshingContent: React.FC<RefreshingContentProps> = ({
+  mode = false,
 }) => {
-  if(mode){
+  if (mode) {
     return (
       <div className="lds-ellipsis" data-theme="dark">
         <div></div>
@@ -18,19 +19,17 @@ const RefreshingContent:React.FC<RefreshingContentProps> = ({
         <div></div>
         <div></div>
       </div>
-    );
+    )
   } else {
     return (
-    
       <div className="lds-ellipsis">
         <div></div>
         <div></div>
         <div></div>
         <div></div>
       </div>
-    );
+    )
   }
+}
 
-};
-
-export default RefreshingContent;
+export default RefreshingContent
