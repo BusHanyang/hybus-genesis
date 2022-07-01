@@ -9,6 +9,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import { dark, fontSizes, fontWeights, light } from './app/components/theme'
 import { useDarkMode } from './app/components/useDarkMode'
 import FullTime from './FullTime'
+import Notice from './Notice'
 
 function App() {
   const [table, changeFullTable] = useState<boolean>(false)
@@ -34,11 +35,7 @@ function App() {
                   <div className="App">
                     <div className="App-header">
                       <h1 id="title">버스하냥</h1>
-                      <div id="notice" className="card">
-                        <p id="gong">공지</p>
-                        <p id="notice_text">2022-여름학기 반영완료</p>
-                        <p id="notice_date">06/19</p>
-                      </div>
+                      <Notice />
                       <div
                         id="time"
                         className="card"
