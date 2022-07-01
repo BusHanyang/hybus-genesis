@@ -28,7 +28,7 @@ type Time = {
   NA?: Array<string>
 }
 
-async function api(url: string): Promise<Array<SingleSchedule>> {
+const api = async (url: string): Promise<Array<SingleSchedule>> => {
   return await axios
     .get(url)
     .then((response) => {
@@ -57,7 +57,7 @@ const getTimetable = async (
     )
 }
 
-function FullTime() {
+const FullTime = () => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [season, setSeason] = useState<Season>('semester')
   const [week, setWeek] = useState<Week>('week')
@@ -159,8 +159,8 @@ function FullTime() {
           timetable.map((i) => {
             // console.log(i)
 
-            const PreMinute = minute
-            const PreHour = hour
+            const preMinute = minute
+            const preHour = hour
 
             if (i.time.split(':')[0] !== hour) {
               //   // 새로운 시간대가 나타나면
@@ -192,13 +192,13 @@ function FullTime() {
               i.type !== ''
                 ? minute[i.type].push(i.time.split(':')[1])
                 : minute['N'].push(i.time.split(':')[1])
-              if (PreHour !== '00') {
+              if (preHour !== '00') {
                 if (minute['NA'].length == 0) {
                   return (
                     // eslint-disable-next-line react/jsx-key
                     <TimeBox
-                      hour={PreHour}
-                      time={PreMinute}
+                      hour={preHour}
+                      time={preMinute}
                       location={location}
                     />
                   )
@@ -220,12 +220,12 @@ function FullTime() {
   )
 }
 
-function ComboBox(props: {
+const ComboBox = (props: {
   type: string
   value: Location | Season | Week
   func
   info: string
-}) {
+}) => {
   return (
     <div
       className={`check-box ${props.type === props.value ? 'check' : ''}`}
@@ -236,7 +236,7 @@ function ComboBox(props: {
   )
 }
 
-function TimeBox(props: { hour: string; time: any; location: Location }) {
+const TimeBox = (props: { hour: string; time: any; location: Location }) => {
   return (
     <div>
       <div className="time-box">
@@ -271,7 +271,7 @@ function TimeBox(props: { hour: string; time: any; location: Location }) {
   )
 }
 
-function Circle(props: { type: string; minute: any }) {
+const Circle = (props: { type: string; minute: any }) => {
   return (
     <div className="data">
       <div className={`type ${props.type == '순환' ? 'circle' : 'direct'}`}>
