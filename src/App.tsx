@@ -1,4 +1,4 @@
-import './App.css'
+//import './App.css'
 
 import React, { useState } from 'react'
 import styled, { ThemeProvider } from "styled-components";
@@ -40,40 +40,31 @@ function App() {
             <header className="App-header">
               <h1 id="title">버스하냥</h1> 
               <div id="notice" className="card">
-                <p id="gong">공지</p>
-                <p id="notice_text">2022-여름학기 반영완료</p>
+                <p id="gong" className="text-red-500 font-bold float-left">공지</p>
+                <p id="notice_text" className="float-left">2022-여름학기 반영완료</p>
                 <p id="notice_date">06/19</p>
               </div>
-              <div id="time" className="card" style={{height: '200px'}}>버스 정보</div>
+            </header>
+              <div id="time" className="card">버스 정보</div>
               
               <div className="btn_group">
-                <div id="shuttlecoke_o" className={`card ${tab === 'shuttlecoke_o' ? 'active' : ''}`} 
-                onClick={() => setTab('shuttlecoke_o')}>
-                    <p id="btn_text">셔틀콕</p>
-                  </div>
-                  <div id="subway" className={`card ${tab === 'subway' ? 'active' : ''}`} 
-                onClick={() => setTab('subway')}>
-                    <p id="btn_text">한대앞</p>
-                  </div>
-                  <div id="giksa" className={`card ${tab === 'giksa' ? 'active' : ''}`} 
-                onClick={() => setTab('giksa')}>
-                  <p id="btn_text">기숙사</p>
-                  </div>
+                <button id="shuttlecoke_o" className={`card btn ${tab === 'shuttlecoke_o' ? 'active' : ''}`} 
+                  onClick={() => setTab('shuttlecoke_o')}>셔틀콕</button>
+                <button id="subway" className={`card btn ${tab === 'subway' ? 'active' : ''}`} 
+                  onClick={() => setTab('subway')}>한대앞역</button>
+                <button id="giksa" className={`card btn ${tab === 'giksa' ? 'active' : ''}`} 
+                onClick={() => setTab('giksa')}>기숙사</button>
               </div>
+
               <div className="btn_group">
-                <div id="shuttlecoke_i" className={`card ${tab === 'shuttlecoke_i' ? 'active' : ''}`} 
-                onClick={() => setTab('shuttlecoke_i')}>
-                  <p id="btn_text">셔틀콕 건너편</p>
-                </div>
-                <div id="yesulin" className={`card ${tab === 'yesulin' ? 'active' : ''}`} 
-                onClick={() => setTab('yesulin')}>
-                  <p id="btn_text">예술인APT</p>
-                </div>
+                <button id="shuttlecoke_i" className={`card btn ${tab === 'shuttlecoke_i' ? 'active' : ''}`} 
+                  onClick={() => setTab('shuttlecoke_i')}>셔틀콕 건너편</button>
+                <button id="yesulin" className={`card btn ${tab === 'yesulin' ? 'active' : ''}`} 
+                  onClick={() => setTab('yesulin')}>예술인APT</button>
               </div>
               
-              <div id="all" className="card" onClick={() => location.href="#all"}>
-                <p id="all_text">전체 시간표</p>
-              </div>
+              <button id="all" className="card btn" onClick={() => location.href="#all"}>전체 시간표</button>
+
               <p>
                 <p className="copyright">
                   Copyright © 2020-2022 BusHanyang. All rights reserved
@@ -84,7 +75,7 @@ function App() {
                   {themeMode === "dark" ? "라이트모드" : "다크모드"}
                 </button>
               </p>
-            </header>
+            
           </div>
         </Backgound>
       </ThemeProvider>
@@ -96,7 +87,6 @@ const Backgound = styled.div`
   background-color: ${({ theme }) => theme.mode.mainBackground};
   color: ${({ theme }) => theme.mode.primaryText};
 `;
-
 
 export default App
 
