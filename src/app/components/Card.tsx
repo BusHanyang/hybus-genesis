@@ -1,6 +1,7 @@
 import axios, { AxiosResponse } from 'axios'
 import moment from 'moment'
 import React, { ClassAttributes, useEffect, useState } from 'react'
+import { SyncLoader } from 'react-spinners'
 
 type SingleSchedule = {
   time: string
@@ -159,11 +160,13 @@ export const Card = (props: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
   const [expand, setExpand] = useState<boolean>(props.expanded)
+  const [isLoaded, setLoaded] = useState<boolean>(false)
 
   useEffect(() => {
     if (timetable.length == 0) {
       getTimetable(props.season, props.week, props.location).then((res) => {
         setTimetable(res)
+        setLoaded(true)
       })
     }
   }, [props.location, props.season, props.week, timetable])
@@ -181,9 +184,10 @@ export const Card = (props: ScheduleInfo) => {
   }
 
   return (
-    <div onClick={() => toggleExpand()}>
+    <div className="h-full" onClick={() => toggleExpand()}>
       <h2 className="font-bold text-2xl">{titleText(props.location)}</h2>
-      <div className="inline-block select-none">
+      <div className="inline-block select-none h-4/5">
+        <SyncLoader color="#AFBDCE" margin={4} size={8} loading={!isLoaded} />
         {timetable
           .filter((val) => isAfterCurrentTime(val))
           .map((val, idx) =>
