@@ -4,10 +4,13 @@ import Refreshing from './refreshing-content'
 import App from '../../App';
 const dark = true;
 
+let colorDarkMod = '#5D5D5D'
+
+
 export const Ptr = () => {
   let color = "white";
   if(dark){
-    color = "black";
+    color = colorDarkMod;
   }
   const handleRefresh = (): Promise<React.FC> => {
     return new Promise(res => {
