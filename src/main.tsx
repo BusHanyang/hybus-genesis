@@ -7,7 +7,8 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import {RecoilRoot} from 'recoil'
 
-import App from './App'
+// import App from './App'
+import { Ptr } from './app/components/ptr/Ptr'
 
 const queryClient = new QueryClient()
 
@@ -17,7 +18,7 @@ ReactDOM.render(
     <QueryClientProvider client={queryClient}>
     <ReactQueryDevtools initialIsOpen={false} />
       <RecoilRoot>
-        <App />
+        <Ptr />
       </RecoilRoot>
     </QueryClientProvider>
   </React.StrictMode>,
