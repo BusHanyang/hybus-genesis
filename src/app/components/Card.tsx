@@ -178,13 +178,13 @@ export const Card = (props: ScheduleInfo) => {
   const [isLoaded, setLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    if (timetable.length == 0) {
+    if (timetable.length == 0 && !isLoaded) {
       getTimetable(props.season, props.week, props.location).then((res) => {
         setTimetable(res)
         setLoaded(true)
       })
     }
-  }, [props.location, props.season, props.week, timetable])
+  }, [isLoaded, props.location, props.season, props.week, timetable])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -201,6 +201,86 @@ export const Card = (props: ScheduleInfo) => {
   const loadingCSS: CSSProperties = {
     display: 'table-cell',
     verticalAlign: 'middle',
+  }
+
+  const renderTimetable = () => {
+    if (isLoaded) {
+      if (
+        timetable.length === 0 ||
+        (timetable.length === 1 && timetable[0] == null)
+      ) {
+        // Timetable load failure, or doesn't exist
+        return (
+          <>
+            <div className="h-24 table">
+              <span className="table-cell align-middle">
+                오늘 운행하는 셔틀이 존재하지 않습니다.
+              </span>
+            </div>
+          </>
+        )
+      }
+
+      const filtered = timetable.filter((val) => isAfterCurrentTime(val))
+
+      if (filtered.length === 0) {
+        return (
+          <>
+            <div className="h-24 table">
+              <span className="table-cell align-middle">
+                오늘 셔틀 운행이 종료되었습니다.
+              </span>
+            </div>
+          </>
+        )
+      }
+
+      return filtered.map((val, idx) => {
+        if (idx < 5) {
+          if (idx < 2) {
+            return (
+              <React.Fragment key={idx}>
+                <div className="text-left mx-auto w-82 py-1.5">
+                  {getColoredElement(val.type)}
+                  <span className="font-mono inline-block px-1 w-40 text-right">
+                    {secondToTimeFormat(
+                      Math.floor(Number(val.time) - Number(currentTime) / 1000)
+                    )}{' '}
+                    후 출발
+                  </span>
+                  <div className="text-center inline-block w-8 mx-2">▶</div>
+                  <span className="float-right text-left">
+                    {getBusDestination(val.type, props.location)}
+                  </span>
+                </div>
+              </React.Fragment>
+            )
+          } else {
+            if (expand) {
+              return (
+                <React.Fragment key={idx}>
+                  <div className="text-left mx-auto w-82 py-1.5">
+                    {getColoredElement(val.type)}
+                    <span className="font-mono inline-block px-1 w-40 text-right">
+                      {secondToTimeFormat(
+                        Math.floor(
+                          Number(val.time) - Number(currentTime) / 1000
+                        )
+                      )}{' '}
+                      후 출발
+                    </span>
+                    <div className="text-center inline-block w-8 mx-2">▶</div>
+                    <span className="float-right text-left">
+                      {getBusDestination(val.type, props.location)}
+                    </span>
+                  </div>
+                </React.Fragment>
+              )
+            }
+          }
+        }
+      })
+    }
   }
 
   return (
@@ -220,53 +300,7 @@ export const Card = (props: ScheduleInfo) => {
         ) : (
           <></>
         )}
-        {timetable
-          .filter((val) => isAfterCurrentTime(val))
-          .map((val, idx) =>
-            idx < 5 ? (
-              idx < 2 ? (
-                <React.Fragment key={idx}>
-                  <div className="text-left mx-auto w-82 py-1.5">
-                    {getColoredElement(val.type)}
-                    <span className="font-mono inline-block px-1 w-40 text-right">
-                      {secondToTimeFormat(
-                        Math.floor(
-                          Number(val.time) - Number(currentTime) / 1000
-                        )
-                      )}{' '}
-                      후 출발
-                    </span>
-                    <div className="text-center inline-block w-8 mx-2">▶</div>
-                    <span className="float-right text-left">
-                      {getBusDestination(val.type, props.location)}
-                    </span>
-                  </div>
-                </React.Fragment>
-              ) : expand ? (
-                <React.Fragment key={idx}>
-                  <div className="text-left mx-auto w-82 py-1.5">
-                    {getColoredElement(val.type)}
-                    <span className="font-mono inline-block px-1 w-40 text-right">
-                      {secondToTimeFormat(
-                        Math.floor(
-                          Number(val.time) - Number(currentTime) / 1000
-                        )
-                      )}{' '}
-                      후 출발
-                    </span>
-                    <div className="text-center inline-block w-8 mx-2">▶</div>
-                    <span className="float-right text-left">
-                      {getBusDestination(val.type, props.location)}
-                    </span>
-                  </div>
-                </React.Fragment>
-              ) : (
-                <></>
-              )
-            ) : (
-              <></>
-            )
-          )}
+        {renderTimetable()}
       </div>
     </div>
   )
