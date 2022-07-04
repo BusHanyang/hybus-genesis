@@ -20,10 +20,27 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
     .get(url)
     .then((response) => {
       if (response.status !== 200) {
-        throw new Error(response.statusText)
+        console.log(`Error code: ${response.statusText}`)
+        return new Array<SingleSchedule>()
       }
 
       return response.data
+    })
+    .catch((err) => {
+      if (err.response) {
+        // 2XX Errors
+        console.log('Error receiving data', err.data)
+      } else if (err.request) {
+        // No Response
+        console.log('No Response Error', err.request)
+      } else {
+        // Somehow error occurred
+        console.log('Error', err.message)
+      }
+
+      // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
+      // but not successfully.
+      return new Array<SingleSchedule>(1)
     })
     .then((res) => res as Array<SingleSchedule>)
 }
