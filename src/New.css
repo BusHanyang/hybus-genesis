@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .App{
-    @apply w-11/12 h-screen bg-white text-black font-Noto text-center mx-auto;
+    @apply px-12 h-screen bg-white text-black font-Noto text-center mx-auto;
     @apply dark:bg-slate-800 dark:text-white;
 }
 
@@ -29,7 +29,7 @@
 }
 
 #title{
-    @apply font-bold m-3 text-3xl mt-6 mb-5;
+    @apply font-bold p-3 text-3xl pt-6 pb-5;
 }
 #notice{
     @apply flex rounded-3xl justify-center;
