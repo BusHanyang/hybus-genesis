@@ -108,10 +108,8 @@ function App() {
               전체 시간표
             </button>
 
-            <p>
-              <p className="copyright">
-                Copyright © 2020-2022 BusHanyang. All rights reserved
-              </p>
+            <p className="copyright">
+              Copyright © 2020-2022 BusHanyang. All rights reserved
             </p>
             <p>
               <button type="button" onClick={() => toggleTheme()}>
