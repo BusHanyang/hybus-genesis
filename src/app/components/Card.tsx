@@ -39,7 +39,7 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
       }
 
       // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
-      // but not successfully.
+      // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
       return new Array<SingleSchedule>(1)
     })
     .then((res) => res as Array<SingleSchedule>)
@@ -224,6 +224,7 @@ export const Card = (props: ScheduleInfo) => {
       const filtered = timetable.filter((val) => isAfterCurrentTime(val))
 
       if (filtered.length === 0) {
+        // Buses are done for today. User should refresh after midnight.
         return (
           <>
             <div className="h-24 table">
@@ -235,6 +236,7 @@ export const Card = (props: ScheduleInfo) => {
         )
       }
 
+      // Otherwise - normal case
       return filtered.map((val, idx) => {
         if (idx < 5) {
           if (idx < 2) {
