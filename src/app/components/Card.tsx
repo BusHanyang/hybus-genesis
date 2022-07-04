@@ -35,14 +35,12 @@ const getTimetable = async (
 ): Promise<Array<SingleSchedule>> => {
   return await api(
     `https://proxy.anoldstory.workers.dev/https://timetable.hybus.app/${season}/${week}/${location}`
+  ).then((res) =>
+    res.map((val) => {
+      val['time'] = String(moment(val.time, 'hh:mm').unix())
+      return val
+    })
   )
-    .then((res) => res.map((val) => val))
-    .then((res) =>
-      res.map((val) => {
-        val['time'] = String(moment(val.time, 'hh:mm').unix())
-        return val
-      })
-    )
 }
 
 const isAfterCurrentTime = (sch: SingleSchedule): boolean => {
