@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import moment from 'moment'
-import React, { ClassAttributes, useEffect, useState } from 'react'
+import React, { CSSProperties, useEffect, useState } from 'react'
 import { SyncLoader } from 'react-spinners'
 
 type SingleSchedule = {
@@ -183,11 +183,28 @@ export const Card = (props: ScheduleInfo) => {
     setExpand(!expand)
   }
 
+  const loadingCSS: CSSProperties = {
+    display: 'table-cell',
+    verticalAlign: 'middle',
+  }
+
   return (
     <div className="h-full" onClick={() => toggleExpand()}>
       <h2 className="font-bold text-2xl">{titleText(props.location)}</h2>
       <div className="inline-block select-none h-4/5">
-        <SyncLoader color="#AFBDCE" margin={4} size={8} loading={!isLoaded} />
+        {!isLoaded ? (
+          <div className="h-24 table">
+            <SyncLoader
+              color="#AFBDCE"
+              margin={4}
+              size={8}
+              loading={!isLoaded}
+              cssOverride={loadingCSS}
+            />
+          </div>
+        ) : (
+          <></>
+        )}
         {timetable
           .filter((val) => isAfterCurrentTime(val))
           .map((val, idx) =>
