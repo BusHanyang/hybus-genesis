@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .App{
-    @apply w-11/12 bg-white text-black font-Noto text-center mx-auto;
+    @apply w-11/12 h-screen bg-white text-black font-Noto text-center mx-auto;
     @apply dark:bg-slate-800 dark:text-white;
 }
 
@@ -19,13 +19,13 @@
 }
 
 .btn {
-    @apply hover:bg-blue-200 border-none;
+    @apply hover:bg-blue-100 border-none flex-auto;
 }
 .btn.active{
     @apply bg-blue-300 shadow-inner transition-all ease-out duration-700;
 }
 .btn_group{
-    @apply flex justify-between content-evenly items-stretch;
+    @apply flex justify-between content-evenly items-stretch gap-4;
 }
 
 #title{
