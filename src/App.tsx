@@ -1,10 +1,9 @@
 //import './App.css'
 
 import React, { useState } from 'react'
-import { Link, Route, BrowserRouter, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import styled, { ThemeProvider } from 'styled-components'
 import { Reset } from 'styled-reset'
-import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import { Card } from './app/components'
 import { dark, fontSizes, fontWeights, light } from './app/components/theme'
@@ -13,14 +12,6 @@ import FullTime from './FullTime'
 import Notice from './Notice'
 function App() {
   const [table, changeFullTable] = useState<boolean>(false)
-
-  const [themeMode, toggleTheme] = useDarkMode()
-  const theme =
-    themeMode === 'light'
-      ? { mode: light, fontSizes, fontWeights }
-      : { mode: dark, fontSizes, fontWeights }
-
-  const [tab, setTab] = useState<string>('shuttlecoke_o')
 
   const [themeMode, toggleTheme] = useDarkMode()
   const theme =
@@ -44,20 +35,7 @@ function App() {
                 <div className={`App ${themeState === 'dark' ? 'dark' : ''}`}>
                   <header className="App-header">
                     <h1 id="title">버스하냥</h1>
-                    <div id="notice" className="card">
-                      <p
-                        id="gong"
-                        className="text-red-500 font-extrabold float-left"
-                      >
-                        공지
-                      </p>
-                      <p id="notice_text" className="float-left">
-                        2022-여름학기 반영완료
-                      </p>
-                      <p id="notice_date" className="float-right">
-                        06/19
-                      </p>
-                    </div>
+                    <Notice/>
                   </header>
                   <div id="time" className="card">
                     <Card
@@ -119,8 +97,10 @@ function App() {
                       예술인APT
                     </button>
                   </div>
-                  <Link id="all" className="card btn w-full" to="/all">
-                    전체 시간표
+                  <Link to="/all">
+                    <div id="all" className="card btn w-full">
+                      전체 시간표
+                    </div>
                   </Link>
                   {/* <button
                     id="all"

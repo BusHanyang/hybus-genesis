@@ -18,7 +18,7 @@ const Notice = () => {
           <div className="carousel-item active relative float-left w-full">
             <a
               id="notice"
-              className="card"
+              // className="card"
               onClick={() => {
                 window.open(url[0])
               }}
@@ -31,7 +31,7 @@ const Notice = () => {
           <div className="carousel-item relative float-left w-full">
             <a
               id="notice"
-              className="card"
+              // className="card"
               onClick={() => {
                 window.open(url[0])
               }}
