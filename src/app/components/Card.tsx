@@ -158,13 +158,13 @@ const titleText = (location: string): string => {
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
     return (
-      <div className="bg-chip-red w-12 rounded-full inline-block text-center">
+      <div className="bg-chip-red py-1 w-12 rounded-full inline-block text-center">
         {busTypeToText(type)}
       </div>
     )
   } else {
     return (
-      <div className="bg-chip-blue w-12 rounded-full inline-block text-center">
+      <div className="bg-chip-blue py-1 w-12 rounded-full inline-block text-center">
         {busTypeToText(type)}
       </div>
     )
