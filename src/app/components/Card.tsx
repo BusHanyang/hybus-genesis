@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 import moment from 'moment'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { SyncLoader } from 'react-spinners'
