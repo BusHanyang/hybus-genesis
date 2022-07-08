@@ -1,12 +1,10 @@
 .lds-ellipsis {
-    user-select: auto;
     display: inline-block;
     position: relative;
     width: 64px;
     height: 64px;
   }
   .lds-ellipsis div {
-    position: absolute;
     user-select: auto;
     top: 27px;
     width: 11px;
@@ -17,7 +15,6 @@
   }
   .lds-ellipsis[data-theme="dark"] div {
     user-select: auto;
-    position: absolute;
     user-select: auto;
     top: 27px;
     width: 11px;
