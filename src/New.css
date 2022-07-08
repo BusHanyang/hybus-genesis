@@ -14,7 +14,7 @@
 }
 
 .card { 
-    @apply p-6 mb-3 justify-center items-center bg-white rounded-lg border border-gray-700 shadow-xl;
+    @apply p-6 mb-3 justify-center items-center bg-white rounded-lg border border-gray-700 drop-shadow-lg;
     @apply dark:bg-gray-800 dark:border-gray-700;
 }
 
@@ -22,15 +22,12 @@
     @apply hover:bg-blue-100 border-none flex-auto;
 }
 .btn.active{
-    @apply bg-blue-300 shadow-inner transition-all ease-out duration-700;
+    @apply bg-blue-300 drop-shadow-none shadow-inner transition-all ease-out duration-700;
 }
 .btn_group{
     @apply flex justify-between content-evenly items-stretch gap-4;
 }
 
 #title{
-    @apply font-bold p-3 text-3xl pt-6 pb-5;
-}
-#notice{
-    @apply flex rounded-3xl justify-center;
+    @apply font-bold p-3 text-3xl pt-6 pb-3;
 }

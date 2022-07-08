@@ -41,14 +41,16 @@ function App() {
           <div className="App">
             <header className="App-header">
               <h1 id="title">버스하냥</h1>
-              <div id="notice" className="card">
+              <div id="notice" className="card rounded-3xl flex">
                 <p id="gong" className="text-red-500 font-bold float-left">
                   공지
                 </p>
                 <p id="notice_text" className="float-left">
                   2022-여름학기 반영완료
                 </p>
-                <p id="notice_date">06/19</p>
+                <p id="notice_date" className="float-right">
+                  06/19
+                </p>
               </div>
             </header>
             <div id="time" className="card">
@@ -102,13 +104,13 @@ function App() {
 
             <button
               id="all"
-              className="card btn"
+              className="card btn w-full"
               onClick={() => (location.href = '#all')}
             >
               전체 시간표
             </button>
 
-            <p className="copyright">
+            <p className="copyright ">
               Copyright © 2020-2022 BusHanyang. All rights reserved
             </p>
             <p>
