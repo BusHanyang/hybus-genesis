@@ -1,4 +1,4 @@
-import './App.css'
+//import './App.css'
 
 import React, { useState } from 'react'
 import { Link, Route, BrowserRouter, Routes } from 'react-router-dom'
@@ -6,11 +6,11 @@ import styled, { ThemeProvider } from 'styled-components'
 import { Reset } from 'styled-reset'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
+import { Card } from './app/components'
 import { dark, fontSizes, fontWeights, light } from './app/components/theme'
 import { useDarkMode } from './app/components/useDarkMode'
 import FullTime from './FullTime'
 import Notice from './Notice'
-
 function App() {
   const [table, changeFullTable] = useState<boolean>(false)
 
@@ -22,105 +22,138 @@ function App() {
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
 
+  const [themeMode, toggleTheme] = useDarkMode()
+  const theme =
+    themeMode === 'light'
+      ? { mode: light, fontSizes, fontWeights }
+      : { mode: dark, fontSizes, fontWeights }
+
+  const [tab, setTab] = useState<string>('shuttlecoke_o')
+  const [themeState, setTheme] = useState<string>('light')
+  const [isExpanded] = useState<boolean>(false)
+
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <ThemeProvider theme={theme}>
-                <Reset />
-                <Backgound>
-                  <div className="App">
-                    <div className="App-header">
-                      <h1 id="title">버스하냥</h1>
-                      <Notice />
-                      <div
-                        id="time"
-                        className="card"
-                        style={{ height: '200px' }}
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ThemeProvider theme={theme}>
+              <Reset />
+              <Backgound>
+                <div className={`App ${themeState === 'dark' ? 'dark' : ''}`}>
+                  <header className="App-header">
+                    <h1 id="title">버스하냥</h1>
+                    <div id="notice" className="card">
+                      <p
+                        id="gong"
+                        className="text-red-500 font-extrabold float-left"
                       >
-                        버스 정보
-                      </div>
-
-                      <div className="btn_group">
-                        <div
-                          id="shuttlecoke_o"
-                          className={`card ${
-                            tab === 'shuttlecoke_o' ? 'active' : ''
-                          }`}
-                          onClick={() => setTab('shuttlecoke_o')}
-                        >
-                          <p id="btn_text">셔틀콕</p>
-                        </div>
-                        <div
-                          id="subway"
-                          className={`card ${tab === 'subway' ? 'active' : ''}`}
-                          onClick={() => setTab('subway')}
-                        >
-                          <p id="btn_text">한대앞</p>
-                        </div>
-                        <div
-                          id="giksa"
-                          className={`card ${tab === 'giksa' ? 'active' : ''}`}
-                          onClick={() => setTab('giksa')}
-                        >
-                          <p id="btn_text">기숙사</p>
-                        </div>
-                      </div>
-                      <div className="btn_group">
-                        <div
-                          id="shuttlecoke_i"
-                          className={`card ${
-                            tab === 'shuttlecoke_i' ? 'active' : ''
-                          }`}
-                          onClick={() => setTab('shuttlecoke_i')}
-                        >
-                          <p id="btn_text">셔틀콕 건너편</p>
-                        </div>
-                        <div
-                          id="yesulin"
-                          className={`card ${
-                            tab === 'yesulin' ? 'active' : ''
-                          }`}
-                          onClick={() => setTab('yesulin')}
-                        >
-                          <p id="btn_text">예술인APT</p>
-                        </div>
-                      </div>
-                      <Link id="all" className="card" to="/all">
-                        전체 시간표
-                      </Link>
-                      {/* <div
-                        id="all"
-                        className="card"
-                        onClick={() => (location.href = '#all')}
-                      >
-                        <p id="all_text">전체 시간표</p>
-                      </div> */}
-                      <p>
-                        <p className="copyright">
-                          Copyright © 2020-2022 BusHanyang. All rights reserved
-                        </p>
+                        공지
                       </p>
-                      <p>
-                        <button type="button" onClick={() => toggleTheme()}>
-                          {themeMode === 'dark' ? '라이트모드' : '다크모드'}
-                        </button>
-
-                        {table === true ? <FullTime></FullTime> : null}
+                      <p id="notice_text" className="float-left">
+                        2022-여름학기 반영완료
+                      </p>
+                      <p id="notice_date" className="float-right">
+                        06/19
                       </p>
                     </div>
+                  </header>
+                  <div id="time" className="card">
+                    <Card
+                      season="semester"
+                      week="week"
+                      location={tab}
+                      expanded={isExpanded}
+                    />
+                    <p id="expandedText" className={`pt-2`}>
+                      더보기
+                    </p>
                   </div>
-                </Backgound>
-              </ThemeProvider>
-            }
-          />
-          <Route path="/all" element={<FullTime />}></Route>
-        </Routes>
-      </BrowserRouter>
-    </>
+
+                  <div className="btn_group">
+                    <button
+                      id="shuttlecoke_o"
+                      className={`card btn ${
+                        tab === 'shuttlecoke_o' ? 'active' : ''
+                      }`}
+                      onClick={() => setTab('shuttlecoke_o')}
+                    >
+                      셔틀콕
+                    </button>
+                    <button
+                      id="subway"
+                      className={`card btn ${tab === 'subway' ? 'active' : ''}`}
+                      onClick={() => setTab('subway')}
+                    >
+                      한대앞역
+                    </button>
+                    <button
+                      id="residence"
+                      className={`card btn ${
+                        tab === 'residence' ? 'active' : ''
+                      }`}
+                      onClick={() => setTab('residence')}
+                    >
+                      기숙사
+                    </button>
+                  </div>
+
+                  <div className="btn_group">
+                    <button
+                      id="shuttlecoke_i"
+                      className={`card btn ${
+                        tab === 'shuttlecoke_i' ? 'active' : ''
+                      }`}
+                      onClick={() => setTab('shuttlecoke_i')}
+                    >
+                      셔틀콕 건너편
+                    </button>
+                    <button
+                      id="yesulin"
+                      className={`card btn ${
+                        tab === 'yesulin' ? 'active' : ''
+                      }`}
+                      onClick={() => setTab('yesulin')}
+                    >
+                      예술인APT
+                    </button>
+                  </div>
+                  <Link id="all" className="card btn w-full" to="/all">
+                    전체 시간표
+                  </Link>
+                  {/* <button
+                    id="all"
+                    className="card btn w-full"
+                    onClick={() => (location.href = '#all')}
+                  >
+                    전체 시간표
+                  </button> */}
+
+                  <p className="copyright">
+                    Copyright © 2020-2022 BusHanyang. All rights reserved
+                  </p>
+                  <p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        themeState === 'dark'
+                          ? setTheme('light')
+                          : setTheme('dark')
+                      }}
+                    >
+                      {themeState === 'dark' ? '라이트모드' : '다크모드'}
+                    </button>
+                    {table === true ? <FullTime></FullTime> : null}
+                  </p>
+                </div>
+              </Backgound>
+            </ThemeProvider>
+          }
+        />
+        <Route path="/all" element={<FullTime />}></Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 

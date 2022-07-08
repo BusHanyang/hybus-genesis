@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap');
+
 .App {
   vertical-align: top;
   text-align: center;
@@ -32,66 +34,63 @@ button {
 }
 
 .copyright {
-  vertical-align: bottom;
+  vertical-align: bottom; 
   font-size: 15px;
   font-weight: 200;
   margin: 20px;
 }
 
-#title {
-  vertical-align: top;
+#title{
+  vertical-align: top; 
   font-weight: 700;
   font-size: 30px;
   margin: 30px 0px 5px 0px;
 }
 
 /* 정거장 선택 버튼 */
-.btn_group {
+.btn_group{
   width: 80%;
   height: 100%;
   display: flex;
   justify-content: space-between;
   gap: 10px;
 }
-#subway,
-#shuttlecoke_o,
-#giksa {
+#subway, #shuttlecoke_o, #giksa{
   float: left;
   vertical-align: middle;
   margin: 20px 0px 0px 0px;
   padding: 1%;
 }
-#shuttlecoke_i,
-#yesulin {
+#shuttlecoke_i, #yesulin{
   float: left;
   vertical-align: middle;
   padding: 1%;
 }
-#btn_text {
+#btn_text{
   font-size: 20px;
   font-weight: 400;
   padding: 10px;
 }
 
 /* 공지 */
-#notice {
-  border-radius: 30px;
+#notice{
+  border-radius:30px;
 }
-#gong {
+#gong{
   color: red;
   font-size: 17px;
   font-weight: 700;
   padding: 12px 12px 0px 20px;
   float: left;
 }
-#notice_text {
+#notice_text{
   font-size: 17px;
   font-weight: 400;
   padding: 12px 12px 0px 12px;
   /*margin: 12px 12px 0px 12px;*/
   float: left;
 }
-#notice_date {
+#notice_date{
   font-size: 17px;
   font-weight: 300;
   padding: 12px 16px 12px 12px;
@@ -99,34 +98,35 @@ button {
 }
 
 /* 전체시간표 */
-
-#all {
+#all{
   width: 80%;
   font-size: 20px;
+}
+#all_text{
   font-size: 20px;
   font-weight: 400;
   padding: 15px;
 }
 
 /* 카드뷰 */
-.card {
-  border-radius: 10px;
-  box-shadow: 0px 3px 5px 1px rgba(0, 0, 0, 0.4);
+.card{
+  border-radius:10px;
+  box-shadow: 0px 3px 5px 1px rgba(0,0,0,0.4);
   width: 80%;
   margin: 20px 0px 0px 0px;
   vertical-align: middle;
   /* 드래그 방지*/
-  -ms-user-select: none;
+  -ms-user-select: none; 
   -moz-user-select: -moz-none;
   -khtml-user-select: none;
   -webkit-user-select: none;
   user-select: none;
 }
-.card.active {
-  background: #2ba5ba;
-  box-shadow: 0px 3px 5px 1px rgba(0, 0, 0, 0.2);
-  -moz-transition: all 0.1s ease-in;
-  -o-transition: all 0.1s ease-in;
-  -webkit-transition: all 0.1s ease-in;
-  transition: all 0.1s ease-in;
+.card.active{
+  background: #2BA5BA;
+  box-shadow: 0px 3px 5px 1px rgba(0,0,0,0.2);
+  -moz-transition: all .1s ease-in;
+  -o-transition: all .1s ease-in;
+  -webkit-transition: all .1s ease-in;
+  transition: all .1s ease-in;
 }
