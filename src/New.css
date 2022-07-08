@@ -6,7 +6,7 @@
 
 .App{
     @apply w-11/12 h-screen bg-white text-black font-Ptd text-center mx-auto;
-    @apply dark:bg-slate-800 dark:text-white;
+    @apply dark:bg-zinc-800 dark:text-white;
 }
 
 .App-header {
@@ -15,14 +15,14 @@
 
 .card { 
     @apply p-6 mb-3 justify-center items-center font-medium bg-white rounded-lg border border-gray-700 drop-shadow-lg;
-    @apply dark:bg-gray-800 dark:border-gray-700;
+    @apply dark:bg-gray-700 dark:border-gray-700 dark:text-white;
 }
 
 .btn {
     @apply hover:bg-blue-100 border-none flex-auto;
 }
 .btn.active{
-    @apply bg-blue-300 drop-shadow-none shadow-inner transition-all ease-out duration-700;
+    @apply bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700;
 }
 .btn_group{
     @apply flex justify-between content-evenly items-stretch gap-4;

@@ -33,6 +33,7 @@ function App() {
       : { mode: dark, fontSizes, fontWeights }
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
+  const [themeState, setTheme] = useState<string>('light')
   const [isExpanded] = useState<boolean>(false)
 
   return (
@@ -40,7 +41,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <Reset />
         <Backgound>
-          <div className="App">
+          <div className={`App ${themeState === 'dark' ? 'dark' : ''}`}>
             <header className="App-header">
               <h1 id="title">버스하냥</h1>
               <div id="notice" className="card">
@@ -65,8 +66,7 @@ function App() {
             <div className="btn_group">
               <button
                 id="shuttlecoke_o"
-                className={`card btn ${
-                  tab === 'shuttlecoke_o' ? 'active' : ''}`}
+                className={`card btn ${tab === 'shuttlecoke_o' ? 'active' : ''}`}
                 onClick={() => setTab('shuttlecoke_o')}
               >
                 셔틀콕
@@ -90,9 +90,7 @@ function App() {
             <div className="btn_group">
               <button
                 id="shuttlecoke_i"
-                className={`card btn ${
-                  tab === 'shuttlecoke_i' ? 'active' : ''
-                }`}
+                className={`card btn ${ tab === 'shuttlecoke_i' ? 'active' : ''}`}
                 onClick={() => setTab('shuttlecoke_i')}
               >
                 셔틀콕 건너편
@@ -114,12 +112,12 @@ function App() {
               전체 시간표
             </button>
 
-            <p className="copyright ">
+            <p className="copyright">
               Copyright © 2020-2022 BusHanyang. All rights reserved
             </p>
             <p>
-              <button type="button" onClick={() => toggleTheme()}>
-                {themeMode === 'dark' ? '라이트모드' : '다크모드'}
+              <button type="button" onClick={() => {themeState === 'dark' ? setTheme('light') : setTheme('dark')}}>
+                {themeState === 'dark' ? '라이트모드' : '다크모드'}
               </button>
             </p>
           </div>

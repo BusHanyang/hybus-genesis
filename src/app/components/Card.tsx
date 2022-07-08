@@ -158,13 +158,13 @@ const titleText = (location: string): string => {
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
     return (
-      <div className="bg-chip-red py-1 w-12 rounded-full inline-block text-center">
+      <div className="bg-chip-red dark:text-black py-1 w-12 rounded-full inline-block text-center">
         {busTypeToText(type)}
       </div>
     )
   } else {
     return (
-      <div className="bg-chip-blue py-1 w-12 rounded-full inline-block text-center">
+      <div className="bg-chip-blue dark:text-black py-1 w-12 rounded-full inline-block text-center">
         {busTypeToText(type)}
       </div>
     )
@@ -295,7 +295,7 @@ export const Card = (props: ScheduleInfo) => {
 
   return (
     <div className="h-full" onClick={() => toggleExpand()}>
-      <h2 className="font-bold text-2xl">{titleText(props.location)}</h2>
+      <h2 className="font-bold text-2xl pb-2">{titleText(props.location)}</h2>
       <div className="inline-block select-none h-4/5">
         {!isLoaded ? (
           <div className="h-24 table">
