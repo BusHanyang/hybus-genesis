@@ -33,6 +33,7 @@ function App() {
       : { mode: dark, fontSizes, fontWeights }
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
+  const [isExpanded] = useState<boolean>(false)
 
   return (
     <>
@@ -43,7 +44,7 @@ function App() {
             <header className="App-header">
               <h1 id="title">버스하냥</h1>
               <div id="notice" className="card">
-                <p id="gong" className="text-red-500 font-extrabold">
+                <p id="gong" className="text-red-500 font-extrabold float-left">
                   공지
                 </p>
                 <p id="notice_text" className="float-left">
@@ -55,15 +56,17 @@ function App() {
               </div>
             </header>
             <div id="time" className="card">
-              <Card season="semester" week="week" location="shuttlecoke_o" expanded={false}/>
+              <Card season="semester" week="week" location={tab} expanded={isExpanded}/>
+              <p id="expandedText" className={``}>
+                더보기
+              </p>
             </div>
 
             <div className="btn_group">
               <button
                 id="shuttlecoke_o"
                 className={`card btn ${
-                  tab === 'shuttlecoke_o' ? 'active' : ''
-                }`}
+                  tab === 'shuttlecoke_o' ? 'active' : ''}`}
                 onClick={() => setTab('shuttlecoke_o')}
               >
                 셔틀콕
@@ -76,9 +79,9 @@ function App() {
                 한대앞역
               </button>
               <button
-                id="giksa"
-                className={`card btn ${tab === 'giksa' ? 'active' : ''}`}
-                onClick={() => setTab('giksa')}
+                id="residence"
+                className={`card btn ${tab === 'residence' ? 'active' : ''}`}
+                onClick={() => setTab('residence')}
               >
                 기숙사
               </button>
