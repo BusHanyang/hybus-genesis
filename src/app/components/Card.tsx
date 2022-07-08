@@ -178,13 +178,21 @@ export const Card = (props: ScheduleInfo) => {
   const [isLoaded, setLoaded] = useState<boolean>(false)
 
   useEffect(() => {
-    if (timetable.length == 0 && !isLoaded) {
+    if (!isLoaded) {
+      getTimetable(props.season, props.week, props.location).then((res) => {
+        setTimetable(res)
+        setLoaded(true)
+      })
+    } else {
+      setTimetable([])
+      setLoaded(false)
       getTimetable(props.season, props.week, props.location).then((res) => {
         setTimetable(res)
         setLoaded(true)
       })
     }
-  }, [isLoaded, props.location, props.season, props.week, timetable])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [props.location, props.season, props.week])
 
   useEffect(() => {
     const timer = setTimeout(() => {
