@@ -5,6 +5,7 @@ import styled, { ThemeProvider } from 'styled-components'
 import { Reset } from 'styled-reset'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
+import { Card } from './app/components'
 import { dark, fontSizes, fontWeights, light } from './app/components/theme'
 import { useDarkMode } from './app/components/useDarkMode'
 
@@ -41,8 +42,8 @@ function App() {
           <div className="App">
             <header className="App-header">
               <h1 id="title">버스하냥</h1>
-              <div id="notice" className="card rounded-3xl flex">
-                <p id="gong" className="text-red-500 font-bold float-left">
+              <div id="notice" className="card">
+                <p id="gong" className="text-red-500 font-extrabold">
                   공지
                 </p>
                 <p id="notice_text" className="float-left">
@@ -54,7 +55,7 @@ function App() {
               </div>
             </header>
             <div id="time" className="card">
-              버스 정보
+              <Card season="semester" week="week" location="shuttlecoke_o" expanded={false}/>
             </div>
 
             <div className="btn_group">

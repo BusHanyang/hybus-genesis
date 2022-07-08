@@ -244,7 +244,7 @@ export const Card = (props: ScheduleInfo) => {
               <React.Fragment key={idx}>
                 <div className="text-left mx-auto w-82 py-1.5">
                   {getColoredElement(val.type)}
-                  <span className="font-mono inline-block px-1 w-40 text-right">
+                  <span className="font-Ptd inline-block px-1 w-40 text-right">
                     {secondToTimeFormat(
                       Math.floor(Number(val.time) - Number(currentTime) / 1000)
                     )}{' '}
@@ -263,7 +263,7 @@ export const Card = (props: ScheduleInfo) => {
                 <React.Fragment key={idx}>
                   <div className="text-left mx-auto w-82 py-1.5">
                     {getColoredElement(val.type)}
-                    <span className="font-mono inline-block px-1 w-40 text-right">
+                    <span className="font-Ptd inline-block px-1 w-40 text-right">
                       {secondToTimeFormat(
                         Math.floor(
                           Number(val.time) - Number(currentTime) / 1000

@@ -7,7 +7,7 @@ module.exports = {
         'chip-blue': '#7FAAFF',
       },
       fontFamily: {
-        Noto: ["Noto Sans KR", "sans-serif"],
+        Ptd: ["Pretendard Variable"],
       },
     },
   },

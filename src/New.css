@@ -1,11 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap");
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.4/dist/web/variable/pretendardvariable.css");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 .App{
-    @apply w-11/12 h-screen bg-white text-black font-Noto text-center mx-auto;
+    @apply w-11/12 h-screen bg-white text-black font-Ptd text-center mx-auto;
     @apply dark:bg-slate-800 dark:text-white;
 }
 
@@ -14,7 +14,7 @@
 }
 
 .card { 
-    @apply p-6 mb-3 justify-center items-center bg-white rounded-lg border border-gray-700 drop-shadow-lg;
+    @apply p-6 mb-3 justify-center items-center font-medium bg-white rounded-lg border border-gray-700 drop-shadow-lg;
     @apply dark:bg-gray-800 dark:border-gray-700;
 }
 
