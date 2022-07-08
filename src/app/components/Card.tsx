@@ -259,7 +259,7 @@ export const Card = (props: ScheduleInfo) => {
                     후 출발
                   </span>
                   <div className="text-center inline-block w-8 mx-2">▶</div>
-                  <span className="float-right text-left">
+                  <span className="text-left w-24 inline-block">
                     {getBusDestination(val.type, props.location)}
                   </span>
                 </div>
@@ -280,7 +280,7 @@ export const Card = (props: ScheduleInfo) => {
                       후 출발
                     </span>
                     <div className="text-center inline-block w-8 mx-2">▶</div>
-                    <span className="float-right text-left">
+                    <span className="text-left w-24 inline-block">
                       {getBusDestination(val.type, props.location)}
                     </span>
                   </div>
