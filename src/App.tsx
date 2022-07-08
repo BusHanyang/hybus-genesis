@@ -58,7 +58,7 @@ function App() {
             </header>
             <div id="time" className="card">
               <Card season="semester" week="week" location={tab} expanded={isExpanded}/>
-              <p id="expandedText" className={``}>
+              <p id="expandedText" className={`pt-2`}>
                 더보기
               </p>
             </div>
