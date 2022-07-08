@@ -33,10 +33,27 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
     .get(url)
     .then((response) => {
       if (response.status !== 200) {
+        console.log(`Error code: ${response.statusText}`)
+
         throw new Error(response.statusText)
       }
 
       return response.data
+    })
+    .catch((err) => {
+      if (err.response) {
+        // 2XX Errors
+        console.log('Error receiving data', err.data)
+      } else if (err.request) {
+        // No Response
+        console.log('No Response Error', err.request)
+      } else {
+        // Somehow error occurred
+        console.log('Error', err.message)
+      }
+      // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
+      // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
+      return new Array<SingleSchedule>(1)
     })
     .then((res) => res as Array<SingleSchedule>)
 }
@@ -48,13 +65,7 @@ const getTimetable = async (
 ): Promise<Array<SingleSchedule>> => {
   return await api(
     `https://proxy.anoldstory.workers.dev/https://timetable.hybus.app/${season}/${week}/${location}`
-  )
-    .then((res) => res.map((val) => val))
-    .then((res) =>
-      res.map((val) => {
-        return val
-      })
-    )
+  ).then((res) => res.map((val) => val))
 }
 
 const FullTime = () => {
@@ -77,6 +88,7 @@ const FullTime = () => {
   }
 
   useEffect(() => {
+    console.log(location)
     getTimetable(season, week, location).then((res) => {
       setTimetable(res)
     })
@@ -240,7 +252,7 @@ const TimeBox = (props: { hour: string; time: any; location: Location }) => {
   return (
     <div>
       <div className="time-box">
-        {console.log(props.time)}
+        {/* {console.log(props.time)} */}
         <div className="hour">{props.hour}시</div>
         <div className="t_data">
           <div className="data">
