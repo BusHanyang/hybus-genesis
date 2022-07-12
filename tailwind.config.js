@@ -16,18 +16,18 @@ module.exports = {
         upOut: {
           from: {
             opacity: '1',
-            transform: 'translate3d(0, 0, 0)',
+            transform: 'translate3d(0, 10%, 0)',
           },
 
           '40%': {
             opacity: '1',
             transform: 'translate3d(0, 0%, 0)',
           },
-
-          to: {
+          '70%': {
             opacity: '0',
-            transform: 'translate3d(0, -80%, 0)',
+            transform: 'translate3d(0, -20%, 0)',
           },
+          
         },
       },
     },
