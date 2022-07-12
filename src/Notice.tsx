@@ -34,8 +34,6 @@ const Notice = () => {
   return (
     <div>
       <div className=" relative w-full overflow-hidden">
-        {/* {console.log(num)} */}
-
         {info.map((item, idx) => {
           return (
             <div key={idx} className={idx === num ? '' : 'hidden'}>
@@ -60,21 +58,17 @@ const Box = (props: {
   date: string
 }) => {
   return (
-    <div className="animate-carousel relative float-left w-full card">
+    <div className="animate-carousel w-full card">
       <a
-        id="notice"
-        // className="card"
         onClick={() => {
           window.open(props.url)
         }}
       >
-        <p id="gong" className="font-black text-chip-red">
+        <p className="float-left font-bold text-base text-chip-red">
           {props.label}
         </p>
-        <p id="notice_text" className="font-medium">
-          {props.title}
-        </p>
-        <p id="notice_date">{props.date}</p>
+        <p className="float-left px-3 font-medium text-base">{props.title}</p>
+        <p className="float-right px-3 font-normal text-base">{props.date}</p>
       </a>
     </div>
   )
