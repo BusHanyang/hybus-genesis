@@ -1,4 +1,4 @@
-import './FullTime.css'
+import './FullTime.module.css'
 
 import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -114,7 +114,9 @@ const FullTime = () => {
   ]
   return (
     <div className="App">
-      <div>
+      <p></p>
+      <p>전체시간표</p>
+      <div className="overflow-auto">
         <p>**버스 정류장</p>
 
         <div className="t-check-box">
