@@ -268,7 +268,7 @@ export const Card = (props: ScheduleInfo) => {
       <h2 className="font-bold text-2xl pb-2">{titleText(props.location)}</h2>
       <div className="inline-block select-none h-4/5">
         {!isLoaded ? (
-          <div className="h-24 table">
+          <div className="h-full table">
             <SyncLoader
               color="#AFBDCE"
               margin={4}
