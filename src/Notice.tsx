@@ -58,8 +58,9 @@ const Box = (props: {
   date: string
 }) => {
   return (
-    <div className="animate-carousel w-full card">
+    <div className=" w-full card">
       <a
+        className="animate-carousel"
         onClick={() => {
           window.open(props.url)
         }}

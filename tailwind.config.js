@@ -15,19 +15,18 @@ module.exports = {
       keyframes: {
         upOut: {
           from: {
-            opacity: '1',
+            opacity: '0',
             transform: 'translate3d(0, 10%, 0)',
           },
 
-          '40%': {
+          '30%': {
             opacity: '1',
             transform: 'translate3d(0, 0%, 0)',
           },
-          '70%': {
+          '90%': {
             opacity: '0',
-            transform: 'translate3d(0, -20%, 0)',
+            transform: 'translate3d(0, 0%, 0)',
           },
-          
         },
       },
     },
