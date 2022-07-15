@@ -14,8 +14,14 @@
 }
 
 .card { 
-    @apply p-6 mb-3 justify-center items-center font-medium bg-white rounded-lg border border-gray-700 drop-shadow-lg;
-    @apply dark:bg-gray-700 dark:border-gray-700 dark:text-white;
+    @apply p-6 mb-3 justify-center items-center font-medium bg-white rounded-lg drop-shadow-lg;
+    @apply dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(255,255,255,0.1)];
+}
+.card.p4 { 
+    @apply p-4;
+}
+.card.bus {
+    @apply h-[17rem];
 }
 
 .btn {

@@ -5,10 +5,11 @@ import App from '../../../App'
 import Refreshing from './refreshing-content'
 const dark = true
 
-const colorDarkMod = '#5D5D5D'
+const colorDarkMod = '#27272a' //bg-zinc-800
 
 export const Ptr = () => {
   let color = 'white'
+
   if (dark) {
     color = colorDarkMod
   }

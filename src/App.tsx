@@ -21,7 +21,6 @@ function App() {
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
   const [themeState, setTheme] = useState<string>('light')
-  const [isExpanded] = useState<boolean>(false)
 
   return (
     <BrowserRouter>
@@ -31,24 +30,17 @@ function App() {
           element={
             <ThemeProvider theme={theme}>
               <Reset />
-              <Backgound>
+              <Backgound className={`${themeState === 'dark' ? 'dark' : ''}`}>
                 <div className={`App ${themeState === 'dark' ? 'dark' : ''}`}>
                   <header className="App-header">
-                    <h1 id="title">버스하냥</h1>
-                    <Notice/>
+                    <h1 id="title" className="dark:text-white">
+                      버스하냥
+                    </h1>
+                    <Notice />
                   </header>
-                  <div id="time" className="card">
-                    <Card
-                      season="semester"
-                      week="week"
-                      location={tab}
-                      expanded={isExpanded}
-                    />
-                    <p id="expandedText" className={`pt-2`}>
-                      더보기
-                    </p>
+                  <div id="time" className="card bus">
+                    <Card season="semester" week="week" location={tab} />
                   </div>
-
                   <div className="btn_group">
                     <button
                       id="shuttlecoke_o"
@@ -110,7 +102,7 @@ function App() {
                     전체 시간표
                   </button> */}
 
-                  <p className="copyright">
+                  <p id="copyright" className="dark:text-white">
                     Copyright © 2020-2022 BusHanyang. All rights reserved
                   </p>
                   <p>
@@ -124,7 +116,6 @@ function App() {
                     >
                       {themeState === 'dark' ? '라이트모드' : '다크모드'}
                     </button>
-                    {table === true ? <FullTime></FullTime> : null}
                   </p>
                 </div>
               </Backgound>
