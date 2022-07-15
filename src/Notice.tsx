@@ -60,7 +60,7 @@ const Box = (props: {
   return (
     <div className=" w-full card">
       <a
-        className="animate-carousel"
+        className="animate-carousel cursor-pointer"
         onClick={() => {
           window.open(props.url)
         }}
