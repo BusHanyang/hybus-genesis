@@ -12,7 +12,6 @@ type ScheduleInfo = {
   season: string
   week: string
   location: string
-  expanded: boolean
 }
 
 const api = async (url: string): Promise<Array<SingleSchedule>> => {
@@ -174,7 +173,6 @@ const getColoredElement = (type: string): JSX.Element => {
 export const Card = (props: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
-  const [expand, setExpand] = useState<boolean>(props.expanded)
   const [isLoaded, setLoaded] = useState<boolean>(false)
 
   useEffect(() => {
@@ -201,10 +199,6 @@ export const Card = (props: ScheduleInfo) => {
 
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
-
-  const toggleExpand = () => {
-    setExpand(!expand)
-  }
 
   const loadingCSS: CSSProperties = {
     display: 'table-cell',
@@ -247,54 +241,32 @@ export const Card = (props: ScheduleInfo) => {
       // Otherwise - normal case
       return filtered.map((val, idx) => {
         if (idx < 5) {
-          if (idx < 2) {
-            return (
-              <React.Fragment key={idx}>
-                <div className="text-left mx-auto w-82 py-1.5">
-                  {getColoredElement(val.type)}
-                  <span className="font-Ptd inline-block px-1 w-32 text-right">
-                    {secondToTimeFormat(
-                      Math.floor(Number(val.time) - Number(currentTime) / 1000)
-                    )}{' '}
-                    후 출발
-                  </span>
-                  <div className="text-center inline-block w-8 mx-2">▶</div>
-                  <span className="text-left w-24 inline-block">
-                    {getBusDestination(val.type, props.location)}
-                  </span>
-                </div>
-              </React.Fragment>
-            )
-          } else {
-            if (expand) {
-              return (
-                <React.Fragment key={idx}>
-                  <div className="text-left mx-auto w-82 py-1.5">
-                    {getColoredElement(val.type)}
-                    <span className="font-Ptd inline-block px-1 w-32 text-right">
-                      {secondToTimeFormat(
-                        Math.floor(
-                          Number(val.time) - Number(currentTime) / 1000
-                        )
-                      )}{' '}
-                      후 출발
-                    </span>
-                    <div className="text-center inline-block w-8 mx-2">▶</div>
-                    <span className="text-left w-24 inline-block">
-                      {getBusDestination(val.type, props.location)}
-                    </span>
-                  </div>
-                </React.Fragment>
               )
             }
-          }
+          return (
+            <React.Fragment key={idx}>
+              <div className="text-left mx-auto w-82 py-1.5">
+                {getColoredElement(val.type)}
+                <span className="font-Ptd inline-block px-1 w-32 text-right">
+                  {secondToTimeFormat(
+                    Math.floor(Number(val.time) - Number(currentTime) / 1000)
+                  )}{' '}
+                  후 출발
+                </span>
+                <div className="text-center inline-block w-8 mx-2">▶</div>
+                <span className="text-left w-24 inline-block">
+                  {getBusDestination(val.type, props.location)}
+                </span>
+              </div>
+            </React.Fragment>
+          )
         }
       })
     }
   }
 
   return (
-    <div className="h-full" onClick={() => toggleExpand()}>
+    <div className="h-full">
       <h2 className="font-bold text-2xl pb-2">{titleText(props.location)}</h2>
       <div className="inline-block select-none h-4/5">
         {!isLoaded ? (

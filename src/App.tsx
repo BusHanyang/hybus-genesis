@@ -34,7 +34,6 @@ function App() {
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
   const [themeState, setTheme] = useState<string>('light')
-  const [isExpanded] = useState<boolean>(false)
 
   return (
     <>
@@ -57,16 +56,15 @@ function App() {
               </div>
             </header>
             <div id="time" className="card">
-              <Card season="semester" week="week" location={tab} expanded={isExpanded}/>
-              <p id="expandedText" className={`pt-2`}>
-                더보기
-              </p>
+              <Card season="semester" week="week" location={tab} />
             </div>
 
             <div className="btn_group">
               <button
                 id="shuttlecoke_o"
-                className={`card btn ${tab === 'shuttlecoke_o' ? 'active' : ''}`}
+                className={`card btn ${
+                  tab === 'shuttlecoke_o' ? 'active' : ''
+                }`}
                 onClick={() => setTab('shuttlecoke_o')}
               >
                 셔틀콕
@@ -90,7 +88,9 @@ function App() {
             <div className="btn_group">
               <button
                 id="shuttlecoke_i"
-                className={`card btn ${ tab === 'shuttlecoke_i' ? 'active' : ''}`}
+                className={`card btn ${
+                  tab === 'shuttlecoke_i' ? 'active' : ''
+                }`}
                 onClick={() => setTab('shuttlecoke_i')}
               >
                 셔틀콕 건너편
@@ -116,7 +116,12 @@ function App() {
               Copyright © 2020-2022 BusHanyang. All rights reserved
             </p>
             <p>
-              <button type="button" onClick={() => {themeState === 'dark' ? setTheme('light') : setTheme('dark')}}>
+              <button
+                type="button"
+                onClick={() => {
+                  themeState === 'dark' ? setTheme('light') : setTheme('dark')
+                }}
+              >
                 {themeState === 'dark' ? '라이트모드' : '다크모드'}
               </button>
             </p>
