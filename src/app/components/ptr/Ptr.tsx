@@ -3,6 +3,7 @@ import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import App from '../../../App'
 import Refreshing from './refreshing-content'
+
 const dark = true
 
 const colorDarkMod = '#27272a' //bg-zinc-800
@@ -13,6 +14,7 @@ export const Ptr = () => {
   if (dark) {
     color = colorDarkMod
   }
+
   const handleRefresh = (): Promise<React.FC> => {
     return new Promise((res) => {
       location.reload()

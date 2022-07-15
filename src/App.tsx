@@ -33,14 +33,13 @@ function App() {
       : { mode: dark, fontSizes, fontWeights }
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
-  const [themeState, setTheme] = useState<string>('light')
 
   return (
     <>
       <ThemeProvider theme={theme}>
         <Reset />
-        <Backgound className={`${themeState === 'dark' ? 'dark' : ''}`}>
-          <div className={`App ${themeState === 'dark' ? 'dark' : ''}`}>
+        <Backgound className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+          <div className={`App ${themeMode === 'dark' ? 'dark' : ''}`}>
             <header className="App-header">
               <h1 id="title" className="dark:text-white">버스하냥</h1>
               <div id="notice" className="card p4">
@@ -118,11 +117,9 @@ function App() {
             <p>
               <button
                 type="button"
-                onClick={() => {
-                  themeState === 'dark' ? setTheme('light') : setTheme('dark')
-                }}
+                onClick={() => toggleTheme()}
               >
-                {themeState === 'dark' ? '라이트모드' : '다크모드'}
+                {themeMode === 'dark' ? '라이트모드' : '다크모드'}
               </button>
             </p>
           </div>
