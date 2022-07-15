@@ -39,23 +39,23 @@ function App() {
     <>
       <ThemeProvider theme={theme}>
         <Reset />
-        <Backgound>
+        <Backgound className={`${themeState === 'dark' ? 'dark' : ''}`}>
           <div className={`App ${themeState === 'dark' ? 'dark' : ''}`}>
             <header className="App-header">
-              <h1 id="title">버스하냥</h1>
-              <div id="notice" className="card">
-                <p id="gong" className="text-red-500 font-extrabold float-left">
+              <h1 id="title" className="dark:text-white">버스하냥</h1>
+              <div id="notice" className="card p4">
+                <p id="gong" className="text-red-500 font-extrabold float-left pl-1">
                   공지
                 </p>
-                <p id="notice_text" className="float-left">
+                <p id="notice_text" className="inline">
                   2022-여름학기 반영완료
                 </p>
-                <p id="notice_date" className="float-right">
+                <p id="notice_date" className="float-right pr-1">
                   06/19
                 </p>
               </div>
             </header>
-            <div id="time" className="card">
+            <div id="time" className="card bus">
               <Card season="semester" week="week" location={tab} />
             </div>
 
@@ -112,7 +112,7 @@ function App() {
               전체 시간표
             </button>
 
-            <p className="copyright">
+            <p id="copyright" className="dark:text-white">
               Copyright © 2020-2022 BusHanyang. All rights reserved
             </p>
             <p>
