@@ -241,8 +241,6 @@ export const Card = (props: ScheduleInfo) => {
       // Otherwise - normal case
       return filtered.map((val, idx) => {
         if (idx < 5) {
-              )
-            }
           return (
             <React.Fragment key={idx}>
               <div className="text-left mx-auto w-82 py-1.5">
