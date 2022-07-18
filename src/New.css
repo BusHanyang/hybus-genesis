@@ -25,7 +25,7 @@
 }
 
 .btn {
-    @apply hover:bg-blue-100 border-none flex-auto;
+    @apply hover:bg-blue-100 hover:text-black border-none flex-auto;
 }
 .btn.active{
     @apply bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700;
