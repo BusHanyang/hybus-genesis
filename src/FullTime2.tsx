@@ -1,4 +1,4 @@
-import './FullTime.css'
+// import './FullTime.css'
 
 import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
@@ -18,15 +18,6 @@ type Location =
 type Week = 'week' | 'weekend'
 type Season = 'semester' | 'vacation_session' | 'vacation'
 
-type Time = {
-  hour: string
-  DH?: Array<string>
-  DY?: Array<string>
-  C?: Array<string>
-  N?: Array<string>
-  R?: Array<string>
-  NA?: Array<string>
-}
 
 const api = async (url: string): Promise<Array<SingleSchedule>> => {
   return await axios
@@ -114,121 +105,100 @@ const FullTime = () => {
   ]
   return (
     <div className="App">
-      <p></p>
       <p>전체시간표</p>
-      <div className="overflow-auto">
-        <p>**버스 정류장</p>
-
-        <div className="t_check_box">
-          {arrLocation.map((i) => {
-            return (
-              <ComboBox
-                key={i}
-                type={location}
-                value={i[0]}
-                func={changeLocation}
-                info={i[1]}
-              />
-            )
-          })}
+      <div className=" overflow-auto mx-10">
+        <div className=" grid grid-flow-row gap-2 ">
+          <p>**버스 정류장</p>
+          <div className="flex gap-2 ">
+            {arrLocation.map((i) => {
+              return (
+                <ComboBox
+                  key={i}
+                  type={location}
+                  value={i[0]}
+                  func={changeLocation}
+                  info={i[1]}
+                />
+              )
+            })}
+          </div>
+          <div className="w-full h-px bg-slate-400 bg-center " />
         </div>
-      </div>
-      <div className="horizon_line"></div>
-      <div>
-        <p>시기</p>
-        <div className="t_check_box">
-          {arrSeason.map((i) => {
-            return (
-              <ComboBox
-                key={i}
-                type={season}
-                value={i[0]}
-                func={changeSeason}
-                info={i[1]}
-              />
-            )
-          })}
+        <div className=" grid grid-flow-row gap-2 ">
+          <p>시기</p>
+          <div className="flex gap-2 ">
+            {arrSeason.map((i) => {
+              return (
+                <ComboBox
+                  key={i}
+                  type={season}
+                  value={i[0]}
+                  func={changeSeason}
+                  info={i[1]}
+                />
+              )
+            })}
+          </div>{' '}
+          <div className="w-full h-px bg-slate-400 bg-center" />
         </div>
-      </div>
-      <div className="horizon_line"></div>
-      <div>
-        <p>요일</p>
-        <div className="t_check_box">
-          {arrWeek.map((i) => {
-            return (
-              <ComboBox
-                key={i}
-                type={week}
-                value={i[0]}
-                func={changeWeek}
-                info={i[1]}
-              />
-            )
-          })}
+
+        <div className=" grid grid-flow-row gap-2 ">
+          <p>요일</p>
+          <div className="flex gap-2 ">
+            {arrWeek.map((i) => {
+              return (
+                <ComboBox
+                  key={i}
+                  type={week}
+                  value={i[0]}
+                  func={changeWeek}
+                  info={i[1]}
+                />
+              )
+            })}
+          </div>{' '}
+          <div className="w-full h-px bg-slate-400 bg-center justify-center" />
         </div>
-      </div>
-      <div className="horizon_line"></div>
-      <div className="t_time_box">
-        {timetable.length ? ( // timetable이 존재하는 경우
-          timetable.map((i) => {
-            // console.log(i)
+        <div className=""></div>
+        <div className="grid grid-flow-row gap-2">
+          {timetable.length ? ( // timetable이 존재하는 경우
+            timetable.map((i) => {
+              // console.log(i)
 
-            const preMinute = minute
-            const preHour = hour
+              const preMinute = minute
+              const preHour = hour
 
-            if (i.time.split(':')[0] !== hour) {
-              //   // 새로운 시간대가 나타나면
-              //   if (location == 'shuttlecoke_o' || location == 'residence') {
-              //     const time: Time = {
-              //       hour: i.time.split(':')[0],
-              //       C: [],
-              //       DH: [],
-              //       DY: [],
-              //     }
-              //   } else if (location == 'shuttlecoke_i') {
-              //     const time: Time = {
-              //       hour: i.time.split(':')[0],
-              //       C: [],
-              //       N: [],
-              //     }
-              //   } else {
-              //     const time: Time = {
-              //       hour: i.time.split(':')[0],
-              //       R: [],
-              //       NA: [],
-              //     }
+              if (i.time.split(':')[0] !== hour) {
+                hour = i.time.split(':')[0]
+                minute = { DH: [], DY: [], C: [], N: [], R: [], NA: [] }
 
-              //   }
-
-              hour = i.time.split(':')[0]
-              minute = { DH: [], DY: [], C: [], N: [], R: [], NA: [] }
-
-              i.type !== ''
-                ? minute[i.type].push(i.time.split(':')[1])
-                : minute['N'].push(i.time.split(':')[1])
-              if (preHour !== '00') {
-                if (minute['NA'].length == 0) {
-                  return (
-                    // eslint-disable-next-line react/jsx-key
-                    <TimeBox
-                      hour={preHour}
-                      time={preMinute}
-                      location={location}
-                    />
-                  )
+                i.type !== ''
+                  ? minute[i.type].push(i.time.split(':')[1])
+                  : minute['N'].push(i.time.split(':')[1])
+                if (preHour !== '00') {
+                  if (minute['NA'].length == 0) {
+                    return (
+                      // eslint-disable-next-line react/jsx-key
+                      <TimeBox
+                        hour={preHour}
+                        time={preMinute}
+                        location={location}
+                      />
+                    )
+                  }
                 }
+              } else {
+                // 기존의 시간대
+                i.type !== ''
+                  ? minute[i.type].push(i.time.split(':')[1])
+                  : minute['N'].push(i.time.split(':')[1])
               }
-            } else {
-              // 기존의 시간대
-              i.type !== ''
-                ? minute[i.type].push(i.time.split(':')[1])
-                : minute['N'].push(i.time.split(':')[1])
-            }
-          })
-        ) : (
-          // timetable이 존재하자 않는 경우
-          <div> 조회 정보가 없습니다. </div>
-        )}
+            })
+          ) : (
+            // timetable이 존재하자 않는 경우
+            <div> 조회 정보가 없습니다. </div>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -242,7 +212,9 @@ const ComboBox = (props: {
 }) => {
   return (
     <div
-      className={`check_box ${props.type === props.value ? 'check' : ''}`}
+      className={`items-center p-2 border-indigo-300 border rounded-2xl ${
+        props.type === props.value ? 'bg-indigo-300' : ''
+      }`}
       onClick={() => props.func(props.value)}
     >
       {props.info}
@@ -253,16 +225,16 @@ const ComboBox = (props: {
 const TimeBox = (props: { hour: string; time: any; location: Location }) => {
   return (
     <div>
-      <div className="time_box">
+      <div className="bg-slate-400">
         {/* {console.log(props.time)} */}
-        <div className="hour">{props.hour}시</div>
-        <div className="t_data">
-          <div className="data">
+        <div className="">{props.hour}시</div>
+        <div className="">
+          <div className="">
             {props.time['C'].length != 0 ? (
               <Circle type="순환" minute={props.time['C']} />
             ) : null}
           </div>
-          <div className="data">
+          <div className="">
             {props.time['DH'].length +
               props.time['DY'].length +
               props.time['R'].length +
@@ -287,11 +259,11 @@ const TimeBox = (props: { hour: string; time: any; location: Location }) => {
 
 const Circle = (props: { type: string; minute: any }) => {
   return (
-    <div className="data">
-      <div className={`type ${props.type == '순환' ? 'circle' : 'direct'}`}>
+    <div className="">
+      <div className={` ${props.type == '순환' ? 'circle' : 'direct'}`}>
         {props.type}
       </div>
-      <div className="time">
+      <div className="">
         {props.type == '순환' ? props.minute.join(' ') : props.minute.join(' ')}
       </div>
       {/* <div className="time dy">예술인){props.minute[1]}</div> */}
