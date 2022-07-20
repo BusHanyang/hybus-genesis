@@ -214,7 +214,7 @@ export const Card = (props: ScheduleInfo) => {
         // Timetable load failure, or doesn't exist
         return (
           <>
-            <div className="h-24 table">
+            <div className="h-full table">
               <span className="table-cell align-middle">
                 오늘 운행하는 셔틀이 존재하지 않습니다.
               </span>
@@ -229,7 +229,7 @@ export const Card = (props: ScheduleInfo) => {
         // Buses are done for today. User should refresh after midnight.
         return (
           <>
-            <div className="h-24 table">
+            <div className="h-full table">
               <span className="table-cell align-middle">
                 오늘 셔틀 운행이 종료되었습니다.
               </span>

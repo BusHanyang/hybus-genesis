@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .App{
-    @apply w-11/12 h-screen bg-white text-black font-Ptd text-center mx-auto;
+    @apply pl-5 pr-5 h-screen bg-white text-black font-Ptd text-center mx-auto;
     @apply dark:bg-zinc-800 dark:text-white;
 }
 
@@ -25,7 +25,7 @@
 }
 
 .btn {
-    @apply hover:bg-blue-100 border-none flex-auto;
+    @apply hover:bg-blue-100 hover:text-black border-none flex-auto;
 }
 .btn.active{
     @apply bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700;
