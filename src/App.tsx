@@ -32,7 +32,11 @@ function App() {
               <ThemeProvider theme={theme}>
                 <Reset />
                 <Backgound className={`${themeMode === 'dark' ? 'dark' : ''}`}>
-                  <div className={`App ${themeMode === 'dark' ? 'dark' : ''}`}>
+                  <div
+                    className={`h-screen App  ${
+                      themeMode === 'dark' ? 'dark' : ''
+                    }`}
+                  >
                     <header className="App-header">
                       <h1 id="title" className="dark:text-white">
                         버스하냥
