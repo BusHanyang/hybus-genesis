@@ -15,7 +15,7 @@ const Notice = () => {
   const getData = async (): Promise<Array<Info>> => {
     return await axios
       .get(
-        'https://proxy.anoldstory.workers.dev/https://announcements.hybus.app/'
+        'https://proxy.anoldstory.workers.dev/https://api.hybus.app/announcements/'
       )
       .then((res) => {
         return res.data
