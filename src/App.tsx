@@ -18,17 +18,17 @@ function App() {
 
   return (
     <>
+      <Reset />
       <BrowserRouter>
         <Routes>
           <Route
             path="/"
             element={
-              <React.Fragment>
-                <Reset />
+                <div className={`${
+                  themeMode === 'dark' ? 'dark' : ''
+                }`}>
                   <div
-                    className={`h-screen App  ${
-                      themeMode === 'dark' ? 'dark' : ''
-                    }`}
+                    className="h-screen App"
                   >
                     <header className="App-header">
                       <h1 id="title" className="dark:text-white">
@@ -81,6 +81,7 @@ function App() {
                       >
                         셔틀콕 건너편
                       </button>
+                      
                       <button
                         id="yesulin"
                         className={`card btn ${
@@ -114,7 +115,7 @@ function App() {
                       </button>
                     </p>
                   </div>
-              </React.Fragment>
+                </div>
             }
           />
           <Route path="/all" element={<FullTime />}></Route>
