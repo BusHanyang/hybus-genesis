@@ -46,8 +46,8 @@ const Notice = () => {
 
   return (
     <div>
-      <div className=" relative w-full overflow-hidden">
-        <div className="w-full card p3">
+      <div className="relative w-full">
+        <div className="h-[3rem] w-full card p3">
           {data.map((item, idx) => {
             return (
               <div key={idx} className={idx === num ? '' : 'hidden'}>
