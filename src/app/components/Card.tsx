@@ -50,7 +50,7 @@ const getTimetable = async (
   location: string
 ): Promise<Array<SingleSchedule>> => {
   return await api(
-    `https://proxy.anoldstory.workers.dev/https://timetable.hybus.app/${season}/${week}/${location}`
+    `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
   ).then((res) =>
     res.map((val) => {
       val['time'] = String(moment(val.time, 'hh:mm').unix())
