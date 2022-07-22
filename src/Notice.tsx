@@ -47,7 +47,7 @@ const Notice = () => {
   return (
     <div>
       <div className=" relative w-full overflow-hidden">
-        <div className="w-full card">
+        <div className="w-full card p3">
           {data.map((item, idx) => {
             return (
               <div key={idx} className={idx === num ? '' : 'hidden'}>
@@ -79,11 +79,11 @@ const Box = (props: {
         window.open(props.url)
       }}
     >
-      <p className="float-left font-bold text-base text-chip-red">
+      <p className="float-left pl-3 font-bold text-base text-chip-red">
         {props.label}
       </p>
-      <p className="float-left px-3 font-medium text-base">{props.title}</p>
-      <p className="float-right px-3 font-normal text-base">{props.date}</p>
+      <p className="inline font-medium text-base">{props.title}</p>
+      <p className="float-right pr-3 font-normal text-base">{props.date}</p>
     </a>
   )
 }
