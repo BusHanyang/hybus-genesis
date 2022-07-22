@@ -2,22 +2,17 @@
 
 import React, { useState } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
-import styled, { ThemeProvider } from 'styled-components'
 import { Reset } from 'styled-reset'
 
 import { Card } from './app/components'
-import { dark, fontSizes, fontWeights, light } from './app/components/theme'
 import { useDarkMode } from './app/components/useDarkMode'
 import FullTime from './FullTime'
 import Notice from './Notice'
+
 function App() {
   const [table, changeFullTable] = useState<boolean>(false)
 
   const [themeMode, toggleTheme] = useDarkMode()
-  const theme =
-    themeMode === 'light'
-      ? { mode: light, fontSizes, fontWeights }
-      : { mode: dark, fontSizes, fontWeights }
 
   const [tab, setTab] = useState<string>('shuttlecoke_o')
 
@@ -28,9 +23,8 @@ function App() {
           <Route
             path="/"
             element={
-              <ThemeProvider theme={theme}>
+              <React.Fragment>
                 <Reset />
-                <Backgound className={`${themeMode === 'dark' ? 'dark' : ''}`}>
                   <div
                     className={`h-screen App  ${
                       themeMode === 'dark' ? 'dark' : ''
@@ -120,8 +114,7 @@ function App() {
                       </button>
                     </p>
                   </div>
-                </Backgound>
-              </ThemeProvider>
+              </React.Fragment>
             }
           />
           <Route path="/all" element={<FullTime />}></Route>
@@ -130,10 +123,5 @@ function App() {
     </>
   )
 }
-
-const Backgound = styled.div`
-  background-color: ${({ theme }) => theme.mode.mainBackground};
-  color: ${({ theme }) => theme.mode.primaryText};
-`
 
 export default App
