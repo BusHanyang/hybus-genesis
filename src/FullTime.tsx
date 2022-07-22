@@ -1,11 +1,20 @@
-// import './FullTime.css'
-
 import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 
 type SingleSchedule = {
   time: string
   type: string
+}
+
+interface TimeTables {
+  DH: Array<string>
+  DY: Array<string>
+  C: Array<string>
+  R: Array<string>
+  N: Array<string>
+  NA: Array<string>
+
+  [prop: string]: Array<string>
 }
 
 type Location =
@@ -27,7 +36,7 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
 
         throw new Error(response.statusText)
       }
-      
+      console.log(response.data)
       return response.data
     })
     .catch((err) => {
@@ -64,7 +73,7 @@ const FullTime = () => {
   const [week, setWeek] = useState<Week>('week')
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
 
-  let minute: any = { DH: [], DY: [], C: [], N: [], R: [], NA: [] }
+  let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   let hour = '00'
 
   const changeLocation = (value: Location) => {
@@ -102,12 +111,33 @@ const FullTime = () => {
     ['week', '평일'],
     ['weekend', '주말'],
   ]
+
+  const renderTimebox = () => {
+    if (timetable.length === 0) {
+      return <div> 조회 정보가 없습니다. </div>
+    }
+
+    const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
+    
+    timetable.forEach((schedule) => {
+      const spt = schedule.time.split(":")
+      const hour = spt[0]
+      
+      if (timetableFiltered.has(hour)) {
+        timetableFiltered.get(hour)!.push(schedule)
+      }
+      else {
+        timetableFiltered.set(hour, [schedule])
+      }
+    })
+  }
+
   return (
     <div className="App">
       <p>전체시간표</p>
       <div className=" h-full scroll-smooth	">
         <div className=" grid grid-flow-row gap-2 ">
-          <p>**버스 정류장</p>
+          <p>버스 정류장</p>
           <div className="flex gap-2 ">
             {arrLocation.map((i) => {
               return (
@@ -161,44 +191,7 @@ const FullTime = () => {
           </div>{' '}
           <div className="w-full h-px bg-slate-400 bg-center justify-center" />
         </div>
-        <div className="grid grid-flow-row gap-4">
-          {timetable.length ? ( // timetable이 존재하는 경우
-            timetable.map((i) => {
-              // console.log(i)
-
-              // const preMinute = minute
-              // const preHour = hour
-
-              if (i.time.split(':')[0] !== hour) {
-                hour = i.time.split(':')[0]
-                minute = { DH: [], DY: [], C: [], N: [], R: [], NA: [] }
-
-                console.log(hour)
-                // console.log(minute)
-
-                i.type !== ''
-                  ? minute[i.type].push(i.time.split(':')[1])
-                  : minute['N'].push(i.time.split(':')[1])
-
-                if (minute['NA'].length == 0) {
-                  return (
-                    <React.Fragment key={i.time}>
-                      <TimeBox hour={hour} time={minute} location={location} />
-                    </React.Fragment>
-                  )
-                }
-              } else {
-                // 기존의 시간대
-                i.type !== ''
-                  ? minute[i.type].push(i.time.split(':')[1])
-                  : minute['N'].push(i.time.split(':')[1])
-              }
-            })
-          ) : (
-            // timetable이 존재하자 않는 경우
-            <div> 조회 정보가 없습니다. </div>
-          )}
-        </div>
+        <div className="grid grid-flow-row gap-4"></div>
       </div>
     </div>
   )
@@ -241,12 +234,11 @@ const TimeBox = (props: { hour: string; time: any; location: Location }) => {
           0 ? (
             <Circle
               type="직행"
-              minute={[
-                props.time['DH'],
+              minute={props.time['DH'].concat(
                 props.time['DY'],
                 props.time['N'],
-                props.time['R'],
-              ]}
+                props.time['R']
+              )}
             />
           ) : null}
         </div>
