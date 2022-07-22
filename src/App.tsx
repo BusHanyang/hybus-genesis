@@ -9,7 +9,6 @@ import { Card } from './app/components'
 import { dark, fontSizes, fontWeights, light } from './app/components/theme'
 import { useDarkMode } from './app/components/useDarkMode'
 import FullTime from './FullTime'
-import FullTime2 from './FullTime2'
 import Notice from './Notice'
 function App() {
   const [table, changeFullTable] = useState<boolean>(false)
@@ -126,7 +125,6 @@ function App() {
             }
           />
           <Route path="/all" element={<FullTime />}></Route>
-          <Route path="/all2" element={<FullTime2 />}></Route>
         </Routes>
       </BrowserRouter>
     </>
