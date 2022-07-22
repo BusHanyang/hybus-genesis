@@ -27,7 +27,7 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
 
         throw new Error(response.statusText)
       }
-
+      
       return response.data
     })
     .catch((err) => {
@@ -54,8 +54,8 @@ const getTimetable = async (
   location: Location
 ): Promise<Array<SingleSchedule>> => {
   return await api(
-    `https://proxy.anoldstory.workers.dev/https://timetable.hybus.app/${season}/${week}/${location}`
-  ).then((res) => res.map((val) => val))
+    `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
+  )
 }
 
 const FullTime = () => {
@@ -111,13 +111,14 @@ const FullTime = () => {
           <div className="flex gap-2 ">
             {arrLocation.map((i) => {
               return (
-                <ComboBox
-                  key={i}
-                  type={location}
-                  value={i[0]}
-                  func={changeLocation}
-                  info={i[1]}
-                />
+                <React.Fragment key={i[0]}>
+                  <ComboBox
+                    type={location}
+                    value={i[0]}
+                    func={changeLocation}
+                    info={i[1]}
+                  />{' '}
+                </React.Fragment>
               )
             })}
           </div>
@@ -128,13 +129,14 @@ const FullTime = () => {
           <div className="flex gap-2 ">
             {arrSeason.map((i) => {
               return (
-                <ComboBox
-                  key={i}
-                  type={season}
-                  value={i[0]}
-                  func={changeSeason}
-                  info={i[1]}
-                />
+                <React.Fragment key={i[0]}>
+                  <ComboBox
+                    type={season}
+                    value={i[0]}
+                    func={changeSeason}
+                    info={i[1]}
+                  />{' '}
+                </React.Fragment>
               )
             })}
           </div>{' '}
@@ -146,13 +148,14 @@ const FullTime = () => {
           <div className="flex gap-2 ">
             {arrWeek.map((i) => {
               return (
-                <ComboBox
-                  key={i}
-                  type={week}
-                  value={i[0]}
-                  func={changeWeek}
-                  info={i[1]}
-                />
+                <React.Fragment key={i[0]}>
+                  <ComboBox
+                    type={week}
+                    value={i[0]}
+                    func={changeWeek}
+                    info={i[1]}
+                  />{' '}
+                </React.Fragment>
               )
             })}
           </div>{' '}
@@ -163,27 +166,26 @@ const FullTime = () => {
             timetable.map((i) => {
               // console.log(i)
 
-              const preMinute = minute
-              const preHour = hour
+              // const preMinute = minute
+              // const preHour = hour
 
               if (i.time.split(':')[0] !== hour) {
                 hour = i.time.split(':')[0]
                 minute = { DH: [], DY: [], C: [], N: [], R: [], NA: [] }
 
+                console.log(hour)
+                // console.log(minute)
+
                 i.type !== ''
                   ? minute[i.type].push(i.time.split(':')[1])
                   : minute['N'].push(i.time.split(':')[1])
-                if (preHour !== '00') {
-                  if (minute['NA'].length == 0) {
-                    return (
-                      // eslint-disable-next-line react/jsx-key
-                      <TimeBox
-                        hour={preHour}
-                        time={preMinute}
-                        location={location}
-                      />
-                    )
-                  }
+
+                if (minute['NA'].length == 0) {
+                  return (
+                    <React.Fragment key={i.time}>
+                      <TimeBox hour={hour} time={minute} location={location} />
+                    </React.Fragment>
+                  )
                 }
               } else {
                 // 기존의 시간대
@@ -205,47 +207,51 @@ const FullTime = () => {
 const ComboBox = (props: {
   type: string
   value: Location | Season | Week
-  func
+  func: any
   info: string
 }) => {
   return (
-    <div
-      className={`items-center p-2 border-indigo-300 border rounded-2xl ${
-        props.type === props.value ? 'bg-indigo-300' : ''
-      }`}
-      onClick={() => props.func(props.value)}
-    >
-      {props.info}
-    </div>
+    <>
+      <div
+        className={`items-center p-2 border-indigo-300 border rounded-2xl ${
+          props.type === props.value ? 'bg-indigo-300' : ''
+        }`}
+        onClick={() => props.func(props.value)}
+      >
+        {props.info}
+      </div>
+    </>
   )
 }
 
 const TimeBox = (props: { hour: string; time: any; location: Location }) => {
   return (
-    <div className=" bg-gray-200 rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
-      {/* {console.log(props.time)} */}
-      <div className="... font-bold">{props.hour}시</div>
-      <div className="col-span-5">
-        {props.time['C'].length != 0 ? (
-          <Circle type="순환" minute={props.time['C']} />
-        ) : null}{' '}
-        {props.time['DH'].length +
-          props.time['DY'].length +
-          props.time['R'].length +
-          props.time['N'].length !=
-        0 ? (
-          <Circle
-            type="직행"
-            minute={[
-              props.time['DH'],
-              props.time['DY'],
-              props.time['N'],
-              props.time['R'],
-            ]}
-          />
-        ) : null}
+    <>
+      <div className=" bg-gray-200 rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
+        {/* {console.log(props.time)} */}
+        <div className="... font-bold self-center">{props.hour}시</div>
+        <div className="col-span-5">
+          {props.time['C'].length != 0 ? (
+            <Circle type="순환" minute={props.time['C']} />
+          ) : null}{' '}
+          {props.time['DH'].length +
+            props.time['DY'].length +
+            props.time['R'].length +
+            props.time['N'].length !=
+          0 ? (
+            <Circle
+              type="직행"
+              minute={[
+                props.time['DH'],
+                props.time['DY'],
+                props.time['N'],
+                props.time['R'],
+              ]}
+            />
+          ) : null}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
