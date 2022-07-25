@@ -79,11 +79,11 @@ const Box = (props: {
         window.open(props.url)
       }}
     >
-      <p className="float-left pl-3 font-bold text-base text-chip-red">
+      <p className="float-left pl-2 font-bold text-base text-chip-red">
         {props.label}
       </p>
       <p className="inline font-medium text-base">{props.title}</p>
-      <p className="float-right pr-3 font-normal text-base">{props.date}</p>
+      <p className="float-right pr-2 font-normal text-base">{props.date}</p>
     </a>
   )
 }
