@@ -1,6 +1,6 @@
 //import './App.css'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import { Reset } from 'styled-reset'
 
@@ -14,7 +14,17 @@ function App() {
 
   const [themeMode, toggleTheme] = useDarkMode()
 
-  const [tab, setTab] = useState<string>('shuttlecoke_o')
+  const [tab, setTab] = useState<string>('')
+
+  const saveClicked = (stn: string) => {
+    window.localStorage.setItem("tab", stn)
+    setTab(stn)
+  }
+
+  useEffect(() => {
+    const aTab = window.localStorage.getItem("tab") || "shuttlecoke_o"
+    saveClicked(aTab)
+  }, [tab])
 
   return (
     <>
@@ -38,7 +48,7 @@ function App() {
                     </header>
 
                     <div id="time" className="card bus">
-                      <Card season="semester" week="week" location={tab} />
+                      <Card season="semester" week="week" location={window.localStorage.getItem("tab") || "shuttlecoke_o"} />
                     </div>
 
                     <div className="btn_group">
@@ -47,7 +57,7 @@ function App() {
                         className={`card btn ${
                           tab === 'shuttlecoke_o' ? 'active' : ''
                         }`}
-                        onClick={() => setTab('shuttlecoke_o')}
+                        onClick={() => saveClicked('shuttlecoke_o')}
                       >
                         셔틀콕
                       </button>
@@ -56,7 +66,7 @@ function App() {
                         className={`card btn ${
                           tab === 'subway' ? 'active' : ''
                         }`}
-                        onClick={() => setTab('subway')}
+                        onClick={() => saveClicked('subway')}
                       >
                         한대앞역
                       </button>
@@ -65,7 +75,7 @@ function App() {
                         className={`card btn ${
                           tab === 'residence' ? 'active' : ''
                         }`}
-                        onClick={() => setTab('residence')}
+                        onClick={() => saveClicked('residence')}
                       >
                         기숙사
                       </button>
@@ -77,7 +87,7 @@ function App() {
                         className={`card btn ${
                           tab === 'shuttlecoke_i' ? 'active' : ''
                         }`}
-                        onClick={() => setTab('shuttlecoke_i')}
+                        onClick={() => saveClicked('shuttlecoke_i')}
                       >
                         셔틀콕 건너편
                       </button>
@@ -87,7 +97,7 @@ function App() {
                         className={`card btn ${
                           tab === 'yesulin' ? 'active' : ''
                         }`}
-                        onClick={() => setTab('yesulin')}
+                        onClick={() => saveClicked('yesulin')}
                       >
                         예술인APT
                       </button>
