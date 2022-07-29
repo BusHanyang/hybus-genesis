@@ -4133,6 +4133,7 @@ __metadata:
     react-router-dom: ^6.3.0
     react-simple-pull-to-refresh: ^1.3.0
     react-spinners: ^0.13.2
+    react-tiny-fab: ^4.0.4
     recoil: ^0.7.2
     sass: ^1.53.0
     styled-components: ^5.3.5
@@ -5532,6 +5533,15 @@ __metadata:
     react: ^16.0.0 || ^17.0.0 || ^18.0.0
     react-dom: ^16.0.0 || ^17.0.0 || ^18.0.0
   checksum: dbe728671f7c2ec8ebaecaf44299e82e968dfbd2c16980170712509cf98114a950f49a045c5a7086ec595b6c953a92e639aa97de26d1110d526a5a13d1190827
+  languageName: node
+  linkType: hard
+
+"react-tiny-fab@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "react-tiny-fab@npm:4.0.4"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 964dc44e69151bb0f2ed3c6c684c9ad051a06454101b91d7f6b67860b55177e39b339e8dec449f0587842fb2419e5d582407b3304765be2843ce1e5da2076948
   languageName: node
   linkType: hard
 
