@@ -2,6 +2,7 @@ import 'react-tiny-fab/dist/styles.css';
 import './fab.css'
 
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom';
 import { Action,Fab } from 'react-tiny-fab';
 
@@ -18,6 +19,9 @@ export const Fabs = () => {
   
   const [themeMode, toggleTheme] = useDarkMode()
   const [isHovering, setIsHovering] = useState(0);
+  const { t, i18n } = useTranslation()
+  const changeToKo = () => i18n.changeLanguage('ko')
+  const changeToEn = () => i18n.changeLanguage('en')
   let changeText = '';
   let changeColor = '';
   let iconColor = '';
@@ -39,13 +43,13 @@ export const Fabs = () => {
         })
       }
       if(useDarkMode()[0] === 'dark'){
-        changeText = '라이트모드';
+        changeText = t('light');
         changeColor = '#374151';
         iconColor = 'white';
         dataTheme = "dark";
         imgIcon = LightImg;
       } else {  
-        changeText = '다크모드'
+        changeText = t('dark')
         changeColor = '#ffffff'
         iconColor = 'black';
         dataTheme = 'white';
@@ -64,17 +68,17 @@ export const Fabs = () => {
     onClick={handleDarkOnClick}
   ><div className='icons'><img src={imgIcon} style={{padding: 8}} data-theme={dataTheme}/></div></Action>
   <Action
-    text="개발자 정보"
+    text={t('developer')}
     style={{backgroundColor: changeColor, color: iconColor}}
     onClick={handleDevOnClick}
   ><div className='icons'><img src={Info} style={{padding: 8}} data-theme={dataTheme}/></div></Action>
   <Action
-    text="후원하기"
+    text={t('donate')}
     style={{backgroundColor: changeColor, color: iconColor}}
     onClick={handleEmailOnClick}
   ><div className='icons'><img src={Support} style={{padding: 8}} data-theme={dataTheme}/></div></Action>
   <Action
-    text="문의하기"
+    text={t('ask')}
     style={{backgroundColor: changeColor, color: iconColor}}
     onClick={handleEmailOnClick}
   ><div className='icons'><img src={Email} style={{padding: 8}} data-theme={dataTheme}/></div></Action>
