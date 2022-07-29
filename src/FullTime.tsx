@@ -1,6 +1,8 @@
 import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 
+import { useDarkMode } from './app/components/useDarkMode'
+
 type SingleSchedule = {
   time: string
   type: string
@@ -79,6 +81,7 @@ const FullTime = () => {
   const [season, setSeason] = useState<Season>('semester')
   const [week, setWeek] = useState<Week>('week')
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
+  const [themeMode, toggleTheme] = useDarkMode()
 
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   // let hour = '00'
@@ -174,16 +177,6 @@ const FullTime = () => {
 
     return (
       <div className="App">
-        <div className="px-5 flex self-center py-5">
-          {' '}
-          <img
-            src="../public/image/leftArrow.png"
-            alt="back page"
-            width={30}
-            height={20}
-          />
-          <span className="text-left font-bold text-xl"> 전체시간표</span>
-        </div>
         <div className=" h-full scroll-smooth	">
           <div className=" grid grid-flow-row gap-2 ">
             <span className="text-left font-bold text-lg">버스 정류장</span>
@@ -259,8 +252,18 @@ const FullTime = () => {
   }
   return (
     <>
-      {' '}
-      <div>{renderTimebox()}</div>
+      <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+        <div className="px-5 flex self-center py-5 dark:invert">
+          <img
+            src="../public/image/leftArrow.png"
+            alt="back page"
+            width={30}
+            height={20}
+          />
+          <span className="text-left font-bold text-xl"> 전체시간표</span>
+        </div>
+        <div>{renderTimebox()}</div>
+      </div>
     </>
   )
 }
