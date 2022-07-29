@@ -1,5 +1,6 @@
 import './index.css'
 import './New.css'
+import './app/components/lang/i18n'
 
 import React from 'react'
 import ReactDOM from 'react-dom'

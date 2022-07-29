@@ -1,6 +1,7 @@
 //import './App.css'
 
 import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import { Reset } from 'styled-reset'
@@ -29,7 +30,9 @@ function App() {
   }
   //끝
 
-
+  const { t, i18n } = useTranslation()
+  const changeToKo = () => i18n.changeLanguage('ko')
+  const changeToEn = () => i18n.changeLanguage('en')
 
   const [table, changeFullTable] = useState<boolean>(false)
 
@@ -56,11 +59,11 @@ function App() {
             path="/"
             element={
               <PullToRefresh
-      onRefresh={handleRefresh}
-      backgroundColor={color}
-      pullingContent=""
-      refreshingContent={<Refreshing mode={dark} />}
-    >
+                onRefresh={handleRefresh}
+                backgroundColor={color}
+                pullingContent=""
+                refreshingContent={<Refreshing mode={dark} />}
+              >
               <div className={`${
                 themeMode === 'dark' ? 'dark' : ''
               }`}>
@@ -70,7 +73,7 @@ function App() {
                   >
                     <header className="App-header">
                       <h1 id="title" className="dark:text-white">
-                        버스하냥
+                        {t('title')}
                       </h1>
                       <Notice />
                     </header>
@@ -87,7 +90,7 @@ function App() {
                         }`}
                         onClick={() => saveClicked('shuttlecoke_o')}
                       >
-                        셔틀콕
+                        {t('shuttlecoke_o_btn')}
                       </button>
                       <button
                         id="subway"
@@ -96,7 +99,7 @@ function App() {
                         }`}
                         onClick={() => saveClicked('subway')}
                       >
-                        한대앞역
+                        {t('subway_btn')}
                       </button>
                       <button
                         id="residence"
@@ -105,7 +108,7 @@ function App() {
                         }`}
                         onClick={() => saveClicked('residence')}
                       >
-                        기숙사
+                        {t('residence_btn')}
                       </button>
                     </div>
 
@@ -117,7 +120,7 @@ function App() {
                         }`}
                         onClick={() => saveClicked('shuttlecoke_i')}
                       >
-                        셔틀콕 건너편
+                        {t('shuttlecoke_i_btn')}
                       </button>
                       
                       <button
@@ -127,13 +130,13 @@ function App() {
                         }`}
                         onClick={() => saveClicked('yesulin')}
                       >
-                        예술인APT
+                        {t('yesulin_btn')}
                       </button>
                     </div>
 
                     <Link to="/all">
                       <div id="all" className="card btn w-full">
-                        전체 시간표
+                        {t('all_btn')}
                       </div>
                     </Link>
                     {/* <button

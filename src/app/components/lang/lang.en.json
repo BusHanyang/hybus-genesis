@@ -1,0 +1,28 @@
+{
+    "lang": "en",
+    "title": "BusHanyang",
+    "notice": "Notice",
+
+    "rotate": "Cycle",
+    "direct": "Direct",
+    "lefts": "Lefts",
+
+    "shuttlecoke_o": "ShuttleCoke",
+    "shuttlecoke_i": "ShuttleCoke (To Dorm)",
+    "subway": "HYU Stn. (Subway Line 4)",
+    "residence": "Dormitory (To ShuttleCoke)",
+    "yesulin": "Yesulin Apt.",
+
+    "shuttlecoke_o_btn": "ShuttleCoke",
+    "shuttlecoke_i_btn": "ShuttleCoke (To Dorm)",
+    "subway_btn": "HYU Station",
+    "residence_btn": "Dormitory",
+    "yesulin_btn": "Yesulin Apartment",
+    "all_btn": "Whole Timetable",
+
+    "ask": "Ask",
+    "donate": "Donate",
+    "developer": "Developer",
+    "dark": "Dark",
+    "light": "Light"
+}
