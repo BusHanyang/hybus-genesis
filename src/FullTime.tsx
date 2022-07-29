@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 import { useDarkMode } from './app/components/useDarkMode'
 
@@ -82,6 +83,7 @@ const FullTime = () => {
   const [week, setWeek] = useState<Week>('week')
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
   const [themeMode, toggleTheme] = useDarkMode()
+  const navigate = useNavigate()
 
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   // let hour = '00'
@@ -277,7 +279,7 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`items-center p-2 border-[#DBE2F9] dark:border-[#3F4759] border rounded-2xl ${
+        className={`font-medium items-center p-2 border-[#DBE2F9] dark:border-[#3F4759] border rounded-2xl ${
           props.type === props.value ? 'bg-[#DBE2F9] dark:bg-[#3F4759]' : ''
         }`}
         onClick={() => props.func(props.value)}
@@ -293,7 +295,7 @@ const TimeBox = (props: FilteredTimeTables) => {
     <>
       <div className=" bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
         <div className="font-bold self-center">{props.time}시</div>
-        <div className="inline-grid grid-flow-row col-span-5 ">
+        <div className="font-medium  inline-grid grid-flow-row col-span-5 ">
           <div
             className={`inline-grid grid-cols-5 ${
               props.circle.length === 0 ? 'hidden' : 'block'
