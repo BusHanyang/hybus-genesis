@@ -5,11 +5,12 @@ import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { Action,Fab } from 'react-tiny-fab';
 
-import DarkImg from '../../../../public/image/dark_mode_black_48dp.svg'
-import Email from '../../../../public/image/email_black_48dp.svg'
-import Info from '../../../../public/image/infoblack.svg'
-import LightImg from '../../../../public/image/light_mode_black_48dp.svg'
-import Support from '../../../../public/image/local_cafe_black_48dp.svg'
+import DarkImg from '/image/dark_mode_black_48dp.svg'
+import Email from '/image/email_black_48dp.svg'
+import Info from '/image/infoblack.svg'
+import LightImg from '/image/light_mode_black_48dp.svg'
+import Support from '/image/local_cafe_black_48dp.svg'
+
 import { useDarkMode } from '../useDarkMode';
 export const Fabs = () => {
 
@@ -51,12 +52,11 @@ export const Fabs = () => {
         imgIcon = DarkImg;
       }
   return (
-
       <Fab
-      icon={<span><div style={{fontSize: "20px", textAlign: "center"}}>+</div></span>}
-  mainButtonStyles={{backgroundColor:'#7099C1'}}
-  style={{bottom:100, right:12}}
-  alwaysShowTitle={true}
+      icon={<span>+</span>}
+      mainButtonStyles={{backgroundColor:'#7099C1', fontSize: "40px"}}
+      style={{bottom:"1.25rem", right:"1.25rem", margin: "0px", padding: "0px"}}
+      alwaysShowTitle={true}
   >
   <Action
     text= {changeText}

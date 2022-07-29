@@ -58,16 +58,14 @@ function App() {
           <Route
             path="/"
             element={
-              <PullToRefresh
+              <><Fabs /><PullToRefresh
                 onRefresh={handleRefresh}
                 backgroundColor={color}
                 pullingContent=""
                 refreshingContent={<Refreshing mode={dark} />}
               >
-              <div className={`${
-                themeMode === 'dark' ? 'dark' : ''
-              }`}>
-                  <Fabs />
+                <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+
                   <div
                     className="h-screen App"
                   >
@@ -85,27 +83,21 @@ function App() {
                     <div className="btn_group">
                       <button
                         id="shuttlecoke_o"
-                        className={`card btn ${
-                          tab === 'shuttlecoke_o' ? 'active' : ''
-                        }`}
+                        className={`card btn ${tab === 'shuttlecoke_o' ? 'active' : ''}`}
                         onClick={() => saveClicked('shuttlecoke_o')}
                       >
                         {t('shuttlecoke_o_btn')}
                       </button>
                       <button
                         id="subway"
-                        className={`card btn ${
-                          tab === 'subway' ? 'active' : ''
-                        }`}
+                        className={`card btn ${tab === 'subway' ? 'active' : ''}`}
                         onClick={() => saveClicked('subway')}
                       >
                         {t('subway_btn')}
                       </button>
                       <button
                         id="residence"
-                        className={`card btn ${
-                          tab === 'residence' ? 'active' : ''
-                        }`}
+                        className={`card btn ${tab === 'residence' ? 'active' : ''}`}
                         onClick={() => saveClicked('residence')}
                       >
                         {t('residence_btn')}
@@ -115,19 +107,15 @@ function App() {
                     <div className="btn_group">
                       <button
                         id="shuttlecoke_i"
-                        className={`card btn ${
-                          tab === 'shuttlecoke_i' ? 'active' : ''
-                        }`}
+                        className={`card btn ${tab === 'shuttlecoke_i' ? 'active' : ''}`}
                         onClick={() => saveClicked('shuttlecoke_i')}
                       >
                         {t('shuttlecoke_i_btn')}
                       </button>
-                      
+
                       <button
                         id="yesulin"
-                        className={`card btn ${
-                          tab === 'yesulin' ? 'active' : ''
-                        }`}
+                        className={`card btn ${tab === 'yesulin' ? 'active' : ''}`}
                         onClick={() => saveClicked('yesulin')}
                       >
                         {t('yesulin_btn')}
@@ -140,24 +128,24 @@ function App() {
                       </div>
                     </Link>
                     {/* <button
-                    id="all"
-                    className="card btn w-full"
-                    onClick={() => (location.href = '#all')}
-                  >
-                    전체 시간표
-                  </button> */}
+    id="all"
+    className="card btn w-full"
+    onClick={() => (location.href = '#all')}
+  >
+    전체 시간표
+  </button> */}
 
                     <p id="copyright" className="dark:text-white">
                       Copyright © 2020-2022 BusHanyang. All rights reserved
                     </p>
                     {/* <p>
-                      <button type="button" onClick={() => toggleTheme()}>
-                        {themeMode === 'dark' ? '라이트모드' : '다크모드'}
-                      </button>
-                    </p> */}
+      <button type="button" onClick={() => toggleTheme()}>
+        {themeMode === 'dark' ? '라이트모드' : '다크모드'}
+      </button>
+    </p> */}
                   </div>
                 </div>
-                </PullToRefresh>
+              </PullToRefresh></>
             }
           />
           <Route path="/all" element={<FullTime />}></Route>
