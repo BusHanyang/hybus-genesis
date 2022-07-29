@@ -261,6 +261,10 @@ const FullTime = () => {
             alt="back page"
             width={30}
             height={20}
+            className="cursor-pointer"
+            onClick={() => {
+              navigate(-1)
+            }}
           />
           <span className="text-left font-bold text-xl"> 전체시간표</span>
         </div>
