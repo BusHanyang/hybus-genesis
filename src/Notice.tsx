@@ -45,11 +45,11 @@ const Notice = () => {
   }, [data.length, num])
 
   return (
-    <div>
-      <div className="relative w-full">
-        <div className="h-[3rem] w-full card p3">
-          {data.map((item, idx) => {
-            return (
+    <div className="relative w-full">
+      <div className="h-[3rem] w-full card p3">
+        {data.map((item, idx) => {
+          return (
+            <React.Fragment key={idx}>
               <div key={idx} className={idx === num ? '' : 'hidden'}>
                 <Box
                   label={item.label}
@@ -58,10 +58,10 @@ const Notice = () => {
                   url={item.url}
                 />
               </div>
-            )
-          })}
-        </div>
-      </div>{' '}
+            </React.Fragment>
+          )
+        })}
+      </div>
     </div>
   )
 }
