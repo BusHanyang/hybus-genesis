@@ -1,2 +1,2 @@
 export * from './Card'
-export * from './ptr/Ptr'
+export * from './fab/fab'

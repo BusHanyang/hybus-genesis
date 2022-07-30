@@ -46,7 +46,7 @@ const Notice = () => {
 
   return (
     <div className="relative w-full">
-      <div className="h-[3rem] w-full card ">
+      <div className="h-[3rem] w-full card p3">
         {data.map((item, idx) => {
           return (
             <React.Fragment key={idx}>
