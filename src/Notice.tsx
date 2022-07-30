@@ -45,21 +45,23 @@ const Notice = () => {
   }, [data.length, num])
 
   return (
-    <div className="w-full card ">
-      {data.map((item, idx) => {
-        return (
-          <React.Fragment key={idx}>
-            <div key={idx} className={idx === num ? '' : 'hidden'}>
-              <Box
-                label={item.label}
-                title={item.title}
-                date={item.date}
-                url={item.url}
-              />
-            </div>
-          </React.Fragment>
-        )
-      })}
+    <div className="relative w-full">
+      <div className="h-[3rem] w-full card ">
+        {data.map((item, idx) => {
+          return (
+            <React.Fragment key={idx}>
+              <div key={idx} className={idx === num ? '' : 'hidden'}>
+                <Box
+                  label={item.label}
+                  title={item.title}
+                  date={item.date}
+                  url={item.url}
+                />
+              </div>
+            </React.Fragment>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -71,24 +73,18 @@ const Box = (props: {
   date: string
 }) => {
   return (
-    <div className="cursor-pointer bg-slate-50">
-      <a
-        className="animate-carousel "
-        onClick={() => {
-          window.open(props.url)
-        }}
-      >
-        <div className="float-left font-bold text-base text-chip-red">
-          {props.label}
-        </div>
-        <div className="float-left px-3 font-medium text-base">
-          {props.title}
-        </div>
-        <div className="float-right px-3 font-normal text-base">
-          {props.date}
-        </div>
-      </a>
-    </div>
+    <a
+      className="animate-carousel cursor-pointer "
+      onClick={() => {
+        window.open(props.url)
+      }}
+    >
+      <p className="float-left pl-2 font-bold text-base text-chip-red">
+        {props.label}
+      </p>
+      <p className="inline font-medium text-base">{props.title}</p>
+      <p className="float-right pr-2 font-normal text-base">{props.date}</p>
+    </a>
   )
 }
 
