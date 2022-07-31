@@ -65,7 +65,6 @@ const getSettings = async (): Promise<null | Settings> => {
 
 const getSeason = async (): Promise<string> => {
   dayjs.extend(customParse)
-
   const today = dayjs()
 
   return await getSettings().then((setting) => {
@@ -74,26 +73,13 @@ const getSeason = async (): Promise<string> => {
       return ''
     } else {
       console.log(setting)
-      const semesterStart = dayjs(setting.semester.start_date, 'YYYY-MM-DD')
-      const semesterEnd = dayjs(setting.semester.end_date, 'YYYY-MM-DD')
-
-      const vacationSessionStart = dayjs(
-        setting.vacation_session.start_date,
-        'YYYY-MM-DD'
-      )
-      const vacationSessionEnd = dayjs(
-        setting.vacation_session.end_date,
-        'YYYY-MM-DD'
-      )
-
-      const vacationStart = dayjs(setting.vacation.start_date, 'YYYY-MM-DD')
-      const vacationEnd = dayjs(setting.vacation.end_date, 'YYYY-MM-DD')
+      const [semesterStart, semesterEnd] = [dayjs(setting.semester.start_date, 'YYYY-MM-DD'), dayjs(setting.semester.end_date, 'YYYY-MM-DD')]
+      const [vacationSessionStart, vacationSessionEnd] = [dayjs(setting.vacation_session.start_date, 'YYYY-MM-DD'), dayjs(setting.vacation_session.end_date, 'YYYY-MM-DD')]
+      const [vacationStart, vacationEnd] = [dayjs(setting.vacation.start_date, 'YYYY-MM-DD'), dayjs(setting.vacation.end_date, 'YYYY-MM-DD')]
 
       const todayUnix = today.unix()
 
-      const convertedHoliday = setting.holiday.map((s) =>
-        dayjs(s, 'YYYY-MM-DD')
-      )
+      const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
       const convertedHaltday = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
 
       convertedHoliday.forEach((date) => {
