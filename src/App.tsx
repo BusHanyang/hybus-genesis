@@ -63,87 +63,106 @@ const getSettings = async (): Promise<null | Settings> => {
     })
 }
 
-const getSeason = async (): Promise<string> => {
+const isWeekend = (): boolean => {
+  return dayjs().day() == 0 || dayjs().day() == 6
+}
+
+const getSeason = (setting: Settings | null): [string, string] => {
   dayjs.extend(customParse)
   const today = dayjs()
 
-  return await getSettings().then((setting) => {
-    if (setting === null) {
-      // Error fetching settings
-      return ''
-    } else {
-      console.log(setting)
-      const [semesterStart, semesterEnd] = [dayjs(setting.semester.start_date, 'YYYY-MM-DD'), dayjs(setting.semester.end_date, 'YYYY-MM-DD')]
-      const [vacationSessionStart, vacationSessionEnd] = [dayjs(setting.vacation_session.start_date, 'YYYY-MM-DD'), dayjs(setting.vacation_session.end_date, 'YYYY-MM-DD')]
-      const [vacationStart, vacationEnd] = [dayjs(setting.vacation.start_date, 'YYYY-MM-DD'), dayjs(setting.vacation.end_date, 'YYYY-MM-DD')]
+  if (setting === null) {
+    // Error fetching settings
+    return ['', '']
+  } else {
+    console.log(setting)
+    const [semesterStart, semesterEnd] = [
+      dayjs(setting.semester.start_date, 'YYYY-MM-DD'),
+      dayjs(setting.semester.end_date, 'YYYY-MM-DD'),
+    ]
+    const [vacationSessionStart, vacationSessionEnd] = [
+      dayjs(setting.vacation_session.start_date, 'YYYY-MM-DD'),
+      dayjs(setting.vacation_session.end_date, 'YYYY-MM-DD'),
+    ]
+    const [vacationStart, vacationEnd] = [
+      dayjs(setting.vacation.start_date, 'YYYY-MM-DD'),
+      dayjs(setting.vacation.end_date, 'YYYY-MM-DD'),
+    ]
 
-      const todayUnix = today.unix()
+    const todayUnix = today.unix()
 
-      const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
-      const convertedHaltDay = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
+    const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
+    const convertedHaltDay = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
 
-      convertedHoliday.forEach((date) => {
-        if (
-          today.year() == date.year() &&
-          today.month() == date.month() &&
-          today.date() == date.date()
-        ) {
-          return 'holiday'
-        }
-      })
+    let isHoliday = false
 
-      convertedHaltDay.forEach((date) => {
-        if (
-          today.year() == date.year() &&
-          today.month() == date.month() &&
-          today.date() == date.date()
-        ) {
-          return 'halt'
-        }
-      })
-
-      const dates = [
-        semesterStart,
-        semesterEnd,
-        vacationSessionStart,
-        vacationSessionEnd,
-        vacationStart,
-        vacationEnd,
-      ]
-
-      dates.forEach((date) => {
-        date.hour(23)
-        date.minute(59)
-        date.second(59)
-      })
-
-      console.log(`semesterstart: ${semesterStart}`)
-
-      if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
-        // Semester
-        return 'semester'
-      } else if (
-        vacationSessionStart.unix() < todayUnix &&
-        todayUnix < vacationSessionEnd.unix()
+    convertedHoliday.forEach((date) => {
+      if (
+        today.year() == date.year() &&
+        today.month() == date.month() &&
+        today.date() == date.date()
       ) {
-        // Vacation Session
-        return 'vacation_session'
-      } else if (
-        vacationStart.unix() < todayUnix &&
-        todayUnix < vacationEnd.unix()
-      ) {
-        // Vacation
-        return 'vacation'
-      } else {
-        // Error!
-        return 'error'
+        isHoliday = true
       }
-    }
-  })
-}
+    })
 
-const isWeekend = (): boolean => {
-  return dayjs().day() == 0 || dayjs().day() == 6
+    convertedHaltDay.forEach((date) => {
+      if (
+        today.year() == date.year() &&
+        today.month() == date.month() &&
+        today.date() == date.date()
+      ) {
+        return ['halt', '']
+      }
+    })
+
+    const dates = [
+      semesterStart,
+      semesterEnd,
+      vacationSessionStart,
+      vacationSessionEnd,
+      vacationStart,
+      vacationEnd,
+    ]
+
+    dates.forEach((date) => {
+      date.hour(23)
+      date.minute(59)
+      date.second(59)
+    })
+
+    if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
+      // Semester
+      if (isWeekend() || isHoliday) {
+        return ['semester', 'weekend']
+      } else {
+        return ['semester', 'week']
+      }
+    } else if (
+      vacationSessionStart.unix() < todayUnix &&
+      todayUnix < vacationSessionEnd.unix()
+    ) {
+      // Vacation Session
+      if (isWeekend() || isHoliday) {
+        return ['vacation_session', 'weekend']
+      } else {
+        return ['vacation_session', 'week']
+      }
+    } else if (
+      vacationStart.unix() < todayUnix &&
+      todayUnix < vacationEnd.unix()
+    ) {
+      // Vacation
+      if (isWeekend() || isHoliday) {
+        return ['vacation', 'weekend']
+      } else {
+        return ['vacation', 'week']
+      }
+    } else {
+      // Error!
+      return ['error', '']
+    }
+  }
 }
 
 function App() {
@@ -173,10 +192,34 @@ function App() {
 
   const [tab, setTab] = useState<string>('')
 
+  const [setting, setSetting] = useState<Settings | null>(null)
+
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
     setTab(stn)
   }
+
+  const renderCard = () => {
+    const [season, week] = getSeason(setting)
+    console.log(`Season: ${season}, Week: ${week}`)
+    return (
+      <>
+        <Card
+          season={season}
+          week={week}
+          location={window.localStorage.getItem('tab') || 'shuttlecoke_o'}
+        />
+      </>
+    )
+  }
+
+  useEffect(() => {
+    if (setting === null) {
+      getSettings().then((s) => {
+        setSetting(s)
+      })
+    }
+  }, [setting])
 
   useEffect(() => {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
@@ -209,16 +252,8 @@ function App() {
                       </header>
 
                       <div id="time" className="card bus">
-                        <Card
-                          season="semester"
-                          week="week"
-                          location={
-                            window.localStorage.getItem('tab') ||
-                            'shuttlecoke_o'
-                          }
-                        />
+                        {renderCard()}
                       </div>
-
                       <div className="btn_group">
                         <button
                           id="shuttlecoke_o"
