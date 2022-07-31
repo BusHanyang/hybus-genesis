@@ -1,5 +1,8 @@
 //import './App.css'
 
+import axios from 'axios'
+import * as dayjs from 'dayjs'
+import * as customParse from 'dayjs/plugin/customParseFormat'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
@@ -14,6 +17,144 @@ import { useDarkMode } from './app/components/useDarkMode'
 import FullTime from './FullTime'
 import Notice from './Notice'
 
+type Period = {
+  start_date: string
+  end_date: string
+}
+
+type Settings = {
+  semester: Period
+  vacation_session: Period
+  vacation: Period
+  holiday: Array<string>
+  halt: Array<string>
+}
+
+const getSettings = async (): Promise<null | Settings> => {
+  return await axios
+    .get('https://proxy.anoldstory.workers.dev/https://api.hybus.app/settings/')
+    .then((response) => {
+      if (response.status !== 200) {
+        console.log(`Error code: ${response.statusText}`)
+        return null
+      }
+
+      return response.data
+    })
+    .catch((err) => {
+      if (err.response) {
+        // 2XX Errors
+        console.log('Error receiving data', err.data)
+      } else if (err.request) {
+        // No Response
+        console.log('No Response Error', err.request)
+      } else {
+        // Somehow error occurred
+        console.log('Error', err.message)
+      }
+
+      return null
+    })
+    .then((result) => {
+      if (result === null) {
+        return null
+      }
+      return result as Settings
+    })
+}
+
+const getSeason = async (): Promise<string> => {
+  dayjs.extend(customParse)
+
+  const today = dayjs()
+
+  return await getSettings().then((setting) => {
+    if (setting === null) {
+      // Error fetching settings
+      return ''
+    } else {
+      console.log(setting)
+      const semesterStart = dayjs(setting.semester.start_date, 'YYYY-MM-DD')
+      const semesterEnd = dayjs(setting.semester.end_date, 'YYYY-MM-DD')
+
+      const vacationSessionStart = dayjs(
+        setting.vacation_session.start_date,
+        'YYYY-MM-DD'
+      )
+      const vacationSessionEnd = dayjs(
+        setting.vacation_session.end_date,
+        'YYYY-MM-DD'
+      )
+
+      const vacationStart = dayjs(setting.vacation.start_date, 'YYYY-MM-DD')
+      const vacationEnd = dayjs(setting.vacation.end_date, 'YYYY-MM-DD')
+
+      const todayUnix = today.unix()
+
+      const convertedHoliday = setting.holiday.map((s) =>
+        dayjs(s, 'YYYY-MM-DD')
+      )
+      const convertedHaltday = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
+
+      convertedHoliday.forEach((date) => {
+        if (
+          today.year() == date.year() &&
+          today.month() == date.month() &&
+          today.date() == date.date()
+        ) {
+          return 'holiday'
+        }
+      })
+
+      convertedHaltday.forEach((date) => {
+        if (
+          today.year() == date.year() &&
+          today.month() == date.month() &&
+          today.date() == date.date()
+        ) {
+          return 'halt'
+        }
+      })
+
+      const dates = [
+        semesterStart,
+        semesterEnd,
+        vacationSessionStart,
+        vacationSessionEnd,
+        vacationStart,
+        vacationEnd,
+      ]
+
+      dates.forEach((date) => {
+        date.hour(23)
+        date.minute(59)
+        date.second(59)
+      })
+
+      console.log(`semesterstart: ${semesterStart}`)
+
+      if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
+        // Semester
+        return 'semester'
+      } else if (
+        vacationSessionStart.unix() < todayUnix &&
+        todayUnix < vacationSessionEnd.unix()
+      ) {
+        // Vacation Session
+        return 'vacation_session'
+      } else if (
+        vacationStart.unix() < todayUnix &&
+        todayUnix < vacationEnd.unix()
+      ) {
+        // Vacation
+        return 'vacation'
+      } else {
+        // Error!
+        return 'error'
+      }
+    }
+  })
+}
 function App() {
   //ptr내용 이전
   const colorDarkMod = '#27272a' //bg-zinc-800
