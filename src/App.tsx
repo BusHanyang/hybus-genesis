@@ -19,7 +19,7 @@ function App() {
   const colorDarkMod = '#27272a' //bg-zinc-800
   let dark = false
   let color = 'white'
-  if(useDarkMode()[0] === 'dark'){
+  if (useDarkMode()[0] === 'dark') {
     dark = true
     color = colorDarkMod
   }
@@ -41,12 +41,12 @@ function App() {
   const [tab, setTab] = useState<string>('')
 
   const saveClicked = (stn: string) => {
-    window.localStorage.setItem("tab", stn)
+    window.localStorage.setItem('tab', stn)
     setTab(stn)
   }
 
   useEffect(() => {
-    const aTab = window.localStorage.getItem("tab") || "shuttlecoke_o"
+    const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
   }, [tab])
 
@@ -58,76 +58,92 @@ function App() {
           <Route
             path="/"
             element={
-              <><Fabs /><PullToRefresh
-                onRefresh={handleRefresh}
-                backgroundColor={color}
-                pullingContent=""
-                refreshingContent={<Refreshing mode={dark} />}
-              >
-                <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+              <>
+                <Fabs />
+                <PullToRefresh
+                  onRefresh={handleRefresh}
+                  backgroundColor={color}
+                  pullingContent=""
+                  refreshingContent={<Refreshing mode={dark} />}
+                >
+                  <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+                    <div className="h-screen App">
+                      <header className="App-header">
+                        <h1 id="title" className="dark:text-white">
+                          {t('title')}
+                        </h1>
+                        <Notice />
+                      </header>
 
-                  <div
-                    className="h-screen App"
-                  >
-                    <header className="App-header">
-                      <h1 id="title" className="dark:text-white">
-                        {t('title')}
-                      </h1>
-                      <Notice />
-                    </header>
-
-                    <div id="time" className="card bus">
-                      <Card season="semester" week="week" location={window.localStorage.getItem("tab") || "shuttlecoke_o"} />
-                    </div>
-
-                    <div className="btn_group">
-                      <button
-                        id="shuttlecoke_o"
-                        className={`card btn ${tab === 'shuttlecoke_o' ? 'active' : ''}`}
-                        onClick={() => saveClicked('shuttlecoke_o')}
-                      >
-                        {t('shuttlecoke_o_btn')}
-                      </button>
-                      <button
-                        id="subway"
-                        className={`card btn ${tab === 'subway' ? 'active' : ''}`}
-                        onClick={() => saveClicked('subway')}
-                      >
-                        {t('subway_btn')}
-                      </button>
-                      <button
-                        id="residence"
-                        className={`card btn ${tab === 'residence' ? 'active' : ''}`}
-                        onClick={() => saveClicked('residence')}
-                      >
-                        {t('residence_btn')}
-                      </button>
-                    </div>
-
-                    <div className="btn_group">
-                      <button
-                        id="shuttlecoke_i"
-                        className={`card btn ${tab === 'shuttlecoke_i' ? 'active' : ''}`}
-                        onClick={() => saveClicked('shuttlecoke_i')}
-                      >
-                        {t('shuttlecoke_i_btn')}
-                      </button>
-
-                      <button
-                        id="yesulin"
-                        className={`card btn ${tab === 'yesulin' ? 'active' : ''}`}
-                        onClick={() => saveClicked('yesulin')}
-                      >
-                        {t('yesulin_btn')}
-                      </button>
-                    </div>
-
-                    <Link to="/all">
-                      <div id="all" className="card btn w-full">
-                        {t('all_btn')}
+                      <div id="time" className="card bus">
+                        <Card
+                          season="semester"
+                          week="week"
+                          location={
+                            window.localStorage.getItem('tab') ||
+                            'shuttlecoke_o'
+                          }
+                        />
                       </div>
-                    </Link>
-                    {/* <button
+
+                      <div className="btn_group">
+                        <button
+                          id="shuttlecoke_o"
+                          className={`card btn ${
+                            tab === 'shuttlecoke_o' ? 'active' : ''
+                          }`}
+                          onClick={() => saveClicked('shuttlecoke_o')}
+                        >
+                          {t('shuttlecoke_o_btn')}
+                        </button>
+                        <button
+                          id="subway"
+                          className={`card btn ${
+                            tab === 'subway' ? 'active' : ''
+                          }`}
+                          onClick={() => saveClicked('subway')}
+                        >
+                          {t('subway_btn')}
+                        </button>
+                        <button
+                          id="residence"
+                          className={`card btn ${
+                            tab === 'residence' ? 'active' : ''
+                          }`}
+                          onClick={() => saveClicked('residence')}
+                        >
+                          {t('residence_btn')}
+                        </button>
+                      </div>
+
+                      <div className="btn_group">
+                        <button
+                          id="shuttlecoke_i"
+                          className={`card btn ${
+                            tab === 'shuttlecoke_i' ? 'active' : ''
+                          }`}
+                          onClick={() => saveClicked('shuttlecoke_i')}
+                        >
+                          {t('shuttlecoke_i_btn')}
+                        </button>
+
+                        <button
+                          id="yesulin"
+                          className={`card btn ${
+                            tab === 'yesulin' ? 'active' : ''
+                          }`}
+                          onClick={() => saveClicked('yesulin')}
+                        >
+                          {t('yesulin_btn')}
+                        </button>
+                      </div>
+
+                      <Link to="/all">
+                        <div id="all" className="card btn w-full">
+                          {t('all_btn')}
+                        </div>
+                      </Link>
+                      {/* <button
     id="all"
     className="card btn w-full"
     onClick={() => (location.href = '#all')}
@@ -135,17 +151,18 @@ function App() {
     전체 시간표
   </button> */}
 
-                    <p id="copyright" className="dark:text-white">
-                      Copyright © 2020-2022 BusHanyang. All rights reserved
-                    </p>
-                    {/* <p>
+                      <p id="copyright" className="dark:text-white">
+                        Copyright © 2020-2022 BusHanyang. All rights reserved
+                      </p>
+                      {/* <p>
       <button type="button" onClick={() => toggleTheme()}>
         {themeMode === 'dark' ? '라이트모드' : '다크모드'}
       </button>
     </p> */}
+                    </div>
                   </div>
-                </div>
-              </PullToRefresh></>
+                </PullToRefresh>
+              </>
             }
           />
           <Route path="/all" element={<FullTime />}></Route>
