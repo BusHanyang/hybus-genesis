@@ -80,7 +80,7 @@ const getSeason = async (): Promise<string> => {
       const todayUnix = today.unix()
 
       const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
-      const convertedHaltday = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
+      const convertedHaltDay = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
 
       convertedHoliday.forEach((date) => {
         if (
@@ -92,7 +92,7 @@ const getSeason = async (): Promise<string> => {
         }
       })
 
-      convertedHaltday.forEach((date) => {
+      convertedHaltDay.forEach((date) => {
         if (
           today.year() == date.year() &&
           today.month() == date.month() &&
