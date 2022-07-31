@@ -155,6 +155,11 @@ const getSeason = async (): Promise<string> => {
     }
   })
 }
+
+const isWeekend = (): boolean => {
+  return dayjs().day() == 0 || dayjs().day() == 6
+}
+
 function App() {
   //ptr내용 이전
   const colorDarkMod = '#27272a' //bg-zinc-800
