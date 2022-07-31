@@ -23,8 +23,9 @@ function App() {
     dark = true
     color = colorDarkMod
   }
+
   const handleRefresh = (): Promise<React.FC> => {
-    return new Promise((res) => {
+    return new Promise(() => {
       location.reload()
     })
   }
