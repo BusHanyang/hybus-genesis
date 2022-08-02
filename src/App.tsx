@@ -182,9 +182,7 @@ function App() {
   }
   //끝
 
-  const { t, i18n } = useTranslation()
-  const changeToKo = () => i18n.changeLanguage('ko')
-  const changeToEn = () => i18n.changeLanguage('en')
+  const { t } = useTranslation()
 
   const [table, changeFullTable] = useState<boolean>(false)
 
@@ -319,7 +317,7 @@ function App() {
     전체 시간표
   </button> */}
 
-                      <p id="copyright" className="dark:text-white">
+                      <p id="copyright" className="dark:text-white pt-3">
                         Copyright © 2020-2022 BusHanyang. All rights reserved
                       </p>
                       {/* <p>

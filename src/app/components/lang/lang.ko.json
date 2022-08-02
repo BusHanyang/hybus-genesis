@@ -1,17 +1,28 @@
 {
     "lang": "ko",
     "title": "버스하냥",
-    "notice": "공지",
 
-    "rotate": "순환",
+    "notice": "공지",
+    "news": "소식",
+
+    "cycle": "순환",
     "direct": "직행",
-    "lefts": "후 출발",
+    "NA": "미운행",
+    "left": "후 출발",
 
     "shuttlecoke_o": "셔틀콕",
     "shuttlecoke_i": "셔틀콕 건너편 (기숙사행)",
     "subway": "한대앞역 (4호선)",
     "residence": "기숙사 (셔틀콕행)",
     "yesulin": "예술인 아파트",
+    "else": "알수없음",
+
+    "dest_subway": "한대앞역",
+    "dest_yesul": "예술인 아파트",
+    "dest_shuttle_o": "셔틀콕",
+    "dest_shuttle_i": "셔틀콕 건너편",
+    "dest_dorm": "기숙사",
+    "no_dest": "행선지 없음",
 
     "shuttlecoke_o_btn": "셔틀콕",
     "shuttlecoke_i_btn": "셔틀콕 건너편",

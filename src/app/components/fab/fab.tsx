@@ -19,9 +19,8 @@ export const Fabs = () => {
   
   const [themeMode, toggleTheme] = useDarkMode()
   const [isHovering, setIsHovering] = useState(0);
-  const { t, i18n } = useTranslation()
-  const changeToKo = () => i18n.changeLanguage('ko')
-  const changeToEn = () => i18n.changeLanguage('en')
+  const { t } = useTranslation()
+
   let changeText = '';
   let changeColor = '';
   let iconColor = '';
@@ -59,7 +58,7 @@ export const Fabs = () => {
       <Fab
       icon={<span>+</span>}
       mainButtonStyles={{backgroundColor:'#7099C1', fontSize: "40px"}}
-      style={{bottom:"1.25rem", right:"1.25rem", margin: "0px", padding: "0px"}}
+      style={{bottom:"1.25rem", right:"1.25rem", margin: "0px", padding: "0px", fontFamily: "Pretendard Variable"}}
       alwaysShowTitle={true}
   >
   <Action

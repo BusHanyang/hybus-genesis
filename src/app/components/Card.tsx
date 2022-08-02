@@ -1,6 +1,8 @@
 import axios from 'axios'
+import { t } from 'i18next'
 import moment from 'moment'
 import React, { CSSProperties, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
 
 type SingleSchedule = {
@@ -98,41 +100,41 @@ const secondToTimeFormat = (n: number): string => {
 
 const busTypeToText = (busType: string): string => {
   if (busType == 'C') {
-    return '순환'
+    return t("cycle")
   } else if (busType == 'NA') {
-    return '미운행'
+    return t("NA")
   } else {
-    return '직행'
+    return t("direct")
   }
 }
 
 const getBusDestination = (busType: string, currentLoc: string): string => {
   if (currentLoc == 'shuttlecoke_o') {
     if (busType == 'C' || busType == 'DH') {
-      return '한대앞역'
+      return t("dest_subway")
     } else if (busType == 'DY') {
-      return '예술인 아파트'
+      return t("dest_yesul")
     } else {
       return '???'
     }
   } else if (currentLoc == 'subway') {
     if (busType == 'C') {
-      return '예술인 아파트'
+      return t("dest_yesul")
     } else {
-      return '셔틀콕 건너편'
+      return t("dest_shuttle_i")
     }
   } else if (currentLoc == 'yesulin') {
-    return '셔틀콕 건너편'
+    return t("dest_shuttle_i")
   } else if (currentLoc == 'shuttlecoke_i') {
     if (busType == 'NA') {
-      return '행선지 없음'
+      return t("no_dest")
     } else if (busType == 'R') {
-      return '기숙사'
+      return t("dest_dorm")
     } else {
       return '???'
     }
   } else if (currentLoc == 'residence') {
-    return '셔틀콕'
+    return t("dest_shuttle_o")
   } else {
     return '???'
   }
@@ -140,17 +142,17 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
 
 const titleText = (location: string): string => {
   if (location == 'shuttlecoke_o') {
-    return '셔틀콕'
+    return t("shuttlecoke_o")
   } else if (location == 'subway') {
-    return '한대앞역 (4호선)'
+    return t("subway") 
   } else if (location == 'yesulin') {
-    return '예술인 아파트'
+    return t("yesulin")
   } else if (location == 'shuttlecoke_i') {
-    return '셔틀콕 건너편 (기숙사행)'
+    return t("shuttlecoke_i")
   } else if (location == 'residence') {
-    return '기숙사 (셔틀콕행)'
+    return t("residence")
   } else {
-    return '알수없음'
+    return t("else")
   }
 }
 
@@ -206,6 +208,9 @@ export const Card = (props: ScheduleInfo) => {
   }
 
   const renderTimetable = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { t } = useTranslation()
+    
     if (isLoaded) {
       if (
         timetable.length === 0 ||
@@ -216,7 +221,7 @@ export const Card = (props: ScheduleInfo) => {
           <>
             <div className="h-full table">
               <span className="table-cell align-middle">
-                오늘 운행하는 셔틀이 존재하지 않습니다.
+                {t("no_today")}
               </span>
             </div>
           </>
@@ -231,7 +236,7 @@ export const Card = (props: ScheduleInfo) => {
           <>
             <div className="h-full table">
               <span className="table-cell align-middle">
-                오늘 셔틀 운행이 종료되었습니다.
+                {t("end_today")}
               </span>
             </div>
           </>
@@ -249,12 +254,13 @@ export const Card = (props: ScheduleInfo) => {
                   {secondToTimeFormat(
                     Math.floor(Number(val.time) - Number(currentTime) / 1000)
                   )}{' '}
-                  후 출발
+                  {t("left")}
                 </span>
                 <div className="text-center inline-block w-8 mx-2">▶</div>
                 <span className="text-left inline-block">
                   {getBusDestination(val.type, props.location)}
                 </span>
+                
               </div>
             </React.Fragment>
           )
