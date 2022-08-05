@@ -7,7 +7,7 @@ module.exports = {
         'chip-blue': '#7FAAFF',
       },
       fontFamily: {
-        Ptd: ['Pretendard Variable'],
+        Ptd: ['Pretendard'],
       },
       animation: {
         carousel: 'upOut 4s ease-in-out infinite',

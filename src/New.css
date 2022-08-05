@@ -1,4 +1,4 @@
-@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.4/dist/web/variable/pretendardvariable.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.5/static/pretendard-dynamic-subset.css");
 
 @tailwind base;
 @tailwind components;
