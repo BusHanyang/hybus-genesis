@@ -220,9 +220,7 @@ export const Card = (props: ScheduleInfo) => {
         return (
           <>
             <div className="h-full table">
-              <span className="table-cell align-middle">
-                {t("no_today")}
-              </span>
+              <span className="table-cell align-middle">{t('no_today')}</span>
             </div>
           </>
         )
@@ -235,9 +233,7 @@ export const Card = (props: ScheduleInfo) => {
         return (
           <>
             <div className="h-full table">
-              <span className="table-cell align-middle">
-                {t("end_today")}
-              </span>
+              <span className="table-cell align-middle">{t('end_today')}</span>
             </div>
           </>
         )
@@ -254,13 +250,12 @@ export const Card = (props: ScheduleInfo) => {
                   {secondToTimeFormat(
                     Math.floor(Number(val.time) - Number(currentTime) / 1000)
                   )}{' '}
-                  {t("left")}
+                  {t('left')}
                 </span>
                 <div className="text-center inline-block w-8 mx-2">▶</div>
                 <span className="text-left inline-block">
                   {getBusDestination(val.type, props.location)}
                 </span>
-                
               </div>
             </React.Fragment>
           )
