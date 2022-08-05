@@ -100,41 +100,41 @@ const secondToTimeFormat = (n: number): string => {
 
 const busTypeToText = (busType: string): string => {
   if (busType == 'C') {
-    return t("cycle")
+    return t('cycle')
   } else if (busType == 'NA') {
-    return t("NA")
+    return t('NA')
   } else {
-    return t("direct")
+    return t('direct')
   }
 }
 
 const getBusDestination = (busType: string, currentLoc: string): string => {
   if (currentLoc == 'shuttlecoke_o') {
     if (busType == 'C' || busType == 'DH') {
-      return t("dest_subway")
+      return t('dest_subway')
     } else if (busType == 'DY') {
-      return t("dest_yesul")
+      return t('dest_yesul')
     } else {
       return '???'
     }
   } else if (currentLoc == 'subway') {
     if (busType == 'C') {
-      return t("dest_yesul")
+      return t('dest_yesul')
     } else {
-      return t("dest_shuttle_i")
+      return t('dest_shuttle_i')
     }
   } else if (currentLoc == 'yesulin') {
-    return t("dest_shuttle_i")
+    return t('dest_shuttle_i')
   } else if (currentLoc == 'shuttlecoke_i') {
     if (busType == 'NA') {
-      return t("no_dest")
+      return t('no_dest')
     } else if (busType == 'R') {
-      return t("dest_dorm")
+      return t('dest_dorm')
     } else {
       return '???'
     }
   } else if (currentLoc == 'residence') {
-    return t("dest_shuttle_o")
+    return t('dest_shuttle_o')
   } else {
     return '???'
   }
@@ -142,17 +142,17 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
 
 const titleText = (location: string): string => {
   if (location == 'shuttlecoke_o') {
-    return t("shuttlecoke_o")
+    return t('shuttlecoke_o')
   } else if (location == 'subway') {
-    return t("subway") 
+    return t('subway')
   } else if (location == 'yesulin') {
-    return t("yesulin")
+    return t('yesulin')
   } else if (location == 'shuttlecoke_i') {
-    return t("shuttlecoke_i")
+    return t('shuttlecoke_i')
   } else if (location == 'residence') {
-    return t("residence")
+    return t('residence')
   } else {
-    return t("else")
+    return t('else')
   }
 }
 
@@ -210,7 +210,7 @@ export const Card = (props: ScheduleInfo) => {
   const renderTimetable = () => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { t } = useTranslation()
-    
+
     if (isLoaded) {
       if (
         timetable.length === 0 ||
