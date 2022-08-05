@@ -1,4 +1,6 @@
 import axios from 'axios'
+import * as dayjs from 'dayjs'
+import * as customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import moment from 'moment'
 import React, { CSSProperties, useEffect, useState } from 'react'
@@ -11,12 +13,151 @@ type SingleSchedule = {
 }
 
 type ScheduleInfo = {
-  season: string
-  week: string
   location: string
 }
 
-const api = async (url: string): Promise<Array<SingleSchedule>> => {
+type Period = {
+  start_date: string
+  end_date: string
+}
+
+type Settings = {
+  semester: Period
+  vacation_session: Period
+  vacation: Period
+  holiday: Array<string>
+  halt: Array<string>
+}
+
+const getSettings = async (): Promise<null | Settings> => {
+  return await axios
+    .get('https://proxy.anoldstory.workers.dev/https://api.hybus.app/settings/')
+    .then((response) => {
+      if (response.status !== 200) {
+        console.log(`Error code: ${response.statusText}`)
+        return null
+      }
+
+      return response.data
+    })
+    .catch((err) => {
+      if (err.response) {
+        // 4XX Errors
+        console.log('Error receiving data', err.data)
+      } else if (err.request) {
+        // No Response
+        console.log('No Response Error', err.request)
+      } else {
+        // Somehow error occurred
+        console.log('Error', err.message)
+      }
+
+      return null
+    })
+    .then((result) => {
+      if (result === null) {
+        return null
+      }
+      return result as Settings
+    })
+}
+
+const isWeekend = (): boolean => {
+  return dayjs().day() == 0 || dayjs().day() == 6
+}
+
+const getSeason = (setting: Settings | null): [string, string] => {
+  dayjs.extend(customParse)
+  const today = dayjs()
+
+  if (setting === null) {
+    // Error fetching settings
+    return ['', '']
+  } else {
+    const [semesterStart, semesterEnd] = [
+      dayjs(setting.semester.start_date, 'YYYY-MM-DD'),
+      dayjs(setting.semester.end_date, 'YYYY-MM-DD')
+        .set('hour', 23)
+        .set('minute', 59)
+        .set('second', 59),
+    ]
+    const [vacationSessionStart, vacationSessionEnd] = [
+      dayjs(setting.vacation_session.start_date, 'YYYY-MM-DD'),
+      dayjs(setting.vacation_session.end_date, 'YYYY-MM-DD')
+        .set('hour', 23)
+        .set('minute', 59)
+        .set('second', 59),
+    ]
+    const [vacationStart, vacationEnd] = [
+      dayjs(setting.vacation.start_date, 'YYYY-MM-DD'),
+      dayjs(setting.vacation.end_date, 'YYYY-MM-DD')
+        .set('hour', 23)
+        .set('minute', 59)
+        .set('second', 59),
+    ]
+
+    const todayUnix = today.unix()
+
+    const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
+    const convertedHaltDay = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
+
+    let isHoliday = false
+
+    convertedHoliday.forEach((date) => {
+      if (
+        today.year() == date.year() &&
+        today.month() == date.month() &&
+        today.date() == date.date()
+      ) {
+        isHoliday = true
+      }
+    })
+
+    convertedHaltDay.forEach((date) => {
+      if (
+        today.year() == date.year() &&
+        today.month() == date.month() &&
+        today.date() == date.date()
+      ) {
+        return ['halt', '']
+      }
+    })
+
+    if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
+      // Semester
+      if (isWeekend() || isHoliday) {
+        return ['semester', 'weekend']
+      } else {
+        return ['semester', 'week']
+      }
+    } else if (
+      vacationSessionStart.unix() < todayUnix &&
+      todayUnix < vacationSessionEnd.unix()
+    ) {
+      // Vacation Session
+      if (isWeekend() || isHoliday) {
+        return ['vacation_session', 'weekend']
+      } else {
+        return ['vacation_session', 'week']
+      }
+    } else if (
+      vacationStart.unix() < todayUnix &&
+      todayUnix < vacationEnd.unix()
+    ) {
+      // Vacation
+      if (isWeekend() || isHoliday) {
+        return ['vacation', 'weekend']
+      } else {
+        return ['vacation', 'week']
+      }
+    } else {
+      // Error!
+      return ['error', '']
+    }
+  }
+}
+
+const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
   return await axios
     .get(url)
     .then((response) => {
@@ -51,7 +192,7 @@ const getTimetable = async (
   week: string,
   location: string
 ): Promise<Array<SingleSchedule>> => {
-  return await api(
+  return await timetableApi(
     `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
   ).then((res) =>
     res.map((val) => {
@@ -176,23 +317,33 @@ export const Card = (props: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
   const [isLoaded, setLoaded] = useState<boolean>(false)
+  const [setting, setSetting] = useState<Settings | null>(null)
 
   useEffect(() => {
     if (!isLoaded) {
-      getTimetable(props.season, props.week, props.location).then((res) => {
-        setTimetable(res)
-        setLoaded(true)
-      })
+      getSettings()
+        .then((s) => {
+          setSetting(s)
+          return s
+        })
+        .then((s) => {
+          const [season, week] = getSeason(s)
+          getTimetable(season, week, props.location).then((res) => {
+            setTimetable(res)
+            setLoaded(true)
+          })
+        })
     } else {
       setTimetable([])
       setLoaded(false)
-      getTimetable(props.season, props.week, props.location).then((res) => {
+      const [season, week] = getSeason(setting)
+      getTimetable(season, week, props.location).then((res) => {
         setTimetable(res)
         setLoaded(true)
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.location, props.season, props.week])
+  }, [props.location])
 
   useEffect(() => {
     const timer = setTimeout(() => {

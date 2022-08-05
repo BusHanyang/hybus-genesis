@@ -1,8 +1,5 @@
 //import './App.css'
 
-import axios from 'axios'
-import * as dayjs from 'dayjs'
-import * as customParse from 'dayjs/plugin/customParseFormat'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
@@ -16,154 +13,6 @@ import Refreshing from './app/components/ptr/refreshing-content'
 import { useDarkMode } from './app/components/useDarkMode'
 import FullTime from './FullTime'
 import Notice from './Notice'
-
-type Period = {
-  start_date: string
-  end_date: string
-}
-
-type Settings = {
-  semester: Period
-  vacation_session: Period
-  vacation: Period
-  holiday: Array<string>
-  halt: Array<string>
-}
-
-const getSettings = async (): Promise<null | Settings> => {
-  return await axios
-    .get('https://proxy.anoldstory.workers.dev/https://api.hybus.app/settings/')
-    .then((response) => {
-      if (response.status !== 200) {
-        console.log(`Error code: ${response.statusText}`)
-        return null
-      }
-
-      return response.data
-    })
-    .catch((err) => {
-      if (err.response) {
-        // 2XX Errors
-        console.log('Error receiving data', err.data)
-      } else if (err.request) {
-        // No Response
-        console.log('No Response Error', err.request)
-      } else {
-        // Somehow error occurred
-        console.log('Error', err.message)
-      }
-
-      return null
-    })
-    .then((result) => {
-      if (result === null) {
-        return null
-      }
-      return result as Settings
-    })
-}
-
-const isWeekend = (): boolean => {
-  return dayjs().day() == 0 || dayjs().day() == 6
-}
-
-const getSeason = (setting: Settings | null): [string, string] => {
-  dayjs.extend(customParse)
-  const today = dayjs()
-
-  if (setting === null) {
-    // Error fetching settings
-    return ['', '']
-  } else {
-    console.log(setting)
-    const [semesterStart, semesterEnd] = [
-      dayjs(setting.semester.start_date, 'YYYY-MM-DD'),
-      dayjs(setting.semester.end_date, 'YYYY-MM-DD'),
-    ]
-    const [vacationSessionStart, vacationSessionEnd] = [
-      dayjs(setting.vacation_session.start_date, 'YYYY-MM-DD'),
-      dayjs(setting.vacation_session.end_date, 'YYYY-MM-DD'),
-    ]
-    const [vacationStart, vacationEnd] = [
-      dayjs(setting.vacation.start_date, 'YYYY-MM-DD'),
-      dayjs(setting.vacation.end_date, 'YYYY-MM-DD'),
-    ]
-
-    const todayUnix = today.unix()
-
-    const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
-    const convertedHaltDay = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
-
-    let isHoliday = false
-
-    convertedHoliday.forEach((date) => {
-      if (
-        today.year() == date.year() &&
-        today.month() == date.month() &&
-        today.date() == date.date()
-      ) {
-        isHoliday = true
-      }
-    })
-
-    convertedHaltDay.forEach((date) => {
-      if (
-        today.year() == date.year() &&
-        today.month() == date.month() &&
-        today.date() == date.date()
-      ) {
-        return ['halt', '']
-      }
-    })
-
-    const dates = [
-      semesterStart,
-      semesterEnd,
-      vacationSessionStart,
-      vacationSessionEnd,
-      vacationStart,
-      vacationEnd,
-    ]
-
-    dates.forEach((date) => {
-      date.hour(23)
-      date.minute(59)
-      date.second(59)
-    })
-
-    if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
-      // Semester
-      if (isWeekend() || isHoliday) {
-        return ['semester', 'weekend']
-      } else {
-        return ['semester', 'week']
-      }
-    } else if (
-      vacationSessionStart.unix() < todayUnix &&
-      todayUnix < vacationSessionEnd.unix()
-    ) {
-      // Vacation Session
-      if (isWeekend() || isHoliday) {
-        return ['vacation_session', 'weekend']
-      } else {
-        return ['vacation_session', 'week']
-      }
-    } else if (
-      vacationStart.unix() < todayUnix &&
-      todayUnix < vacationEnd.unix()
-    ) {
-      // Vacation
-      if (isWeekend() || isHoliday) {
-        return ['vacation', 'weekend']
-      } else {
-        return ['vacation', 'week']
-      }
-    } else {
-      // Error!
-      return ['error', '']
-    }
-  }
-}
 
 function App() {
   //ptr내용 이전
@@ -184,40 +33,13 @@ function App() {
 
   const { t } = useTranslation()
 
-  const [table, changeFullTable] = useState<boolean>(false)
-
   const [themeMode, toggleTheme] = useDarkMode()
-
   const [tab, setTab] = useState<string>('')
-
-  const [setting, setSetting] = useState<Settings | null>(null)
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
     setTab(stn)
   }
-
-  const renderCard = () => {
-    const [season, week] = getSeason(setting)
-    console.log(`Season: ${season}, Week: ${week}`)
-    return (
-      <>
-        <Card
-          season={season}
-          week={week}
-          location={window.localStorage.getItem('tab') || 'shuttlecoke_o'}
-        />
-      </>
-    )
-  }
-
-  useEffect(() => {
-    if (setting === null) {
-      getSettings().then((s) => {
-        setSetting(s)
-      })
-    }
-  }, [setting])
 
   useEffect(() => {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
@@ -250,7 +72,14 @@ function App() {
                       </header>
 
                       <div id="time" className="card bus">
-                        {renderCard()}
+                        {
+                          <Card
+                            location={
+                              window.localStorage.getItem('tab') ||
+                              'shuttlecoke_o'
+                            }
+                          />
+                        }
                       </div>
                       <div className="btn_group">
                         <button
