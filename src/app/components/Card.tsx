@@ -2,7 +2,6 @@ import axios from 'axios'
 import * as dayjs from 'dayjs'
 import * as customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
-import moment from 'moment'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
@@ -196,7 +195,7 @@ const getTimetable = async (
     `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
   ).then((res) =>
     res.map((val) => {
-      val['time'] = String(moment(val.time, 'hh:mm').unix())
+      val['time'] = String(dayjs(val.time, 'HH:mm').unix())
       return val
     })
   )
