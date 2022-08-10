@@ -1,6 +1,6 @@
 import axios from 'axios'
-import * as dayjs from 'dayjs'
-import * as customParse from 'dayjs/plugin/customParseFormat'
+import dayjs from 'dayjs'
+import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +27,8 @@ type Settings = {
   holiday: Array<string>
   halt: Array<string>
 }
+
+dayjs.extend(customParse)
 
 const getSettings = async (): Promise<null | Settings> => {
   return await axios
@@ -66,7 +68,6 @@ const isWeekend = (): boolean => {
 }
 
 const getSeason = (setting: Settings | null): [string, string] => {
-  dayjs.extend(customParse)
   const today = dayjs()
 
   if (setting === null) {
@@ -312,7 +313,7 @@ const getColoredElement = (type: string): JSX.Element => {
   }
 }
 
-export const Card = (props: ScheduleInfo) => {
+export const Card = ({ location }: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
   const [isLoaded, setLoaded] = useState<boolean>(false)
@@ -327,7 +328,7 @@ export const Card = (props: ScheduleInfo) => {
         })
         .then((s) => {
           const [season, week] = getSeason(s)
-          getTimetable(season, week, props.location).then((res) => {
+          getTimetable(season, week, location).then((res) => {
             setTimetable(res)
             setLoaded(true)
           })
@@ -336,13 +337,13 @@ export const Card = (props: ScheduleInfo) => {
       setTimetable([])
       setLoaded(false)
       const [season, week] = getSeason(setting)
-      getTimetable(season, week, props.location).then((res) => {
+      getTimetable(season, week, location).then((res) => {
         setTimetable(res)
         setLoaded(true)
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [props.location])
+  }, [location])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -404,7 +405,7 @@ export const Card = (props: ScheduleInfo) => {
                 </span>
                 <div className="text-center inline-block w-8 mx-2">▶</div>
                 <span className="text-left inline-block">
-                  {getBusDestination(val.type, props.location)}
+                  {getBusDestination(val.type, location)}
                 </span>
               </div>
             </React.Fragment>
@@ -416,7 +417,7 @@ export const Card = (props: ScheduleInfo) => {
 
   return (
     <div className="h-full">
-      <h2 className="font-bold text-2xl pb-2">{titleText(props.location)}</h2>
+      <h2 className="font-bold text-2xl pb-2">{titleText(location)}</h2>
       <div className="inline-block select-none h-4/5">
         {!isLoaded ? (
           <div className="h-full table">
