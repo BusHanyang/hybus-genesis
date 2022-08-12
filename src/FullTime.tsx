@@ -86,7 +86,7 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`font-medium items-center p-2 border-2  border-solid border-[#DBE2F9] dark:border-[#3F4759] rounded-2xl ${
+        className={`cursor-pointer font-medium items-center p-2 border-2  border-solid border-[#DBE2F9] dark:border-[#3F4759] rounded-2xl ${
           props.type === props.value ? 'bg-[#DBE2F9] dark:bg-[#3F4759]' : ''
         }`}
         onClick={() => props.func(props.value)}
