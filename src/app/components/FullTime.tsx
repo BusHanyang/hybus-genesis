@@ -75,17 +75,17 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`flex cursor-pointer font-medium text-sm items-center p-2 border  border-solid border-[#75777F] dark:border-[#3F4759] rounded-lg ${
+        className={`flex cursor-pointer font-medium text-sm items-center py-2  px-4 border  border-solid border-[#75777F] dark:border-[#3F4759] rounded-xl ${
           props.type === props.value
-            ? 'bg-[#DBE2F9] border-0 dark:bg-[#3F4759]'
-            : ''
+            ? 'bg-[#DBE2F9] border-0 dark:bg-[#3F4759] pl-2'
+            : 'text-[#44464E]'
         }`}
         onClick={() => props.func(props.value)}
       >
         {props.type === props.value ? (
           <img
             className="dark:invert mr-1"
-            src="../image/done_FILL0_wght400_GRAD0_opsz48.svg"
+            src="../image/done_FILL0_wght600_GRAD0_opsz48.svg"
             alt="check"
             width={18}
           />
