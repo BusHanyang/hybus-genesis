@@ -86,11 +86,21 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`cursor-pointer font-medium items-center p-2 border-2  border-solid border-[#DBE2F9] dark:border-[#3F4759] rounded-2xl ${
-          props.type === props.value ? 'bg-[#DBE2F9] dark:bg-[#3F4759]' : ''
+        className={`flex cursor-pointer font-medium text-sm items-center p-2 border  border-solid border-[#75777F] dark:border-[#3F4759] rounded-lg ${
+          props.type === props.value
+            ? 'bg-[#DBE2F9] border-0 dark:bg-[#3F4759]'
+            : ''
         }`}
         onClick={() => props.func(props.value)}
       >
+        {props.type === props.value ? (
+          <img
+            className="dark:invert mr-1"
+            src="../image/done_FILL0_wght400_GRAD0_opsz48.svg"
+            alt="check"
+            width={18}
+          />
+        ) : null}
         {props.info}
       </div>
     </>
@@ -201,6 +211,7 @@ const FullTime = () => {
 
   const renderTimebox = () => {
     console.log('renderTimebox run')
+    console.log(location, season, week)
     if (timetable.length === 0) {
       return <div className="min-h-screen"> 조회 정보가 없습니다. </div>
     }
@@ -276,7 +287,7 @@ const FullTime = () => {
         <div className="App">
           <div className="flex self-center py-5 ">
             <img
-              src="../public/image/arrow_back_black_36dp.svg"
+              src="../image/arrow_back_black_36dp.svg"
               alt="back page"
               width={35}
               className="cursor-pointer dark:invert"
