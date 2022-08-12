@@ -80,7 +80,7 @@ const getTimetable = async (
 const ComboBox = (props: {
   type: string
   value: Location | Season | Week
-  func: any
+  func: (arg: Location | Season | Week) => void
   info: string
 }) => {
   return (
@@ -159,12 +159,16 @@ const FullTime = () => {
 
   const changeLocation = (value: Location) => {
     setLocation(value)
+    console.log('location click')
+    return
   }
   const changeSeason = (value: Season) => {
     setSeason(value)
+    return
   }
   const changeWeek = (value: Week) => {
     setWeek(value)
+    return
   }
 
   useEffect(() => {
@@ -294,7 +298,7 @@ const FullTime = () => {
                       <ComboBox
                         type={location}
                         value={i[0]}
-                        func={changeLocation}
+                        func={() => changeLocation(i[0])}
                         info={i[1]}
                       />
                     </React.Fragment>
@@ -312,7 +316,7 @@ const FullTime = () => {
                       <ComboBox
                         type={season}
                         value={i[0]}
-                        func={changeSeason}
+                        func={() => changeSeason(i[0])}
                         info={i[1]}
                       />
                     </React.Fragment>
@@ -330,7 +334,7 @@ const FullTime = () => {
                       <ComboBox
                         type={week}
                         value={i[0]}
-                        func={changeWeek}
+                        func={() => changeWeek(i[0])}
                         info={i[1]}
                       />
                     </React.Fragment>
