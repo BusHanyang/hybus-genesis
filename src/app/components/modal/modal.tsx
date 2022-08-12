@@ -19,7 +19,7 @@ export const Modal = (props: any) => {
         <div className={open ? 'openModal modal' : 'modal'}>
             {open ? (
                 <section>
-                    <header data-theme={dataTheme}>
+                    <header className='font-Ptd' data-theme={dataTheme}>
                         {t('changelog')}
                     </header>
 
