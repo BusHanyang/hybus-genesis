@@ -2,7 +2,7 @@ import axios, { AxiosResponse } from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { useDarkMode } from './app/components/useDarkMode'
+import { useDarkMode } from './useDarkMode'
 
 type SingleSchedule = {
   time: string
