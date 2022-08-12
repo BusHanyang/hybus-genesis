@@ -15,8 +15,8 @@
 }
 
 .card { 
-    @apply p-6 mb-3 justify-center items-center font-medium bg-white rounded-lg drop-shadow-lg;
-    @apply dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(255,255,255,0.1)];
+    @apply p-6 mb-3 justify-center items-center font-medium bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)];
+    @apply dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)];
 }
 .card.p3 { 
     @apply p-3;
