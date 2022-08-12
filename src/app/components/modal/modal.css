@@ -21,7 +21,7 @@
     background-color: #fff;
     /* 팝업이 열릴때 스르륵 열리는 효과 */
     animation: modal-show 0.3s;
-    overflow: hidden;
+    overflow: auto;
   }
   .modal > section > header{
     position: relative;
@@ -65,6 +65,7 @@
     padding: 8px 16px;
     color: #fff;
     background-color: #6c757d;
+    font-family: 'Pretendard';
     border-radius: 5px;
     font-size: 13px;
   }

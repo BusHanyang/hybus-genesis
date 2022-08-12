@@ -25,7 +25,7 @@ i18n
         debug: true,
         resources,
         //ns: ['translation'],
-        detection: { order: ['path', 'navigator'] },
+        detection: { order: ['cookie', 'navigator'] },
         interpolation: {
             escapeValue: false, // not needed for react as it escapes by default
         }

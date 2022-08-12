@@ -1,5 +1,5 @@
 import 'react-tiny-fab/dist/styles.css';
-import './fab.css'
+import './fab.scss'
 
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -71,15 +71,15 @@ export const Fabs = () => {
         imgIcon = DarkImg;
       }
   return (
-      <><Fab
-      icon={<span><img src={Arrow} data-theme={dataTheme}></img></span>}
+      <><div className='font-Ptd'><Fab
+      icon={<img className='iconImg' src={Arrow} data-theme={dataTheme}></img>}
       mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: "10px" }}
-      style={{ bottom: "1.25rem", right: "1.25rem", margin: "0px", padding: "0px", fontFamily: 'Roboto Mono'}}
+      style={{ bottom: "1.5rem", right: "1.5rem", margin: "0px", padding: "0px"}}
       alwaysShowTitle={true}
     >
       <Action
         text={changeText}
-        style={{ backgroundColor: changeColor, color: iconColor }}
+        style={{ backgroundColor: changeColor, color: iconColor}}
         onClick={handleDarkOnClick}
       ><div className='icons'><img src={imgIcon} style={{ padding: 8 }} data-theme={dataTheme} /></div></Action>
       <Action
@@ -97,32 +97,59 @@ export const Fabs = () => {
         style={{ backgroundColor: changeColor, color: iconColor }}
         onClick={handleEmailOnClick}
       ><div className='icons'><img src={Email} style={{ padding: 8 }} data-theme={dataTheme} /></div></Action>
-    </Fab><React.Fragment>
+    </Fab></div><React.Fragment>
         <Modal open={modalOpen} close={closeModal} header="Modal heading">
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
-         <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <div className='font-Ptd' style={{overflow: "auto", maxHeight: "450px"}}>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          <p>2021.08.?? ✏️ 알파버젼 출시</p>
+          </div>
          
         </Modal>
       </React.Fragment></>

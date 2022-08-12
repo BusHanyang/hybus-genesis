@@ -1,0 +1,22 @@
+.icons [data-theme="dark"] {
+    filter: invert(1);
+}
+
+.rtf {
+    &.open {
+      .rtf--mb {
+        > * {
+          transform-origin: center center;
+          transform: rotate(45deg) !important;
+          transition: ease-in-out transform 0.3s !important;
+        }
+      }
+    }
+  }
+  
+  .rtf--mb__c {
+    padding: 15px !important;
+    margin: -15px !important;
+  }
+  
+ 
