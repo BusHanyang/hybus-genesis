@@ -99,7 +99,7 @@ export const Fabs = () => {
       ><div className='icons'><img src={Email} style={{ padding: 8 }} data-theme={dataTheme} /></div></Action>
     </Fab></div><React.Fragment>
         <Modal open={modalOpen} close={closeModal} header="Modal heading">
-          <div className='font-Ptd'>
+          <div className='font-Ptd' style={{overflow: "auto", maxHeight: "450px"}}>
           <p>2021.08.?? ✏️ 알파버젼 출시</p>
           <p>2021.08.?? ✏️ 알파버젼 출시</p>
           <p>2021.08.?? ✏️ 알파버젼 출시</p>
