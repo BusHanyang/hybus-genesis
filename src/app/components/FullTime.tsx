@@ -1,5 +1,5 @@
-import axios, { AxiosResponse } from 'axios'
-import React, { useEffect, useState } from 'react'
+import axios from 'axios'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useDarkMode } from './useDarkMode'
@@ -7,17 +7,6 @@ import { useDarkMode } from './useDarkMode'
 type SingleSchedule = {
   time: string
   type: string
-}
-
-interface TimeTables {
-  DH: Array<string>
-  DY: Array<string>
-  C: Array<string>
-  R: Array<string>
-  N: Array<string>
-  NA: Array<string>
-
-  [prop: string]: Array<string>
 }
 
 type FilteredTimeTables = {
@@ -46,7 +35,7 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
 
         throw new Error(response.statusText)
       }
-      console.log(response.data)
+      console.log('fuction (apt) : ' + response.data)
       return response.data
     })
     .catch((err) => {
@@ -161,7 +150,7 @@ const FullTime = () => {
   const [season, setSeason] = useState<Season>('semester')
   const [week, setWeek] = useState<Week>('week')
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
-  const [themeMode, toggleTheme] = useDarkMode()
+  const [themeMode] = useDarkMode()
   const navigate = useNavigate()
 
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
@@ -181,35 +170,7 @@ const FullTime = () => {
     return
   }
 
-  useEffect(() => {
-    console.log(location)
-    getTimetable(season, week, location)
-      .then((res) => {
-        setTimetable(res)
-      })
-      .then(() => renderTimebox())
-  }, [location, season, week])
-
-  const arrLocation: Array<[Location, string]> = [
-    ['shuttlecoke_o', '셔틀콕'],
-    ['subway', '한대앞역'],
-    ['yesulin', '예술인 아파트'],
-    ['residence', '기숙사'],
-    ['shuttlecoke_i', '셔틀콕 건너편'],
-  ]
-
-  const arrSeason: Array<[Season, string]> = [
-    ['semester', '학기중'],
-    ['vacation', '방학'],
-    ['vacation_session', '계절학기'],
-  ]
-
-  const arrWeek: Array<[Week, string]> = [
-    ['week', '평일'],
-    ['weekend', '주말'],
-  ]
-
-  const renderTimebox = () => {
+  const renderTimebox = useCallback(() => {
     console.log('renderTimebox run')
     console.log(location, season, week)
     if (timetable.length === 0) {
@@ -232,8 +193,7 @@ const FullTime = () => {
 
     const filterdByType: Array<FilteredTimeTables> = []
 
-    console.log(filterdByType)
-    console.log('renderTimebox exit')
+    // console.log(filterdByType)
     timetableFiltered.forEach((schedules, hour) => {
       const single: FilteredTimeTables = {
         time: hour,
@@ -255,11 +215,12 @@ const FullTime = () => {
         }
       })
       filterdByType.push(single)
-      console.log(filterdByType)
 
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
+    console.log(filterdByType)
+    console.log('renderTimebox exit')
 
     return (
       <div className="grid grid-flow-row gap-4">
@@ -280,7 +241,34 @@ const FullTime = () => {
         })}
       </div>
     )
-  }
+  }, [location, season, timetable, week])
+
+  useEffect(() => {
+    console.log(location)
+    getTimetable(season, week, location).then((res) => {
+      setTimetable(res)
+    })
+  }, [location, season, week])
+
+  const arrLocation: Array<[Location, string]> = [
+    ['shuttlecoke_o', '셔틀콕'],
+    ['subway', '한대앞역'],
+    ['yesulin', '예술인 아파트'],
+    ['residence', '기숙사'],
+    ['shuttlecoke_i', '셔틀콕 건너편'],
+  ]
+
+  const arrSeason: Array<[Season, string]> = [
+    ['semester', '학기중'],
+    ['vacation', '방학'],
+    ['vacation_session', '계절학기'],
+  ]
+
+  const arrWeek: Array<[Week, string]> = [
+    ['week', '평일'],
+    ['weekend', '주말'],
+  ]
+
   return (
     <>
       <div className={`${themeMode === 'dark' ? 'dark' : ''} `}>
