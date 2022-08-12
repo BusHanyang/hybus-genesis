@@ -261,6 +261,7 @@ const FullTime = () => {
             alt="back page"
             width={30}
             height={20}
+            style={{marginRight: "20px"}}
             className="cursor-pointer"
             onClick={() => {
               navigate(-1)

@@ -39,7 +39,7 @@ export const Fabs = () => {
   let imgIcon = '';
     const handleEmailOnClick = (): Promise<React.FC> => {
         return new Promise((res) => {
-          console.log("성공");
+          window.location.href = "mailto:admin@hybus.app";
         })
       }
       const handleDonateOnClick = (): Promise<React.FC> => {
@@ -47,11 +47,11 @@ export const Fabs = () => {
           window.location.href = "https://www.buymeacoffee.com/hybus";
         })
       }
-      const handleDevOnClick = (): Promise<React.FC> => {
-        return new Promise((res) => {
-          navigate('/devpage');
-        })
-      }
+      // const handleDevOnClick = (): Promise<React.FC> => {
+      //   return new Promise((res) => {
+      //     navigate('/devpage');
+      //   })
+      // }
       const handleDarkOnClick = (): Promise<React.FC> => {
         return new Promise((res) => {
           toggleTheme()
