@@ -9,10 +9,10 @@ import { Reset } from 'styled-reset'
 import { Card } from './app/components'
 import { Fabs } from './app/components'
 import { DevPage } from './app/components/devpage'
+import FullTime from './app/components/FullTime'
+import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
 import { useDarkMode } from './app/components/useDarkMode'
-import FullTime from './FullTime'
-import Notice from './Notice'
 
 function App() {
   //ptr내용 이전
