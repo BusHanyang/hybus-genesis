@@ -1,9 +1,0 @@
-.icons [data-theme="dark"] {
-    filter: invert(1);
-}
-
-.iconImg :hover{
-    transform: rotate( 45deg ) 1s;
-    transition: all ease 1s;
-}
-

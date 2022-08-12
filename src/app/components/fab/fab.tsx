@@ -1,5 +1,5 @@
 import 'react-tiny-fab/dist/styles.css';
-import './fab.css'
+import './fab.scss'
 
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -74,7 +74,7 @@ export const Fabs = () => {
       <><div className='font-Ptd'><Fab
       icon={<img className='iconImg' src={Arrow} data-theme={dataTheme}></img>}
       mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: "10px" }}
-      style={{ bottom: "1.25rem", right: "1.25rem", margin: "0px", padding: "0px"}}
+      style={{ bottom: "1.5rem", right: "1.5rem", margin: "0px", padding: "0px"}}
       alwaysShowTitle={true}
     >
       <Action
