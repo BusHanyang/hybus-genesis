@@ -77,6 +77,75 @@ const getTimetable = async (
   )
 }
 
+const ComboBox = (props: {
+  type: string
+  value: Location | Season | Week
+  func: (arg: Location | Season | Week) => void
+  info: string
+}) => {
+  return (
+    <>
+      <div
+        className={`cursor-pointer font-medium items-center p-2 border-2  border-solid border-[#DBE2F9] dark:border-[#3F4759] rounded-2xl ${
+          props.type === props.value ? 'bg-[#DBE2F9] dark:bg-[#3F4759]' : ''
+        }`}
+        onClick={() => props.func(props.value)}
+      >
+        {props.info}
+      </div>
+    </>
+  )
+}
+
+const TimeBox = (props: FilteredTimeTables) => {
+  return (
+    <>
+      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
+        <div className="font-bold self-center">{props.time}시</div>
+        <div className="font-medium  inline-grid grid-flow-row gap-2 col-span-5 ">
+          <div
+            className={`inline-grid grid-cols-5 ${
+              props.circle.length === 0 ? 'hidden' : 'block'
+            }`}
+          >
+            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
+              순환
+            </div>
+            <div className="self-center text-left ml-3 col-span-4">
+              {props.circle.join(' ')}
+            </div>
+          </div>
+          <div
+            className={`inline-grid grid-cols-5 ${
+              props.direct.length === 0 ? 'hidden' : 'block'
+            }`}
+          >
+            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
+              직행
+            </div>
+            <div className="self-center text-left ml-3 col-span-4">
+              {props.direct.map((i) => {
+                return (
+                  <React.Fragment key={i}>
+                    <span>{i} </span>
+                  </React.Fragment>
+                )
+              })}
+              <span
+                className={`inline-block ${
+                  props.directY.length === 0 ? 'hidden' : 'text-green-500'
+                }`}
+              >
+                {props.directY.join(' ')}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
 const FullTime = () => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [season, setSeason] = useState<Season>('semester')
@@ -90,12 +159,16 @@ const FullTime = () => {
 
   const changeLocation = (value: Location) => {
     setLocation(value)
+    console.log('location click')
+    return
   }
   const changeSeason = (value: Season) => {
     setSeason(value)
+    return
   }
   const changeWeek = (value: Week) => {
     setWeek(value)
+    return
   }
 
   useEffect(() => {
@@ -129,7 +202,7 @@ const FullTime = () => {
   const renderTimebox = () => {
     console.log('renderTimebox run')
     if (timetable.length === 0) {
-      return <div> 조회 정보가 없습니다. </div>
+      return <div className="min-h-screen"> 조회 정보가 없습니다. </div>
     }
 
     const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
@@ -178,166 +251,100 @@ const FullTime = () => {
     })
 
     return (
-      <div className="App">
-        <div className=" h-full scroll-smooth	">
-          <div className=" grid grid-flow-row gap-2 ">
-            <span className="text-left font-bold text-lg">버스 정류장</span>
-            <div className="flex gap-2 ">
-              {arrLocation.map((i) => {
-                return (
-                  <React.Fragment key={i[0]}>
-                    <ComboBox
-                      type={location}
-                      value={i[0]}
-                      func={changeLocation}
-                      info={i[1]}
-                    />{' '}
-                  </React.Fragment>
-                )
-              })}
-            </div>
-            <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
-          </div>
-          <div className=" grid grid-flow-row gap-2 ">
-            <span className="text-left font-bold text-lg">시기</span>
-            <div className="flex gap-2 ">
-              {arrSeason.map((i) => {
-                return (
-                  <React.Fragment key={i[0]}>
-                    <ComboBox
-                      type={season}
-                      value={i[0]}
-                      func={changeSeason}
-                      info={i[1]}
-                    />{' '}
-                  </React.Fragment>
-                )
-              })}
-            </div>{' '}
-            <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
-          </div>
-          <div className=" grid grid-flow-row gap-2 ">
-            <span className="text-left font-bold text-lg">요일</span>
-            <div className="flex gap-2 ">
-              {arrWeek.map((i) => {
-                return (
-                  <React.Fragment key={i[0]}>
-                    <ComboBox
-                      type={week}
-                      value={i[0]}
-                      func={changeWeek}
-                      info={i[1]}
-                    />{' '}
-                  </React.Fragment>
-                )
-              })}
-            </div>{' '}
-            <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
-          </div>{' '}
-          <div className="grid grid-flow-row gap-4">
-            {filterdByType.map((schedule) => {
-              return (
-                <React.Fragment key={schedule.time}>
-                  <TimeBox
-                    time={schedule.time}
-                    direct={schedule.direct}
-                    directY={schedule.directY}
-                    circle={schedule.circle}
-                  />
-                </React.Fragment>
-              )
-            })}
-          </div>
-        </div>
+      <div className="grid grid-flow-row gap-4">
+        {filterdByType.map((schedule) => {
+          // if schedule.direct.length === 0
+          return (
+            <React.Fragment key={schedule.time}>
+              {schedule.direct.length + schedule.circle.length === 0 ? null : (
+                <TimeBox
+                  time={schedule.time}
+                  direct={schedule.direct}
+                  directY={schedule.directY}
+                  circle={schedule.circle}
+                />
+              )}
+            </React.Fragment>
+          )
+        })}
       </div>
     )
   }
   return (
     <>
-      <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
-        <div className="px-5 flex self-center py-5 dark:invert">
-          <img
-            src="../public/image/leftArrow.png"
-            alt="back page"
-            width={30}
-            height={20}
-            style={{marginRight: "20px"}}
-            className="cursor-pointer"
-            onClick={() => {
-              navigate(-1)
-            }}
-          />
-          <span className="text-left font-bold text-xl"> 전체시간표</span>
-        </div>
-        <div>{renderTimebox()}</div>
-      </div>
-    </>
-  )
-}
-
-const ComboBox = (props: {
-  type: string
-  value: Location | Season | Week
-  func: any
-  info: string
-}) => {
-  return (
-    <>
-      <div
-        className={`font-medium items-center p-2 border-[#DBE2F9] dark:border-[#3F4759] border rounded-2xl ${
-          props.type === props.value ? 'bg-[#DBE2F9] dark:bg-[#3F4759]' : ''
-        }`}
-        onClick={() => props.func(props.value)}
-      >
-        {props.info}
-      </div>
-    </>
-  )
-}
-
-const TimeBox = (props: FilteredTimeTables) => {
-  return (
-    <>
-      <div className=" bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
-        <div className="font-bold self-center">{props.time}시</div>
-        <div className="font-medium  inline-grid grid-flow-row col-span-5 ">
-          <div
-            className={`inline-grid grid-cols-5 ${
-              props.circle.length === 0 ? 'hidden' : 'block'
-            }`}
-          >
-            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
-              순환
+      <div className={`${themeMode === 'dark' ? 'dark' : ''} `}>
+        <div className="App">
+          <div className="flex self-center py-5 ">
+            <img
+              src="../public/image/arrow_back_black_36dp.svg"
+              alt="back page"
+              width={35}
+              className="cursor-pointer dark:invert"
+              onClick={() => {
+                navigate(-1)
+              }}
+            />
+            <span className="text-left font-bold text-2xl px-1">
+              전체시간표
+            </span>
+          </div>
+          <div className=" h-full scroll-smooth	">
+            <div className=" grid grid-flow-row gap-2 ">
+              <span className="text-left font-bold text-lg">버스 정류장</span>
+              <div className="flex gap-2 flex-wrap">
+                {arrLocation.map((i) => {
+                  return (
+                    <React.Fragment key={i[0]}>
+                      <ComboBox
+                        type={location}
+                        value={i[0]}
+                        func={() => changeLocation(i[0])}
+                        info={i[1]}
+                      />
+                    </React.Fragment>
+                  )
+                })}
+              </div>
+              <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
             </div>
-            <div className="self-center text-left ml-3 col-span-4">
-              {props.circle.join(' ')}
+            <div className=" grid grid-flow-row gap-2 ">
+              <span className="text-left font-bold text-lg">시기</span>
+              <div className="flex gap-2 flex-wrap">
+                {arrSeason.map((i) => {
+                  return (
+                    <React.Fragment key={i[0]}>
+                      <ComboBox
+                        type={season}
+                        value={i[0]}
+                        func={() => changeSeason(i[0])}
+                        info={i[1]}
+                      />
+                    </React.Fragment>
+                  )
+                })}
+                <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
+              </div>
+            </div>
+            <div className=" grid grid-flow-row gap-2 ">
+              <span className="text-left font-bold text-lg">요일</span>
+              <div className="flex gap-2 flex-wrap">
+                {arrWeek.map((i) => {
+                  return (
+                    <React.Fragment key={i[0]}>
+                      <ComboBox
+                        type={week}
+                        value={i[0]}
+                        func={() => changeWeek(i[0])}
+                        info={i[1]}
+                      />
+                    </React.Fragment>
+                  )
+                })}
+                <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
+              </div>
             </div>
           </div>
-          <div
-            className={`inline-grid grid-cols-5 ${
-              props.direct.length === 0 ? 'hidden' : 'block'
-            }`}
-          >
-            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
-              직행
-            </div>
-            <div className="self-center text-left ml-3 col-span-4">
-              {props.direct.map((i) => {
-                return (
-                  <React.Fragment key={i}>
-                    <span>{i} </span>{' '}
-                  </React.Fragment>
-                )
-              })}
-              <span
-                className={`inline-block ${
-                  props.directY.length === 0 ? 'hidden' : 'text-green-500'
-                }`}
-              >
-                {props.directY.join(' ')}
-              </span>
-            </div>
-          </div>
+          <div className="pb-6">{renderTimebox()}</div>
         </div>
       </div>
     </>

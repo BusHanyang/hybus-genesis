@@ -8,6 +8,30 @@ type Info = {
   url: string
 }
 
+const Box = (props: {
+  url: string
+  label: string
+  title: string
+  date: string
+}) => {
+  return (
+    <a
+      className="animate-carousel cursor-pointer "
+      onClick={() => {
+        window.open(props.url)
+      }}
+    >
+      <div>
+        <p className="float-left pl-2 font-bold text-base text-chip-red">
+          {props.label}
+        </p>
+        <p className="inline font-medium text-base">{props.title}</p>
+        <p className="float-right pr-2 font-normal text-base">{props.date}</p>
+      </div>
+    </a>
+  )
+}
+
 const Notice = () => {
   const [data, setData] = useState<Array<Info>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
@@ -63,28 +87,6 @@ const Notice = () => {
         })}
       </div>
     </div>
-  )
-}
-
-const Box = (props: {
-  url: string
-  label: string
-  title: string
-  date: string
-}) => {
-  return (
-    <a
-      className="animate-carousel cursor-pointer "
-      onClick={() => {
-        window.open(props.url)
-      }}
-    >
-      <p className="float-left pl-2 font-bold text-base text-chip-red">
-        {props.label}
-      </p>
-      <p className="inline font-medium text-base">{props.title}</p>
-      <p className="float-right pr-2 font-normal text-base">{props.date}</p>
-    </a>
   )
 }
 
