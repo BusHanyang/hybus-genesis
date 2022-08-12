@@ -76,7 +76,6 @@ export const Fabs = () => {
       mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: "10px" }}
       style={{ bottom: "1.25rem", right: "1.25rem", margin: "0px", padding: "0px"}}
       alwaysShowTitle={true}
-      event="click"
     >
       <Action
         text={changeText}
