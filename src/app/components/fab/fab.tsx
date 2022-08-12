@@ -83,7 +83,7 @@ export const Fabs = () => {
         onClick={handleDarkOnClick}
       ><div className='icons'><img src={imgIcon} style={{ padding: 8 }} data-theme={dataTheme} /></div></Action>
       <Action
-        text={t('developer')}
+        text={t('changelog')}
         style={{ backgroundColor: changeColor, color: iconColor }}
         onClick={openModal}
       ><div className='icons'><img src={Info} style={{ padding: 8 }} data-theme={dataTheme} /></div></Action>
