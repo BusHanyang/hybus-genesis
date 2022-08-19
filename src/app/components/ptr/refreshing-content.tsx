@@ -1,8 +1,9 @@
-import './refreshing-content.scss'
-
 import React from 'react'
 
+import { Div, LdsEllipsisDiv } from './refreshing-contentCSS'
+
 // Source: https://loading.io/css/
+
 
 interface RefreshingContentProps {
   mode?: boolean
@@ -11,25 +12,14 @@ interface RefreshingContentProps {
 const RefreshingContent: React.FC<RefreshingContentProps> = ({
   mode = false,
 }) => {
-  if (mode) {
     return (
-      <div className="lds-ellipsis" data-theme="dark">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+      <LdsEllipsisDiv theme={mode}>
+        <Div></Div>
+        <Div></Div>
+        <Div></Div>
+        <Div></Div>
+      </LdsEllipsisDiv>
     )
-  } else {
-    return (
-      <div className="lds-ellipsis">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
-    )
-  }
 }
 
 export default RefreshingContent
