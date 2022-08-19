@@ -17,11 +17,13 @@ import { useDarkMode } from './app/components/useDarkMode'
 function App() {
   //ptr내용 이전
   const colorDarkMod = '#27272a' //bg-zinc-800
-  let dark = false
+  let dark = ''
   let color = 'white'
   if (useDarkMode()[0] === 'dark') {
-    dark = true
+    dark = 'dark'
     color = colorDarkMod
+  } else {
+    dark = 'white'
   }
 
   const handleRefresh = (): Promise<React.FC> => {

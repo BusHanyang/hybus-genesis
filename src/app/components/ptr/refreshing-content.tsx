@@ -1,24 +1,24 @@
 import React from 'react'
 
-import { Div, LdsEllipsisDiv } from './refreshing-contentCSS'
+import { LdsEllipsis,LdsEllipsisDiv } from './refreshing-contentCSS'
 
 // Source: https://loading.io/css/
 
 
 interface RefreshingContentProps {
-  mode?: boolean
+  mode: string
 }
 
 const RefreshingContent: React.FC<RefreshingContentProps> = ({
-  mode = false,
+  mode = ''
 }) => {
     return (
-      <LdsEllipsisDiv theme={mode}>
-        <Div></Div>
-        <Div></Div>
-        <Div></Div>
-        <Div></Div>
-      </LdsEllipsisDiv>
+      <LdsEllipsis>
+        <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
+        <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
+        <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
+        <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
+      </LdsEllipsis>
     )
 }
 
