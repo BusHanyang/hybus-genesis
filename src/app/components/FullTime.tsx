@@ -123,10 +123,10 @@ const TimeBox = (props: FilteredTimeTables) => {
               직행
             </div>
             <div className="self-center text-left ml-3 col-span-4">
-              {props.direct.map((i) => {
+              {props.direct.map((time, idx) => {
                 return (
-                  <React.Fragment key={i}>
-                    <span>{i} </span>
+                  <React.Fragment key={idx}>
+                    <span>{time} </span>
                   </React.Fragment>
                 )
               })}
