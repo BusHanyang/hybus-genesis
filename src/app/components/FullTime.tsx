@@ -75,10 +75,10 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`flex cursor-pointer font-medium text-sm items-center py-2  px-4 border  border-solid border-[#75777F] dark:border-[#3F4759] rounded-xl ${
+        className={`flex cursor-pointer font-medium text-sm items-center py-2 px-4 rounded-xl ${
           props.type === props.value
-            ? 'bg-[#DBE2F9] border-0 dark:bg-[#3F4759] pl-2'
-            : 'text-[#44464E]'
+            ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] dark:text-[#DBE2F9] dark:bg-[#3F4759]' // Selected
+            : 'border border-solid text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
         }`}
         onClick={() => props.func(props.value)}
       >
