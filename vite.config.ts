@@ -21,8 +21,8 @@ export default defineConfig({
         'safari-pinned-tab.svg',
       ],
       manifest: {
-        theme_color: '#0e4a84',
-        background_color: '#898c8e',
+        theme_color: '#ffffff',
+        background_color: '#ffffff',
         display: 'standalone',
         scope: '/',
         start_url: '/',
