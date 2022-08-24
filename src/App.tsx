@@ -140,22 +140,9 @@ function App() {
                           {t('all_btn')}
                         </div>
                       </Link>
-                      {/* <button
-    id="all"
-    className="card btn w-full"
-    onClick={() => (location.href = '#all')}
-  >
-    전체 시간표
-  </button> */}
-
                       <p id="copyright" className="dark:text-white pt-3">
                         Copyright © 2020-2022 BusHanyang. All rights reserved
                       </p>
-                      {/* <p>
-      <button type="button" onClick={() => toggleTheme()}>
-        {themeMode === 'dark' ? '라이트모드' : '다크모드'}
-      </button>
-    </p> */}
                     </div>
                   </div>
                 </PullToRefresh>
