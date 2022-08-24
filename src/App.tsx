@@ -149,8 +149,8 @@ function App() {
               </>
             }
           />
-          <Route path="/all" element={<FullTime />}></Route>
-          <Route path="/devpage" element={<DevPage />}></Route>
+          <Route path="/all" element={<FullTime />} />
+          <Route path="/devpage" element={<DevPage />} />
         </Routes>
       </BrowserRouter>
     </>
