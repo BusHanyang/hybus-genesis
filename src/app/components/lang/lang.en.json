@@ -7,7 +7,7 @@
 
     "cycle": "Cycle",
     "direct": "Direct",
-    "NA": "None",
+    "NA": "N/A",
     "left": "Left",
 
     "shuttlecoke_o": "ShuttleCoke",
@@ -22,19 +22,19 @@
     "dest_shuttle_o": "Shuttlecoke",
     "dest_shuttle_i": "Shuttlecoke",
     "dest_dorm": "Dormitory",
-    "no_dest": "No destination",
+    "no_dest": "Not Available",
 
     "shuttlecoke_o_btn": "Shuttlecoke",
     "shuttlecoke_i_btn": "Shuttlecoke (to Dorm)",
     "subway_btn": "HYU Station",
     "residence_btn": "Dormitory",
     "yesulin_btn": "Yesulin Apartment",
-    "all_btn": "Whole Timetable",
+    "all_btn": "Full Timetable",
 
-    "no_today": "There is no shuttle bus running today.",
+    "no_today": "There is no shuttle bus for today.",
     "end_today": "Shuttle bus service has ended today.",
 
-    "ask": "Ask",
+    "ask": "Contact",
     "donate": "Donate",
     "changelog": "Change Log",
     "dark": "Dark",
