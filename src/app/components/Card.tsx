@@ -316,34 +316,63 @@ const getColoredElement = (type: string): JSX.Element => {
 export const Card = ({ location }: ScheduleInfo) => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
+  const [fetched, setFetched] = useState<boolean>(false)
   const [isLoaded, setLoaded] = useState<boolean>(false)
+  const [spinning, setSpinning] = useState<boolean>(true)
+  const [season, setSeason] = useState<string>('')
+  const [week, setWeek] = useState<string>('')
   const [setting, setSetting] = useState<Settings | null>(null)
+  const [currentLocation, setCurrentLocation] = useState<string>('init')
 
+  // For fetching timetable setting json
   useEffect(() => {
-    if (!isLoaded) {
-      getSettings()
-        .then((s) => {
-          setSetting(s)
-          return s
-        })
-        .then((s) => {
-          const [season, week] = getSeason(s)
-          getTimetable(season, week, location).then((res) => {
-            setTimetable(res)
-            setLoaded(true)
-          })
-        })
-    } else {
-      setTimetable([])
-      setLoaded(false)
-      const [season, week] = getSeason(setting)
-      getTimetable(season, week, location).then((res) => {
-        setTimetable(res)
-        setLoaded(true)
+    if (!fetched && setting == null) {
+      getSettings().then((s) => {
+        setSetting(s)
+        setFetched(true)
       })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+  }, [fetched, setting])
+
+  // For setting season & week values
+  useEffect(() => {
+    if (setting != null) {
+      const [s, w] = getSeason(setting)
+      setSeason(s)
+      setWeek(w)
+    }
+  }, [setting])
+
+  // For fetching the timetable for the initial time
+  useEffect(() => {
+    if (season !== '' && week !== '' && !isLoaded) {
+      getTimetable(season, week, location).then((res) => {
+        setTimetable(res)
+        setSpinning(false)
+        setLoaded(true)
+        setCurrentLocation(location)
+      })
+    }
+  }, [isLoaded, location, season, week])
+
+  // For fetching the timetable when tab is changed (Efficient)
+  useEffect(() => {
+    if (
+      season !== '' &&
+      week !== '' &&
+      isLoaded &&
+      currentLocation !== 'init' &&
+      location !== currentLocation
+    ) {
+      setSpinning(true)
+      setTimetable([])
+      getTimetable(season, week, location).then((res) => {
+        setTimetable(res)
+        setSpinning(false)
+        setCurrentLocation(location)
+      })
+    }
+  }, [currentLocation, isLoaded, location, season, week])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -362,7 +391,7 @@ export const Card = ({ location }: ScheduleInfo) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { t } = useTranslation()
 
-    if (isLoaded) {
+    if (!spinning) {
       if (
         timetable.length === 0 ||
         (timetable.length === 1 && timetable[0] == null)
@@ -419,13 +448,13 @@ export const Card = ({ location }: ScheduleInfo) => {
     <div className="h-full">
       <h2 className="font-bold text-2xl pb-2">{titleText(location)}</h2>
       <div className="inline-block select-none h-4/5">
-        {!isLoaded ? (
+        {spinning ? (
           <div className="h-full table">
             <SyncLoader
               color="#AFBDCE"
               margin={4}
               size={8}
-              loading={!isLoaded}
+              loading={spinning}
               cssOverride={loadingCSS}
             />
           </div>
