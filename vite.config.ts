@@ -26,8 +26,8 @@ export default defineConfig({
         display: 'standalone',
         scope: '/',
         start_url: '/',
-        name: 'HYBUS',
-        short_name: 'HYBUS',
+        name: '버스하냥',
+        short_name: '버스하냥',
         icons: [
           {
             src: 'image/pwa-192x192.png',
