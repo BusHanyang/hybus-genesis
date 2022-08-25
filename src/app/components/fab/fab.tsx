@@ -73,7 +73,7 @@ export const Fabs = () => {
         <Fab
           icon={
             <img
-              className="iconImg"
+              className="iconImg w-12 h-12"
               src={Arrow}
               data-theme={dataTheme}
               alt="floating action button icon"
