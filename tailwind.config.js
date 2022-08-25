@@ -3,10 +3,10 @@ module.exports = {
   theme: {
     extend: {
       transitionTimingFunction: {
-        'ptrTran': 'cubic-bezier(0, 1, 1, 0)'
+        ptrTran: 'cubic-bezier(0, 1, 1, 0)',
       },
       zIndex: {
-        '99' : '99',
+        99: '99',
       },
       colors: {
         'chip-red': '#FF897A',
@@ -44,7 +44,7 @@ module.exports = {
             transform: 'translate3d(0, 0%, 0)',
           },
         },
-        modalShow:{
+        modalShow: {
           from: {
             opacity: '0',
             marginTop: '-50px',
@@ -63,29 +63,29 @@ module.exports = {
           },
         },
         ldsEllipsis1: {
-          '0%':{
-            transform: 'scale(0)'
+          '0%': {
+            transform: 'scale(0)',
           },
-          '100%':{
-            transform: 'scale(1)'
+          '100%': {
+            transform: 'scale(1)',
           },
         },
         ldsEllipsis2: {
-          '0%':{
-            transform: 'translate(0, 0)'
+          '0%': {
+            transform: 'translate(0, 0)',
           },
-          '100%':{
-            transform: 'translate(19px, 0)'
+          '100%': {
+            transform: 'translate(19px, 0)',
           },
         },
         ldsEllipsis3: {
-          '0%':{
-            transform: 'scale(1)'
+          '0%': {
+            transform: 'scale(1)',
           },
-          '100%':{
-            transform: 'scale(0)'
+          '100%': {
+            transform: 'scale(0)',
           },
-        }
+        },
       },
     },
   },
