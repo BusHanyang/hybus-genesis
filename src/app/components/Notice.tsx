@@ -17,6 +17,7 @@ const Box = (props: {
   return (
     <a
       className="animate-carousel cursor-pointer "
+      href={props.url}
       onClick={() => {
         window.open(props.url)
       }}
