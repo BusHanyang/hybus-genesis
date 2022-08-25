@@ -71,7 +71,14 @@ export const Fabs = () => {
     <>
       <div className="font-Ptd">
         <Fab
-          icon={<img className="iconImg" src={Arrow} data-theme={dataTheme} />}
+          icon={
+            <img
+              className="iconImg"
+              src={Arrow}
+              data-theme={dataTheme}
+              alt="floating action button icon"
+            />
+          }
           mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
           style={{
             bottom: '1.5rem',
@@ -91,6 +98,7 @@ export const Fabs = () => {
                 src={imgIcon}
                 style={{ padding: 8 }}
                 data-theme={dataTheme}
+                alt="light and dark mode icon"
               />
             </div>
           </Action>
@@ -100,7 +108,12 @@ export const Fabs = () => {
             onClick={openModal}
           >
             <div className="icons">
-              <img src={Info} style={{ padding: 8 }} data-theme={dataTheme} />
+              <img
+                src={Info}
+                style={{ padding: 8 }}
+                data-theme={dataTheme}
+                alt="changelog icon"
+              />
             </div>
           </Action>
           <Action
@@ -113,6 +126,7 @@ export const Fabs = () => {
                 src={Support}
                 style={{ padding: 8 }}
                 data-theme={dataTheme}
+                alt="donate a cup of coffee icon"
               />
             </div>
           </Action>
@@ -122,7 +136,12 @@ export const Fabs = () => {
             onClick={handleEmailOnClick}
           >
             <div className="icons">
-              <img src={Email} style={{ padding: 8 }} data-theme={dataTheme} />
+              <img
+                src={Email}
+                style={{ padding: 8 }}
+                data-theme={dataTheme}
+                alt="email icon"
+              />
             </div>
           </Action>
         </Fab>
