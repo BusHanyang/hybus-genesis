@@ -16,6 +16,33 @@ import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
 import { useDarkMode } from './app/components/useDarkMode'
 
+const Apps = styled.div`
+    ${tw`
+      h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
+      dark:bg-zinc-800 dark:text-white
+    `}
+  `
+
+  const CardView = styled.div`
+    ${tw`
+      mb-3 justify-center items-center font-medium 
+      bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)] will-change-transform
+      dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)]
+    `}
+  `
+  const Button = styled(CardView)`
+    ${tw`
+      dark:text-white
+      hover:bg-blue-100 hover:text-black border-none flex-auto p-6
+      transition-all ease-out duration-700
+    `}
+    &.active {
+      ${tw`
+        bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
+      `}
+    }
+  `
+
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
 
@@ -67,32 +94,6 @@ function App() {
     saveClicked(aTab)
   }, [tab])
 
-  const App = styled.div`
-    ${tw`
-      h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
-      dark:bg-zinc-800 dark:text-white
-    `}
-  `
-
-  const CardView = styled.div`
-    ${tw`
-      mb-3 justify-center items-center font-medium 
-      bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)] will-change-transform
-      dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)]
-    `}
-  `
-  const Button = styled(CardView)`
-    ${tw`
-      dark:text-white
-      hover:bg-blue-100 hover:text-black border-none flex-auto p-6
-      transition-all ease-out duration-700
-    `}
-    &.active {
-      ${tw`
-        bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
-      `}
-    }
-  `
 
   return (
     <>
@@ -112,7 +113,7 @@ function App() {
                   resistance={3}
                 >
                   <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
-                    <App>
+                    <Apps>
                       <header className="App-header">
                         <h1
                           id="title"
@@ -198,7 +199,7 @@ function App() {
                         </a>
                         . All rights reserved
                       </p>
-                    </App>
+                    </Apps>
                   </div>
                 </PullToRefresh>
                 <ModalOpen
