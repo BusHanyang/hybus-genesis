@@ -39,6 +39,18 @@
     "donate": "후원하기",
     "changelog": "변경로그",
     "dark": "다크모드",
-    "light": "라이트모드"
+    "light": "라이트모드",
     
+    "none_data": "조회 정보가 없습니다.",
+
+    "bus_stop": "버스 정류장",
+    "period": "시기",
+    "days_week": "요일",
+    "o_clock": "시",
+
+    "semester": "학기중",
+    "vacation": "방학",
+    "vacation_session": "계절학기",
+    "week": "평일",
+    "weekend": "주말"   
 }

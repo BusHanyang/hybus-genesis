@@ -39,5 +39,18 @@
     "donate": "Donate",
     "changelog": "ChangeLog",
     "dark": "Dark",
-    "light": "Light"
+    "light": "Light",
+
+    "none_data": "조회 정보가 없습니다.",
+
+    "bus_stop": "Bus stop",
+    "period": "Period",
+    "days_week": "Days of the week",
+    "o_clock": "\"",
+
+    "semester": "Semester",
+    "vacation": "Vacation",
+    "vacation_session": "Vacation Session",
+    "week": "Week",
+    "weekend": "Weekend"   
 }

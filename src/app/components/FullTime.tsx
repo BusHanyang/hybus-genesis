@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { t } from 'i18next'
 import React, { useCallback, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
@@ -102,7 +103,7 @@ const TimeBox = (props: FilteredTimeTables) => {
   return (
     <>
       <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
-        <div className="font-bold self-center">{props.time}시</div>
+        <div className="font-bold self-center">{props.time}{t('o_clock')}</div>
         <div className="font-medium  inline-grid grid-flow-row gap-2 col-span-5 ">
           <div
             className={`inline-grid grid-cols-5 ${
@@ -110,7 +111,7 @@ const TimeBox = (props: FilteredTimeTables) => {
             }`}
           >
             <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
-              순환
+              {t('cycle')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
@@ -122,7 +123,7 @@ const TimeBox = (props: FilteredTimeTables) => {
             }`}
           >
             <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
-              직행
+              {t('direct')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
               {props.direct.map((time, idx) => {
@@ -176,7 +177,7 @@ const FullTime = () => {
     console.log('renderTimebox run')
     console.log(location, season, week)
     if (timetable.length === 0) {
-      return <div className="min-h-screen"> 조회 정보가 없습니다. </div>
+      return <div className="min-h-screen"> {t('none_data')} </div>
     }
 
     const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
@@ -253,22 +254,22 @@ const FullTime = () => {
   }, [location, season, week])
 
   const arrLocation: Array<[Location, string]> = [
-    ['shuttlecoke_o', '셔틀콕'],
-    ['subway', '한대앞역'],
-    ['yesulin', '예술인 아파트'],
-    ['residence', '기숙사'],
-    ['shuttlecoke_i', '셔틀콕 건너편'],
+    ['shuttlecoke_o', t('shuttlecoke_o')],
+    ['subway', t('dest_subway')],
+    ['yesulin', t('dest_yesul')],
+    ['residence', t('dest_dorm')],
+    ['shuttlecoke_i', t('shuttlecoke_i')],
   ]
 
   const arrSeason: Array<[Season, string]> = [
-    ['semester', '학기중'],
-    ['vacation', '방학'],
-    ['vacation_session', '계절학기'],
+    ['semester', t('semester')],
+    ['vacation', t('vacation')],
+    ['vacation_session', t('vacation_session')],
   ]
 
   const arrWeek: Array<[Week, string]> = [
-    ['week', '평일'],
-    ['weekend', '주말'],
+    ['week', t('week')],
+    ['weekend', t('weekend')],
   ]
 
   const App = styled.div`
@@ -293,12 +294,12 @@ const FullTime = () => {
               }}
             />
             <span className="text-left font-bold text-2xl px-1">
-              전체시간표
+              {t('all_btn')}
             </span>
           </div>
           <div className=" h-full scroll-smooth	">
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">버스 정류장</span>
+              <span className="text-left font-bold text-lg">{t('bus_stop')}</span>
               <div className="flex gap-2 flex-wrap">
                 {arrLocation.map((i) => {
                   return (
@@ -316,7 +317,7 @@ const FullTime = () => {
               <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">시기</span>
+              <span className="text-left font-bold text-lg">{t('period')}</span>
               <div className="flex gap-2 flex-wrap">
                 {arrSeason.map((i) => {
                   return (
@@ -334,7 +335,7 @@ const FullTime = () => {
               </div>
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">요일</span>
+              <span className="text-left font-bold text-lg">{t('days_week')}</span>
               <div className="flex gap-2 flex-wrap">
                 {arrWeek.map((i) => {
                   return (
