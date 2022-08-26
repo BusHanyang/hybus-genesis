@@ -201,7 +201,7 @@ function App() {
                     </Apps>
                   </div>
                 </PullToRefresh>
-                <Suspense>
+                <Suspense fallback={<div />}>
                   <ModalOpen
                     isOpen={modalOpen}
                     openModal={openModal}
@@ -214,7 +214,7 @@ function App() {
           <Route
             path="/all"
             element={
-              <Suspense>
+              <Suspense fallback={<div />}>
                 <FullTime />
               </Suspense>
             }
