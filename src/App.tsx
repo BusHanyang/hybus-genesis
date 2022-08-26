@@ -21,12 +21,12 @@ function App() {
   const [modalOpen, setModalOpen] = useState(false)
 
   const openModal = () => {
-    setModalOpen(true);
+    setModalOpen(true)
   }
 
   const closeModal = () => {
-    setModalOpen(false);
-  };
+    setModalOpen(false)
+  }
 
   const colorDarkMod = '#27272a' //bg-zinc-800
   let dark = 'white'
@@ -52,17 +52,17 @@ function App() {
     window.localStorage.setItem('tab', stn)
     setTab(stn)
   }
-  
+
   useEffect(() => {
     const whatlang = window.localStorage.getItem('lang') || i18n.language
-    if(whatlang === 'ko') {
+    if (whatlang === 'ko') {
       i18n.changeLanguage('ko')
-    } else{
+    } else {
       i18n.changeLanguage('en')
     }
     window.localStorage.setItem('lang', i18n.language)
   }, [i18n])
-  
+
   useEffect(() => {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
@@ -88,7 +88,7 @@ function App() {
       hover:bg-blue-100 hover:text-black border-none flex-auto p-6
       transition-all ease-out duration-700
     `}
-    &.active{
+    &.active {
       ${tw`
         bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
       `}
@@ -104,7 +104,7 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs openModal={openModal}/>
+                <Fabs openModal={openModal} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={color}
@@ -115,7 +115,10 @@ function App() {
                   <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
                     <App>
                       <header className="App-header">
-                        <h1 id="title" className="font-bold p-3 text-3xl pt-6 pb-3">
+                        <h1
+                          id="title"
+                          className="font-bold p-3 text-3xl pt-6 pb-3"
+                        >
                           {t('title')}
                         </h1>
                         <CardView className="p-3 h-[3rem] w-full">
@@ -145,18 +148,14 @@ function App() {
                         </Button>
                         <Button
                           id="subway"
-                          className={`${
-                            tab === 'subway' ? 'active' : ''
-                          }`}
+                          className={`${tab === 'subway' ? 'active' : ''}`}
                           onClick={() => saveClicked('subway')}
                         >
                           {t('subway_btn')}
                         </Button>
                         <Button
                           id="residence"
-                          className={`${
-                            tab === 'residence' ? 'active' : ''
-                          }`}
+                          className={`${tab === 'residence' ? 'active' : ''}`}
                           onClick={() => saveClicked('residence')}
                         >
                           {t('residence_btn')}
@@ -176,9 +175,7 @@ function App() {
 
                         <Button
                           id="yesulin"
-                          className={`${
-                            tab === 'yesulin' ? 'active' : ''
-                          }`}
+                          className={`${tab === 'yesulin' ? 'active' : ''}`}
                           onClick={() => saveClicked('yesulin')}
                         >
                           {t('yesulin_btn')}
@@ -205,7 +202,11 @@ function App() {
                     </App>
                   </div>
                 </PullToRefresh>
-                <ModalOpen isOpen={modalOpen} openModal={openModal} closeModal={closeModal}></ModalOpen>
+                <ModalOpen
+                  isOpen={modalOpen}
+                  openModal={openModal}
+                  closeModal={closeModal}
+                ></ModalOpen>
               </>
             }
           />
