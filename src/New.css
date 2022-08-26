@@ -3,7 +3,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
+/*
 .App{
     @apply pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none;
     @apply dark:bg-zinc-800 dark:text-white;
@@ -36,4 +36,4 @@
 
 #title{
     @apply font-bold p-3 text-3xl pt-6 pb-3;
-}
+}*/

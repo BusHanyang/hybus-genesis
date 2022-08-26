@@ -71,22 +71,20 @@ const Notice = () => {
 
   return (
     <div className="relative w-full">
-      <div className="h-[3rem] w-full card p3">
-        {data.map((item, idx) => {
-          return (
-            <React.Fragment key={idx}>
-              <div key={idx} className={idx === num ? '' : 'hidden'}>
-                <Box
-                  label={item.label}
-                  title={item.title}
-                  date={item.date}
-                  url={item.url}
-                />
-              </div>
-            </React.Fragment>
-          )
-        })}
-      </div>
+      {data.map((item, idx) => {
+        return (
+          <React.Fragment key={idx}>
+            <div key={idx} className={idx === num ? '' : 'hidden'}>
+              <Box
+                label={item.label}
+                title={item.title}
+                date={item.date}
+                url={item.url}
+              />
+            </div>
+          </React.Fragment>
+        )
+      })}
     </div>
   )
 }

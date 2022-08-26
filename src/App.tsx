@@ -4,7 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
+import styled from 'styled-components'
 import { Reset } from 'styled-reset'
+import tw from 'twin.macro'
 
 import { Card } from './app/components'
 import { Fabs } from './app/components'
@@ -55,6 +57,28 @@ function App() {
     saveClicked(aTab)
   }, [tab])
 
+  const App = styled.div`
+    ${tw`
+      h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto
+      dark:bg-zinc-800 dark:text-white
+    `}
+  `
+
+  const CardView = styled.div`
+    ${tw`
+      mb-3 justify-center items-center font-medium 
+      bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)]
+      dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)]
+    `}
+  `
+  const Button = styled(CardView)`
+    ${tw`
+      dark:text-white
+      hover:bg-blue-100 hover:text-black border-none flex-auto p-6 
+      transition-all ease-out duration-700
+    `}
+  `
+
   return (
     <>
       <Reset />
@@ -72,15 +96,17 @@ function App() {
                   refreshingContent={<Refreshing mode={dark} />}
                 >
                   <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
-                    <div className="h-screen App">
+                    <App>
                       <header className="App-header">
-                        <h1 id="title" className="dark:text-white">
+                        <h1 id="title" className="font-bold p-3 text-3xl pt-6 pb-3">
                           {t('title')}
                         </h1>
-                        <Notice />
+                        <CardView className="p-3 h-[3rem] w-full">
+                          <Notice />
+                        </CardView>
                       </header>
 
-                      <div id="time" className="card bus">
+                      <CardView className="p-6 h-[17rem]">
                         {
                           <Card
                             location={
@@ -89,63 +115,63 @@ function App() {
                             }
                           />
                         }
-                      </div>
-                      <div className="btn_group">
-                        <button
+                      </CardView>
+                      <div className="flex space-x-4">
+                        <Button
                           id="shuttlecoke_o"
-                          className={`card btn ${
+                          className={`${
                             tab === 'shuttlecoke_o' ? 'active' : ''
                           }`}
                           onClick={() => saveClicked('shuttlecoke_o')}
                         >
                           {t('shuttlecoke_o_btn')}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           id="subway"
-                          className={`card btn ${
+                          className={`${
                             tab === 'subway' ? 'active' : ''
                           }`}
                           onClick={() => saveClicked('subway')}
                         >
                           {t('subway_btn')}
-                        </button>
-                        <button
+                        </Button>
+                        <Button
                           id="residence"
-                          className={`card btn ${
+                          className={`${
                             tab === 'residence' ? 'active' : ''
                           }`}
                           onClick={() => saveClicked('residence')}
                         >
                           {t('residence_btn')}
-                        </button>
+                        </Button>
                       </div>
 
-                      <div className="btn_group">
-                        <button
+                      <div className="flex space-x-4">
+                        <Button
                           id="shuttlecoke_i"
-                          className={`card btn ${
+                          className={`${
                             tab === 'shuttlecoke_i' ? 'active' : ''
                           }`}
                           onClick={() => saveClicked('shuttlecoke_i')}
                         >
                           {t('shuttlecoke_i_btn')}
-                        </button>
+                        </Button>
 
-                        <button
+                        <Button
                           id="yesulin"
-                          className={`card btn ${
+                          className={`${
                             tab === 'yesulin' ? 'active' : ''
                           }`}
                           onClick={() => saveClicked('yesulin')}
                         >
                           {t('yesulin_btn')}
-                        </button>
+                        </Button>
                       </div>
 
                       <Link to="/all">
-                        <div id="all" className="card btn w-full">
+                        <Button id="all" className="w-full">
                           {t('all_btn')}
-                        </div>
+                        </Button>
                       </Link>
                       <p id="copyright" className="dark:text-white pt-3">
                         Copyright © 2020-2022{' '}
@@ -159,7 +185,7 @@ function App() {
                         </a>
                         . All rights reserved
                       </p>
-                    </div>
+                    </App>
                   </div>
                 </PullToRefresh>
                 <ModalOpen isOpen={modalOpen} openModal={openModal} closeModal={closeModal}></ModalOpen>
