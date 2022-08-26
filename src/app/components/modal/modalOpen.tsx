@@ -24,7 +24,7 @@ const ChangelogDiv = styled(ContentArea)`
   ${tw`text-left`}
 `
 
-export const ModalOpen = (props: {
+const ModalOpen = (props: {
   isOpen: boolean
   openModal: () => void
   closeModal: () => void
