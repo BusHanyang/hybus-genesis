@@ -2,7 +2,7 @@ module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     screens: {
-      'xsm': {'max': '400px'}
+      'hm': {'max': '400px'}
     },
     extend: {
       transitionTimingFunction: {
