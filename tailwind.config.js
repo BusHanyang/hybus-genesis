@@ -1,6 +1,9 @@
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
+    screens: {
+      'sm': {'max': '400px'}
+    },
     extend: {
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
