@@ -10,12 +10,22 @@ import { Card } from './app/components'
 import { Fabs } from './app/components'
 import { DevPage } from './app/components/devpage'
 import FullTime from './app/components/FullTime'
+import { ModalOpen } from './app/components/modal/modalOpen'
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
 import { useDarkMode } from './app/components/useDarkMode'
 
 function App() {
-  //ptr내용 이전
+  const [modalOpen, setModalOpen] = useState(false)
+
+  const openModal = () => {
+    setModalOpen(true);
+  }
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   const colorDarkMod = '#27272a' //bg-zinc-800
   let dark = 'white'
   let color = 'white'
@@ -30,7 +40,6 @@ function App() {
       location.reload()
     })
   }
-  //끝
 
   const { t } = useTranslation()
 
@@ -56,7 +65,7 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs />
+                <Fabs openModal={openModal}/>
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={color}
@@ -154,6 +163,7 @@ function App() {
                     </div>
                   </div>
                 </PullToRefresh>
+                <ModalOpen isOpen={modalOpen} openModal={openModal} closeModal={closeModal}></ModalOpen>
               </>
             }
           />
