@@ -77,6 +77,9 @@ function App() {
       hover:bg-blue-100 hover:text-black border-none flex-auto p-6 
       transition-all ease-out duration-700
     `}
+    &.active{
+      ${tw`bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700`}
+    }
   `
 
   return (
