@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { t } from 'i18next'
 import React, { useCallback, useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
@@ -100,6 +100,7 @@ const ComboBox = (props: {
 }
 
 const TimeBox = (props: FilteredTimeTables) => {
+  const { t } = useTranslation()
   return (
     <>
       <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
@@ -155,7 +156,7 @@ const FullTime = () => {
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
   const [themeMode] = useDarkMode()
   const navigate = useNavigate()
-
+  const { t } = useTranslation()
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   // let hour = '00'
 
@@ -274,7 +275,7 @@ const FullTime = () => {
 
   const App = styled.div`
     ${tw`
-      pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto
+      pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
       dark:bg-zinc-800 dark:text-white
     `}
   `
