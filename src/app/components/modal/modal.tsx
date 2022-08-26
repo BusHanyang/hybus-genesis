@@ -49,7 +49,7 @@ ${({ theme }) => {
 export const Modal = (props: {
   open: boolean,
   close: () => void,
-  children: any
+  children: React.ReactNode
 }) => {
   const [themeMode, toggleTheme] = useDarkMode()
   const { t } = useTranslation()
