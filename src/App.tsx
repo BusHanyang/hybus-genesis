@@ -10,8 +10,8 @@ import tw from 'twin.macro'
 
 import { Card } from './app/components'
 import { Fabs } from './app/components'
-const FullTime = React.lazy(() => import('./app/components/FullTime'))
-const ModalOpen = React.lazy(() => import('./app/components/modal/modalOpen'))
+const FullTime = lazy(() => import('./app/components/FullTime'))
+const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
 import { useDarkMode } from './app/components/useDarkMode'
