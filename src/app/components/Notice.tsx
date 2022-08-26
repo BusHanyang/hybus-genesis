@@ -15,13 +15,7 @@ const Box = (props: {
   date: string
 }) => {
   return (
-    <a
-      className="animate-carousel cursor-pointer "
-      href={props.url}
-      onClick={() => {
-        window.open(props.url)
-      }}
-    >
+    <a className="animate-carousel cursor-pointer " href={props.url}>
       <div>
         <p className="float-left pl-2 font-bold text-base text-chip-red">
           {props.label}
