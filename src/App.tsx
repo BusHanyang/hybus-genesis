@@ -94,6 +94,7 @@ function App() {
                   backgroundColor={color}
                   pullingContent=""
                   refreshingContent={<Refreshing mode={dark} />}
+                  resistance={3}
                 >
                   <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
                     <App>
