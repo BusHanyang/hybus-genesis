@@ -1,15 +1,10 @@
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
-    screens: {
-      '2xl': {'max': '1535px'},
-      'xl': {'max': '1279px'},
-      'lg': {'max': '1023px'},
-      'md': {'max': '767px'},
-      'sm': {'max': '639px'},
-      'hm': {'max': '400px'}
-    },
     extend: {
+      screens: {
+        'hm': {'max': '400px'}
+      },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
       },
