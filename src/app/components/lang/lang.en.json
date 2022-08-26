@@ -1,5 +1,6 @@
 {
     "lang": "en",
+    "changeLang": "한국어",
     "title": "BusHanyang",
 
     "notice": "Notice",
@@ -13,7 +14,7 @@
     "shuttlecoke_o": "ShuttleCoke",
     "shuttlecoke_i": "ShuttleCoke (To Dorm)",
     "subway": "HYU@Ansan Stn.",
-    "residence": "Dormitory (To ShuttleCoke)",
+    "residence": "Dormitory",
     "yesulin": "Yesulin Apt.",
     "else": "unknown error",
     
@@ -36,7 +37,7 @@
 
     "ask": "Contact",
     "donate": "Donate",
-    "changelog": "Change Log",
+    "changelog": "ChangeLog",
     "dark": "Dark",
     "light": "Light"
 }

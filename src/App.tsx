@@ -1,5 +1,6 @@
 //import './App.css'
 
+import i18next from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
@@ -42,7 +43,7 @@ function App() {
     })
   }
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [themeMode, toggleTheme] = useDarkMode()
   const [tab, setTab] = useState<string>('')
@@ -51,7 +52,17 @@ function App() {
     window.localStorage.setItem('tab', stn)
     setTab(stn)
   }
-
+  
+  useEffect(() => {
+    const whatlang = window.localStorage.getItem('lang') || i18n.language
+    if(whatlang === 'ko') {
+      i18n.changeLanguage('ko')
+    } else{
+      i18n.changeLanguage('en')
+    }
+    window.localStorage.setItem('lang', i18n.language)
+  }, [i18n])
+  
   useEffect(() => {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
@@ -67,18 +78,20 @@ function App() {
   const CardView = styled.div`
     ${tw`
       mb-3 justify-center items-center font-medium 
-      bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)]
+      bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)] will-change-transform
       dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)]
     `}
   `
   const Button = styled(CardView)`
     ${tw`
       dark:text-white
-      hover:bg-blue-100 hover:text-black border-none flex-auto p-6 
+      hover:bg-blue-100 hover:text-black border-none flex-auto p-6
       transition-all ease-out duration-700
     `}
     &.active{
-      ${tw`bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700`}
+      ${tw`
+        bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
+      `}
     }
   `
 

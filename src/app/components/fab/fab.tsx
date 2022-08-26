@@ -9,6 +9,7 @@ import Arrow from '/image/add_white_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Info from '/image/infoblack.svg'
+import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Support from '/image/local_cafe_black_48dp.svg'
 
@@ -18,7 +19,7 @@ export const Fabs = (props: {
 }) => {
 
   const [themeMode, toggleTheme] = useDarkMode()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   let changeText = ''
   let changeColor = ''
@@ -40,6 +41,18 @@ export const Fabs = (props: {
       toggleTheme()
     })
   }
+  const handleLangOnClick = (): Promise<React.FC> => {
+    return new Promise(() => {
+      if(i18n.language === 'en') {
+        i18n.changeLanguage('ko')
+        window.localStorage.setItem('lang', 'ko')
+      } else{
+        i18n.changeLanguage('en')
+        window.localStorage.setItem('lang', 'en')
+      }
+    })
+  }
+  
   if (useDarkMode()[0] === 'dark') {
     changeText = t('light')
     changeColor = '#374151'
@@ -85,6 +98,20 @@ export const Fabs = (props: {
                 style={{ padding: 8 }}
                 data-theme={dataTheme}
                 alt="light and dark mode icon"
+              />
+            </div>
+          </Action>
+          <Action
+            text={t('changeLang')}
+            style={{ backgroundColor: changeColor, color: iconColor }}
+            onClick={handleLangOnClick}
+          >
+            <div className="icons">
+              <img
+                src={LangImg}
+                style={{ padding: 8 }}
+                data-theme={dataTheme}
+                alt="changelog icon"
               />
             </div>
           </Action>
