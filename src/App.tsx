@@ -8,7 +8,6 @@ import { Reset } from 'styled-reset'
 
 import { Card } from './app/components'
 import { Fabs } from './app/components'
-import { DevPage } from './app/components/devpage'
 import FullTime from './app/components/FullTime'
 import { ModalOpen } from './app/components/modal/modalOpen'
 import Notice from './app/components/Notice'
@@ -168,7 +167,6 @@ function App() {
             }
           />
           <Route path="/all" element={<FullTime />} />
-          <Route path="/devpage" element={<DevPage />} />
         </Routes>
       </BrowserRouter>
     </>

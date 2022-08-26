@@ -45,7 +45,7 @@ export const ModalOpen = (props: {
 
   return(
     <React.Fragment>
-        <Modal open={props.isOpen} close={props.closeModal} header="Modal heading">
+        <Modal open={props.isOpen} close={props.closeModal}>
           <div
             className="font-Ptd"
             style={{ overflow: 'auto', maxHeight: '450px' }}
