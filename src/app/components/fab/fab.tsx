@@ -18,17 +18,12 @@ import Support from '/image/local_cafe_black_48dp.svg'
 import { useDarkMode } from '../useDarkMode'
 
 const Icons = styled.div<{ theme: string }>`
-${({ theme }) => {
-  return theme === 'dark'
-    ? tw`invert`
-    : null
-}}
+  ${({ theme }) => {
+    return theme === 'dark' ? tw`invert` : null
+  }}
 `
 
-export const Fabs = (props: {
-  openModal: () => void
-}) => {
-
+export const Fabs = (props: { openModal: () => void }) => {
   const [themeMode, toggleTheme] = useDarkMode()
   const { t, i18n } = useTranslation()
 
@@ -54,16 +49,16 @@ export const Fabs = (props: {
   }
   const handleLangOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
-      if(i18n.language === 'en') {
+      if (i18n.language === 'en') {
         i18n.changeLanguage('ko')
         window.localStorage.setItem('lang', 'ko')
-      } else{
+      } else {
         i18n.changeLanguage('en')
         window.localStorage.setItem('lang', 'en')
       }
     })
   }
-  
+
   if (useDarkMode()[0] === 'dark') {
     changeText = t('light')
     changeColor = '#374151'
@@ -117,11 +112,7 @@ export const Fabs = (props: {
             onClick={handleLangOnClick}
           >
             <Icons theme={dataTheme}>
-              <img
-                src={LangImg}
-                style={{ padding: 8 }}
-                alt="changelog icon"
-              />
+              <img src={LangImg} style={{ padding: 8 }} alt="changelog icon" />
             </Icons>
           </Action>
           <Action
@@ -130,11 +121,7 @@ export const Fabs = (props: {
             onClick={props.openModal}
           >
             <Icons theme={dataTheme}>
-              <img
-                src={Info}
-                style={{ padding: 8 }}
-                alt="changelog icon"
-              />
+              <img src={Info} style={{ padding: 8 }} alt="changelog icon" />
             </Icons>
           </Action>
           <Action
@@ -156,11 +143,7 @@ export const Fabs = (props: {
             onClick={handleEmailOnClick}
           >
             <Icons theme={dataTheme}>
-              <img
-                src={Email}
-                style={{ padding: 8 }}
-                alt="email icon"
-              />
+              <img src={Email} style={{ padding: 8 }} alt="email icon" />
             </Icons>
           </Action>
         </Fab>
