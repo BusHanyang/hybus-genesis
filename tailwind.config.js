@@ -14,7 +14,6 @@ module.exports = {
       },
       fontFamily: {
         Ptd: ['Pretendard'],
-        BHS: ['Black Han Sans'],
       },
       animation: {
         carousel: 'upOut 4s ease-in-out infinite',
