@@ -14,12 +14,22 @@ export default defineConfig({
     }),
     viteCompression({ algorithm: 'brotliCompress' }),
     VitePWA({
+      // Service worker setting
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
+
+      // Deployment
       includeAssets: [
         'favicon.svg',
         'favicon.ico',
         'robots.txt',
         'safari-pinned-tab.svg',
       ],
+
+      // PWA setting
       manifest: {
         theme_color: '#ffffff',
         background_color: '#ffffff',

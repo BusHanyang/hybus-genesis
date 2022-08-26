@@ -1,6 +1,6 @@
 //import './App.css'
 
-import React, { useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
@@ -10,8 +10,8 @@ import tw from 'twin.macro'
 
 import { Card } from './app/components'
 import { Fabs } from './app/components'
-import FullTime from './app/components/FullTime'
-import { ModalOpen } from './app/components/modal/modalOpen'
+const FullTime = React.lazy(() => import('./app/components/FullTime'))
+const ModalOpen = React.lazy(() => import('./app/components/modal/modalOpen'))
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
 import { useDarkMode } from './app/components/useDarkMode'
@@ -201,15 +201,24 @@ function App() {
                     </Apps>
                   </div>
                 </PullToRefresh>
-                <ModalOpen
-                  isOpen={modalOpen}
-                  openModal={openModal}
-                  closeModal={closeModal}
-                />
+                <Suspense fallback={<div />}>
+                  <ModalOpen
+                    isOpen={modalOpen}
+                    openModal={openModal}
+                    closeModal={closeModal}
+                  />
+                </Suspense>
               </>
             }
           />
-          <Route path="/all" element={<FullTime />} />
+          <Route
+            path="/all"
+            element={
+              <Suspense fallback={<div />}>
+                <FullTime />
+              </Suspense>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>
