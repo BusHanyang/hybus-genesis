@@ -4,6 +4,8 @@ import './fab.scss'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
+import styled from 'styled-components'
+import tw from 'twin.macro'
 
 import Arrow from '/image/add_white_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
@@ -14,6 +16,15 @@ import LightImg from '/image/light_mode_black_48dp.svg'
 import Support from '/image/local_cafe_black_48dp.svg'
 
 import { useDarkMode } from '../useDarkMode'
+
+const Icons = styled.div<{ theme: string }>`
+${({ theme }) => {
+  return theme === 'dark'
+    ? tw`invert`
+    : null
+}}
+`
+
 export const Fabs = (props: {
   openModal: () => void
 }) => {
@@ -92,70 +103,65 @@ export const Fabs = (props: {
             style={{ backgroundColor: changeColor, color: iconColor }}
             onClick={handleDarkOnClick}
           >
-            <div className="icons">
+            <Icons theme={dataTheme}>
               <img
                 src={imgIcon}
                 style={{ padding: 8 }}
-                data-theme={dataTheme}
                 alt="light and dark mode icon"
               />
-            </div>
+            </Icons>
           </Action>
           <Action
             text={t('changeLang')}
             style={{ backgroundColor: changeColor, color: iconColor }}
             onClick={handleLangOnClick}
           >
-            <div className="icons">
+            <Icons theme={dataTheme}>
               <img
                 src={LangImg}
                 style={{ padding: 8 }}
-                data-theme={dataTheme}
                 alt="changelog icon"
               />
-            </div>
+            </Icons>
           </Action>
           <Action
             text={t('changelog')}
             style={{ backgroundColor: changeColor, color: iconColor }}
             onClick={props.openModal}
           >
-            <div className="icons">
+            <Icons theme={dataTheme}>
               <img
                 src={Info}
                 style={{ padding: 8 }}
-                data-theme={dataTheme}
                 alt="changelog icon"
               />
-            </div>
+            </Icons>
           </Action>
           <Action
             text={t('donate')}
             style={{ backgroundColor: changeColor, color: iconColor }}
             onClick={handleDonateOnClick}
           >
-            <div className="icons">
+            <Icons theme={dataTheme}>
               <img
                 src={Support}
                 style={{ padding: 8 }}
-                data-theme={dataTheme}
                 alt="donate a cup of coffee icon"
               />
-            </div>
+            </Icons>
           </Action>
           <Action
             text={t('ask')}
             style={{ backgroundColor: changeColor, color: iconColor }}
             onClick={handleEmailOnClick}
           >
-            <div className="icons">
+            <Icons theme={dataTheme}>
               <img
                 src={Email}
                 style={{ padding: 8 }}
-                data-theme={dataTheme}
                 alt="email icon"
               />
-            </div>
+            </Icons>
           </Action>
         </Fab>
       </div>

@@ -2,26 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.icons [data-theme="dark"] {
-    @apply invert
-}
-
-p {
-  @apply my-1;
-  // margin-block-start: 0.2em;
-  // margin-block-end: 0.2em;
-}
-.changelog-margin {
-  margin-bottom: 1em;
-}
-.content-area {
-  margin: auto;
-  justify-content: space-between;
-}
-.changelog {
-  text-align: left;
-}
-
 
 .rtf {
     &.open {

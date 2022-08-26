@@ -1,12 +1,28 @@
 import axios from 'axios'
 import React, { useEffect,useState } from 'react'
+import styled from 'styled-components'
+import tw from 'twin.macro'
 
 import { Modal } from './modal'
 
 type Changelog = {
   date: string,
-  details: string
+  details: Array<string>
 }
+
+const P = styled.p`
+  ${tw`my-[0.2em]`}
+`
+const ChangelogMargin = styled.div`
+  ${tw`mb-[1em]`}
+`
+const ContentArea = styled.div`
+  ${tw`m-auto justify-between`}
+`
+
+const ChangelogDiv = styled(ContentArea)`
+  ${tw`text-left`}
+`
 
 export const ModalOpen = (props: {
   isOpen: boolean,
@@ -50,18 +66,19 @@ export const ModalOpen = (props: {
             className="font-Ptd"
             style={{ overflow: 'auto', maxHeight: '450px' }}
           >
-            <div className="content-area">
-              <div className="changelog">
-            {data.map((datas : {date : string; details: string}) => {
+            <ContentArea>
+              <ChangelogDiv>
+            {data.map((datas : {date : string; details: Array<string>}) => {
+              const arr: string[] = datas.details
               return (
-                <div key={datas.date} className="changelog-margin">
+                <ChangelogMargin key={datas.date}>
                   <h4>{datas.date}</h4>
-                  <p>{datas.details}</p>
-                </div>
+                  {arr.map(item => <P key={item}>{item}</P>)}
+                </ChangelogMargin>
               )
             })}
-             </div>
-            </div>
+             </ChangelogDiv>
+            </ContentArea>
           </div>
         </Modal>
       </React.Fragment>
