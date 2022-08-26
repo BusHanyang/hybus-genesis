@@ -43,6 +43,7 @@ export const ModalOpen = (props: {
       })
       .catch((error) => {
         console.log(`error ${error}`);
+        return null;
       })
       .then((response) => response as unknown as Array<Changelog>)
 
@@ -56,8 +57,6 @@ export const ModalOpen = (props: {
         })
       }
     }, [])
-
-
 
   return(
     <React.Fragment>
