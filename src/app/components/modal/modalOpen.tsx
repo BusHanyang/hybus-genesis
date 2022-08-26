@@ -1,12 +1,12 @@
 import axios from 'axios'
-import React, { useEffect,useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
 import { Modal } from './modal'
 
 type Changelog = {
-  date: string,
+  date: string
   details: Array<string>
 }
 
@@ -25,63 +25,63 @@ const ChangelogDiv = styled(ContentArea)`
 `
 
 export const ModalOpen = (props: {
-  isOpen: boolean,
-  openModal: () => void,
+  isOpen: boolean
+  openModal: () => void
   closeModal: () => void
 }) => {
-
-
-  const [data, setData] = useState<Array<Changelog>>([]);
+  const [data, setData] = useState<Array<Changelog>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
-  const url = 'https://proxy.anoldstory.workers.dev/https://api.hybus.app/changelog/'
+  const url =
+    'https://proxy.anoldstory.workers.dev/https://api.hybus.app/changelog/'
 
   const getChangelog = async (): Promise<Array<Changelog>> => {
     return await axios
       .get(url)
       .then((response) => {
-        return response.data;
+        return response.data
       })
       .catch((error) => {
-        console.log(`error ${error}`);
-        return null;
+        console.log(`error ${error}`)
+        return null
       })
       .then((response) => response as unknown as Array<Changelog>)
-
   }
 
-    useEffect(() => {
-      if (!isLoaded) {
-        getChangelog().then((response) => {
-          setData(response)
-          setLoaded(true)
-        })
-      }
-    }, [])
+  useEffect(() => {
+    if (!isLoaded) {
+      getChangelog().then((response) => {
+        setData(response)
+        setLoaded(true)
+      })
+    }
+  }, [])
 
-  return(
+  return (
     <React.Fragment>
-        <Modal open={props.isOpen} close={props.closeModal}>
-          <div
-            className="font-Ptd"
-            style={{ overflow: 'auto', maxHeight: '450px' }}
-          >
-            <ContentArea>
-              <ChangelogDiv>
-            {data.map((datas : {date : string; details: Array<string>}) => {
-              const arr: string[] = datas.details
-              return (
-                <ChangelogMargin key={datas.date}>
-                  <h4>{datas.date}</h4>
-                  {arr.map(item => <P key={item}>{item}</P>)}
-                </ChangelogMargin>
-              )
-            })}
-             </ChangelogDiv>
-            </ContentArea>
-          </div>
-        </Modal>
-      </React.Fragment>
-
+      <Modal open={props.isOpen} close={props.closeModal}>
+        <div
+          className="font-Ptd"
+          style={{ overflow: 'auto', maxHeight: '450px' }}
+        >
+          <ContentArea>
+            <ChangelogDiv>
+              {data.map((datas: { date: string; details: Array<string> }) => {
+                const arr: string[] = datas.details
+                return (
+                  <ChangelogMargin key={datas.date}>
+                    <h4>{datas.date}</h4>
+                    {arr.map((item) => (
+                      <P key={item}>{item}</P>
+                    ))}
+                  </ChangelogMargin>
+                )
+              })}
+            </ChangelogDiv>
+          </ContentArea>
+        </div>
+      </Modal>
+    </React.Fragment>
   )
-
 }
+
+export default ModalOpen
