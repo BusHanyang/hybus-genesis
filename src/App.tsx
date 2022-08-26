@@ -70,7 +70,7 @@ function App() {
 
   const App = styled.div`
     ${tw`
-      h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto
+      h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
       dark:bg-zinc-800 dark:text-white
     `}
   `
