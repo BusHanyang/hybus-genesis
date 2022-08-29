@@ -90,6 +90,7 @@ export const Fabs = (props: { openModal: () => void }) => {
             right: '1.5rem',
             margin: '0px',
             padding: '0px',
+            zIndex: 5,
           }}
           alwaysShowTitle={true}
         >
@@ -117,7 +118,10 @@ export const Fabs = (props: { openModal: () => void }) => {
           </Action>
           <Action
             text={t('changelog')}
-            style={{ backgroundColor: changeColor, color: iconColor }}
+            style={{
+              backgroundColor: changeColor,
+              color: iconColor,
+            }}
             onClick={props.openModal}
           >
             <Icons theme={dataTheme}>
