@@ -5,6 +5,7 @@ import { t } from 'i18next'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
+import tw from 'twin.macro'
 
 type SingleSchedule = {
   time: string
@@ -382,13 +383,7 @@ export const Card = ({ location }: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
-  const loadingCSS: CSSProperties = {
-    display: 'table-cell',
-    verticalAlign: 'middle',
-  }
-
-  const renderTimetable = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+  const RenderTimetable = (): JSX.Element => {
     const { t } = useTranslation()
 
     if (!spinning) {
@@ -420,27 +415,37 @@ export const Card = ({ location }: ScheduleInfo) => {
       }
 
       // Otherwise - normal case
-      return filtered.map((val, idx) => {
-        if (idx < 5) {
-          return (
-            <React.Fragment key={idx}>
-              <div className="text-left mx-auto w-82 py-1.5">
-                {getColoredElement(val.type)}
-                <span className="font-Ptd inline-block px-1 w-32 text-right">
-                  {secondToTimeFormat(
-                    Math.floor(Number(val.time) - Number(currentTime) / 1000)
-                  )}{' '}
-                  {t('left')}
-                </span>
-                <div className="text-center inline-block w-8 mx-2">▶</div>
-                <span className="text-left inline-block">
-                  {getBusDestination(val.type, location)}
-                </span>
-              </div>
-            </React.Fragment>
-          )
-        }
-      })
+      return (
+        <>
+          {filtered.map((val, idx) => {
+            if (idx < 5) {
+              return (
+                <React.Fragment key={idx}>
+                  <div className="text-left mx-auto w-82 py-1.5">
+                    {getColoredElement(val.type)}
+                    <span className="font-Ptd inline-block px-1 w-32 text-right">
+                      {secondToTimeFormat(
+                        Math.floor(
+                          Number(val.time) - Number(currentTime) / 1000
+                        )
+                      )}{' '}
+                      {t('left')}
+                    </span>
+                    <div className="text-center inline-block w-8 mx-2">▶</div>
+                    <span className="text-left inline-block">
+                      {getBusDestination(val.type, location)}
+                    </span>
+                  </div>
+                </React.Fragment>
+              )
+            } else {
+              return <React.Fragment key={idx} />
+            }
+          })}
+        </>
+      )
+    } else {
+      return <></>
     }
   }
 
@@ -455,13 +460,13 @@ export const Card = ({ location }: ScheduleInfo) => {
               margin={4}
               size={8}
               loading={spinning}
-              cssOverride={loadingCSS}
+              cssOverride={tw`table-cell align-middle`}
             />
           </div>
         ) : (
           <></>
         )}
-        {renderTimetable()}
+        {RenderTimetable()}
       </div>
     </div>
   )
