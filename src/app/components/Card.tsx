@@ -5,6 +5,7 @@ import { t } from 'i18next'
 import React, { CSSProperties, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
+import tw from 'twin.macro'
 
 type SingleSchedule = {
   time: string
@@ -382,11 +383,6 @@ export const Card = ({ location }: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
-  const loadingCSS: CSSProperties = {
-    display: 'table-cell',
-    verticalAlign: 'middle',
-  }
-
   const RenderTimetable = (): JSX.Element => {
     const { t } = useTranslation()
 
@@ -464,7 +460,7 @@ export const Card = ({ location }: ScheduleInfo) => {
               margin={4}
               size={8}
               loading={spinning}
-              cssOverride={loadingCSS}
+              cssOverride={tw`table-cell align-middle`}
             />
           </div>
         ) : (
