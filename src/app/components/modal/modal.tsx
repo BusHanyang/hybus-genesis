@@ -6,7 +6,7 @@ import tw from 'twin.macro'
 import { useDarkMode } from '../useDarkMode'
 
 const MainModal = styled.div`
-${tw`hidden fixed inset-0 z-99 bg-black/60`}
+  ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}
 `
 const ModalMain = styled(MainModal)<{ isOpen: boolean }>`
   ${({ isOpen }) => {
