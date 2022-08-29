@@ -33,7 +33,7 @@ const CardView = styled.div`
 const Button = styled(CardView)`
   ${tw`
     dark:text-white
-    hover:bg-blue-100 hover:text-black border-none flex-auto p-6
+    hover:bg-blue-100 hover:text-black border-none flex-auto px-2 py-6
     transition-all ease-out duration-700
   `}
   &.active {
@@ -135,7 +135,7 @@ function App() {
                           />
                         }
                       </CardView>
-                      <div className="flex space-x-4">
+                      <div className="grid grid-cols-3 gap-4">
                         <Button
                           id="shuttlecoke_o"
                           className={`${
@@ -161,7 +161,7 @@ function App() {
                         </Button>
                       </div>
 
-                      <div className="flex space-x-4">
+                      <div className="grid grid-cols-2 gap-4">
                         <Button
                           id="shuttlecoke_i"
                           className={`${
