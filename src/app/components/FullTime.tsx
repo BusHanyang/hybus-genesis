@@ -103,7 +103,10 @@ const TimeBox = (props: FilteredTimeTables) => {
   return (
     <>
       <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
-        <div className="font-bold self-center">{props.time}{t('o_clock')}</div>
+        <div className="font-bold self-center">
+          {props.time}
+          {t('o_clock')}
+        </div>
         <div className="font-medium  inline-grid grid-flow-row gap-2 col-span-5 ">
           <div
             className={`inline-grid grid-cols-5 ${
@@ -292,7 +295,9 @@ const FullTime = () => {
           </div>
           <div className=" h-full scroll-smooth	">
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">{t('bus_stop')}</span>
+              <span className="text-left font-bold text-lg">
+                {t('bus_stop')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrLocation.map((i) => {
                   return (
@@ -328,7 +333,9 @@ const FullTime = () => {
               </div>
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">{t('days_week')}</span>
+              <span className="text-left font-bold text-lg">
+                {t('days_week')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrWeek.map((i) => {
                   return (
