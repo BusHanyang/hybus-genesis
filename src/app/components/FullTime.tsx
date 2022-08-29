@@ -38,7 +38,6 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
 
         throw new Error(response.statusText)
       }
-      console.log('fuction (apt) : ' + response.data)
       return response.data
     })
     .catch((err) => {
@@ -162,7 +161,6 @@ const FullTime = () => {
 
   const changeLocation = (value: Location) => {
     setLocation(value)
-    console.log('location click')
     return
   }
   const changeSeason = (value: Season) => {
@@ -174,9 +172,7 @@ const FullTime = () => {
     return
   }
 
-  const renderTimebox = useCallback(() => {
-    console.log('renderTimebox run')
-    console.log(location, season, week)
+  const renderTimebox = () => {
     if (timetable.length === 0) {
       return <div className="min-h-screen"> {t('none_data')} </div>
     }
@@ -197,7 +193,6 @@ const FullTime = () => {
 
     const filterdByType: Array<FilteredTimeTables> = []
 
-    // console.log(filterdByType)
     timetableFiltered.forEach((schedules, hour) => {
       const single: FilteredTimeTables = {
         time: hour,
@@ -223,8 +218,6 @@ const FullTime = () => {
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
-    console.log(filterdByType)
-    console.log('renderTimebox exit')
 
     return (
       <div className="grid grid-flow-row gap-4">
@@ -245,10 +238,9 @@ const FullTime = () => {
         })}
       </div>
     )
-  }, [location, season, timetable, week])
+  }
 
   useEffect(() => {
-    console.log(location)
     getTimetable(season, week, location).then((res) => {
       setTimetable(res)
     })
