@@ -3,7 +3,7 @@ import './New.css'
 import './app/components/lang/i18n'
 
 import React from 'react'
-import ReactDOM from 'react-dom'
+import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
 import { RecoilRoot } from 'recoil'
@@ -13,7 +13,11 @@ import App from './App'
 
 const queryClient = new QueryClient()
 
-ReactDOM.render(
+const root = document.getElementById('root')
+
+if (!root) throw new Error('Error! Cannot find root element')
+
+ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
@@ -21,6 +25,5 @@ ReactDOM.render(
         <App />
       </RecoilRoot>
     </QueryClientProvider>
-  </React.StrictMode>,
-  document.getElementById('root')
+  </React.StrictMode>
 )
