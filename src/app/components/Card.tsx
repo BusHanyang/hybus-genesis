@@ -301,13 +301,13 @@ const titleText = (location: string): string => {
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
     return (
-      <div className="bg-chip-red dark:text-black py-1 w-12 rounded-full inline-block text-center">
+      <div className="bg-chip-red dark:text-black py-1 w-12 rounded-full inline-block text-center hm:text-sm hm:leading-4 hm:w-10">
         {busTypeToText(type)}
       </div>
     )
   } else {
     return (
-      <div className="bg-chip-blue dark:text-black py-1 w-12 rounded-full inline-block text-center">
+      <div className="bg-chip-blue dark:text-black py-1 w-12 rounded-full inline-block text-center hm:text-sm hm:leading-4 hm:w-10">
         {busTypeToText(type)}
       </div>
     )
@@ -423,7 +423,7 @@ export const Card = ({ location }: ScheduleInfo) => {
                 <React.Fragment key={idx}>
                   <div className="text-left mx-auto w-82 py-1.5">
                     {getColoredElement(val.type)}
-                    <span className="font-Ptd inline-block px-1 w-32 text-right">
+                    <span className="font-Ptd inline-block px-1 w-32 text-right hm:text-sm hm:w-28">
                       {secondToTimeFormat(
                         Math.floor(
                           Number(val.time) - Number(currentTime) / 1000
@@ -431,8 +431,10 @@ export const Card = ({ location }: ScheduleInfo) => {
                       )}{' '}
                       {t('left')}
                     </span>
-                    <div className="text-center inline-block w-8 mx-2">▶</div>
-                    <span className="text-left inline-block">
+                    <div className="text-center inline-block w-8 mx-2 hm:w-4 hm:text-sm">
+                      ▶
+                    </div>
+                    <span className="text-left inline-block hm:text-sm">
                       {getBusDestination(val.type, location)}
                     </span>
                   </div>
@@ -451,7 +453,9 @@ export const Card = ({ location }: ScheduleInfo) => {
 
   return (
     <div className="h-full">
-      <h2 className="font-bold text-2xl pb-2">{titleText(location)}</h2>
+      <h2 className="font-bold text-2xl pb-2 hm:text-xl hm:pb-4 hm:pt-2">
+        {titleText(location)}
+      </h2>
       <div className="inline-block select-none h-4/5">
         {spinning ? (
           <div className="h-full table">

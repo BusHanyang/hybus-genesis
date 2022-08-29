@@ -124,7 +124,7 @@ function App() {
                         </CardView>
                       </header>
 
-                      <CardView className="p-6 h-[17rem]">
+                      <CardView className="p-6 h-[17rem] hm:p-4">
                         {
                           <Card
                             location={
