@@ -34,7 +34,6 @@ const Button = styled(CardView)`
   ${tw`
     dark:text-white
     hover:bg-blue-100 hover:text-black border-none flex-auto px-2 py-6
-    transition-all ease-out duration-700
   `}
   &.active {
     ${tw`
