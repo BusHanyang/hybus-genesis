@@ -23,7 +23,7 @@
     "dest_shuttle_o": "ShuttleCoke",
     "dest_shuttle_i": "ShuttleCoke",
     "dest_dorm": "Dormitory",
-    "no_dest": "Not Available",
+    "no_dest": "Not Avail.",
 
     "shuttlecoke_o_btn": "ShuttleCoke",
     "shuttlecoke_i_btn": "ShuttleCoke (to Dorm)",
