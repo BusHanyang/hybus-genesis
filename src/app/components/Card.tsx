@@ -387,8 +387,7 @@ export const Card = ({ location }: ScheduleInfo) => {
     verticalAlign: 'middle',
   }
 
-  const renderTimetable = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+  const RenderTimetable = (): JSX.Element => {
     const { t } = useTranslation()
 
     if (!spinning) {
@@ -471,7 +470,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         ) : (
           <></>
         )}
-        {renderTimetable()}
+        {RenderTimetable()}
       </div>
     </div>
   )
