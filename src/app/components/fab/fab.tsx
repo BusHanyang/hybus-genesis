@@ -74,7 +74,7 @@ export const Fabs = (props: { openModal: () => void }) => {
   }
   return (
     <>
-      <div className="font-Ptd">
+      <div className="font-Ptd select-none">
         <Fab
           icon={
             <img
@@ -82,6 +82,7 @@ export const Fabs = (props: { openModal: () => void }) => {
               src={Arrow}
               data-theme={dataTheme}
               alt="floating action button icon"
+              draggable="false"
             />
           }
           mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
@@ -104,6 +105,7 @@ export const Fabs = (props: { openModal: () => void }) => {
                 src={imgIcon}
                 style={{ padding: 8 }}
                 alt="light and dark mode icon"
+                draggable="false"
               />
             </Icons>
           </Action>
@@ -113,7 +115,12 @@ export const Fabs = (props: { openModal: () => void }) => {
             onClick={handleLangOnClick}
           >
             <Icons theme={dataTheme}>
-              <img src={LangImg} style={{ padding: 8 }} alt="changelog icon" />
+              <img
+                src={LangImg}
+                style={{ padding: 8 }}
+                alt="language icon"
+                draggable="false"
+              />
             </Icons>
           </Action>
           <Action
@@ -125,7 +132,12 @@ export const Fabs = (props: { openModal: () => void }) => {
             onClick={props.openModal}
           >
             <Icons theme={dataTheme}>
-              <img src={Info} style={{ padding: 8 }} alt="changelog icon" />
+              <img
+                src={Info}
+                style={{ padding: 8 }}
+                alt="changelog icon"
+                draggable="false"
+              />
             </Icons>
           </Action>
           <Action
@@ -138,6 +150,7 @@ export const Fabs = (props: { openModal: () => void }) => {
                 src={Support}
                 style={{ padding: 8 }}
                 alt="donate a cup of coffee icon"
+                draggable="false"
               />
             </Icons>
           </Action>
@@ -147,7 +160,12 @@ export const Fabs = (props: { openModal: () => void }) => {
             onClick={handleEmailOnClick}
           >
             <Icons theme={dataTheme}>
-              <img src={Email} style={{ padding: 8 }} alt="email icon" />
+              <img
+                src={Email}
+                style={{ padding: 8 }}
+                alt="email icon"
+                draggable="false"
+              />
             </Icons>
           </Action>
         </Fab>
