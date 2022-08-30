@@ -2,6 +2,7 @@ import './index.css'
 import './New.css'
 import './app/components/lang/i18n'
 
+import { Partytown } from '@builder.io/partytown/react'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { QueryClient, QueryClientProvider } from 'react-query'
@@ -22,6 +23,7 @@ ReactDOM.createRoot(root).render(
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={false} />
       <RecoilRoot>
+        <Partytown debug={false} forward={['dataLayer.push']} />
         <App />
       </RecoilRoot>
     </QueryClientProvider>
