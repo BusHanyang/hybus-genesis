@@ -22,7 +22,7 @@ i18n
   .init({
     //lng: "en", // 강제기본값
     fallbackLng: 'en',
-    debug: true,
+    debug: false,
     resources,
     //ns: ['translation'],
     detection: { order: ['cookie', 'navigator'] },
