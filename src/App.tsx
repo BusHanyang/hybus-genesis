@@ -70,7 +70,7 @@ function App() {
 
   const { t, i18n } = useTranslation()
 
-  const [themeMode, toggleTheme] = useDarkMode()
+  const [themeMode] = useDarkMode()
   const [tab, setTab] = useState<string>('')
 
   const saveClicked = (stn: string) => {

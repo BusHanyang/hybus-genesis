@@ -51,7 +51,7 @@ export const Modal = (props: {
   close: () => void
   children: React.ReactNode
 }) => {
-  const [themeMode, toggleTheme] = useDarkMode()
+  const [themeMode] = useDarkMode()
   const { t } = useTranslation()
   let dataTheme = ''
   if (themeMode === 'dark') {
