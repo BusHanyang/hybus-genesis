@@ -20,10 +20,7 @@ const Box = (props: {
         <p className="col-span-1 font-bold text-base text-chip-red">
           {props.label}
         </p>
-        <p className="col-span-3 text-base truncate">
-          
-          {props.title}
-        </p>
+        <p className="col-span-3 text-base truncate">{props.title}</p>
         <p className="col-span-1 font-normal text-base">{props.date}</p>
       </div>
     </a>
@@ -56,7 +53,7 @@ const Notice = () => {
         setLoaded(true)
       })
     }
-  }, [])
+  }, [isLoaded])
 
   const [num, changeNum] = useState<number>(0)
 
