@@ -5,6 +5,7 @@ import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
+import styled from 'styled-components'
 import tw from 'twin.macro'
 
 type SingleSchedule = {
@@ -30,6 +31,46 @@ type Settings = {
 }
 
 dayjs.extend(customParse)
+
+const TimetableWrapper = styled.div`
+  ${tw`h-full`}
+`
+
+const Headline = styled.h2`
+  ${tw`font-bold text-2xl pb-2 hm:text-xl hm:pb-4 hm:pt-2`}
+`
+
+const MainTimetable = styled.div`
+  ${tw`inline-block select-none h-4/5`}
+`
+
+const Chip = styled.div`
+  ${tw`dark:text-black py-1 w-12 rounded-full inline-block text-center hm:text-sm hm:leading-4 hm:w-10`}
+`
+
+const SingleTimetable = styled.div`
+  ${tw`text-left mx-auto py-1.5`}
+`
+
+const TimeLeftWrapper = styled.span`
+  ${tw`font-Ptd inline-block px-1 w-32 text-right hm:text-sm hm:w-28`}
+`
+
+const ArrowWrapper = styled.div`
+  ${tw`text-center inline-block w-8 mx-1.5 hm:w-4 hm:text-sm hm:mx-0`}
+`
+
+const DestinationWrapper = styled.span`
+  ${tw`text-left inline-block hm:text-sm`}
+`
+
+const NoTimetable = styled.div`
+  ${tw`h-full table`}
+`
+
+const NoTimetableInner = styled.span`
+  ${tw`table-cell align-middle`}
+`
 
 const getSettings = async (): Promise<null | Settings> => {
   return await axios
@@ -300,17 +341,9 @@ const titleText = (location: string): string => {
 
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
-    return (
-      <div className="bg-chip-red dark:text-black py-1 w-12 rounded-full inline-block text-center hm:text-sm hm:leading-4 hm:w-10">
-        {busTypeToText(type)}
-      </div>
-    )
+    return <Chip className="bg-chip-red">{busTypeToText(type)}</Chip>
   } else {
-    return (
-      <div className="bg-chip-blue dark:text-black py-1 w-12 rounded-full inline-block text-center hm:text-sm hm:leading-4 hm:w-10">
-        {busTypeToText(type)}
-      </div>
-    )
+    return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
   }
 }
 
@@ -394,9 +427,9 @@ export const Card = ({ location }: ScheduleInfo) => {
         // Timetable load failure, or doesn't exist
         return (
           <>
-            <div className="h-full table">
-              <span className="table-cell align-middle">{t('no_today')}</span>
-            </div>
+            <NoTimetable>
+              <NoTimetableInner>{t('no_today')}</NoTimetableInner>
+            </NoTimetable>
           </>
         )
       }
@@ -407,9 +440,9 @@ export const Card = ({ location }: ScheduleInfo) => {
         // Buses are done for today. User should refresh after midnight.
         return (
           <>
-            <div className="h-full table">
-              <span className="table-cell align-middle">{t('end_today')}</span>
-            </div>
+            <NoTimetable>
+              <NoTimetableInner>{t('end_today')}</NoTimetableInner>
+            </NoTimetable>
           </>
         )
       }
@@ -421,23 +454,21 @@ export const Card = ({ location }: ScheduleInfo) => {
             if (idx < 5) {
               return (
                 <React.Fragment key={idx}>
-                  <div className="text-left mx-auto w-82 py-1.5">
+                  <SingleTimetable>
                     {getColoredElement(val.type)}
-                    <span className="font-Ptd inline-block px-1 w-32 text-right hm:text-sm hm:w-28">
+                    <TimeLeftWrapper>
                       {secondToTimeFormat(
                         Math.floor(
                           Number(val.time) - Number(currentTime) / 1000
                         )
                       )}{' '}
                       {t('left')}
-                    </span>
-                    <div className="text-center inline-block w-8 mx-2 hm:w-4 hm:text-sm hm:mx-0">
-                      ▶
-                    </div>
-                    <span className="text-left inline-block hm:text-sm">
+                    </TimeLeftWrapper>
+                    <ArrowWrapper>▶</ArrowWrapper>
+                    <DestinationWrapper>
                       {getBusDestination(val.type, location)}
-                    </span>
-                  </div>
+                    </DestinationWrapper>
+                  </SingleTimetable>
                 </React.Fragment>
               )
             } else {
@@ -452,13 +483,11 @@ export const Card = ({ location }: ScheduleInfo) => {
   }
 
   return (
-    <div className="h-full">
-      <h2 className="font-bold text-2xl pb-2 hm:text-xl hm:pb-4 hm:pt-2">
-        {titleText(location)}
-      </h2>
-      <div className="inline-block select-none h-4/5">
+    <TimetableWrapper>
+      <Headline>{titleText(location)}</Headline>
+      <MainTimetable>
         {spinning ? (
-          <div className="h-full table">
+          <NoTimetable>
             <SyncLoader
               color="#AFBDCE"
               margin={4}
@@ -466,12 +495,12 @@ export const Card = ({ location }: ScheduleInfo) => {
               loading={spinning}
               cssOverride={tw`table-cell align-middle`}
             />
-          </div>
+          </NoTimetable>
         ) : (
           <></>
         )}
         {RenderTimetable()}
-      </div>
-    </div>
+      </MainTimetable>
+    </TimetableWrapper>
   )
 }
