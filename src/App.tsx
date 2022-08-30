@@ -33,7 +33,7 @@ const CardView = styled.div`
 const Button = styled(CardView)`
   ${tw`
     flex will-change-transform overflow-hidden break-words whitespace-pre-line
-    hover:bg-blue-100 hover:text-black border-none px-2 py-6 dark:text-white hover:dark:text-black
+    hover:bg-blue-100 hover:text-black border-none px-2 py-6 hm:py-4 hm:text-sm dark:text-white hover:dark:text-black
   `}
   &.active {
     ${tw`
@@ -115,7 +115,7 @@ function App() {
                       <header className="App-header">
                         <h1
                           id="title"
-                          className="font-bold p-3 text-3xl pt-6 pb-3"
+                          className="font-bold p-3 text-3xl hm:text-[1.625rem] pt-6 pb-3"
                         >
                           {t('title')}
                         </h1>
