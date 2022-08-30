@@ -4,8 +4,6 @@ if (pageTheme !== null) {
   const barStyle = document.querySelector('meta[name=theme-color]')
 
   if (barStyle !== null) {
-    console.log('hi')
-
     if (pageTheme === 'light') {
       barStyle.setAttribute('content', '#FFFFFF')
     }
