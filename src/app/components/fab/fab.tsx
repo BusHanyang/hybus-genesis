@@ -13,7 +13,7 @@ import Email from '/image/email_black_48dp.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
-import Support from '/image/local_cafe_black_48dp.svg'
+import Donate from '/image/local_cafe_black_48dp.svg'
 
 import { useDarkMode } from '../useDarkMode'
 
@@ -78,7 +78,7 @@ export const Fabs = (props: { openModal: () => void }) => {
         <Fab
           icon={
             <img
-              className="iconImg w-12 h-12"
+              className="iconImg w-12 h-12 cursor-default"
               src={Arrow}
               data-theme={dataTheme}
               alt="floating action button icon"
@@ -102,6 +102,7 @@ export const Fabs = (props: { openModal: () => void }) => {
           >
             <Icons theme={dataTheme}>
               <img
+                className="cursor-default"
                 src={imgIcon}
                 style={{ padding: 8 }}
                 alt="light and dark mode icon"
@@ -116,6 +117,7 @@ export const Fabs = (props: { openModal: () => void }) => {
           >
             <Icons theme={dataTheme}>
               <img
+                className="cursor-default"
                 src={LangImg}
                 style={{ padding: 8 }}
                 alt="language icon"
@@ -133,6 +135,7 @@ export const Fabs = (props: { openModal: () => void }) => {
           >
             <Icons theme={dataTheme}>
               <img
+                className="cursor-default"
                 src={Info}
                 style={{ padding: 8 }}
                 alt="changelog icon"
@@ -147,7 +150,8 @@ export const Fabs = (props: { openModal: () => void }) => {
           >
             <Icons theme={dataTheme}>
               <img
-                src={Support}
+                className="cursor-default"
+                src={Donate}
                 style={{ padding: 8 }}
                 alt="donate a cup of coffee icon"
                 draggable="false"
@@ -161,6 +165,7 @@ export const Fabs = (props: { openModal: () => void }) => {
           >
             <Icons theme={dataTheme}>
               <img
+                className="cursor-default"
                 src={Email}
                 style={{ padding: 8 }}
                 alt="email icon"
