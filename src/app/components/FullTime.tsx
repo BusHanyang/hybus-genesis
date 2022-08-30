@@ -268,17 +268,10 @@ const FullTime = () => {
     ['weekend', t('weekend')],
   ]
 
-  const App = styled.div`
-    ${tw`
-      pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
-      dark:bg-zinc-800 dark:text-white
-    `}
-  `
-
   return (
     <>
       <div className={`${themeMode === 'dark' ? 'dark' : ''} `}>
-        <App>
+        <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white">
           <div className="flex self-center py-5 ">
             <img
               src="../image/arrow_back_black_36dp.svg"
@@ -354,7 +347,7 @@ const FullTime = () => {
             </div>
           </div>
           <div className="pb-6">{renderTimebox()}</div>
-        </App>
+        </div>
       </div>
     </>
   )
