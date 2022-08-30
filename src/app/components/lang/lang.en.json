@@ -1,0 +1,56 @@
+{
+    "lang": "en",
+    "changeLang": "한국어",
+    "title": "BusHanyang",
+
+    "notice": "Notice",
+    "news": "News",
+
+    "cycle": "Cycle",
+    "direct": "Direct",
+    "NA": "N/A",
+    "left": "Left",
+
+    "shuttlecoke_o": "ShuttleCoke",
+    "shuttlecoke_i": "ShuttleCoke (To Dorm)",
+    "subway": "HYU@Ansan Stn.",
+    "residence": "Dormitory",
+    "yesulin": "Yesulin Apt.",
+    "else": "unknown error",
+    
+    "dest_subway": "HYU Stn.",
+    "dest_yesul": "Yesulin Apt.",
+    "dest_shuttle_o": "ShuttleCoke",
+    "dest_shuttle_i": "ShuttleCoke",
+    "dest_dorm": "Dormitory",
+    "no_dest": "Not Avail.",
+
+    "shuttlecoke_o_btn": "ShuttleCoke",
+    "shuttlecoke_i_btn": "ShuttleCoke (to Dorm)",
+    "subway_btn": "HYU Station",
+    "residence_btn": "Dormitory",
+    "yesulin_btn": "Yesulin Apartment",
+    "all_btn": "Full Timetable",
+
+    "no_today": "There is no shuttle bus for today.",
+    "end_today": "Shuttle bus service has ended today.",
+
+    "ask": "Contact",
+    "donate": "Donate",
+    "changelog": "ChangeLog",
+    "dark": "Dark",
+    "light": "Light",
+
+    "none_data": "조회 정보가 없습니다.",
+
+    "bus_stop": "Bus stop",
+    "period": "Period",
+    "days_week": "Days of the week",
+    "o_clock": "'",
+
+    "semester": "Semester",
+    "vacation": "Vacation",
+    "vacation_session": "Vacation Session",
+    "week": "Week",
+    "weekend": "Weekend"   
+}
