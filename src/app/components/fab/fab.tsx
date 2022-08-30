@@ -24,7 +24,7 @@ const Icons = styled.div<{ theme: string }>`
 `
 
 export const Fabs = (props: { openModal: () => void }) => {
-  const [themeMode, toggleTheme] = useDarkMode()
+  const [, toggleTheme] = useDarkMode()
   const { t, i18n } = useTranslation()
 
   let changeText = ''
