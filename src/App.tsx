@@ -181,7 +181,7 @@ function App() {
                       </div>
 
                       <Link to="/all">
-                        <Button id="all" className="w-full">
+                        <Button id="all" className="w-full cursor-default">
                           {t('all_btn')}
                         </Button>
                       </Link>
