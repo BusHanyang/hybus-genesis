@@ -33,7 +33,7 @@ const CardView = styled.div`
 const Button = styled(CardView)`
   ${tw`
     flex will-change-transform overflow-hidden break-words whitespace-pre-line
-    hover:bg-blue-100 hover:text-black border-none px-2 py-6 dark:text-white
+    hover:bg-blue-100 hover:text-black border-none px-2 py-6 dark:text-white hover:dark:text-black
   `}
   &.active {
     ${tw`
