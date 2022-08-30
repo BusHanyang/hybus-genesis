@@ -279,7 +279,7 @@ const FullTime = () => {
               width={35}
               className="cursor-default dark:invert"
               onClick={() => {
-                navigate(`/`)
+                navigate(`/`, { replace: true })
               }}
             />
             <span className="text-left font-bold text-2xl px-1">
