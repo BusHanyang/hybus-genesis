@@ -431,7 +431,7 @@ export const Card = ({ location }: ScheduleInfo) => {
                       )}{' '}
                       {t('left')}
                     </span>
-                    <div className="text-center inline-block w-8 mx-2 hm:w-4 hm:text-sm hm:mx-0">
+                    <div className="text-center inline-block w-8 mx-1.5 hm:w-4 hm:text-sm hm:mx-0">
                       ▶
                     </div>
                     <span className="text-left inline-block hm:text-sm">
