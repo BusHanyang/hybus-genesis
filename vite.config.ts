@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
+import { partytownVite } from '@builder.io/partytown/utils'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -65,6 +67,9 @@ export default defineConfig({
           },
         ],
       },
+    }),
+    partytownVite({
+      dest: path.join(__dirname, 'dist', '~partytown'),
     }),
   ],
   publicDir: './public',
