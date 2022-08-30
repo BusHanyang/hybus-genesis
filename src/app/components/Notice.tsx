@@ -16,12 +16,15 @@ const Box = (props: {
 }) => {
   return (
     <a className="animate-carousel cursor-pointer " href={props.url}>
-      <div>
-        <p className="float-left pl-2 font-bold text-base text-chip-red">
+      <div className="grid grid-cols-5 gap-2">
+        <p className="col-span-1 font-bold text-base text-chip-red">
           {props.label}
         </p>
-        <p className="inline font-medium text-base">{props.title}</p>
-        <p className="float-right pr-2 font-normal text-base">{props.date}</p>
+        <p className="col-span-3 text-base truncate">
+          
+          {props.title}
+        </p>
+        <p className="col-span-1 font-normal text-base">{props.date}</p>
       </div>
     </a>
   )
