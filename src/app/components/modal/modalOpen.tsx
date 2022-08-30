@@ -54,7 +54,7 @@ const ModalOpen = (props: {
         setLoaded(true)
       })
     }
-  }, [])
+  }, [isLoaded])
 
   return (
     <React.Fragment>
