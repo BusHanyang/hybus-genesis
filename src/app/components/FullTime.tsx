@@ -77,7 +77,7 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`flex cursor-pointer font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid ${
+        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid ${
           props.type === props.value
             ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9]  dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759]' // Selected
             : 'text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
@@ -277,7 +277,7 @@ const FullTime = () => {
               src="../image/arrow_back_black_36dp.svg"
               alt="back page"
               width={35}
-              className="cursor-pointer dark:invert"
+              className="cursor-default dark:invert"
               onClick={() => {
                 navigate(`/`)
               }}
