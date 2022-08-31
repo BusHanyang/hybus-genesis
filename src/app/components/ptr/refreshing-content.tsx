@@ -28,8 +28,6 @@ const LdsEllipsisDiv = styled.div<{ theme: string }>`
   }
 `
 
-
-
 interface RefreshingContentProps {
   mode: string
 }

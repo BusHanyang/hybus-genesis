@@ -304,7 +304,9 @@ const FullTime = () => {
               <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg hm:text-base">{t('period')}</span>
+              <span className="text-left font-bold text-lg hm:text-base">
+                {t('period')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrSeason.map((i) => {
                   return (
