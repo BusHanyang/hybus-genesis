@@ -5,6 +5,7 @@ module.exports = {
       screens: {
         hm: { max: '400px' },
         hsm: { max: '360px' },
+        txt: { max: '352px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
@@ -20,7 +21,7 @@ module.exports = {
         Ptd: ['Pretendard'],
       },
       animation: {
-        carousel: 'upOut 4s ease-in-out infinite',
+        carousel: 'upOut 7s ease-in-out infinite',
         modalShow: 'modalShow 0.3s',
         modalBgShow: 'modalBgShow 0.3s',
         ldsEllipsis1: 'ldsEllipsis1 0.6s infinite',
@@ -39,12 +40,12 @@ module.exports = {
             transform: 'translate3d(0, 0%, 0)',
           },
           '70%': {
-            opacity: '0',
+            opacity: '1',
             transform: 'translate3d(0, 0%, 0)',
           },
           to: {
             opacity: '0',
-            transform: 'translate3d(0, 0%, 0)',
+            transform: 'translate3d(0, -10%, 0)',
           },
         },
         modalShow: {

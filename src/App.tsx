@@ -18,7 +18,7 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
   ${tw`
-    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
+    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
   `}
 `
@@ -32,13 +32,17 @@ const CardView = styled.div`
 `
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden break-words whitespace-pre-line
-    hover:bg-blue-100 hover:text-black border-none px-2 py-6 hm:py-4 hm:text-sm dark:text-white hover:dark:text-black
+    flex will-change-transform overflow-hidden cursor-pointer txt:leading-4
+    border-none px-2 py-6 hm:py-4 hm:text-sm dark:text-white
   `}
   &.active {
     ${tw`
       bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
     `}
+  }
+
+  &#shuttlecoke_i {
+    ${tw`txt:flex-col txt:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
 
@@ -80,10 +84,10 @@ function App() {
 
   useEffect(() => {
     const whatlang = window.localStorage.getItem('lang') || i18n.language
-    if (whatlang === 'ko') {
-      i18n.changeLanguage('ko')
-    } else {
+    if (whatlang === 'en') {
       i18n.changeLanguage('en')
+    } else {
+      i18n.changeLanguage('ko')
     }
     window.localStorage.setItem('lang', i18n.language)
   }, [i18n])
@@ -102,7 +106,6 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs openModal={openModal} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={color}
@@ -112,6 +115,7 @@ function App() {
                 >
                   <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
                     <Apps>
+                      <Fabs openModal={openModal} />
                       <header className="App-header">
                         <h1
                           id="title"
@@ -168,7 +172,15 @@ function App() {
                           }`}
                           onClick={() => saveClicked('shuttlecoke_i')}
                         >
-                          {t('shuttlecoke_i_btn')}
+                          {t('shuttlecoke_i_btn')
+                            .split('\n')
+                            .map((c, i) => {
+                              return (
+                                <span key={i} className="whitespace-nowrap">
+                                  {c}
+                                </span>
+                              )
+                            })}
                         </Button>
 
                         <Button
@@ -185,7 +197,10 @@ function App() {
                           {t('all_btn')}
                         </Button>
                       </Link>
-                      <p id="copyright" className="dark:text-white pt-3">
+                      <p
+                        id="copyright"
+                        className="dark:text-white pt-3 hsm:text-sm hsm:leading-4"
+                      >
                         Copyright © 2020-2022{' '}
                         <a
                           className="underline"

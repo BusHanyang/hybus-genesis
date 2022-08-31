@@ -41,7 +41,8 @@
     "changelog": "변경로그",
     "dark": "다크모드",
     "light": "라이트모드",
-    
+
+    "loading": "로딩중...",
     "none_data": "조회 정보가 없습니다.",
 
     "bus_stop": "버스 정류장",

@@ -26,7 +26,7 @@
     "no_dest": "Not Avail.",
 
     "shuttlecoke_o_btn": "ShuttleCoke",
-    "shuttlecoke_i_btn": "ShuttleCoke (to Dorm)",
+    "shuttlecoke_i_btn": "ShuttleCoke\n(to Dorm)",
     "subway_btn": "HYU Station",
     "residence_btn": "Dormitory",
     "yesulin_btn": "Yesulin Apartment",
@@ -42,7 +42,8 @@
     "dark": "Dark",
     "light": "Light",
 
-    "none_data": "조회 정보가 없습니다.",
+    "loading": "Loading...",
+    "none_data": "No timetable available.",
 
     "bus_stop": "Bus stop",
     "period": "Period",
@@ -52,6 +53,6 @@
     "semester": "Semester",
     "vacation": "Vacation",
     "vacation_session": "Vacation Session",
-    "week": "Week",
+    "week": "Weekday",
     "weekend": "Weekend"   
 }

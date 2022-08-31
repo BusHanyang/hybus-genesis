@@ -7,9 +7,9 @@ import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import Arrow from '/image/add_white_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
+import Arrow from '/image/expand_less_white_48dp.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
@@ -78,7 +78,7 @@ export const Fabs = (props: { openModal: () => void }) => {
         <Fab
           icon={
             <img
-              className="iconImg w-12 h-12 cursor-default"
+              className="iconImg w-12 h-12 cursor-default mx-auto"
               src={Arrow}
               data-theme={dataTheme}
               alt="floating action button icon"
@@ -87,6 +87,7 @@ export const Fabs = (props: { openModal: () => void }) => {
           }
           mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
           style={{
+            position: 'absolute',
             bottom: '1.5rem',
             right: '1.5rem',
             margin: '0px',

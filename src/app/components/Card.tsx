@@ -298,7 +298,7 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
     } else if (busType == 'DY') {
       return t('dest_yesul')
     } else {
-      return '???'
+      return t('loading')
     }
   } else if (currentLoc == 'subway') {
     if (busType == 'C') {
@@ -314,12 +314,12 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
     } else if (busType == 'R') {
       return t('dest_dorm')
     } else {
-      return '???'
+      return t('loading')
     }
   } else if (currentLoc == 'residence') {
     return t('dest_shuttle_o')
   } else {
-    return '???'
+    return t('loading')
   }
 }
 
@@ -404,6 +404,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         setTimetable(res)
         setSpinning(false)
         setCurrentLocation(location)
+        setCurrentTime(new Date().getTime())
       })
     }
   }, [currentLocation, isLoaded, location, season, week])

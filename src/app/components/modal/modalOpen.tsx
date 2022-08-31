@@ -41,7 +41,7 @@ const ModalOpen = (props: {
       })
       .catch((error) => {
         console.log(`error ${error}`)
-        return null
+        return new Array<Changelog>
       })
       .then((response) => response as unknown as Array<Changelog>)
   }
@@ -59,7 +59,7 @@ const ModalOpen = (props: {
     <React.Fragment>
       <Modal open={props.isOpen} close={props.closeModal}>
         <div
-          className="font-Ptd"
+          className='font-Ptd'
           style={{ overflow: 'auto', maxHeight: '450px' }}
         >
           <ContentArea>
