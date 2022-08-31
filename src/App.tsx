@@ -84,10 +84,10 @@ function App() {
 
   useEffect(() => {
     const whatlang = window.localStorage.getItem('lang') || i18n.language
-    if (whatlang === 'ko') {
-      i18n.changeLanguage('ko')
-    } else {
+    if (whatlang === 'en') {
       i18n.changeLanguage('en')
+    } else {
+      i18n.changeLanguage('ko')
     }
     window.localStorage.setItem('lang', i18n.language)
   }, [i18n])
