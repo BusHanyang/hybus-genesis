@@ -16,7 +16,7 @@ const Box = (props: {
 }) => {
   return (
     <a className="animate-carousel cursor-pointer " href={props.url}>
-      <div className="grid grid-cols-5 gap-2">
+      <div className="grid grid-flow-col  grid-cols-5 gap-2">
         <p className="col-span-1 font-bold text-base text-chip-red">
           {props.label}
         </p>
@@ -58,7 +58,7 @@ const Notice = () => {
   useEffect(() => {
     setTimeout(() => {
       changeNum((num + 1) % data.length)
-    }, 3000)
+    }, 7000)
   }, [data.length, num])
 
   return (
