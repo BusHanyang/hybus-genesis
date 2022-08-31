@@ -267,8 +267,8 @@ const FullTime = () => {
 
   return (
     <>
-      <div className={`${themeMode === 'dark' ? 'dark' : ''} `}>
-        <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white">
+      <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+        <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white max-w-6xl">
           <div className="flex self-center py-5 hm:py-3">
             <img
               src="../image/arrow_back_black_36dp.svg"

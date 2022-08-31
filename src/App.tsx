@@ -18,8 +18,8 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
   ${tw`
-    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none
-    dark:bg-zinc-800 dark:text-white relative
+    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-6xl relative
+    dark:bg-zinc-800 dark:text-white
   `}
 `
 
@@ -105,7 +105,6 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs openModal={openModal} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={color}
@@ -115,6 +114,7 @@ function App() {
                 >
                   <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
                     <Apps>
+                      <Fabs openModal={openModal} />
                       <header className="App-header">
                         <h1
                           id="title"

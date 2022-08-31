@@ -87,6 +87,7 @@ export const Fabs = (props: { openModal: () => void }) => {
           }
           mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
           style={{
+            position: 'absolute',
             bottom: '1.5rem',
             right: '1.5rem',
             margin: '0px',
