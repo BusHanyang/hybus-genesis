@@ -78,7 +78,7 @@ export const Fabs = (props: { openModal: () => void }) => {
         <Fab
           icon={
             <img
-              className="iconImg w-12 h-12 cursor-default"
+              className="iconImg w-12 h-12 cursor-default mx-auto"
               src={Arrow}
               data-theme={dataTheme}
               alt="floating action button icon"
