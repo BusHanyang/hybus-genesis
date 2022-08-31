@@ -3,7 +3,8 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        'hm': {'max': '400px'}
+        hm: { max: '400px' },
+        hsm: { max: '360px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',

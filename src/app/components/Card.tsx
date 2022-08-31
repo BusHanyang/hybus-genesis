@@ -37,7 +37,7 @@ const TimetableWrapper = styled.div`
 `
 
 const Headline = styled.h2`
-  ${tw`font-bold text-2xl pb-2 hm:text-xl hm:pb-4 hm:pt-2`}
+  ${tw`font-bold text-2xl pb-2 hsm:text-xl hsm:pb-4 hsm:pt-2 hm:text-[1.375rem] hm:pb-4 hm:pt-2`}
 `
 
 const MainTimetable = styled.div`
@@ -45,7 +45,7 @@ const MainTimetable = styled.div`
 `
 
 const Chip = styled.div`
-  ${tw`dark:text-black py-1 w-12 rounded-full inline-block text-center hm:text-sm hm:leading-4 hm:w-10`}
+  ${tw`dark:text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem]`}
 `
 
 const SingleTimetable = styled.div`
@@ -53,15 +53,15 @@ const SingleTimetable = styled.div`
 `
 
 const TimeLeftWrapper = styled.span`
-  ${tw`font-Ptd inline-block px-1 w-32 text-right hm:text-sm hm:w-28`}
+  ${tw`font-Ptd inline-block px-1 w-32 text-right hsm:text-sm hsm:w-28 hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
 `
 
 const ArrowWrapper = styled.div`
-  ${tw`text-center inline-block w-8 mx-1.5 hm:w-4 hm:text-sm hm:mx-0`}
+  ${tw`text-center inline-block w-8 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
 `
 
 const DestinationWrapper = styled.span`
-  ${tw`text-left inline-block hm:text-sm`}
+  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6`}
 `
 
 const NoTimetable = styled.div`
