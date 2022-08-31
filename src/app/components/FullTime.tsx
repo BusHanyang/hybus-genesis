@@ -62,7 +62,7 @@ const getTimetable = async (
   location: Location
 ): Promise<Array<SingleSchedule>> => {
   return await api(
-    `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
+    `https://api.hybus.app/timetable/${season}/${week}/${location}`
   )
 }
 

@@ -31,8 +31,7 @@ const ModalOpen = (props: {
 }) => {
   const [data, setData] = useState<Array<Changelog>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
-  const url =
-    'https://proxy.anoldstory.workers.dev/https://api.hybus.app/changelog/'
+  const url = 'https://api.hybus.app/changelog/'
 
   const getChangelog = async (): Promise<Array<Changelog>> => {
     return await axios
