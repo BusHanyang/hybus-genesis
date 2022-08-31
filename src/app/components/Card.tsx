@@ -404,6 +404,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         setTimetable(res)
         setSpinning(false)
         setCurrentLocation(location)
+        setCurrentTime(new Date().getTime())
       })
     }
   }, [currentLocation, isLoaded, location, season, week])
