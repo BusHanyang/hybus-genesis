@@ -41,7 +41,7 @@ const ModalOpen = (props: {
       })
       .catch((error) => {
         console.log(`error ${error}`)
-        return null
+        return new Array<Changelog>
       })
       .then((response) => response as unknown as Array<Changelog>)
   }
