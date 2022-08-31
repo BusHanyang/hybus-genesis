@@ -75,7 +75,7 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 ${
+        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg ${
           props.type === props.value
             ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9]  dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759] hm:pl-1.5' // Selected
             : 'text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
