@@ -17,12 +17,15 @@ const LdsEllipsisDiv = styled.div<{ theme: string }>`
   &:nth-child(1) {
     ${tw`left-1.5 animate-ldsEllipsis1`}
   }
+
   &:nth-child(2) {
     ${tw`left-1.5 animate-ldsEllipsis2`}
   }
+
   &:nth-child(3) {
     ${tw`left-7 animate-ldsEllipsis2`}
   }
+
   &:nth-child(4) {
     ${tw`left-11 animate-ldsEllipsis3`}
   }

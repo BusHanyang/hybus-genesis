@@ -40,6 +40,7 @@ const Button = styled(CardView)`
       bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
     `}
   }
+
   &#shuttlecoke_i {
     ${tw`txt:flex-col txt:gap-x-0 gap-x-1 items-center justify-center`}
   }
@@ -196,7 +197,10 @@ function App() {
                           {t('all_btn')}
                         </Button>
                       </Link>
-                      <p id="copyright" className="dark:text-white pt-3 hsm:text-sm hsm:leading-4">
+                      <p
+                        id="copyright"
+                        className="dark:text-white pt-3 hsm:text-sm hsm:leading-4"
+                      >
                         Copyright © 2020-2022{' '}
                         <a
                           className="underline"

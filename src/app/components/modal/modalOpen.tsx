@@ -59,7 +59,7 @@ const ModalOpen = (props: {
     <React.Fragment>
       <Modal open={props.isOpen} close={props.closeModal}>
         <div
-          className="font-Ptd"
+          className='font-Ptd'
           style={{ overflow: 'auto', maxHeight: '450px' }}
         >
           <ContentArea>
