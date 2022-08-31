@@ -104,7 +104,7 @@ const TimeBox = (props: FilteredTimeTables) => {
           {props.time}
           {t('o_clock')}
         </div>
-        <div className="font-medium inline-grid grid-flow-row gap-2 col-span-5 ">
+        <div className="font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px">
           <div
             className={`inline-grid grid-cols-5 ${
               props.circle.length === 0 ? 'hidden' : 'block'
