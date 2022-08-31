@@ -171,10 +171,15 @@ function App() {
                           }`}
                           onClick={() => saveClicked('shuttlecoke_i')}
                         >
-                          {t('shuttlecoke_i_btn').split('\n').map(c => {
-                            // eslint-disable-next-line react/jsx-key
-                            return ( <span className='whitespace-nowrap'>{c}</span> )
-                          })}
+                          {t('shuttlecoke_i_btn')
+                            .split('\n')
+                            .map((c, i) => {
+                              return (
+                                <span key={i} className="whitespace-nowrap">
+                                  {c}
+                                </span>
+                              )
+                            })}
                         </Button>
 
                         <Button
