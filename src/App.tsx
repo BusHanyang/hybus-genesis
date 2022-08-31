@@ -32,7 +32,7 @@ const CardView = styled.div`
 `
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-pointer txt:leading-4
+    flex will-change-transform overflow-hidden cursor-default txt:leading-4
     border-none px-2 py-6 hm:py-4 hm:text-sm dark:text-white
   `}
   &.active {
