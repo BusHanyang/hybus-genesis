@@ -42,8 +42,8 @@
     "dark": "Dark",
     "light": "Light",
 
-    "none_data": "조회 정보가 없습니다.",
     "loading": "Loading...",
+    "none_data": "No timetable available.",
 
     "bus_stop": "Bus stop",
     "period": "Period",
