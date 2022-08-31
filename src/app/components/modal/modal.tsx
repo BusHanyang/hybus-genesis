@@ -17,7 +17,7 @@ const ModalButton = styled.button`
   ${tw`outline-none cursor-pointer border-0`}
 `
 const ModalSection = styled.section`
-  ${tw`w-11/12 max-w-screen-sm mx-auto rounded-t-lg bg-white overflow-auto animate-modalShow`}
+  ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
 `
 const ModalHeader = styled.header<{ theme: string }>`
   ${({ theme }) => {
