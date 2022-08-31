@@ -18,7 +18,7 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
   ${tw`
-    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
+    h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
   `}
 `
@@ -97,6 +97,11 @@ function App() {
     saveClicked(aTab)
   }, [tab])
 
+  useEffect(() => {
+    document.body.classList.add('h-full')
+    document.documentElement.classList.add('h-full')
+  })
+
   return (
     <>
       <Reset />
@@ -113,7 +118,9 @@ function App() {
                   refreshingContent={<Refreshing mode={dark} />}
                   resistance={3}
                 >
-                  <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+                  <div
+                    className={`${themeMode === 'dark' ? 'dark' : ''} h-full`}
+                  >
                     <Apps>
                       <Fabs openModal={openModal} />
                       <header className="App-header">

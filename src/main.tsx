@@ -18,6 +18,8 @@ const root = document.getElementById('root')
 
 if (!root) throw new Error('Error! Cannot find root element')
 
+root.classList.add('h-full')
+
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
