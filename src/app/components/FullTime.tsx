@@ -138,7 +138,7 @@ const TimeBox = (props: FilteredTimeTables) => {
                   props.directY.length === 0 ? 'hidden' : 'text-green-500'
                 }`}
               >
-                {props.directY.join(' ')}
+                {`${props.directY.join(' ')} (${t('to_yesulin')})`}
               </span>
             </div>
           </div>
