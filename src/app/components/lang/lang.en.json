@@ -31,6 +31,7 @@
     "residence_btn": "Dormitory",
     "yesulin_btn": "Yesulin Apartment",
     "all_btn": "Full Timetable",
+    "to_yesulin": "To Yesulin",
 
     "no_today": "There is no shuttle bus for today.",
     "end_today": "Shuttle bus service has ended today.",

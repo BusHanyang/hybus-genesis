@@ -31,6 +31,7 @@
     "residence_btn": "기숙사",
     "yesulin_btn": "예술인APT",
     "all_btn": "전체 시간표",
+    "to_yesulin": "예술인행",
 
     "no_today": "오늘 운행하는 셔틀이 존재하지 않습니다.",
     "end_today": "오늘 셔틀 운행이 종료되었습니다.",

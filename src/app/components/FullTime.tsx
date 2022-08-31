@@ -75,19 +75,18 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid ${
+        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg ${
           props.type === props.value
-            ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9]  dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759]' // Selected
+            ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9]  dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759] hm:pl-1.5' // Selected
             : 'text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
         }`}
         onClick={() => props.func(props.value)}
       >
         {props.type === props.value ? (
           <img
-            className="dark:invert mr-1"
+            className="dark:invert mr-1 w-5 hm:w-4"
             src="../image/done_FILL0_wght600_GRAD0_opsz48.svg"
             alt="check"
-            width={18}
           />
         ) : null}
         {props.info}
@@ -100,18 +99,18 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
+      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5 hm:h-20 hm:p-3 hm:text-sm">
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
         </div>
-        <div className="font-medium  inline-grid grid-flow-row gap-2 col-span-5 ">
+        <div className="font-medium inline-grid grid-flow-row gap-2 col-span-5 ">
           <div
             className={`inline-grid grid-cols-5 ${
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
+            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
               {t('cycle')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
@@ -123,7 +122,7 @@ const TimeBox = (props: FilteredTimeTables) => {
               props.direct.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
+            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center  hm:w-10 hm:py-0.5">
               {t('direct')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
@@ -139,7 +138,7 @@ const TimeBox = (props: FilteredTimeTables) => {
                   props.directY.length === 0 ? 'hidden' : 'text-green-500'
                 }`}
               >
-                {props.directY.join(' ')}
+                {`${props.directY.join(' ')} (${t('to_yesulin')})`}
               </span>
             </div>
           </div>
@@ -270,23 +269,22 @@ const FullTime = () => {
     <>
       <div className={`${themeMode === 'dark' ? 'dark' : ''} `}>
         <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white">
-          <div className="flex self-center py-5 ">
+          <div className="flex self-center py-5 hm:py-3">
             <img
               src="../image/arrow_back_black_36dp.svg"
               alt="back page"
-              width={35}
-              className="cursor-default dark:invert"
+              className="cursor-default dark:invert w-6 mr-2 hm:w-4"
               onClick={() => {
                 navigate(`/`, { replace: true })
               }}
             />
-            <span className="text-left font-bold text-2xl px-1">
+            <span className="text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5">
               {t('all_btn')}
             </span>
           </div>
           <div className=" h-full scroll-smooth	">
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">
+              <span className="text-left font-bold text-lg hm:text-base">
                 {t('bus_stop')}
               </span>
               <div className="flex gap-2 flex-wrap">
@@ -306,7 +304,9 @@ const FullTime = () => {
               <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">{t('period')}</span>
+              <span className="text-left font-bold text-lg hm:text-base">
+                {t('period')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrSeason.map((i) => {
                   return (
@@ -324,7 +324,7 @@ const FullTime = () => {
               </div>
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">
+              <span className="text-left font-bold text-lg hm:text-base">
                 {t('days_week')}
               </span>
               <div className="flex gap-2 flex-wrap">
