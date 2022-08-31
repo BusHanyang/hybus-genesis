@@ -18,7 +18,7 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
   ${tw`
-    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-6xl relative
+    h-screen pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
   `}
 `
