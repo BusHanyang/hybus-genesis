@@ -74,7 +74,7 @@ const NoTimetableInner = styled.span`
 
 const getSettings = async (): Promise<null | Settings> => {
   return await axios
-    .get('https://proxy.anoldstory.workers.dev/https://api.hybus.app/settings/')
+    .get('https://api.hybus.app/settings/')
     .then((response) => {
       if (response.status !== 200) {
         console.log(`Error code: ${response.statusText}`)
@@ -235,7 +235,7 @@ const getTimetable = async (
   location: string
 ): Promise<Array<SingleSchedule>> => {
   return await timetableApi(
-    `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
+    `https://api.hybus.app/timetable/${season}/${week}/${location}`
   ).then((res) =>
     res.map((val) => {
       val['time'] = String(dayjs(val.time, 'HH:mm').unix())
