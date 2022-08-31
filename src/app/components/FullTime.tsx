@@ -273,7 +273,7 @@ const FullTime = () => {
             <img
               src="../image/arrow_back_black_36dp.svg"
               alt="back page"
-              className="cursor-default dark:invert w-9 hm:w-7"
+              className="cursor-default dark:invert w-6 mr-2 hm:w-4"
               onClick={() => {
                 navigate(`/`, { replace: true })
               }}
