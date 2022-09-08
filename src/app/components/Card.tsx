@@ -145,25 +145,26 @@ const getSeason = (setting: Settings | null): [string, string] => {
 
     let isHoliday = false
 
-    convertedHoliday.forEach((date) => {
+    for (const holiday of convertedHoliday) {
       if (
-        today.year() == date.year() &&
-        today.month() == date.month() &&
-        today.date() == date.date()
+        today.year() == holiday.year() &&
+        today.month() == holiday.month() &&
+        today.date() == holiday.date()
       ) {
         isHoliday = true
+        break
       }
-    })
+    }
 
-    convertedHaltDay.forEach((date) => {
+    for (const haltDay of convertedHaltDay) {
       if (
-        today.year() == date.year() &&
-        today.month() == date.month() &&
-        today.date() == date.date()
+        today.year() == haltDay.year() &&
+        today.month() == haltDay.month() &&
+        today.date() == haltDay.date()
       ) {
         return ['halt', '']
       }
-    })
+    }
 
     if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
       // Semester
@@ -386,6 +387,10 @@ export const Card = ({ location }: ScheduleInfo) => {
         setLoaded(true)
         setCurrentLocation(location)
       })
+    } else if (season === 'halt' && !isLoaded) {
+      // If the season is halt, then the timetable will be empty.
+      setSpinning(false)
+      setLoaded(true)
     }
   }, [isLoaded, location, season, week])
 
@@ -406,6 +411,15 @@ export const Card = ({ location }: ScheduleInfo) => {
         setCurrentLocation(location)
         setCurrentTime(new Date().getTime())
       })
+    } else if (
+      season === 'halt' &&
+      isLoaded &&
+      currentLocation !== 'init' &&
+      location !== currentLocation
+    ) {
+      setTimetable([])
+      setCurrentLocation(location)
+      setCurrentTime(new Date().getTime())
     }
   }, [currentLocation, isLoaded, location, season, week])
 
