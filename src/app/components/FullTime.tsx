@@ -106,14 +106,14 @@ const TimeBox = (props: FilteredTimeTables) => {
         </div>
         <div className="font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px">
           <div
-            className={`inline-grid grid-cols-5  ${
+            className={`inline-grid grid-cols-5 ${
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
             <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
               {t('cycle')}
             </div>
-            <div className="self-center text-left ml-3 col-span-4 ">
+            <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
             </div>
           </div>
