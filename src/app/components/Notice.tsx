@@ -15,15 +15,17 @@ const Box = (props: {
   date: string
 }) => {
   return (
-    <a className="animate-carousel cursor-pointer " href={props.url}>
-      <div className="grid grid-flow-col  grid-cols-5 gap-2">
-        <p className="col-span-1 font-bold text-base text-chip-red">
-          {props.label}
-        </p>
-        <p className="col-span-3 text-base truncate">{props.title}</p>
-        <p className="col-span-1 font-normal text-base">{props.date}</p>
-      </div>
-    </a>
+    <div className="animate-carousel">
+      <a className="cursor-pointer " href={props.url}>
+        <div className="grid grid-flow-col  grid-cols-5 gap-2">
+          <p className="col-span-1 font-bold text-base text-chip-red">
+            {props.label}
+          </p>
+          <p className="col-span-3 text-base truncate">{props.title}</p>
+          <p className="col-span-1 font-normal text-base">{props.date}</p>
+        </div>
+      </a>
+    </div>
   )
 }
 
