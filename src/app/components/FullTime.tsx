@@ -99,7 +99,7 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5 hm:h-20 hm:p-3 hm:text-sm">
+      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
@@ -125,7 +125,7 @@ const TimeBox = (props: FilteredTimeTables) => {
             <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center  hm:w-10 hm:py-0.5">
               {t('direct')}
             </div>
-            <div className="self-center text-left ml-3 col-span-4">
+            <div className="self-center text-left ml-3 col-span-4 hm:leading-none">
               {props.direct.map((time, idx) => {
                 return (
                   <React.Fragment key={idx}>
