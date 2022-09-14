@@ -275,7 +275,11 @@ const FullTime = () => {
               alt="back page"
               className="cursor-default dark:invert w-6 mr-2 hm:w-4"
               onClick={() => {
-                navigate(`/`, { replace: true })
+                if (window.history.state && window.history.state.idx > 0) {
+                  navigate(-1)
+                } else {
+                  navigate('/', { replace: true })
+                }
               }}
             />
             <span className="text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5">
