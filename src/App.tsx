@@ -26,14 +26,14 @@ const Apps = styled.div`
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
-    bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)] will-change-transform
-    dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)]
+    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)] will-change-transform
+    dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-default txt:leading-4
-    border-none px-2 py-6 hm:py-4 hm:text-sm dark:text-white
+    flex will-change-transform overflow-hidden cursor-default 
+    border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
   `}
   &.active {
     ${tw`
@@ -42,7 +42,7 @@ const Button = styled(CardView)`
   }
 
   &#shuttlecoke_i {
-    ${tw`txt:flex-col txt:gap-x-0 gap-x-1 items-center justify-center`}
+    ${tw`hm:flex-col hm:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
 
@@ -163,11 +163,11 @@ function App() {
                           {t('subway_btn')}
                         </Button>
                         <Button
-                          id="residence"
-                          className={`${tab === 'residence' ? 'active' : ''}`}
-                          onClick={() => saveClicked('residence')}
+                          id="yesulin"
+                          className={`${tab === 'yesulin' ? 'active' : ''}`}
+                          onClick={() => saveClicked('yesulin')}
                         >
-                          {t('residence_btn')}
+                          {t('yesulin_btn')}
                         </Button>
                       </div>
 
@@ -191,11 +191,11 @@ function App() {
                         </Button>
 
                         <Button
-                          id="yesulin"
-                          className={`${tab === 'yesulin' ? 'active' : ''}`}
-                          onClick={() => saveClicked('yesulin')}
+                          id="residence"
+                          className={`${tab === 'residence' ? 'active' : ''}`}
+                          onClick={() => saveClicked('residence')}
                         >
-                          {t('yesulin_btn')}
+                          {t('residence_btn')}
                         </Button>
                       </div>
 

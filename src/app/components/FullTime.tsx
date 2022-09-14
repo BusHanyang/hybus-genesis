@@ -99,7 +99,7 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
+      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
@@ -220,7 +220,7 @@ const FullTime = () => {
     })
 
     return (
-      <div className="grid grid-flow-row gap-4">
+      <div className="grid grid-flow-row gap-2">
         {filterdByType.map((schedule) => {
           // if schedule.direct.length === 0
           return (
@@ -275,7 +275,11 @@ const FullTime = () => {
               alt="back page"
               className="cursor-default dark:invert w-6 mr-2 hm:w-4"
               onClick={() => {
-                navigate(`/`, { replace: true })
+                if (window.history.state && window.history.state.idx > 0) {
+                  navigate(-1)
+                } else {
+                  navigate('/', { replace: true })
+                }
               }}
             />
             <span className="text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5">
@@ -344,7 +348,7 @@ const FullTime = () => {
               </div>
             </div>
           </div>
-          <div className="pb-6">{renderTimebox()}</div>
+          <div className="pb-6 will-change-transform">{renderTimebox()}</div>
         </div>
       </div>
     </>
