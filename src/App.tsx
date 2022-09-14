@@ -32,8 +32,8 @@ const CardView = styled.div`
 `
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-default txt:leading-4
-    border-none px-2 py-6 hm:py-4 hm:text-sm dark:text-white
+    flex will-change-transform overflow-hidden cursor-default 
+    border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
   `}
   &.active {
     ${tw`
@@ -42,7 +42,7 @@ const Button = styled(CardView)`
   }
 
   &#shuttlecoke_i {
-    ${tw`txt:flex-col txt:gap-x-0 gap-x-1 items-center justify-center`}
+    ${tw`hm:flex-col hm:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
 
