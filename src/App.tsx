@@ -26,8 +26,8 @@ const Apps = styled.div`
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
-    bg-white rounded-lg drop-shadow-[0_3px_4px_rgba(10,10,10,0.2)] will-change-transform
-    dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:drop-shadow-[0_4px_3px_rgba(10,10,10,0.3)]
+    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)] will-change-transform
+    dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
 const Button = styled(CardView)`
