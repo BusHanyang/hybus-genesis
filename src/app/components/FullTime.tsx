@@ -348,7 +348,7 @@ const FullTime = () => {
               </div>
             </div>
           </div>
-          <div className="pb-6 will-change-transform">{renderTimebox()}</div>
+          <div className="pb-6">{renderTimebox()}</div>
         </div>
       </div>
     </>
