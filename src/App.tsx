@@ -163,11 +163,11 @@ function App() {
                           {t('subway_btn')}
                         </Button>
                         <Button
-                          id="residence"
-                          className={`${tab === 'residence' ? 'active' : ''}`}
-                          onClick={() => saveClicked('residence')}
+                          id="yesulin"
+                          className={`${tab === 'yesulin' ? 'active' : ''}`}
+                          onClick={() => saveClicked('yesulin')}
                         >
-                          {t('residence_btn')}
+                          {t('yesulin_btn')}
                         </Button>
                       </div>
 
@@ -191,11 +191,11 @@ function App() {
                         </Button>
 
                         <Button
-                          id="yesulin"
-                          className={`${tab === 'yesulin' ? 'active' : ''}`}
-                          onClick={() => saveClicked('yesulin')}
+                          id="residence"
+                          className={`${tab === 'residence' ? 'active' : ''}`}
+                          onClick={() => saveClicked('residence')}
                         >
-                          {t('yesulin_btn')}
+                          {t('residence_btn')}
                         </Button>
                       </div>
 

@@ -5,7 +5,7 @@ module.exports = {
       screens: {
         hm: { max: '400px' },
         hsm: { max: '360px' },
-        txt: { max: '352px' },
+        txt: { max: '400px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
