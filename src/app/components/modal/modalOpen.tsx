@@ -26,6 +26,7 @@ const ChangelogDiv = styled(ContentArea)`
 
 const ModalOpen = (props: {
   isOpen: boolean
+  isModalAni: boolean
   openModal: () => void
   closeModal: () => void
 }) => {
@@ -57,7 +58,7 @@ const ModalOpen = (props: {
 
   return (
     <React.Fragment>
-      <Modal open={props.isOpen} close={props.closeModal}>
+      <Modal open={props.isOpen} ani={props.isModalAni} close={props.closeModal}>
         <div
           className='font-Ptd'
           style={{ overflow: 'auto', maxHeight: '450px' }}

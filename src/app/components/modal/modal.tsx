@@ -8,16 +8,22 @@ import { useDarkMode } from '../useDarkMode'
 const MainModal = styled.div`
   ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}
 `
-const ModalMain = styled(MainModal)<{ isOpen: boolean }>`
+const ModalMain = styled(MainModal)<{ isOpen: boolean, isAni: boolean }>`
   ${({ isOpen }) => {
     return isOpen ? tw`flex items-center animate-modalBgShow` : null
+  }}
+  ${({ isAni }) => {
+    return isAni ? tw`animate-modalBgClose` : null
   }}
 `
 const ModalButton = styled.button`
   ${tw`outline-none cursor-pointer border-0`}
 `
-const ModalSection = styled.section`
+const ModalSection = styled.section<{ isAni: boolean }>`
   ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
+  ${({ isAni }) => {
+    return isAni ? tw`animate-modalClose` : null
+  }}
 `
 const ModalHeader = styled.header<{ theme: string }>`
   ${({ theme }) => {
@@ -47,6 +53,7 @@ const ModalFooter = styled.footer<{ theme: string }>`
 `
 
 export const Modal = (props: {
+  ani: boolean
   open: boolean
   close: () => void
   children: React.ReactNode
@@ -61,9 +68,9 @@ export const Modal = (props: {
   }
 
   return (
-    <ModalMain isOpen={props.open}>
+    <ModalMain isOpen={props.open} isAni={props.ani}>
       {props.open ? (
-        <ModalSection>
+        <ModalSection isAni={props.ani}>
           <ModalHeader theme={dataTheme}>{t('changelog')}</ModalHeader>
 
           <ModalSubMain theme={dataTheme}>{props.children}</ModalSubMain>

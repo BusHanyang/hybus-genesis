@@ -23,6 +23,8 @@ module.exports = {
         carousel: 'upOut 7s ease-in-out infinite',
         modalShow: 'modalShow 0.3s',
         modalBgShow: 'modalBgShow 0.3s',
+        modalBgClose: 'modalBgClose 0.3s',
+        modalClose: 'modalClose 0.3s',
         ldsEllipsis1: 'ldsEllipsis1 0.6s infinite',
         ldsEllipsis2: 'ldsEllipsis2 0.6s infinite',
         ldsEllipsis3: 'ldsEllipsis3 0.6s infinite',
@@ -63,6 +65,25 @@ module.exports = {
           },
           to: {
             opacity: '1',
+          },
+        },
+        modalBgClose: {
+          from: {
+            opacity: '1',
+          },
+          to: {
+            opacity: '0',
+            
+          },
+        },
+        modalClose: {
+          from: {
+            opacity: '1',
+            marginTop: '0px',
+          },
+          to: {
+            opacity: '0',
+            marginTop: '-50px',
           },
         },
         ldsEllipsis1: {
