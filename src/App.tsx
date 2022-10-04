@@ -104,6 +104,7 @@ function App() {
 
   useEffect(() => {
     document.body.classList.add('h-full')
+    document.body.classList.add('h-dfull')
     document.documentElement.classList.add('h-full')
   })
 

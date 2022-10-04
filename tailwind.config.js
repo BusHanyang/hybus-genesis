@@ -2,6 +2,9 @@ module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
     extend: {
+      height: {
+        dfull: '100dvh',
+      },
       screens: {
         hm: { max: '400px' },
         hsm: { max: '360px' },
@@ -73,7 +76,6 @@ module.exports = {
           },
           to: {
             opacity: '0',
-            
           },
         },
         modalClose: {
