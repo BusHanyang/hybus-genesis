@@ -53,7 +53,7 @@ const SingleTimetable = styled.div`
 `
 
 const TimeLeftWrapper = styled.span`
-  ${tw`font-Ptd inline-block px-1 w-32 text-right hsm:text-sm hsm:w-28 hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
+  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-28 hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
 `
 
 const ArrowWrapper = styled.div`

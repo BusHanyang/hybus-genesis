@@ -48,13 +48,18 @@ const Button = styled(CardView)`
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
+  const [modalAni, setModalAni] = useState(false)
 
   const openModal = () => {
     setModalOpen(true)
   }
 
   const closeModal = () => {
-    setModalOpen(false)
+    setModalAni(true)
+    setTimeout(() => {
+      setModalAni(false)
+      setModalOpen(false)
+    }, 300)
   }
 
   const colorDarkMod = '#27272a' //bg-zinc-800
@@ -100,6 +105,7 @@ function App() {
   useEffect(() => {
     document.body.classList.add('h-full')
     document.documentElement.classList.add('h-full')
+    document.documentElement.classList.add('h-dfull')
   })
 
   return (
@@ -224,6 +230,7 @@ function App() {
                 </PullToRefresh>
                 <Suspense fallback={<div />}>
                   <ModalOpen
+                    isModalAni={modalAni}
                     isOpen={modalOpen}
                     openModal={openModal}
                     closeModal={closeModal}
