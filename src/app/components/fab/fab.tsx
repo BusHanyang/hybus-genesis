@@ -1,7 +1,7 @@
 import 'react-tiny-fab/dist/styles.css'
 import './fab.scss'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
@@ -15,6 +15,7 @@ import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
 
+import { useDarkmodeContext } from '../../context/ThemeContext'
 import { useDarkMode } from '../useDarkMode'
 
 const Icons = styled.div<{ theme: string }>`
@@ -24,14 +25,17 @@ const Icons = styled.div<{ theme: string }>`
 `
 
 export const Fabs = (props: { openModal: () => void }) => {
-  const [, toggleTheme] = useDarkMode()
+  const { toggleTheme } = useDarkMode()
   const { t, i18n } = useTranslation()
+  const { theme } = useDarkmodeContext()
+  const [metadata, setMetadata] = useState<Record<string, string>>({
+    changeText: t('dark'),
+    changeColor: '#ffffff',
+    iconColor: 'black',
+    dataTheme: 'white',
+    imgIcon: DarkImg,
+  }) // white theme is default
 
-  let changeText = ''
-  let changeColor = ''
-  let iconColor = ''
-  let dataTheme = ''
-  let imgIcon = ''
   const handleEmailOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
       window.location.href = 'mailto:admin@hybus.app'
@@ -59,19 +63,26 @@ export const Fabs = (props: { openModal: () => void }) => {
     })
   }
 
-  if (useDarkMode()[0] === 'dark') {
-    changeText = t('light')
-    changeColor = '#374151'
-    iconColor = 'white'
-    dataTheme = 'dark'
-    imgIcon = LightImg
-  } else {
-    changeText = t('dark')
-    changeColor = '#ffffff'
-    iconColor = 'black'
-    dataTheme = 'white'
-    imgIcon = DarkImg
-  }
+  React.useEffect(() => {
+    if (theme === 'dark') {
+      setMetadata({
+        changeText: t('light'),
+        changeColor: '#374151',
+        iconColor: 'white',
+        dataTheme: 'dark',
+        imgIcon: LightImg,
+      })
+    } else {
+      setMetadata({
+        changeText: t('dark'),
+        changeColor: '#ffffff',
+        iconColor: 'black',
+        dataTheme: 'white',
+        imgIcon: DarkImg,
+      })
+    }
+  }, [t, theme])
+
   return (
     <>
       <div className="font-Ptd select-none">
@@ -80,7 +91,7 @@ export const Fabs = (props: { openModal: () => void }) => {
             <img
               className="iconImg w-12 h-12 cursor-default mx-auto"
               src={Arrow}
-              data-theme={dataTheme}
+              data-theme={metadata.dataTheme}
               alt="floating action button icon"
               draggable="false"
             />
@@ -97,14 +108,17 @@ export const Fabs = (props: { openModal: () => void }) => {
           alwaysShowTitle={true}
         >
           <Action
-            text={changeText}
-            style={{ backgroundColor: changeColor, color: iconColor }}
+            text={metadata.changeText}
+            style={{
+              backgroundColor: metadata.changeColor,
+              color: metadata.iconColor,
+            }}
             onClick={handleDarkOnClick}
           >
-            <Icons theme={dataTheme}>
+            <Icons theme={metadata.dataTheme}>
               <img
                 className="cursor-default"
-                src={imgIcon}
+                src={metadata.imgIcon}
                 style={{ padding: 8 }}
                 alt="light and dark mode icon"
                 draggable="false"
@@ -113,10 +127,13 @@ export const Fabs = (props: { openModal: () => void }) => {
           </Action>
           <Action
             text={t('changeLang')}
-            style={{ backgroundColor: changeColor, color: iconColor }}
+            style={{
+              backgroundColor: metadata.changeColor,
+              color: metadata.iconColor,
+            }}
             onClick={handleLangOnClick}
           >
-            <Icons theme={dataTheme}>
+            <Icons theme={metadata.dataTheme}>
               <img
                 className="cursor-default"
                 src={LangImg}
@@ -129,12 +146,12 @@ export const Fabs = (props: { openModal: () => void }) => {
           <Action
             text={t('changelog')}
             style={{
-              backgroundColor: changeColor,
-              color: iconColor,
+              backgroundColor: metadata.changeColor,
+              color: metadata.iconColor,
             }}
             onClick={props.openModal}
           >
-            <Icons theme={dataTheme}>
+            <Icons theme={metadata.dataTheme}>
               <img
                 className="cursor-default"
                 src={Info}
@@ -146,10 +163,13 @@ export const Fabs = (props: { openModal: () => void }) => {
           </Action>
           <Action
             text={t('donate')}
-            style={{ backgroundColor: changeColor, color: iconColor }}
+            style={{
+              backgroundColor: metadata.changeColor,
+              color: metadata.iconColor,
+            }}
             onClick={handleDonateOnClick}
           >
-            <Icons theme={dataTheme}>
+            <Icons theme={metadata.dataTheme}>
               <img
                 className="cursor-default"
                 src={Donate}
@@ -161,10 +181,13 @@ export const Fabs = (props: { openModal: () => void }) => {
           </Action>
           <Action
             text={t('ask')}
-            style={{ backgroundColor: changeColor, color: iconColor }}
+            style={{
+              backgroundColor: metadata.changeColor,
+              color: metadata.iconColor,
+            }}
             onClick={handleEmailOnClick}
           >
-            <Icons theme={dataTheme}>
+            <Icons theme={metadata.dataTheme}>
               <img
                 className="cursor-default"
                 src={Email}

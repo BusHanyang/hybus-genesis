@@ -11,7 +11,7 @@ import tw from 'twin.macro'
 import { Card, Fabs } from './app/components'
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
-import { useDarkMode } from './app/components/useDarkMode'
+import { THEME, useDarkmodeContext } from './app/context/ThemeContext'
 
 const FullTime = lazy(() => import('./app/components/FullTime'))
 const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
@@ -46,6 +46,8 @@ const Button = styled(CardView)`
   }
 `
 
+const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
+
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [modalAni, setModalAni] = useState(false)
@@ -62,15 +64,6 @@ function App() {
     }, 300)
   }
 
-  const colorDarkMod = '#27272a' //bg-zinc-800
-  let dark = 'white'
-  let color = 'white'
-
-  if (useDarkMode()[0] === 'dark') {
-    dark = 'dark'
-    color = colorDarkMod
-  }
-
   const handleRefresh = (): Promise<React.FC> => {
     return new Promise(() => {
       location.reload()
@@ -79,8 +72,9 @@ function App() {
 
   const { t, i18n } = useTranslation()
 
-  const [themeMode] = useDarkMode()
+  const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
+  const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
@@ -106,7 +100,7 @@ function App() {
     document.body.classList.add('h-full')
     document.documentElement.classList.add('h-full')
     document.documentElement.classList.add('h-dfull')
-  })
+  }, [])
 
   return (
     <>
@@ -119,14 +113,14 @@ function App() {
               <>
                 <PullToRefresh
                   onRefresh={handleRefresh}
-                  backgroundColor={color}
+                  backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
                   pullingContent=""
-                  refreshingContent={<Refreshing mode={dark} />}
+                  refreshingContent={
+                    <Refreshing mode={isDarkMode ? THEME.DARK : THEME.LIGHT} />
+                  }
                   resistance={3}
                 >
-                  <div
-                    className={`${themeMode === 'dark' ? 'dark' : ''} h-full`}
-                  >
+                  <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
                       <Fabs openModal={openModal} />
                       <header className="App-header">
