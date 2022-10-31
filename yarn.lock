@@ -1669,12 +1669,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@builder.io/partytown@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@builder.io/partytown@npm:0.7.0"
+"@builder.io/partytown@npm:^0.7.1":
+  version: 0.7.1
+  resolution: "@builder.io/partytown@npm:0.7.1"
   bin:
     partytown: bin/partytown.cjs
-  checksum: fac24fbe8f223e3e36dec5a729cda8ce4f4db6cd8547bda61455d247d7d01438ebd7708aea215961aa7adb64c83145a60383f7b0f8455ccbea4dcc8a0adce752
+  checksum: 32dd51f98056f1583bfe168141c79c5dca39f71ce6b377e0a645f8709f32a85c9536a1fa419dd14b9433a13c7faa2b4006eda4e66d8ab947c4ce67d4228e9ec0
   languageName: node
   linkType: hard
 
@@ -2056,14 +2056,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/styled-components@npm:^5.1.25":
-  version: 5.1.25
-  resolution: "@types/styled-components@npm:5.1.25"
+"@types/styled-components@npm:^5.1.26":
+  version: 5.1.26
+  resolution: "@types/styled-components@npm:5.1.26"
   dependencies:
     "@types/hoist-non-react-statics": "*"
     "@types/react": "*"
     csstype: ^3.0.2
-  checksum: 60ce64f13283b01da54fd3a4c5703769d8575c979d5ec6b67ad124c2d4df980c9b96bb91af87e03f6447a816a5d2b0270c63eefad60cfa885091b594984525f5
+  checksum: 84f53b3101739b20d1731554fb7735bc2f3f5d050a8b392e9845403c8c8bbd729737d033978649f9195a97b557875b010d46e35a4538564a2d0dbcce661dbf76
   languageName: node
   linkType: hard
 
@@ -2475,13 +2475,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^0.27.2":
-  version: 0.27.2
-  resolution: "axios@npm:0.27.2"
+"axios@npm:^1.1.3":
+  version: 1.1.3
+  resolution: "axios@npm:1.1.3"
   dependencies:
-    follow-redirects: ^1.14.9
+    follow-redirects: ^1.15.0
     form-data: ^4.0.0
-  checksum: 38cb7540465fe8c4102850c4368053c21683af85c5fdf0ea619f9628abbcb59415d1e22ebc8a6390d2bbc9b58a9806c874f139767389c862ec9b772235f06854
+    proxy-from-env: ^1.1.0
+  checksum: cab3b17bf6092c9387f7023d699db093cfa23650b56c4422cd474d124b78b2e3b5a520f932c330664a58ab85b867b1c25a95cace475ef72d236888c852b84e6d
   languageName: node
   linkType: hard
 
@@ -3079,10 +3080,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dayjs@npm:^1.11.4":
-  version: 1.11.4
-  resolution: "dayjs@npm:1.11.4"
-  checksum: 478c8a2db9e3fc752db9f02ef23f00e12308eebbeb85569913731ea78e8d5616f2335e14f25af48e9f16bbcbd796653092eca4d2f42c0218a948402c31735f59
+"dayjs@npm:^1.11.6":
+  version: 1.11.6
+  resolution: "dayjs@npm:1.11.6"
+  checksum: 18bdfd927009b68eab08dca578e421d4a581cefcbe9337f54c5d9e0d941ffb6b221c4b2c1cab15cdd9d419940e768ac4c984531461a90bbe1c158b75fe160580
   languageName: node
   linkType: hard
 
@@ -3963,13 +3964,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.14.9":
-  version: 1.15.1
-  resolution: "follow-redirects@npm:1.15.1"
+"follow-redirects@npm:^1.15.0":
+  version: 1.15.2
+  resolution: "follow-redirects@npm:1.15.2"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 6aa4e3e3cdfa3b9314801a1cd192ba756a53479d9d8cca65bf4db3a3e8834e62139245cd2f9566147c8dfe2efff1700d3e6aefd103de4004a7b99985e71dd533
+  checksum: faa66059b66358ba65c234c2f2a37fcec029dc22775f35d9ad6abac56003268baf41e55f9ee645957b32c7d9f62baf1f0b906e68267276f54ec4b4c597c2b190
   languageName: node
   linkType: hard
 
@@ -4430,19 +4431,19 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hybus-genesis@workspace:."
   dependencies:
-    "@builder.io/partytown": ^0.7.0
+    "@builder.io/partytown": ^0.7.1
     "@types/node": ^18.7.14
     "@types/react": ^18.0.9
     "@types/react-dom": ^18.0.5
-    "@types/styled-components": ^5.1.25
+    "@types/styled-components": ^5.1.26
     "@typescript-eslint/eslint-plugin": ^5.27.0
     "@typescript-eslint/parser": ^5.27.0
     "@vitejs/plugin-react": ^2.2.0
     autoprefixer: ^10.4.7
-    axios: ^0.27.2
+    axios: ^1.1.3
     babel-plugin-macros: ^3.1.0
     babel-plugin-styled-components: ^2.0.7
-    dayjs: ^1.11.4
+    dayjs: ^1.11.6
     eslint: ^8.16.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-react: ^7.30.0
@@ -4453,22 +4454,22 @@ __metadata:
     i18next: ^21.8.14
     i18next-browser-languagedetector: ^6.1.4
     i18next-http-backend: ^1.4.1
-    postcss: ^8.4.14
+    postcss: ^8.4.18
     prettier: ^2.6.2
     react: 18.1.0
     react-dom: 18.1.0
     react-i18next: ^11.18.3
     react-icons: ^4.4.0
     react-is: ^18.2.0
-    react-query: ^3.39.1
+    react-query: ^3.39.2
     react-router-dom: ^6.3.0
     react-simple-pull-to-refresh: ^1.3.0
     react-spinners: ^0.13.2
     react-tiny-fab: ^4.0.4
-    recoil: ^0.7.2
-    sass: ^1.53.0
-    styled-components: ^5.3.5
-    styled-reset: ^4.4.1
+    recoil: ^0.7.6
+    sass: ^1.55.0
+    styled-components: ^5.3.6
+    styled-reset: ^4.4.2
     tailwindcss: ^3.0.24
     twin.macro: 3.0.0-rc.3
     typescript: ^4.7.2
@@ -5726,7 +5727,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.12, postcss@npm:^8.4.14":
+"postcss@npm:^8.4.12":
   version: 8.4.14
   resolution: "postcss@npm:8.4.14"
   dependencies:
@@ -5820,6 +5821,13 @@ __metadata:
     forwarded: 0.2.0
     ipaddr.js: 1.9.1
   checksum: 29c6990ce9364648255454842f06f8c46fcd124d3e6d7c5066df44662de63cdc0bad032e9bf5a3d653ff72141cc7b6019873d685708ac8210c30458ad99f2b74
+  languageName: node
+  linkType: hard
+
+"proxy-from-env@npm:^1.1.0":
+  version: 1.1.0
+  resolution: "proxy-from-env@npm:1.1.0"
+  checksum: ed7fcc2ba0a33404958e34d95d18638249a68c430e30fcb6c478497d72739ba64ce9810a24f53a7d921d0c065e5b78e3822759800698167256b04659366ca4d4
   languageName: node
   linkType: hard
 
@@ -5934,9 +5942,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-query@npm:^3.39.1":
-  version: 3.39.1
-  resolution: "react-query@npm:3.39.1"
+"react-query@npm:^3.39.2":
+  version: 3.39.2
+  resolution: "react-query@npm:3.39.2"
   dependencies:
     "@babel/runtime": ^7.5.5
     broadcast-channel: ^3.4.1
@@ -5948,7 +5956,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 9273b7c2adf4a78152d3c0b0ac44cfabacc867d5e8e4ad66e6aaccd8a2bd10c5a836c4d3b462e5f083f273998e1c3dd01ed5d126b7508bcfd615eb5aba419b3b
+  checksum: 83b199e66af28ab67ec4d22e51da42f02447186623db926b75d27a1c09a3383da6ddc9e5b83d82578fac7abdba7e6f265aecbffdb91db61981950d3d59409346
   languageName: node
   linkType: hard
 
@@ -6056,9 +6064,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"recoil@npm:^0.7.2":
-  version: 0.7.2
-  resolution: "recoil@npm:0.7.2"
+"recoil@npm:^0.7.6":
+  version: 0.7.6
+  resolution: "recoil@npm:0.7.6"
   dependencies:
     hamt_plus: 1.0.2
   peerDependencies:
@@ -6068,7 +6076,7 @@ __metadata:
       optional: true
     react-native:
       optional: true
-  checksum: 2ad0c2052fd33ee358e3b448fd36ea6d4b37e69ace65ff44124605171c4794e4f167215209731aac3d45d42ea9f4c67e9c5a0704ff04ab94b64bcca96d5f59a3
+  checksum: 2b31dd29a7e0b369bc986a16f7253006776845144684c9e38bb6760e4ea954c5d7dc682aaf88e815e69098b8dea3ff62b6fa4e6c156157a29d2d9cb824db1779
   languageName: node
   linkType: hard
 
@@ -6344,16 +6352,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:^1.53.0":
-  version: 1.53.0
-  resolution: "sass@npm:1.53.0"
+"sass@npm:^1.55.0":
+  version: 1.55.0
+  resolution: "sass@npm:1.55.0"
   dependencies:
     chokidar: ">=3.0.0 <4.0.0"
     immutable: ^4.0.0
     source-map-js: ">=0.6.2 <2.0.0"
   bin:
     sass: sass.js
-  checksum: 4bcb0617d6a4d1f2c089a1cb5c32f65a9ee874b23559f2742fab07cf8478fb74ad20c0730cf9f93915d7dbfc258901f89970674228c3ac91c3883a0a62a0ddab
+  checksum: 7d769ed08efce4e6134e0f3dc11c4f07e32c413ac8eb43c5855f2686890fdcbd80da34165c91fb4ba407f478ca108e171574b5a60cb9814a5ed09d80f6014f96
   languageName: node
   linkType: hard
 
@@ -6725,9 +6733,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:^5.3.5":
-  version: 5.3.5
-  resolution: "styled-components@npm:5.3.5"
+"styled-components@npm:^5.3.6":
+  version: 5.3.6
+  resolution: "styled-components@npm:5.3.6"
   dependencies:
     "@babel/helper-module-imports": ^7.0.0
     "@babel/traverse": ^7.4.5
@@ -6743,11 +6751,11 @@ __metadata:
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
     react-is: ">= 16.8.0"
-  checksum: 05a664dfe423c2906959a0f3f47f9b1ad630e493eb2e06deea0dc0906af33ba5ca17277b98948a6c9642e73894d6533391aebf45576489f5afe920c974e9f8eb
+  checksum: 68eac1e451be81d66739cf86de8ec9e72f46e7584aa359271761a2437468210bd7cf0a864281fc97dab08c32b35e6bf7513dc8b4104ed6b196cf8d65674dd289
   languageName: node
   linkType: hard
 
-"styled-reset@npm:^4.4.1":
+"styled-reset@npm:^4.4.2":
   version: 4.4.2
   resolution: "styled-reset@npm:4.4.2"
   peerDependencies:
