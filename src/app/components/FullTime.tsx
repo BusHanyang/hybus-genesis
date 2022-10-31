@@ -1,5 +1,6 @@
 import axios from 'axios'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { useDarkMode } from './useDarkMode'
@@ -35,7 +36,6 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
 
         throw new Error(response.statusText)
       }
-      console.log('fuction (apt) : ' + response.data)
       return response.data
     })
     .catch((err) => {
@@ -62,7 +62,7 @@ const getTimetable = async (
   location: Location
 ): Promise<Array<SingleSchedule>> => {
   return await api(
-    `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
+    `https://api.hybus.app/timetable/${season}/${week}/${location}`
   )
 }
 
@@ -75,19 +75,18 @@ const ComboBox = (props: {
   return (
     <>
       <div
-        className={`flex cursor-pointer font-medium text-sm items-center py-2 px-4 rounded-xl ${
+        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg ${
           props.type === props.value
-            ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] dark:text-[#DBE2F9] dark:bg-[#3F4759]' // Selected
-            : 'border border-solid text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
+            ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9]  dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759] hm:pl-1.5' // Selected
+            : 'text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
         }`}
         onClick={() => props.func(props.value)}
       >
         {props.type === props.value ? (
           <img
-            className="dark:invert mr-1"
+            className="dark:invert mr-1 w-5 hm:w-4"
             src="../image/done_FILL0_wght600_GRAD0_opsz48.svg"
             alt="check"
-            width={18}
           />
         ) : null}
         {props.info}
@@ -97,18 +96,22 @@ const ComboBox = (props: {
 }
 
 const TimeBox = (props: FilteredTimeTables) => {
+  const { t } = useTranslation()
   return (
     <>
-      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-xl drop-shadow-lg grid grid-cols-6 p-5">
-        <div className="font-bold self-center">{props.time}시</div>
-        <div className="font-medium  inline-grid grid-flow-row gap-2 col-span-5 ">
+      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
+        <div className="font-bold self-center">
+          {props.time}
+          {t('o_clock')}
+        </div>
+        <div className="font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px">
           <div
             className={`inline-grid grid-cols-5 ${
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
-              순환
+            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+              {t('cycle')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
@@ -119,10 +122,10 @@ const TimeBox = (props: FilteredTimeTables) => {
               props.direct.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center">
-              직행
+            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center  hm:w-10 hm:py-0.5">
+              {t('direct')}
             </div>
-            <div className="self-center text-left ml-3 col-span-4">
+            <div className="self-center text-left ml-3 col-span-4 hm:leading-none">
               {props.direct.map((time, idx) => {
                 return (
                   <React.Fragment key={idx}>
@@ -135,7 +138,7 @@ const TimeBox = (props: FilteredTimeTables) => {
                   props.directY.length === 0 ? 'hidden' : 'text-green-500'
                 }`}
               >
-                {props.directY.join(' ')}
+                {`${props.directY.join(' ')} (${t('to_yesulin')})`}
               </span>
             </div>
           </div>
@@ -152,13 +155,12 @@ const FullTime = () => {
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
   const [themeMode] = useDarkMode()
   const navigate = useNavigate()
-
+  const { t } = useTranslation()
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   // let hour = '00'
 
   const changeLocation = (value: Location) => {
     setLocation(value)
-    console.log('location click')
     return
   }
   const changeSeason = (value: Season) => {
@@ -170,11 +172,9 @@ const FullTime = () => {
     return
   }
 
-  const renderTimebox = useCallback(() => {
-    console.log('renderTimebox run')
-    console.log(location, season, week)
+  const renderTimebox = () => {
     if (timetable.length === 0) {
-      return <div className="min-h-screen"> 조회 정보가 없습니다. </div>
+      return <div className="min-h-screen"> {t('none_data')} </div>
     }
 
     const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
@@ -193,7 +193,6 @@ const FullTime = () => {
 
     const filterdByType: Array<FilteredTimeTables> = []
 
-    // console.log(filterdByType)
     timetableFiltered.forEach((schedules, hour) => {
       const single: FilteredTimeTables = {
         time: hour,
@@ -219,11 +218,9 @@ const FullTime = () => {
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
-    console.log(filterdByType)
-    console.log('renderTimebox exit')
 
     return (
-      <div className="grid grid-flow-row gap-4">
+      <div className="grid grid-flow-row gap-2">
         {filterdByType.map((schedule) => {
           // if schedule.direct.length === 0
           return (
@@ -241,55 +238,59 @@ const FullTime = () => {
         })}
       </div>
     )
-  }, [location, season, timetable, week])
+  }
 
   useEffect(() => {
-    console.log(location)
     getTimetable(season, week, location).then((res) => {
       setTimetable(res)
     })
   }, [location, season, week])
 
   const arrLocation: Array<[Location, string]> = [
-    ['shuttlecoke_o', '셔틀콕'],
-    ['subway', '한대앞역'],
-    ['yesulin', '예술인 아파트'],
-    ['residence', '기숙사'],
-    ['shuttlecoke_i', '셔틀콕 건너편'],
+    ['shuttlecoke_o', t('shuttlecoke_o')],
+    ['subway', t('dest_subway')],
+    ['yesulin', t('dest_yesul')],
+    ['residence', t('dest_dorm')],
+    ['shuttlecoke_i', t('shuttlecoke_i')],
   ]
 
   const arrSeason: Array<[Season, string]> = [
-    ['semester', '학기중'],
-    ['vacation', '방학'],
-    ['vacation_session', '계절학기'],
+    ['semester', t('semester')],
+    ['vacation', t('vacation')],
+    ['vacation_session', t('vacation_session')],
   ]
 
   const arrWeek: Array<[Week, string]> = [
-    ['week', '평일'],
-    ['weekend', '주말'],
+    ['week', t('week')],
+    ['weekend', t('weekend')],
   ]
 
   return (
     <>
-      <div className={`${themeMode === 'dark' ? 'dark' : ''} `}>
-        <div className="App">
-          <div className="flex self-center py-5 ">
+      <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+        <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white max-w-7xl">
+          <div className="flex self-center py-5 hm:py-3">
             <img
               src="../image/arrow_back_black_36dp.svg"
               alt="back page"
-              width={35}
-              className="cursor-pointer dark:invert"
+              className="cursor-default dark:invert w-6 mr-2 hm:w-4"
               onClick={() => {
-                navigate(`/`)
+                if (window.history.state && window.history.state.idx > 0) {
+                  navigate(-1)
+                } else {
+                  navigate('/', { replace: true })
+                }
               }}
             />
-            <span className="text-left font-bold text-2xl px-1">
-              전체시간표
+            <span className="text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5">
+              {t('all_btn')}
             </span>
           </div>
           <div className=" h-full scroll-smooth	">
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">버스 정류장</span>
+              <span className="text-left font-bold text-lg hm:text-base">
+                {t('bus_stop')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrLocation.map((i) => {
                   return (
@@ -307,7 +308,9 @@ const FullTime = () => {
               <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">시기</span>
+              <span className="text-left font-bold text-lg hm:text-base">
+                {t('period')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrSeason.map((i) => {
                   return (
@@ -325,7 +328,9 @@ const FullTime = () => {
               </div>
             </div>
             <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg">요일</span>
+              <span className="text-left font-bold text-lg hm:text-base">
+                {t('days_week')}
+              </span>
               <div className="flex gap-2 flex-wrap">
                 {arrWeek.map((i) => {
                   return (

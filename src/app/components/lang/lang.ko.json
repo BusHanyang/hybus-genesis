@@ -1,5 +1,6 @@
 {
     "lang": "ko",
+    "changeLang": "English",
     "title": "버스하냥",
 
     "notice": "공지",
@@ -28,8 +29,9 @@
     "shuttlecoke_i_btn": "셔틀콕 건너편",
     "subway_btn": "한대앞역",
     "residence_btn": "기숙사",
-    "yesulin_btn": "예술인APT",
+    "yesulin_btn": "예술인",
     "all_btn": "전체 시간표",
+    "to_yesulin": "예술인행",
 
     "no_today": "오늘 운행하는 셔틀이 존재하지 않습니다.",
     "end_today": "오늘 셔틀 운행이 종료되었습니다.",
@@ -38,6 +40,19 @@
     "donate": "후원하기",
     "changelog": "변경로그",
     "dark": "다크모드",
-    "light": "라이트모드"
-    
+    "light": "라이트모드",
+
+    "loading": "로딩중...",
+    "none_data": "조회 정보가 없습니다.",
+
+    "bus_stop": "버스 정류장",
+    "period": "시기",
+    "days_week": "요일",
+    "o_clock": "시",
+
+    "semester": "학기중",
+    "vacation": "방학",
+    "vacation_session": "계절학기",
+    "week": "평일",
+    "weekend": "주말"   
 }

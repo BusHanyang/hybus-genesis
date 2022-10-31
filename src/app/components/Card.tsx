@@ -2,9 +2,11 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
-import React, { CSSProperties, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
+import styled from 'styled-components'
+import tw from 'twin.macro'
 
 type SingleSchedule = {
   time: string
@@ -30,9 +32,49 @@ type Settings = {
 
 dayjs.extend(customParse)
 
+const TimetableWrapper = styled.div`
+  ${tw`h-full`}
+`
+
+const Headline = styled.h2`
+  ${tw`font-bold text-2xl pb-2 hsm:text-xl hsm:pb-4 hsm:pt-2 hm:text-[1.375rem] hm:pb-4 hm:pt-2`}
+`
+
+const MainTimetable = styled.div`
+  ${tw`inline-block select-none h-4/5`}
+`
+
+const Chip = styled.div`
+  ${tw`dark:text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem]`}
+`
+
+const SingleTimetable = styled.div`
+  ${tw`text-left mx-auto py-1.5`}
+`
+
+const TimeLeftWrapper = styled.span`
+  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-28 hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
+`
+
+const ArrowWrapper = styled.div`
+  ${tw`text-center inline-block w-8 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
+`
+
+const DestinationWrapper = styled.span`
+  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6`}
+`
+
+const NoTimetable = styled.div`
+  ${tw`h-full table`}
+`
+
+const NoTimetableInner = styled.span`
+  ${tw`table-cell align-middle`}
+`
+
 const getSettings = async (): Promise<null | Settings> => {
   return await axios
-    .get('https://proxy.anoldstory.workers.dev/https://api.hybus.app/settings/')
+    .get('https://api.hybus.app/settings/')
     .then((response) => {
       if (response.status !== 200) {
         console.log(`Error code: ${response.statusText}`)
@@ -103,25 +145,26 @@ const getSeason = (setting: Settings | null): [string, string] => {
 
     let isHoliday = false
 
-    convertedHoliday.forEach((date) => {
+    for (const holiday of convertedHoliday) {
       if (
-        today.year() == date.year() &&
-        today.month() == date.month() &&
-        today.date() == date.date()
+        today.year() == holiday.year() &&
+        today.month() == holiday.month() &&
+        today.date() == holiday.date()
       ) {
         isHoliday = true
+        break
       }
-    })
+    }
 
-    convertedHaltDay.forEach((date) => {
+    for (const haltDay of convertedHaltDay) {
       if (
-        today.year() == date.year() &&
-        today.month() == date.month() &&
-        today.date() == date.date()
+        today.year() == haltDay.year() &&
+        today.month() == haltDay.month() &&
+        today.date() == haltDay.date()
       ) {
         return ['halt', '']
       }
-    })
+    }
 
     if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
       // Semester
@@ -193,7 +236,7 @@ const getTimetable = async (
   location: string
 ): Promise<Array<SingleSchedule>> => {
   return await timetableApi(
-    `https://proxy.anoldstory.workers.dev/https://api.hybus.app/timetable/${season}/${week}/${location}`
+    `https://api.hybus.app/timetable/${season}/${week}/${location}`
   ).then((res) =>
     res.map((val) => {
       val['time'] = String(dayjs(val.time, 'HH:mm').unix())
@@ -256,7 +299,7 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
     } else if (busType == 'DY') {
       return t('dest_yesul')
     } else {
-      return '???'
+      return t('loading')
     }
   } else if (currentLoc == 'subway') {
     if (busType == 'C') {
@@ -272,12 +315,12 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
     } else if (busType == 'R') {
       return t('dest_dorm')
     } else {
-      return '???'
+      return t('loading')
     }
   } else if (currentLoc == 'residence') {
     return t('dest_shuttle_o')
   } else {
-    return '???'
+    return t('loading')
   }
 }
 
@@ -299,17 +342,9 @@ const titleText = (location: string): string => {
 
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
-    return (
-      <div className="bg-chip-red dark:text-black py-1 w-12 rounded-full inline-block text-center">
-        {busTypeToText(type)}
-      </div>
-    )
+    return <Chip className="bg-chip-red">{busTypeToText(type)}</Chip>
   } else {
-    return (
-      <div className="bg-chip-blue dark:text-black py-1 w-12 rounded-full inline-block text-center">
-        {busTypeToText(type)}
-      </div>
-    )
+    return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
   }
 }
 
@@ -352,6 +387,10 @@ export const Card = ({ location }: ScheduleInfo) => {
         setLoaded(true)
         setCurrentLocation(location)
       })
+    } else if (season === 'halt' && !isLoaded) {
+      // If the season is halt, then the timetable will be empty.
+      setSpinning(false)
+      setLoaded(true)
     }
   }, [isLoaded, location, season, week])
 
@@ -370,7 +409,17 @@ export const Card = ({ location }: ScheduleInfo) => {
         setTimetable(res)
         setSpinning(false)
         setCurrentLocation(location)
+        setCurrentTime(new Date().getTime())
       })
+    } else if (
+      season === 'halt' &&
+      isLoaded &&
+      currentLocation !== 'init' &&
+      location !== currentLocation
+    ) {
+      setTimetable([])
+      setCurrentLocation(location)
+      setCurrentTime(new Date().getTime())
     }
   }, [currentLocation, isLoaded, location, season, week])
 
@@ -382,13 +431,7 @@ export const Card = ({ location }: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
-  const loadingCSS: CSSProperties = {
-    display: 'table-cell',
-    verticalAlign: 'middle',
-  }
-
-  const renderTimetable = () => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+  const RenderTimetable = (): JSX.Element => {
     const { t } = useTranslation()
 
     if (!spinning) {
@@ -399,9 +442,9 @@ export const Card = ({ location }: ScheduleInfo) => {
         // Timetable load failure, or doesn't exist
         return (
           <>
-            <div className="h-full table">
-              <span className="table-cell align-middle">{t('no_today')}</span>
-            </div>
+            <NoTimetable>
+              <NoTimetableInner>{t('no_today')}</NoTimetableInner>
+            </NoTimetable>
           </>
         )
       }
@@ -412,57 +455,67 @@ export const Card = ({ location }: ScheduleInfo) => {
         // Buses are done for today. User should refresh after midnight.
         return (
           <>
-            <div className="h-full table">
-              <span className="table-cell align-middle">{t('end_today')}</span>
-            </div>
+            <NoTimetable>
+              <NoTimetableInner>{t('end_today')}</NoTimetableInner>
+            </NoTimetable>
           </>
         )
       }
 
       // Otherwise - normal case
-      return filtered.map((val, idx) => {
-        if (idx < 5) {
-          return (
-            <React.Fragment key={idx}>
-              <div className="text-left mx-auto w-82 py-1.5">
-                {getColoredElement(val.type)}
-                <span className="font-Ptd inline-block px-1 w-32 text-right">
-                  {secondToTimeFormat(
-                    Math.floor(Number(val.time) - Number(currentTime) / 1000)
-                  )}{' '}
-                  {t('left')}
-                </span>
-                <div className="text-center inline-block w-8 mx-2">▶</div>
-                <span className="text-left inline-block">
-                  {getBusDestination(val.type, location)}
-                </span>
-              </div>
-            </React.Fragment>
-          )
-        }
-      })
+      return (
+        <>
+          {filtered.map((val, idx) => {
+            if (idx < 5) {
+              return (
+                <React.Fragment key={idx}>
+                  <SingleTimetable>
+                    {getColoredElement(val.type)}
+                    <TimeLeftWrapper>
+                      {secondToTimeFormat(
+                        Math.floor(
+                          Number(val.time) - Number(currentTime) / 1000
+                        )
+                      )}{' '}
+                      {t('left')}
+                    </TimeLeftWrapper>
+                    <ArrowWrapper>▶</ArrowWrapper>
+                    <DestinationWrapper>
+                      {getBusDestination(val.type, location)}
+                    </DestinationWrapper>
+                  </SingleTimetable>
+                </React.Fragment>
+              )
+            } else {
+              return <React.Fragment key={idx} />
+            }
+          })}
+        </>
+      )
+    } else {
+      return <></>
     }
   }
 
   return (
-    <div className="h-full">
-      <h2 className="font-bold text-2xl pb-2">{titleText(location)}</h2>
-      <div className="inline-block select-none h-4/5">
+    <TimetableWrapper>
+      <Headline>{titleText(location)}</Headline>
+      <MainTimetable>
         {spinning ? (
-          <div className="h-full table">
+          <NoTimetable>
             <SyncLoader
               color="#AFBDCE"
               margin={4}
               size={8}
               loading={spinning}
-              cssOverride={loadingCSS}
+              cssOverride={tw`table-cell align-middle`}
             />
-          </div>
+          </NoTimetable>
         ) : (
           <></>
         )}
-        {renderTimetable()}
-      </div>
-    </div>
+        {RenderTimetable()}
+      </MainTimetable>
+    </TimetableWrapper>
   )
 }

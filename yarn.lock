@@ -1491,6 +1491,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@builder.io/partytown@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@builder.io/partytown@npm:0.7.0"
+  bin:
+    partytown: bin/partytown.cjs
+  checksum: fac24fbe8f223e3e36dec5a729cda8ce4f4db6cd8547bda61455d247d7d01438ebd7708aea215961aa7adb64c83145a60383f7b0f8455ccbea4dcc8a0adce752
+  languageName: node
+  linkType: hard
+
 "@emotion/is-prop-valid@npm:^1.1.0":
   version: 1.1.3
   resolution: "@emotion/is-prop-valid@npm:1.1.3"
@@ -1812,6 +1821,13 @@ __metadata:
   version: 17.0.38
   resolution: "@types/node@npm:17.0.38"
   checksum: 9db1c39d603850ced665ab60b8f8ebce674ff9d762dfff0f776d520e71e4d73fdcd4c7f69213b804d878cf3e726911b09cae4ee66e35ae2724538de9f4838681
+  languageName: node
+  linkType: hard
+
+"@types/node@npm:^18.7.14":
+  version: 18.7.14
+  resolution: "@types/node@npm:18.7.14"
+  checksum: 99cf28ff854100158de875cca23c7acc3cc01dfee526a52b90b7f36767c821bcbaf2be0a98a70f06f3b78f3c60639168ff949d725b61e2e124f9f71f1fb8043d
   languageName: node
   linkType: hard
 
@@ -4214,6 +4230,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hybus-genesis@workspace:."
   dependencies:
+    "@builder.io/partytown": ^0.7.0
+    "@types/node": ^18.7.14
     "@types/react": ^18.0.9
     "@types/react-dom": ^18.0.5
     "@types/styled-components": ^5.1.25
@@ -6765,7 +6783,7 @@ __metadata:
 
 "typescript@patch:typescript@^4.7.2#~builtin<compat/typescript>":
   version: 4.7.2
-  resolution: "typescript@patch:typescript@npm%3A4.7.2#~builtin<compat/typescript>::version=4.7.2&hash=7ad353"
+  resolution: "typescript@patch:typescript@npm%3A4.7.2#~builtin<compat/typescript>::version=4.7.2&hash=a1c5e5"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver

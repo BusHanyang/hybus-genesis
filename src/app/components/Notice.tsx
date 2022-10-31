@@ -15,21 +15,17 @@ const Box = (props: {
   date: string
 }) => {
   return (
-    <a
-      className="animate-carousel cursor-pointer "
-      href={props.url}
-      onClick={() => {
-        window.open(props.url)
-      }}
-    >
-      <div>
-        <p className="float-left pl-2 font-bold text-base text-chip-red">
-          {props.label}
-        </p>
-        <p className="inline font-medium text-base">{props.title}</p>
-        <p className="float-right pr-2 font-normal text-base">{props.date}</p>
-      </div>
-    </a>
+    <div className="animate-carousel">
+      <a className="cursor-pointer " href={props.url}>
+        <div className="grid grid-flow-col  grid-cols-5 gap-2">
+          <p className="col-span-1 font-bold text-base text-chip-red">
+            {props.label}
+          </p>
+          <p className="col-span-3 text-base truncate">{props.title}</p>
+          <p className="col-span-1 font-normal text-base">{props.date}</p>
+        </div>
+      </a>
+    </div>
   )
 }
 
@@ -39,9 +35,7 @@ const Notice = () => {
 
   const getData = async (): Promise<Array<Info>> => {
     return await axios
-      .get(
-        'https://proxy.anoldstory.workers.dev/https://api.hybus.app/announcements/'
-      )
+      .get('https://api.hybus.app/announcements/')
       .then((res) => {
         return res.data
       })
@@ -59,34 +53,32 @@ const Notice = () => {
         setLoaded(true)
       })
     }
-  }, [])
+  }, [isLoaded])
 
   const [num, changeNum] = useState<number>(0)
 
   useEffect(() => {
     setTimeout(() => {
       changeNum((num + 1) % data.length)
-    }, 3000)
+    }, 7000)
   }, [data.length, num])
 
   return (
     <div className="relative w-full">
-      <div className="h-[3rem] w-full card p3">
-        {data.map((item, idx) => {
-          return (
-            <React.Fragment key={idx}>
-              <div key={idx} className={idx === num ? '' : 'hidden'}>
-                <Box
-                  label={item.label}
-                  title={item.title}
-                  date={item.date}
-                  url={item.url}
-                />
-              </div>
-            </React.Fragment>
-          )
-        })}
-      </div>
+      {data.map((item, idx) => {
+        return (
+          <React.Fragment key={idx}>
+            <div key={idx} className={idx === num ? '' : 'hidden'}>
+              <Box
+                label={item.label}
+                title={item.title}
+                date={item.date}
+                url={item.url}
+              />
+            </div>
+          </React.Fragment>
+        )
+      })}
     </div>
   )
 }

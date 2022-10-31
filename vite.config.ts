@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
+import { partytownVite } from '@builder.io/partytown/utils'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -14,12 +16,22 @@ export default defineConfig({
     }),
     viteCompression({ algorithm: 'brotliCompress' }),
     VitePWA({
+      // Service worker setting
+      injectRegister: 'auto',
+      registerType: 'autoUpdate',
+      workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+      },
+
+      // Deployment
       includeAssets: [
         'favicon.svg',
         'favicon.ico',
         'robots.txt',
         'safari-pinned-tab.svg',
       ],
+
+      // PWA setting
       manifest: {
         theme_color: '#ffffff',
         background_color: '#ffffff',
@@ -47,8 +59,17 @@ export default defineConfig({
             type: 'image/png',
             purpose: 'any',
           },
+          {
+            src: 'image/pwa-maskable-512x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
         ],
       },
+    }),
+    partytownVite({
+      dest: path.join(__dirname, 'dist', '~partytown'),
     }),
   ],
   publicDir: './public',
