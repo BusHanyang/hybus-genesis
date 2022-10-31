@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { useDarkMode } from './useDarkMode'
+import { THEME, useDarkmodeContext } from '../context/ThemeContext'
 
 type SingleSchedule = {
   time: string
@@ -153,7 +153,7 @@ const FullTime = () => {
   const [season, setSeason] = useState<Season>('semester')
   const [week, setWeek] = useState<Week>('week')
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
-  const [themeMode] = useDarkMode()
+  const { theme } = useDarkmodeContext()
   const navigate = useNavigate()
   const { t } = useTranslation()
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
@@ -267,7 +267,7 @@ const FullTime = () => {
 
   return (
     <>
-      <div className={`${themeMode === 'dark' ? 'dark' : ''}`}>
+      <div className={`${theme === THEME.DARK ? 'dark' : ''}`}>
         <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white max-w-7xl">
           <div className="flex self-center py-5 hm:py-3">
             <img
