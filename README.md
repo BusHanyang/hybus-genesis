@@ -5,6 +5,9 @@
 ## Picture
 <img width="370" alt="메인화면" src="https://user-images.githubusercontent.com/59571464/199035127-8f9b67ca-81b3-40e6-8662-5750282915b3.png">
 
+<img width="370" alt="전체시간표화면" src="https://user-images.githubusercontent.com/59571464/199036074-d7fb5fa8-886b-4495-9a9d-c8912fcccc45.png">
+
+
 ## Project Rules
 
 ### **IMPORTANT NOTICE**
