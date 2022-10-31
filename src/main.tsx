@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 import { RecoilRoot } from 'recoil'
 
 import App from './App'
+import { DarkmodeContextProvider } from './app/context/ThemeContext'
 // import { Ptr } from './app/components/ptr/Ptr'
 
 const queryClient = new QueryClient()
@@ -26,7 +27,9 @@ ReactDOM.createRoot(root).render(
       <ReactQueryDevtools initialIsOpen={false} />
       <RecoilRoot>
         <Partytown debug={false} forward={['dataLayer.push']} />
-        <App />
+        <DarkmodeContextProvider>
+          <App />
+        </DarkmodeContextProvider>
       </RecoilRoot>
     </QueryClientProvider>
   </React.StrictMode>

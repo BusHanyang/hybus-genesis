@@ -1,22 +1,26 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect } from 'react'
 
-export const useDarkMode = (): [string, () => void] => {
-  const [theme, setTheme] = useState('light')
-  const toggleTheme = () => {
-    if (theme === 'light') {
-      window.localStorage.setItem('theme', 'dark')
-      setTheme('dark')
+import { THEME, useDarkmodeContext } from '../context/ThemeContext'
+
+export const useDarkMode = () => {
+  const { setTheme, theme } = useDarkmodeContext()
+  const toggleTheme = useCallback(() => {
+    if (theme === THEME.LIGHT) {
+      window.localStorage.setItem('theme', THEME.DARK)
+      setTheme(THEME.DARK)
     } else {
-      window.localStorage.setItem('theme', 'light')
-      setTheme('light')
+      window.localStorage.setItem('theme', THEME.LIGHT)
+      setTheme(THEME.LIGHT)
     }
-    location.reload()
-  }
+    // location.reload()
+  }, [setTheme, theme])
 
   useEffect(() => {
     const localTheme = window.localStorage.getItem('theme')
-    localTheme && setTheme(localTheme)
-  }, [])
+    if (localTheme) {
+      setTheme(localTheme as THEME)
+    }
+  }, [setTheme])
 
-  return [theme, toggleTheme]
+  return { toggleTheme }
 }
