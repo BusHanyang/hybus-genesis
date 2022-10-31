@@ -28,7 +28,7 @@ export const Fabs = (props: { openModal: () => void }) => {
   const { toggleTheme } = useDarkMode()
   const { t, i18n } = useTranslation()
   const { theme } = useDarkmodeContext()
-  const [metadata, setMetadata] = useState<Record<string, any>>({
+  const [metadata, setMetadata] = useState<Record<string, string>>({
     changeText: t('dark'),
     changeColor: '#ffffff',
     iconColor: 'black',
