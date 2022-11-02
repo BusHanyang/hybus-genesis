@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useLayoutEffect } from 'react'
 
 import { THEME, useDarkmodeContext } from '../context/ThemeContext'
 
@@ -41,7 +41,7 @@ export const useDarkMode = () => {
     // location.reload()
   }, [BAR_STYLE, setTheme, theme])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const localTheme = window.localStorage.getItem('theme')
     if (localTheme) {
       setTheme(localTheme as THEME)
