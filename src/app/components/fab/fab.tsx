@@ -117,6 +117,7 @@ export const Fabs = (props: { openModal: () => void }) => {
   return (
     <>
       <FabBackground open={isOpen} onClick={handleClickFabBackground} ref={fabBackgroundRef}>
+      </FabBackground>
         <Fab
           icon={
             <img
@@ -233,7 +234,6 @@ export const Fabs = (props: { openModal: () => void }) => {
             </Icons>
           </Action>
         </Fab>
-      </FabBackground>
     </>
   )
 }
