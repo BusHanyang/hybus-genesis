@@ -26,7 +26,7 @@ const Icons = styled.div<{ theme: string }>`
 const FabBackground = styled.div<{ open: boolean}>`
 ${tw`select-none font-Ptd`}
   ${({open}) => {
-    return open? tw`fixed inset-0 z-99` : null;
+    return open? tw`fixed inset-0 z-10` : null;
   }}
 `
 
@@ -135,7 +135,7 @@ export const Fabs = (props: { openModal: () => void }) => {
             right: '1.5rem',
             margin: '0px',
             padding: '0px',
-            zIndex: 5,
+            zIndex: 15,
           }}
           alwaysShowTitle={true}
           onClick={handleOpen}
