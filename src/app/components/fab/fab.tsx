@@ -1,7 +1,7 @@
 import 'react-tiny-fab/dist/styles.css'
 import './fab.scss'
 
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
@@ -23,10 +23,17 @@ const Icons = styled.div<{ theme: string }>`
     return theme === 'dark' ? tw`invert` : null
   }}
 `
+const FabBackground = styled.div<{ open: boolean}>`
+${tw`select-none font-Ptd`}
+  ${({open}) => {
+    return open? tw`fixed inset-0 z-99` : null;
+  }}
+`
 
 export const Fabs = (props: { openModal: () => void }) => {
   const { toggleTheme } = useDarkMode()
   const { t, i18n } = useTranslation()
+  const [isOpen, setIsOpen] = useState(false)
   const { theme } = useDarkmodeContext()
   const [metadata, setMetadata] = useState<Record<string, string>>({
     changeText: t('dark'),
@@ -35,6 +42,30 @@ export const Fabs = (props: { openModal: () => void }) => {
     dataTheme: 'white',
     imgIcon: DarkImg,
   }) // white theme is default
+
+  const fabBackgroundRef = useRef<HTMLDivElement>(null);
+  const handleClickFabBackground = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === fabBackgroundRef.current) {
+      handleClose()
+    }
+  };
+
+  const handleOpen = (): Promise<React.FC> => {
+    return new Promise(() => {
+      if(isOpen){
+        setIsOpen(false);
+      } else {
+        setIsOpen(true);
+      }
+    })
+  }
+  const handleClose = (): Promise<React.FC> => {
+    return new Promise(() => {
+      setIsOpen(false);
+    })
+  }
+
+
 
   const handleEmailOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
@@ -85,7 +116,7 @@ export const Fabs = (props: { openModal: () => void }) => {
 
   return (
     <>
-      <div className="font-Ptd select-none">
+      <FabBackground open={isOpen} onClick={handleClickFabBackground} ref={fabBackgroundRef}>
         <Fab
           icon={
             <img
@@ -106,6 +137,10 @@ export const Fabs = (props: { openModal: () => void }) => {
             zIndex: 5,
           }}
           alwaysShowTitle={true}
+          onClick={handleOpen}
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          className={`rtf ${isOpen ? 'open' : 'closed'}`}
         >
           <Action
             text={metadata.changeText}
@@ -198,7 +233,7 @@ export const Fabs = (props: { openModal: () => void }) => {
             </Icons>
           </Action>
         </Fab>
-      </div>
+      </FabBackground>
     </>
   )
 }

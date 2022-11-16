@@ -121,8 +121,8 @@ function App() {
                   resistance={3}
                 >
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
-                    <Apps>
                       <Fabs openModal={openModal} />
+                    <Apps>
                       <header className="App-header">
                         <h1
                           id="title"
