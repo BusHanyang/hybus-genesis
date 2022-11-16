@@ -63,7 +63,7 @@ export const Fabs = (props: { openModal: () => void }) => {
     })
   }
 
-  React.useEffect(() => {
+  React.useLayoutEffect(() => {
     if (theme === 'dark') {
       setMetadata({
         changeText: t('light'),
