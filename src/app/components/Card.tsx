@@ -298,12 +298,16 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
       return t('dest_subway')
     } else if (busType == 'DY') {
       return t('dest_yesul')
+    } else if (busType == 'DHJ') {
+      return t('dest_jungang')
     } else {
       return t('loading')
     }
   } else if (currentLoc == 'subway') {
     if (busType == 'C') {
       return t('dest_yesul')
+    } else if (busType == 'DHJ') {
+      return t('dest_jungang')
     } else {
       return t('dest_shuttle_i')
     }
@@ -332,7 +336,7 @@ const titleText = (location: string): string => {
   } else if (location == 'subway') {
     return t('subway')
   } else if (location == 'jungang') {
-      return t('jungang')
+    return t('jungang')
   } else if (location == 'yesulin') {
     return t('yesulin')
   } else if (location == 'shuttlecoke_i') {
