@@ -23,10 +23,10 @@ const Icons = styled.div<{ theme: string }>`
     return theme === 'dark' ? tw`invert` : null
   }}
 `
-const FabBackground = styled.div<{ open: boolean}>`
-${tw`select-none font-Ptd`}
-  ${({open}) => {
-    return open? tw`fixed inset-0 z-10` : null;
+const FabBackground = styled.div<{ open: boolean }>`
+  ${tw`select-none font-Ptd`}
+  ${({ open }) => {
+    return open ? tw`fixed inset-0 z-10` : null
   }}
 `
 
@@ -43,29 +43,27 @@ export const Fabs = (props: { openModal: () => void }) => {
     imgIcon: DarkImg,
   }) // white theme is default
 
-  const fabBackgroundRef = useRef<HTMLDivElement>(null);
+  const fabBackgroundRef = useRef<HTMLDivElement>(null)
   const handleClickFabBackground = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === fabBackgroundRef.current) {
       handleClose()
     }
-  };
+  }
 
   const handleOpen = (): Promise<React.FC> => {
     return new Promise(() => {
-      if(isOpen){
-        setIsOpen(false);
+      if (isOpen) {
+        setIsOpen(false)
       } else {
-        setIsOpen(true);
+        setIsOpen(true)
       }
     })
   }
   const handleClose = (): Promise<React.FC> => {
     return new Promise(() => {
-      setIsOpen(false);
+      setIsOpen(false)
     })
   }
-
-
 
   const handleEmailOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
@@ -116,124 +114,127 @@ export const Fabs = (props: { openModal: () => void }) => {
 
   return (
     <>
-      <FabBackground open={isOpen} onClick={handleClickFabBackground} ref={fabBackgroundRef}>
-      </FabBackground>
-        <Fab
-          icon={
+      <FabBackground
+        open={isOpen}
+        onClick={handleClickFabBackground}
+        ref={fabBackgroundRef}
+      />
+      <Fab
+        icon={
+          <img
+            className="iconImg w-12 h-12 cursor-default mx-auto"
+            src={Arrow}
+            data-theme={metadata.dataTheme}
+            alt="floating action button icon"
+            draggable="false"
+          />
+        }
+        mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
+        style={{
+          position: 'absolute',
+          bottom: '1.5rem',
+          right: '1.5rem',
+          margin: '0px',
+          padding: '0px',
+          zIndex: 15,
+        }}
+        alwaysShowTitle={true}
+        onClick={handleOpen}
+        className={`rtf ${isOpen ? 'open' : 'closed'}`}
+      >
+        <Action
+          text={metadata.changeText}
+          style={{
+            backgroundColor: metadata.changeColor,
+            color: metadata.iconColor,
+          }}
+          onClick={handleDarkOnClick}
+        >
+          <Icons theme={metadata.dataTheme}>
             <img
-              className="iconImg w-12 h-12 cursor-default mx-auto"
-              src={Arrow}
-              data-theme={metadata.dataTheme}
-              alt="floating action button icon"
+              className="cursor-default"
+              src={metadata.imgIcon}
+              style={{ padding: 8 }}
+              alt="light and dark mode icon"
               draggable="false"
             />
-          }
-          mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
+          </Icons>
+        </Action>
+        <Action
+          text={t('changeLang')}
           style={{
-            position: 'absolute',
-            bottom: '1.5rem',
-            right: '1.5rem',
-            margin: '0px',
-            padding: '0px',
-            zIndex: 15,
+            backgroundColor: metadata.changeColor,
+            color: metadata.iconColor,
           }}
-          alwaysShowTitle={true}
-          onClick={handleOpen}
+          onClick={handleLangOnClick}
+        >
+          <Icons theme={metadata.dataTheme}>
+            <img
+              className="cursor-default"
+              src={LangImg}
+              style={{ padding: 8 }}
+              alt="language icon"
+              draggable="false"
+            />
+          </Icons>
+        </Action>
+        <Action
+          text={t('changelog')}
+          style={{
+            backgroundColor: metadata.changeColor,
+            color: metadata.iconColor,
+          }}
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
-          className={`rtf ${isOpen ? 'open' : 'closed'}`}
+          onClick={props.openModal}
         >
-          <Action
-            text={metadata.changeText}
-            style={{
-              backgroundColor: metadata.changeColor,
-              color: metadata.iconColor,
-            }}
-            onClick={handleDarkOnClick}
-          >
-            <Icons theme={metadata.dataTheme}>
-              <img
-                className="cursor-default"
-                src={metadata.imgIcon}
-                style={{ padding: 8 }}
-                alt="light and dark mode icon"
-                draggable="false"
-              />
-            </Icons>
-          </Action>
-          <Action
-            text={t('changeLang')}
-            style={{
-              backgroundColor: metadata.changeColor,
-              color: metadata.iconColor,
-            }}
-            onClick={handleLangOnClick}
-          >
-            <Icons theme={metadata.dataTheme}>
-              <img
-                className="cursor-default"
-                src={LangImg}
-                style={{ padding: 8 }}
-                alt="language icon"
-                draggable="false"
-              />
-            </Icons>
-          </Action>
-          <Action
-            text={t('changelog')}
-            style={{
-              backgroundColor: metadata.changeColor,
-              color: metadata.iconColor,
-            }}
-            onClick={props.openModal}
-          >
-            <Icons theme={metadata.dataTheme}>
-              <img
-                className="cursor-default"
-                src={Info}
-                style={{ padding: 8 }}
-                alt="changelog icon"
-                draggable="false"
-              />
-            </Icons>
-          </Action>
-          <Action
-            text={t('donate')}
-            style={{
-              backgroundColor: metadata.changeColor,
-              color: metadata.iconColor,
-            }}
-            onClick={handleDonateOnClick}
-          >
-            <Icons theme={metadata.dataTheme}>
-              <img
-                className="cursor-default"
-                src={Donate}
-                style={{ padding: 8 }}
-                alt="donate a cup of coffee icon"
-                draggable="false"
-              />
-            </Icons>
-          </Action>
-          <Action
-            text={t('ask')}
-            style={{
-              backgroundColor: metadata.changeColor,
-              color: metadata.iconColor,
-            }}
-            onClick={handleEmailOnClick}
-          >
-            <Icons theme={metadata.dataTheme}>
-              <img
-                className="cursor-default"
-                src={Email}
-                style={{ padding: 8 }}
-                alt="email icon"
-                draggable="false"
-              />
-            </Icons>
-          </Action>
-        </Fab>
+          <Icons theme={metadata.dataTheme}>
+            <img
+              className="cursor-default"
+              src={Info}
+              style={{ padding: 8 }}
+              alt="changelog icon"
+              draggable="false"
+            />
+          </Icons>
+        </Action>
+        <Action
+          text={t('donate')}
+          style={{
+            backgroundColor: metadata.changeColor,
+            color: metadata.iconColor,
+          }}
+          onClick={handleDonateOnClick}
+        >
+          <Icons theme={metadata.dataTheme}>
+            <img
+              className="cursor-default"
+              src={Donate}
+              style={{ padding: 8 }}
+              alt="donate a cup of coffee icon"
+              draggable="false"
+            />
+          </Icons>
+        </Action>
+        <Action
+          text={t('ask')}
+          style={{
+            backgroundColor: metadata.changeColor,
+            color: metadata.iconColor,
+          }}
+          onClick={handleEmailOnClick}
+        >
+          <Icons theme={metadata.dataTheme}>
+            <img
+              className="cursor-default"
+              src={Email}
+              style={{ padding: 8 }}
+              alt="email icon"
+              draggable="false"
+            />
+          </Icons>
+        </Action>
+      </Fab>
     </>
   )
 }
