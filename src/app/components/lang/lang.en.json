@@ -16,6 +16,7 @@
     "subway": "HYU@Ansan Stn.",
     "residence": "Dormitory",
     "yesulin": "Yesulin Apt.",
+    "jungang": "Jungang Stn.",
     "else": "unknown error",
     
     "dest_subway": "HYU Stn.",
@@ -30,6 +31,7 @@
     "subway_btn": "HYU Station",
     "residence_btn": "Dormitory",
     "yesulin_btn": "Yesulin Apartment",
+    "jungang_btn": "Jungang Station",
     "all_btn": "Full Timetable",
     "to_yesulin": "To Yesulin",
 

@@ -16,6 +16,7 @@
     "subway": "한대앞역 (4호선)",
     "residence": "기숙사 (셔틀콕행)",
     "yesulin": "예술인 아파트",
+    "jungang": "중앙역 (4호선)",
     "else": "알수없음",
 
     "dest_subway": "한대앞역",
@@ -30,6 +31,7 @@
     "subway_btn": "한대앞역",
     "residence_btn": "기숙사",
     "yesulin_btn": "예술인",
+    "jungang_btn": "중앙역",
     "all_btn": "전체 시간표",
     "to_yesulin": "예술인행",
 
