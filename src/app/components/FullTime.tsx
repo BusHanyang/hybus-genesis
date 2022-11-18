@@ -204,6 +204,7 @@ const FullTime = () => {
       schedules.forEach((schedule) => {
         if (
           schedule.type === 'DH' ||
+          schedule.type === 'DHJ' ||
           schedule.type === 'R' ||
           schedule.type === ''
         ) {
