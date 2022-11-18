@@ -53,11 +53,11 @@ const SingleTimetable = styled.div`
 `
 
 const TimeLeftWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-28 hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
+  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
 `
 
 const ArrowWrapper = styled.div`
-  ${tw`text-center inline-block w-8 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
+  ${tw`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
 `
 
 const DestinationWrapper = styled.span`
