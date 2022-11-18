@@ -329,6 +329,8 @@ const titleText = (location: string): string => {
     return t('shuttlecoke_o')
   } else if (location == 'subway') {
     return t('subway')
+  } else if (location == 'jungang') {
+      return t('jungang')
   } else if (location == 'yesulin') {
     return t('yesulin')
   } else if (location == 'shuttlecoke_i') {
