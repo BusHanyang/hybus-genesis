@@ -23,6 +23,7 @@ type Location =
   | 'shuttlecoke_o'
   | 'subway'
   | 'yesulin'
+  | 'jungang'
 
 type Week = 'week' | 'weekend'
 type Season = 'semester' | 'vacation_session' | 'vacation'
@@ -249,6 +250,7 @@ const FullTime = () => {
   const arrLocation: Array<[Location, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
     ['subway', t('dest_subway')],
+    ['jungang', t('dest_jungang')],
     ['yesulin', t('dest_yesul')],
     ['residence', t('dest_dorm')],
     ['shuttlecoke_i', t('shuttlecoke_i')],
