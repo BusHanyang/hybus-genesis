@@ -309,6 +309,8 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
     }
   } else if (currentLoc == 'yesulin') {
     return t('dest_shuttle_i')
+  } else if (currentLoc == 'jungang') {
+    return t('dest_shuttle_i')
   } else if (currentLoc == 'shuttlecoke_i') {
     if (busType == 'NA') {
       return t('no_dest')
