@@ -42,7 +42,7 @@ const Button = styled(CardView)`
   }
 
   &#shuttlecoke_i {
-    ${tw`hm:flex-col hm:gap-x-0 gap-x-1 items-center justify-center`}
+    ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
 

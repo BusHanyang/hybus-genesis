@@ -8,6 +8,7 @@ module.exports = {
       screens: {
         hm: { max: '400px' },
         hsm: { max: '360px' },
+        shuttlei: { max: '580px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
