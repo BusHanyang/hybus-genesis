@@ -163,21 +163,21 @@ function App() {
                           {t('subway_btn')}
                         </Button>
                         <Button
-                          id="jungang"
-                          className={`${tab === 'jungang' ? 'active' : ''}`}
-                          onClick={() => saveClicked('jungang')}
-                        >
-                          {t('jungang_btn')}
-                        </Button>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-4">
-                        <Button
                           id="yesulin"
                           className={`${tab === 'yesulin' ? 'active' : ''}`}
                           onClick={() => saveClicked('yesulin')}
                         >
                           {t('yesulin_btn')}
+                        </Button>
+                        
+                      </div>
+                      <div className="grid grid-cols-3 gap-4">
+                        <Button
+                          id="jungang"
+                          className={`${tab === 'jungang' ? 'active' : ''}`}
+                          onClick={() => saveClicked('jungang')}
+                        >
+                          {t('jungang_btn')}
                         </Button>
                         <Button
                           id="shuttlecoke_i"
