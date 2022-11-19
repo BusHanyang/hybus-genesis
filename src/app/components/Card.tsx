@@ -369,13 +369,28 @@ const getMapURL = (loc: string): string => {
 }
 
 const openNaverMapApp = (loc: string): void => {
-  const clicked = +new Date()
-  location.href = getMapURLScheme(loc)
-  setTimeout(function () {
-    if (+new Date() - clicked < 1500 && !document.hidden) {
+  // Check if web client is Safari
+  if (
+    navigator.userAgent.match(/(iPod|iPhone|iPad|Macintosh)/) &&
+    navigator.userAgent.match(/AppleWebKit/) &&
+    !navigator.userAgent.match(/Chrome/)
+  ) {
+    const naverMap = confirm(t('use_naver_map'))
+
+    if (naverMap) {
+      window.open(`${getMapURL(loc)}#applink`, '_blank')
+    } else {
       window.location.href = getMapURL(loc)
     }
-  }, 1000)
+  } else {
+    const clicked = +new Date()
+    location.href = getMapURLScheme(loc)
+    setTimeout(function () {
+      if (+new Date() - clicked < 1500 && !document.hidden) {
+        window.location.href = getMapURL(loc)
+      }
+    }, 1000)
+  }
 }
 
 const titleText = (location: string): string => {
