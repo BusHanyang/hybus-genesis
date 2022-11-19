@@ -57,5 +57,7 @@
     "vacation": "방학",
     "vacation_session": "계절학기",
     "week": "평일",
-    "weekend": "주말"   
+    "weekend": "주말",
+
+    "use_naver_map": "네이버 지도 앱으로 보시겠습니까?"
 }

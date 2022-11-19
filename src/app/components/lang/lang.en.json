@@ -57,5 +57,7 @@
     "vacation": "Vacation",
     "vacation_session": "Vacation Session",
     "week": "Weekday",
-    "weekend": "Weekend"   
+    "weekend": "Weekend",
+
+    "use_naver_map": "Use Naver Map app?"
 }
