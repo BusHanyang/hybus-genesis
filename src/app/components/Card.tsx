@@ -294,12 +294,10 @@ const busTypeToText = (busType: string): string => {
 
 const getBusDestination = (busType: string, currentLoc: string): string => {
   if (currentLoc == 'shuttlecoke_o') {
-    if (busType == 'C' || busType == 'DH') {
+    if (busType == 'C' || busType == 'DH' || busType == 'DHJ') {
       return t('dest_subway')
     } else if (busType == 'DY') {
       return t('dest_yesul')
-    } else if (busType == 'DHJ') {
-      return t('dest_jungang')
     } else {
       return t('loading')
     }
