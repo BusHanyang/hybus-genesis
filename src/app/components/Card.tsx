@@ -372,10 +372,10 @@ const openNaverMapApp = (loc: string): void => {
   const clicked = +new Date()
   location.href = getMapURLScheme(loc)
   setTimeout(function () {
-    if (+new Date() - clicked < 2000 && !document.hidden) {
+    if (+new Date() - clicked < 1500 && !document.hidden) {
       window.location.href = getMapURL(loc)
     }
-  }, 1500)
+  }, 1000)
 }
 
 const titleText = (location: string): string => {
