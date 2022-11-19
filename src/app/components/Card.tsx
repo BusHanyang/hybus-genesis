@@ -36,8 +36,12 @@ const TimetableWrapper = styled.div`
   ${tw`h-full`}
 `
 
+const HeadlineWrapper = styled.div`
+  ${tw`relative`}
+`
+
 const Headline = styled.h2`
-  ${tw`font-bold text-2xl pb-2 hsm:text-xl hsm:pb-4 hsm:pt-2 hm:text-[1.375rem] hm:pb-4 hm:pt-2`}
+  ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
 `
 
 const MainTimetable = styled.div`
@@ -328,6 +332,52 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
   }
 }
 
+const getMapURLScheme = (loc: string): string => {
+  if (loc == 'shuttlecoke_o') {
+    return 'nmap://place?lat=37.2987258&lng=126.8379922&zoom=18&name=셔틀콕&appname=hybus.app'
+  } else if (loc == 'subway') {
+    return 'nmap://place?lat=37.30851&lng=126.85327&zoom=18&name=한대앞역 셔틀버스 정류장&appname=hybus.app'
+  } else if (loc == 'yesulin') {
+    return 'nmap://place?lat=37.31951&lng=126.84564&zoom=18&name=예술인 셔틀버스 정류장&appname=hybus.app'
+  } else if (loc == 'jungang') {
+    return 'nmap://place?lat=37.31489&lng=126.83961&zoom=18&name=중앙역 셔틀버스 정류장&appname=hybus.app'
+  } else if (loc == 'shuttlecoke_i') {
+    return 'nmap://place?lat=37.29923&lng=126.83737&zoom=18&name=셔틀콕 건너편 정류장&appname=hybus.app'
+  } else if (loc == 'residence') {
+    return 'nmap://place?lat=37.29349&lng=126.83644&zoom=18&name=기숙사 셔틀버스 정류장&appname=hybus.app'
+  } else {
+    return 'nmap://place?lat=37.2987258&lng=126.8379922&zoom=18&name=셔틀콕&appname=hybus.app'
+  }
+}
+
+const getMapURL = (loc: string): string => {
+  if (loc == 'shuttlecoke_o') {
+    return 'https://map.naver.com/v5/?lng=126.8379922&lat=37.2987258&type=0&title=셔틀콕'
+  } else if (loc == 'subway') {
+    return 'https://map.naver.com/v5/?lng=126.85327&lat=37.30851&type=0&title=한대앞역 셔틀버스 정류장'
+  } else if (loc == 'yesulin') {
+    return 'https://map.naver.com/v5/?lng=126.84564&lat=37.31951&type=0&title=예술인 셔틀버스 정류장'
+  } else if (loc == 'jungang') {
+    return 'https://map.naver.com/v5/?lng=126.83961&lat=37.31489&type=0&title=중앙역 셔틀버스 정류장'
+  } else if (loc == 'shuttlecoke_i') {
+    return 'https://map.naver.com/v5/?lng=126.83737&lat=37.29923&type=0&title=셔틀콕 건너편 정류장'
+  } else if (loc == 'residence') {
+    return 'https://map.naver.com/v5/?lng=126.83644&lat=37.29349&type=0&title=기숙사 셔틀버스 정류장'
+  } else {
+    return 'https://map.naver.com'
+  }
+}
+
+const openNaverMapApp = (loc: string): void => {
+  const clicked = +new Date()
+  location.href = getMapURLScheme(loc)
+  setTimeout(function () {
+    if (+new Date() - clicked < 2000 && !document.hidden) {
+      window.open(getMapURL(loc))
+    }
+  }, 1500)
+}
+
 const titleText = (location: string): string => {
   if (location == 'shuttlecoke_o') {
     return t('shuttlecoke_o')
@@ -507,7 +557,21 @@ export const Card = ({ location }: ScheduleInfo) => {
 
   return (
     <TimetableWrapper>
-      <Headline>{titleText(location)}</Headline>
+      <HeadlineWrapper>
+        <Headline>{titleText(location)}</Headline>
+        <button
+          className="absolute top-0 right-0 h-full"
+          onClick={() => {
+            openNaverMapApp(location)
+          }}
+        >
+          <img
+            src={'../image/map_black_24dp.svg'}
+            className="cursor-default dark:invert h-full"
+            alt="map icon"
+          />
+        </button>
+      </HeadlineWrapper>
       <MainTimetable>
         {spinning ? (
           <NoTimetable>
