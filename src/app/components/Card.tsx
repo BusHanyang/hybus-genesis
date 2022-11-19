@@ -349,11 +349,13 @@ const titleText = (location: string): string => {
 }
 
 const getColoredElement = (type: string): JSX.Element => {
-  return (
-    <Chip className={type == 'C' ? 'bg-chip-red' : 'bg-chip-blue'}>
-      {busTypeToText(type)}
-    </Chip>
-  )
+  if (type == 'C') {
+    return <Chip className="bg-chip-red">{busTypeToText(type)}</Chip>
+  } else if (type == 'DHJ') {
+    return <Chip className="bg-chip-green">{busTypeToText(type)}</Chip>
+  }
+
+  return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
 }
 
 export const Card = ({ location }: ScheduleInfo) => {

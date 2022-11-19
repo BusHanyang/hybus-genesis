@@ -19,6 +19,7 @@ module.exports = {
       colors: {
         'chip-red': '#FF897A',
         'chip-blue': '#7FAAFF',
+        'chip-green': '#81c784',
       },
       fontFamily: {
         Ptd: ['Pretendard'],
