@@ -60,5 +60,10 @@
     "week": "평일",
     "weekend": "주말",
 
+    "cycle_index": "순환 노선",
+    "direct_index": "직행 노선",
+    "yesulin_index": "예술인 직행",
+    "jungang_index": "중앙역 경유",
+
     "use_naver_map": "네이버 지도 앱으로 보시겠습니까? \n(취소시 웹 지도로 이동)"
 }

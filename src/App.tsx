@@ -145,6 +145,20 @@ function App() {
                           />
                         }
                       </CardView>
+                      <CardView className="p-4 h-12 hm:p-2 flex">
+                        <div className="inline-block ">
+                          <span className="h-3 w-3 bg-chip-red rounded-full inline-block mr-2" />
+                          <span>{t('cycle_index')}</span>
+                          <span className="h-3 w-3 bg-chip-blue rounded-full inline-block mx-2" />
+                          <span>{t('direct_index')}</span>
+                        </div>
+                        <div className="inline-block">
+                          <span className="h-3 w-3 bg-chip-green rounded-full inline-block mx-2" />
+                          <span>{t('yesulin_index')}</span>
+                          <span className="h-3 w-3 bg-chip-purple rounded-full inline-block mx-2" />
+                          <span>{t('jungang_index')}</span>
+                        </div>
+                      </CardView>
                       <div className="grid grid-cols-3 gap-4">
                         <Button
                           id="shuttlecoke_o"
@@ -169,7 +183,6 @@ function App() {
                         >
                           {t('yesulin_btn')}
                         </Button>
-                        
                       </div>
                       <div className="grid grid-cols-3 gap-4">
                         <Button
