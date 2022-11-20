@@ -101,7 +101,7 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-32 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
+      <div className="h-32 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-24 hm:p-2.5 hm:text-sm">
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
