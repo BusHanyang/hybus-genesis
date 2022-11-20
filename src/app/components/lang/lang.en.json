@@ -60,10 +60,10 @@
     "week": "Weekday",
     "weekend": "Weekend",
 
-    "cycle_index": "Cycle line",
-    "direct_index": "Direct line",
+    "cycle_index": "Cycle Line",
+    "direct_index": "Direct Line",
     "yesulin_index": "Direct (Yesulin)",
-    "jungang_index": "Jungang layover",
+    "jungang_index": "Jungang Layover",
 
     "use_naver_map": "Use Naver Map app? \n(Press cancel to use the web version.)"
 }

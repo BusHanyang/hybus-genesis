@@ -23,6 +23,19 @@ const Apps = styled.div`
   `}
 `
 
+const Circle = styled.span`
+  ${tw`
+    flex rounded-full inline-block
+    h-3 w-3 rt1:h-2.5 rt1:w-2.5
+  `}
+`
+const RouteText = styled.span`
+  ${tw`
+    inline-block rt1:text-sm rt2:text-xs
+  `}
+`
+
+
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
@@ -146,17 +159,23 @@ function App() {
                         }
                       </CardView>
                       <CardView className="p-4 h-12 hm:p-2 flex">
-                        <div className="inline-block ">
-                          <span className="h-3 w-3 bg-chip-red rounded-full inline-block mr-2" />
-                          <span>{t('cycle_index')}</span>
-                          <span className="h-3 w-3 bg-chip-blue rounded-full inline-block mx-2" />
-                          <span>{t('direct_index')}</span>
-                        </div>
-                        <div className="inline-block">
-                          <span className="h-3 w-3 bg-chip-green rounded-full inline-block mx-2" />
-                          <span>{t('yesulin_index')}</span>
-                          <span className="h-3 w-3 bg-chip-purple rounded-full inline-block mx-2" />
-                          <span>{t('jungang_index')}</span>
+                        <div className="flex">
+                          <div>
+                            <Circle className="bg-chip-red mr-2" />
+                            <RouteText>{t('cycle_index')}</RouteText>
+                          </div>
+                          <div>
+                            <Circle className="bg-chip-blue mx-2" />
+                            <RouteText>{t('direct_index')}</RouteText>
+                          </div> 
+                          <div>
+                            <Circle className="bg-chip-green mx-2" />
+                            <RouteText>{t('yesulin_index')}</RouteText>
+                          </div>
+                          <div>
+                            <Circle className="bg-chip-purple mx-2" />
+                            <RouteText>{t('jungang_index')}</RouteText>
+                          </div>
                         </div>
                       </CardView>
                       <div className="grid grid-cols-3 gap-4">
