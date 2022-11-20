@@ -8,6 +8,7 @@
 
     "cycle": "순환",
     "direct": "직행",
+    "cycle_ja": "중앙역",
     "NA": "미운행",
     "left": "후 출발",
 
@@ -16,10 +17,12 @@
     "subway": "한대앞역 (4호선)",
     "residence": "기숙사 (셔틀콕행)",
     "yesulin": "예술인 아파트",
+    "jungang": "중앙역 (4호선)",
     "else": "알수없음",
 
     "dest_subway": "한대앞역",
     "dest_yesul": "예술인 아파트",
+    "dest_jungang": "중앙역",
     "dest_shuttle_o": "셔틀콕",
     "dest_shuttle_i": "셔틀콕 건너편",
     "dest_dorm": "기숙사",
@@ -30,6 +33,7 @@
     "subway_btn": "한대앞역",
     "residence_btn": "기숙사",
     "yesulin_btn": "예술인",
+    "jungang_btn": "중앙역",
     "all_btn": "전체 시간표",
     "to_yesulin": "예술인행",
 
@@ -54,5 +58,12 @@
     "vacation": "방학",
     "vacation_session": "계절학기",
     "week": "평일",
-    "weekend": "주말"   
+    "weekend": "주말",
+
+    "cycle_index": "순환 노선",
+    "direct_index": "직행 노선",
+    "yesulin_index": "예술인 직행",
+    "jungang_index": "중앙역 경유",
+
+    "use_naver_map": "네이버 지도 앱으로 보시겠습니까? \n(취소시 웹 지도로 이동)"
 }

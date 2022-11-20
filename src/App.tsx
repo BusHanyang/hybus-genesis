@@ -23,6 +23,19 @@ const Apps = styled.div`
   `}
 `
 
+const Circle = styled.span`
+  ${tw`
+    flex rounded-full inline-block
+    h-3 w-3 rt1:h-2.5 rt1:w-2.5
+  `}
+`
+const RouteText = styled.span`
+  ${tw`
+    inline-block rt1:text-sm rt2:text-xs
+  `}
+`
+
+
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
@@ -42,7 +55,7 @@ const Button = styled(CardView)`
   }
 
   &#shuttlecoke_i {
-    ${tw`hm:flex-col hm:gap-x-0 gap-x-1 items-center justify-center`}
+    ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
 
@@ -145,6 +158,26 @@ function App() {
                           />
                         }
                       </CardView>
+                      <CardView className="p-4 h-12 hm:p-2 flex">
+                        <div className="flex">
+                          <div>
+                            <Circle className="bg-chip-red mr-2" />
+                            <RouteText>{t('cycle_index')}</RouteText>
+                          </div>
+                          <div>
+                            <Circle className="bg-chip-blue mx-2" />
+                            <RouteText>{t('direct_index')}</RouteText>
+                          </div> 
+                          <div>
+                            <Circle className="bg-chip-green mx-2" />
+                            <RouteText>{t('yesulin_index')}</RouteText>
+                          </div>
+                          <div>
+                            <Circle className="bg-chip-purple mx-2" />
+                            <RouteText>{t('jungang_index')}</RouteText>
+                          </div>
+                        </div>
+                      </CardView>
                       <div className="grid grid-cols-3 gap-4">
                         <Button
                           id="shuttlecoke_o"
@@ -170,8 +203,14 @@ function App() {
                           {t('yesulin_btn')}
                         </Button>
                       </div>
-
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className="grid grid-cols-3 gap-4">
+                        <Button
+                          id="jungang"
+                          className={`${tab === 'jungang' ? 'active' : ''}`}
+                          onClick={() => saveClicked('jungang')}
+                        >
+                          {t('jungang_btn')}
+                        </Button>
                         <Button
                           id="shuttlecoke_i"
                           className={`${

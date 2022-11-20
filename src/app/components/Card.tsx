@@ -36,8 +36,12 @@ const TimetableWrapper = styled.div`
   ${tw`h-full`}
 `
 
+const HeadlineWrapper = styled.div`
+  ${tw`relative`}
+`
+
 const Headline = styled.h2`
-  ${tw`font-bold text-2xl pb-2 hsm:text-xl hsm:pb-4 hsm:pt-2 hm:text-[1.375rem] hm:pb-4 hm:pt-2`}
+  ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
 `
 
 const MainTimetable = styled.div`
@@ -53,11 +57,11 @@ const SingleTimetable = styled.div`
 `
 
 const TimeLeftWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-28 hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
+  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
 `
 
 const ArrowWrapper = styled.div`
-  ${tw`text-center inline-block w-8 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
+  ${tw`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
 `
 
 const DestinationWrapper = styled.span`
@@ -294,7 +298,7 @@ const busTypeToText = (busType: string): string => {
 
 const getBusDestination = (busType: string, currentLoc: string): string => {
   if (currentLoc == 'shuttlecoke_o') {
-    if (busType == 'C' || busType == 'DH') {
+    if (busType == 'C' || busType == 'DH' || busType == 'DHJ') {
       return t('dest_subway')
     } else if (busType == 'DY') {
       return t('dest_yesul')
@@ -304,10 +308,14 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
   } else if (currentLoc == 'subway') {
     if (busType == 'C') {
       return t('dest_yesul')
+    } else if (busType == 'DHJ') {
+      return t('dest_jungang')
     } else {
       return t('dest_shuttle_i')
     }
   } else if (currentLoc == 'yesulin') {
+    return t('dest_shuttle_i')
+  } else if (currentLoc == 'jungang') {
     return t('dest_shuttle_i')
   } else if (currentLoc == 'shuttlecoke_i') {
     if (busType == 'NA') {
@@ -324,11 +332,74 @@ const getBusDestination = (busType: string, currentLoc: string): string => {
   }
 }
 
+const getMapURLScheme = (loc: string): string => {
+  if (loc == 'shuttlecoke_o') {
+    return 'nmap://place?lat=37.2987258&lng=126.8379922&zoom=18&name=셔틀콕&appname=hybus.app'
+  } else if (loc == 'subway') {
+    return 'nmap://place?lat=37.30851&lng=126.85327&zoom=18&name=한대앞역 셔틀버스 정류장&appname=hybus.app'
+  } else if (loc == 'yesulin') {
+    return 'nmap://place?lat=37.31951&lng=126.84564&zoom=18&name=예술인 셔틀버스 정류장&appname=hybus.app'
+  } else if (loc == 'jungang') {
+    return 'nmap://place?lat=37.31489&lng=126.83961&zoom=18&name=중앙역 셔틀버스 정류장&appname=hybus.app'
+  } else if (loc == 'shuttlecoke_i') {
+    return 'nmap://place?lat=37.29923&lng=126.83737&zoom=18&name=셔틀콕 건너편 정류장&appname=hybus.app'
+  } else if (loc == 'residence') {
+    return 'nmap://place?lat=37.29349&lng=126.83644&zoom=18&name=기숙사 셔틀버스 정류장&appname=hybus.app'
+  } else {
+    return 'nmap://place?lat=37.2987258&lng=126.8379922&zoom=18&name=셔틀콕&appname=hybus.app'
+  }
+}
+
+const getMapURL = (loc: string): string => {
+  if (loc == 'shuttlecoke_o') {
+    return 'https://map.naver.com/v5/?lng=126.8379922&lat=37.2987258&type=0&title=셔틀콕'
+  } else if (loc == 'subway') {
+    return 'https://map.naver.com/v5/?lng=126.85327&lat=37.30851&type=0&title=한대앞역 셔틀버스 정류장'
+  } else if (loc == 'yesulin') {
+    return 'https://map.naver.com/v5/?lng=126.84564&lat=37.31951&type=0&title=예술인 셔틀버스 정류장'
+  } else if (loc == 'jungang') {
+    return 'https://map.naver.com/v5/?lng=126.83961&lat=37.31489&type=0&title=중앙역 셔틀버스 정류장'
+  } else if (loc == 'shuttlecoke_i') {
+    return 'https://map.naver.com/v5/?lng=126.83737&lat=37.29923&type=0&title=셔틀콕 건너편 정류장'
+  } else if (loc == 'residence') {
+    return 'https://map.naver.com/v5/?lng=126.83644&lat=37.29349&type=0&title=기숙사 셔틀버스 정류장'
+  } else {
+    return 'https://map.naver.com'
+  }
+}
+
+const openNaverMapApp = (loc: string): void => {
+  // Check if web client is Safari
+  if (
+    navigator.userAgent.match(/(iPod|iPhone|iPad|Macintosh)/) &&
+    navigator.userAgent.match(/AppleWebKit/) &&
+    !navigator.userAgent.match(/Chrome/)
+  ) {
+    const naverMap = confirm(t('use_naver_map'))
+
+    if (naverMap) {
+      window.open(`${getMapURL(loc)}#applink`, '_blank')
+    } else {
+      window.location.href = getMapURL(loc)
+    }
+  } else {
+    const clicked = +new Date()
+    location.href = getMapURLScheme(loc)
+    setTimeout(function () {
+      if (+new Date() - clicked < 1500 && !document.hidden) {
+        window.location.href = getMapURL(loc)
+      }
+    }, 1000)
+  }
+}
+
 const titleText = (location: string): string => {
   if (location == 'shuttlecoke_o') {
     return t('shuttlecoke_o')
   } else if (location == 'subway') {
     return t('subway')
+  } else if (location == 'jungang') {
+    return t('jungang')
   } else if (location == 'yesulin') {
     return t('yesulin')
   } else if (location == 'shuttlecoke_i') {
@@ -343,9 +414,13 @@ const titleText = (location: string): string => {
 const getColoredElement = (type: string): JSX.Element => {
   if (type == 'C') {
     return <Chip className="bg-chip-red">{busTypeToText(type)}</Chip>
-  } else {
-    return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
+  } else if (type == 'DHJ') {
+    return <Chip className="bg-chip-purple">{busTypeToText(type)}</Chip>
+  } else if (type == 'DY') {
+    return <Chip className="bg-chip-green">{busTypeToText(type)}</Chip>
   }
+
+  return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
 }
 
 export const Card = ({ location }: ScheduleInfo) => {
@@ -499,7 +574,21 @@ export const Card = ({ location }: ScheduleInfo) => {
 
   return (
     <TimetableWrapper>
-      <Headline>{titleText(location)}</Headline>
+      <HeadlineWrapper>
+        <Headline>{titleText(location)}</Headline>
+        <button
+          className="absolute top-0 right-0 h-full"
+          onClick={() => {
+            openNaverMapApp(location)
+          }}
+        >
+          <img
+            src={'../image/map_black_24dp.svg'}
+            className="cursor-default dark:invert h-full"
+            alt="map icon"
+          />
+        </button>
+      </HeadlineWrapper>
       <MainTimetable>
         {spinning ? (
           <NoTimetable>

@@ -8,6 +8,9 @@ module.exports = {
       screens: {
         hm: { max: '400px' },
         hsm: { max: '360px' },
+        shuttlei: { max: '580px' },
+        rt1: { max: '495px' },
+        rt2: { max: '440px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
@@ -18,6 +21,8 @@ module.exports = {
       colors: {
         'chip-red': '#FF897A',
         'chip-blue': '#7FAAFF',
+        'chip-green': '#81c784',
+        'chip-purple': '#d0affb',
       },
       fontFamily: {
         Ptd: ['Pretendard'],
