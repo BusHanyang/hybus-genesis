@@ -190,7 +190,7 @@ const FullTime = () => {
     if (timetable.length === 0) {
       return (
         <div className="min-h-screen">
-          <div className="h-32 hm:h-20 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[5rem]">
+          <div className="h-32 hm:h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]">
             {t('none_data')}
           </div>
         </div>
