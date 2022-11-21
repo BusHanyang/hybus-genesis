@@ -15,6 +15,7 @@ type FilteredTimeTables = {
   direct: Array<string>
   circle: Array<string>
   directY: Array<string>
+  jungang: Array<string>
 }
 
 type Location =
@@ -100,7 +101,7 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
+      <div className="h-32 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
@@ -116,6 +117,18 @@ const TimeBox = (props: FilteredTimeTables) => {
             </div>
             <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
+            </div>
+          </div>
+          <div
+            className={`inline-grid grid-cols-5 ${
+              props.jungang.length === 0 ? 'hidden' : 'block'
+            }`}
+          >
+            <div className="self-center bg-chip-purple h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+              {t('cycle_ja')}
+            </div>
+            <div className="self-center text-left ml-3 col-span-4">
+              {props.jungang.join(' ')}
             </div>
           </div>
           <div
@@ -200,11 +213,11 @@ const FullTime = () => {
         direct: [],
         circle: [],
         directY: [],
+        jungang: [],
       }
       schedules.forEach((schedule) => {
         if (
           schedule.type === 'DH' ||
-          schedule.type === 'DHJ' ||
           schedule.type === 'R' ||
           schedule.type === ''
         ) {
@@ -213,10 +226,11 @@ const FullTime = () => {
           single.directY.push(schedule.time.split(':')[1])
         } else if (schedule.type === 'C') {
           single.circle.push(schedule.time.split(':')[1])
+        } else if (schedule.type === 'DHJ') {
+          single.jungang.push(schedule.time.split(':')[1])
         }
       })
       filterdByType.push(single)
-
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
@@ -233,6 +247,7 @@ const FullTime = () => {
                   direct={schedule.direct}
                   directY={schedule.directY}
                   circle={schedule.circle}
+                  jungang={schedule.jungang}
                 />
               )}
             </React.Fragment>
