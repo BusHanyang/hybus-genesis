@@ -188,7 +188,13 @@ const FullTime = () => {
 
   const renderTimebox = () => {
     if (timetable.length === 0) {
-      return <div className="min-h-screen"> {t('none_data')} </div>
+      return (
+        <div className="min-h-screen">
+          <div className="h-32 hm:h-20 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[5rem]">
+            {t('none_data')}
+          </div>
+        </div>
+      )
     }
 
     const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
