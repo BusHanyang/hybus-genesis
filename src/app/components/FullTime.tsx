@@ -15,6 +15,7 @@ type FilteredTimeTables = {
   direct: Array<string>
   circle: Array<string>
   directY: Array<string>
+  jungang: Array<string>
 }
 
 type Location =
@@ -23,6 +24,7 @@ type Location =
   | 'shuttlecoke_o'
   | 'subway'
   | 'yesulin'
+  | 'jungang'
 
 type Week = 'week' | 'weekend'
 type Season = 'semester' | 'vacation_session' | 'vacation'
@@ -99,7 +101,7 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-20 hm:p-2.5 hm:text-sm">
+      <div className="h-32 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-24 hm:p-2.5 hm:text-sm">
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
@@ -115,6 +117,18 @@ const TimeBox = (props: FilteredTimeTables) => {
             </div>
             <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
+            </div>
+          </div>
+          <div
+            className={`inline-grid grid-cols-5 ${
+              props.jungang.length === 0 ? 'hidden' : 'block'
+            }`}
+          >
+            <div className="self-center bg-chip-purple h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+              {t('cycle_ja')}
+            </div>
+            <div className="self-center text-left ml-3 col-span-4">
+              {props.jungang.join(' ')}
             </div>
           </div>
           <div
@@ -174,7 +188,13 @@ const FullTime = () => {
 
   const renderTimebox = () => {
     if (timetable.length === 0) {
-      return <div className="min-h-screen"> {t('none_data')} </div>
+      return (
+        <div className="min-h-screen">
+          <div className="h-32 hm:h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]">
+            {t('none_data')}
+          </div>
+        </div>
+      )
     }
 
     const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
@@ -199,6 +219,7 @@ const FullTime = () => {
         direct: [],
         circle: [],
         directY: [],
+        jungang: [],
       }
       schedules.forEach((schedule) => {
         if (
@@ -211,10 +232,11 @@ const FullTime = () => {
           single.directY.push(schedule.time.split(':')[1])
         } else if (schedule.type === 'C') {
           single.circle.push(schedule.time.split(':')[1])
+        } else if (schedule.type === 'DHJ') {
+          single.jungang.push(schedule.time.split(':')[1])
         }
       })
       filterdByType.push(single)
-
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
@@ -231,6 +253,7 @@ const FullTime = () => {
                   direct={schedule.direct}
                   directY={schedule.directY}
                   circle={schedule.circle}
+                  jungang={schedule.jungang}
                 />
               )}
             </React.Fragment>
@@ -249,6 +272,7 @@ const FullTime = () => {
   const arrLocation: Array<[Location, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
     ['subway', t('dest_subway')],
+    ['jungang', t('dest_jungang')],
     ['yesulin', t('dest_yesul')],
     ['residence', t('dest_dorm')],
     ['shuttlecoke_i', t('shuttlecoke_i')],

@@ -7,7 +7,8 @@
     "news": "News",
 
     "cycle": "Cycle",
-    "direct": "Direct",
+    "direct": "Direct",    
+    "cycle_ja": "Direct",
     "NA": "N/A",
     "left": "Left",
 
@@ -16,10 +17,12 @@
     "subway": "HYU@Ansan Stn.",
     "residence": "Dormitory",
     "yesulin": "Yesulin Apt.",
+    "jungang": "Jungang Stn.",
     "else": "unknown error",
     
     "dest_subway": "HYU Stn.",
     "dest_yesul": "Yesulin Apt.",
+    "dest_jungang": "Jungang Stn.",
     "dest_shuttle_o": "ShuttleCoke",
     "dest_shuttle_i": "ShuttleCoke",
     "dest_dorm": "Dormitory",
@@ -30,6 +33,7 @@
     "subway_btn": "HYU Station",
     "residence_btn": "Dormitory",
     "yesulin_btn": "Yesulin Apartment",
+    "jungang_btn": "Jungang Station",
     "all_btn": "Full Timetable",
     "to_yesulin": "To Yesulin",
 
@@ -54,5 +58,12 @@
     "vacation": "Vacation",
     "vacation_session": "Vacation Session",
     "week": "Weekday",
-    "weekend": "Weekend"   
+    "weekend": "Weekend",
+
+    "cycle_index": "Cycle Line",
+    "direct_index": "Direct Line",
+    "yesulin_index": "Direct (Yesulin)",
+    "jungang_index": "Jungang Layover",
+
+    "use_naver_map": "Use Naver Map app? \n(Press cancel to use the web version.)"
 }
