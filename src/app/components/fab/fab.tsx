@@ -42,6 +42,7 @@ export const Fabs = (props: { openModal: () => void }) => {
     dataTheme: 'white',
     imgIcon: DarkImg,
   }) // white theme is default
+  const isOpenClass = document.getElementsByClassName('rtf')
 
   const fabBackgroundRef = useRef<HTMLDivElement>(null)
   const handleClickFabBackground = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -54,14 +55,20 @@ export const Fabs = (props: { openModal: () => void }) => {
     return new Promise(() => {
       if (isOpen) {
         setIsOpen(false)
+        isOpenClass[0].classList.remove('open')
+        isOpenClass[0].classList.add('closed')
       } else {
         setIsOpen(true)
+        isOpenClass[0].classList.remove('closed')
+        isOpenClass[0].classList.add('open')
       }
     })
   }
   const handleClose = (): Promise<React.FC> => {
     return new Promise(() => {
       setIsOpen(false)
+      isOpenClass[0].classList.remove('open')
+      isOpenClass[0].classList.add('closed')
     })
   }
 
@@ -140,7 +147,6 @@ export const Fabs = (props: { openModal: () => void }) => {
         }}
         alwaysShowTitle={true}
         onClick={handleOpen}
-        className={`rtf ${isOpen ? 'open' : 'closed'}`}
       >
         <Action
           text={metadata.changeText}
