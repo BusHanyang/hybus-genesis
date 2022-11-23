@@ -79,7 +79,7 @@ export const Fabs = (props: { openModal: () => void }) => {
   }
   const handleDonateOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
-      window.open('https://www.buymeacoffee.com/hybus', '_blank')
+      window.open('https://toss.me/bushanyang', '_blank')
     })
   }
   const handleDarkOnClick = (): Promise<React.FC> => {
