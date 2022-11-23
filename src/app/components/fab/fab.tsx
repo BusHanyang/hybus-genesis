@@ -190,8 +190,6 @@ export const Fabs = (props: { openModal: () => void }) => {
             backgroundColor: metadata.changeColor,
             color: metadata.iconColor,
           }}
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
           onClick={props.openModal}
         >
           <Icons theme={metadata.dataTheme}>
