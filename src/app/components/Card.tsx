@@ -378,7 +378,7 @@ const openNaverMapApp = (loc: string): void => {
     const naverMap = confirm(t('use_naver_map'))
 
     if (naverMap) {
-      window.open(`${getMapURL(loc)}#applink`, '_blank')
+      window.location.href = getMapURLScheme(loc)
     } else {
       window.location.href = getMapURL(loc)
     }
