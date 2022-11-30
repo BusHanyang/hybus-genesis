@@ -124,6 +124,7 @@ function App() {
             path="/"
             element={
               <>
+              <Fabs openModal={openModal} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
@@ -135,7 +136,7 @@ function App() {
                 >
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
-                      <Fabs openModal={openModal} />
+                      
                       <header className="App-header">
                         <h1
                           id="title"
