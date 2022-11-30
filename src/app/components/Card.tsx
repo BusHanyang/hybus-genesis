@@ -584,7 +584,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         >
           <img
             src={'../image/map_black_24dp.svg'}
-            className="cursor-default dark:invert h-full"
+            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
             alt="map icon"
           />
         </button>
