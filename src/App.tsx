@@ -29,9 +29,9 @@ const Circle = styled.span`
     h-3 w-3 rt1:h-2.5 rt1:w-2.5
   `}
 `
-const RouteText = styled.span`
+const RouteText = styled.div`
   ${tw`
-    inline-block rt1:text-sm rt2:text-xs
+    inline-block rt1:text-sm rt2:text-xs hsm:mx-1
   `}
 `
 
@@ -160,23 +160,21 @@ function App() {
                         }
                       </CardView>
                       <CardView className="p-4 h-12 hm:p-2 flex">
-                        <div className="flex">
-                          <div>
-                            <Circle className="bg-chip-red mr-2" />
-                            <RouteText>{t('cycle_index')}</RouteText>
-                          </div>
-                          <div>
-                            <Circle className="bg-chip-blue mx-2" />
-                            <RouteText>{t('direct_index')}</RouteText>
-                          </div> 
-                          <div>
-                            <Circle className="bg-chip-green mx-2" />
-                            <RouteText>{t('yesulin_index')}</RouteText>
-                          </div>
-                          <div>
-                            <Circle className="bg-chip-purple mx-2" />
-                            <RouteText>{t('jungang_index')}</RouteText>
-                          </div>
+                        <div>
+                          <Circle className="bg-chip-red mr-2 hsm:mx-2" />
+                          <RouteText>{t('cycle_index')}</RouteText>
+                        </div>
+                        <div>
+                          <Circle className="bg-chip-blue mx-2" />
+                          <RouteText>{t('direct_index')}</RouteText>
+                        </div> 
+                        <div>
+                          <Circle className="bg-chip-green mx-2" />
+                          <RouteText>{t('yesulin_index')}</RouteText>
+                        </div>
+                        <div>
+                          <Circle className="bg-chip-purple mx-2" />
+                          <RouteText>{t('jungang_index')}</RouteText>
                         </div>
                       </CardView>
                       <div className="grid grid-cols-3 gap-4">
