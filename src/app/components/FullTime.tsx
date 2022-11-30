@@ -16,6 +16,7 @@ type FilteredTimeTables = {
   circle: Array<string>
   directY: Array<string>
   jungang: Array<string>
+  count: number
 }
 
 type Location =
@@ -101,7 +102,13 @@ const TimeBox = (props: FilteredTimeTables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div className="h-32 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-24 hm:p-2.5 hm:text-sm">
+      <div
+        className={`h-${
+          props.count
+        } bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-${
+          props.count-4
+        } hm:p-2.5 hm:text-sm`}
+      >
         <div className="font-bold self-center">
           {props.time}
           {t('o_clock')}
@@ -167,6 +174,7 @@ const FullTime = () => {
   const [season, setSeason] = useState<Season>('semester')
   const [week, setWeek] = useState<Week>('week')
   const [location, setLocation] = useState<Location>('shuttlecoke_o')
+  const [countChip, setCountChip] = useState(0)
   const { theme } = useDarkmodeContext()
   const navigate = useNavigate()
   const { t } = useTranslation()
@@ -220,6 +228,7 @@ const FullTime = () => {
         circle: [],
         directY: [],
         jungang: [],
+        count: 0,
       }
       schedules.forEach((schedule) => {
         if (
@@ -236,6 +245,12 @@ const FullTime = () => {
           single.jungang.push(schedule.time.split(':')[1])
         }
       })
+
+      single.circle.length == 0 ? null : single.count++
+      single.direct.length == 0 ? null : single.count++
+      single.jungang.length == 0 ? null : single.count++
+
+      single.count > countChip ? setCountChip(single.count) : null
       filterdByType.push(single)
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
@@ -254,6 +269,7 @@ const FullTime = () => {
                   directY={schedule.directY}
                   circle={schedule.circle}
                   jungang={schedule.jungang}
+                  count={20 + countChip * 4}
                 />
               )}
             </React.Fragment>
@@ -265,6 +281,7 @@ const FullTime = () => {
 
   useEffect(() => {
     getTimetable(season, week, location).then((res) => {
+      setCountChip(0)
       setTimetable(res)
     })
   }, [location, season, week])
