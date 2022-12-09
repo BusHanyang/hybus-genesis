@@ -7,6 +7,7 @@ import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import { Card, Fabs } from './app/components'
 import Notice from './app/components/Notice'
@@ -63,6 +64,8 @@ const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [modalAni, setModalAni] = useState(false)
+  const [triggered, setTriggered] = useState<boolean>(false)
+  const intervalMS = 60 * 1000
 
   const openModal = () => {
     setModalOpen(true)
@@ -113,6 +116,30 @@ function App() {
     document.documentElement.classList.add('h-full')
     document.documentElement.classList.add('h-dfull')
   }, [])
+
+  useEffect(() => {
+    if (!triggered) {
+      const triggerUpdate = async () => {
+        await updateServiceWorker()
+      }
+      triggerUpdate().then(() => {
+        console.log('App Update Triggered.')
+        setTriggered(true)
+      })
+    }
+  })
+
+  const { updateServiceWorker } = useRegisterSW({
+    immediate: true,
+    onRegistered(r) {
+      r &&
+        setInterval(async () => {
+          console.log('Checking for updates...')
+          await r.update()
+          window.location.reload()
+        }, intervalMS)
+    },
+  })
 
   return (
     <>
