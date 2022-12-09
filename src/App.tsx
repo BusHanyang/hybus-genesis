@@ -35,7 +35,6 @@ const RouteText = styled.div`
   `}
 `
 
-
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
@@ -124,7 +123,7 @@ function App() {
             path="/"
             element={
               <>
-              <Fabs openModal={openModal} />
+                <Fabs openModal={openModal} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
@@ -136,7 +135,6 @@ function App() {
                 >
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
-                      
                       <header className="App-header">
                         <h1
                           id="title"
@@ -167,7 +165,7 @@ function App() {
                         <div>
                           <Circle className="bg-chip-blue mx-2" />
                           <RouteText>{t('direct_index')}</RouteText>
-                        </div> 
+                        </div>
                         <div>
                           <Circle className="bg-chip-green mx-2" />
                           <RouteText>{t('yesulin_index')}</RouteText>
