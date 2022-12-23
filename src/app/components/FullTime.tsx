@@ -171,9 +171,15 @@ const TimeBox = (props: FilteredTimeTables) => {
 
 const FullTime = () => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
-  const [season, setSeason] = useState<Season>('semester')
-  const [week, setWeek] = useState<Week>('week')
-  const [location, setLocation] = useState<Location>('shuttlecoke_o')
+  const [season, setSeason] = useState<Season>(
+    (window.localStorage.getItem('season') as Season) || 'semester'
+  )
+  const [week, setWeek] = useState<Week>(
+    (window.localStorage.getItem('week') as Week) || 'week'
+  )
+  const [location, setLocation] = useState<Location>(
+    (window.localStorage.getItem('tab') as Location) || 'shuttlecoke_o'
+  )
   const [countChip, setCountChip] = useState(0)
   const { theme } = useDarkmodeContext()
   const navigate = useNavigate()
