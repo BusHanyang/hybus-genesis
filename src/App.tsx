@@ -96,6 +96,29 @@ function App() {
     setTab(stn)
   }
 
+  const { updateServiceWorker } = useRegisterSW({
+    immediate: true,
+    onRegisteredSW(swURL, r) {
+      r &&
+        setInterval(async () => {
+          if (!(!r.installing && navigator)) return
+          if ('connection' in navigator && !navigator.onLine) return
+
+          const resp = await fetch(swURL, {
+            cache: 'no-store',
+            headers: {
+              cache: 'no-store',
+              'cache-control': 'no-cache',
+            },
+          })
+
+          if (resp?.status === 200) {
+            await r.update()
+          }
+        }, intervalMS)
+    },
+  })
+
   useEffect(() => {
     const whatlang = window.localStorage.getItem('lang') || i18n.language
     if (whatlang === 'en') {
@@ -121,25 +144,13 @@ function App() {
     if (!triggered) {
       const triggerUpdate = async () => {
         await updateServiceWorker()
+        setTriggered(true)
       }
       triggerUpdate().then(() => {
         console.log('App Update Triggered.')
-        setTriggered(true)
       })
     }
-  })
-
-  const { updateServiceWorker } = useRegisterSW({
-    immediate: true,
-    onRegistered(r) {
-      r &&
-        setInterval(async () => {
-          console.log('Checking for updates...')
-          await r.update()
-          window.location.reload()
-        }, intervalMS)
-    },
-  })
+  }, [triggered, updateServiceWorker])
 
   return (
     <>
