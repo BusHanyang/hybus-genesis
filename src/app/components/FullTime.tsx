@@ -106,7 +106,7 @@ const TimeBox = (props: FilteredTimeTables) => {
         className={`h-${
           props.count
         } bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-${
-          props.count-4
+          props.count - 4
         } hm:p-2.5 hm:text-sm`}
       >
         <div className="font-bold self-center">
@@ -252,9 +252,15 @@ const FullTime = () => {
         }
       })
 
-      single.circle.length == 0 ? null : single.count++
-      single.direct.length == 0 ? null : single.count++
-      single.jungang.length == 0 ? null : single.count++
+      if (single.circle.length !== 0) {
+        single.count++
+      }
+      if (single.direct.length !== 0) {
+        single.count++
+      }
+      if (single.jungang.length !== 0) {
+        single.count++
+      }
 
       single.count > countChip ? setCountChip(single.count) : null
       filterdByType.push(single)
