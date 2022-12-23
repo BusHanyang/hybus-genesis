@@ -106,7 +106,7 @@ const TimeBox = (props: FilteredTimeTables) => {
         className={`h-${
           props.count
         } bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-${
-          props.count-4
+          props.count - 4
         } hm:p-2.5 hm:text-sm`}
       >
         <div className="font-bold self-center">
@@ -171,9 +171,15 @@ const TimeBox = (props: FilteredTimeTables) => {
 
 const FullTime = () => {
   const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
-  const [season, setSeason] = useState<Season>('semester')
-  const [week, setWeek] = useState<Week>('week')
-  const [location, setLocation] = useState<Location>('shuttlecoke_o')
+  const [season, setSeason] = useState<Season>(
+    (window.localStorage.getItem('season') as Season) || 'semester'
+  )
+  const [week, setWeek] = useState<Week>(
+    (window.localStorage.getItem('week') as Week) || 'week'
+  )
+  const [location, setLocation] = useState<Location>(
+    (window.localStorage.getItem('tab') as Location) || 'shuttlecoke_o'
+  )
   const [countChip, setCountChip] = useState(0)
   const { theme } = useDarkmodeContext()
   const navigate = useNavigate()
@@ -246,9 +252,15 @@ const FullTime = () => {
         }
       })
 
-      single.circle.length == 0 ? null : single.count++
-      single.direct.length == 0 ? null : single.count++
-      single.jungang.length == 0 ? null : single.count++
+      if (single.circle.length !== 0) {
+        single.count++
+      }
+      if (single.direct.length !== 0) {
+        single.count++
+      }
+      if (single.jungang.length !== 0) {
+        single.count++
+      }
 
       single.count > countChip ? setCountChip(single.count) : null
       filterdByType.push(single)
