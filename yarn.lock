@@ -4469,6 +4469,7 @@ __metadata:
     vite: ^3.2.2
     vite-plugin-compression: ^0.5.1
     vite-plugin-pwa: ^0.13.1
+    workbox-window: ^6.5.4
   languageName: unknown
   linkType: soft
 

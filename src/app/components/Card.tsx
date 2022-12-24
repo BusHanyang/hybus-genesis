@@ -448,6 +448,8 @@ export const Card = ({ location }: ScheduleInfo) => {
   useEffect(() => {
     if (setting != null) {
       const [s, w] = getSeason(setting)
+      window.localStorage.setItem('season', s)
+      window.localStorage.setItem('week', w)
       setSeason(s)
       setWeek(w)
     }

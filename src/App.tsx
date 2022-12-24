@@ -7,6 +7,7 @@ import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
+import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import { Card, Fabs } from './app/components'
 import Notice from './app/components/Notice'
@@ -29,12 +30,11 @@ const Circle = styled.span`
     h-3 w-3 rt1:h-2.5 rt1:w-2.5
   `}
 `
-const RouteText = styled.span`
+const RouteText = styled.div`
   ${tw`
-    inline-block rt1:text-sm rt2:text-xs
+    inline-block rt1:text-sm rt2:text-xs hsm:mx-1
   `}
 `
-
 
 const CardView = styled.div`
   ${tw`
@@ -64,6 +64,8 @@ const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [modalAni, setModalAni] = useState(false)
+  const [triggered, setTriggered] = useState<boolean>(false)
+  const intervalMS = 60 * 1000
 
   const openModal = () => {
     setModalOpen(true)
@@ -94,6 +96,29 @@ function App() {
     setTab(stn)
   }
 
+  const { updateServiceWorker } = useRegisterSW({
+    immediate: true,
+    onRegisteredSW(swURL, r) {
+      r &&
+        setInterval(async () => {
+          if (!(!r.installing && navigator)) return
+          if ('connection' in navigator && !navigator.onLine) return
+
+          const resp = await fetch(swURL, {
+            cache: 'no-store',
+            headers: {
+              cache: 'no-store',
+              'cache-control': 'no-cache',
+            },
+          })
+
+          if (resp?.status === 200) {
+            await r.update()
+          }
+        }, intervalMS)
+    },
+  })
+
   useEffect(() => {
     const whatlang = window.localStorage.getItem('lang') || i18n.language
     if (whatlang === 'en') {
@@ -115,6 +140,18 @@ function App() {
     document.documentElement.classList.add('h-dfull')
   }, [])
 
+  useEffect(() => {
+    if (!triggered) {
+      const triggerUpdate = async () => {
+        await updateServiceWorker()
+        setTriggered(true)
+      }
+      triggerUpdate().then(() => {
+        console.log('App Update Triggered.')
+      })
+    }
+  }, [triggered, updateServiceWorker])
+
   return (
     <>
       <Reset />
@@ -124,7 +161,7 @@ function App() {
             path="/"
             element={
               <>
-              <Fabs openModal={openModal} />
+                <Fabs openModal={openModal} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
@@ -136,7 +173,6 @@ function App() {
                 >
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
-                      
                       <header className="App-header">
                         <h1
                           id="title"
@@ -160,23 +196,21 @@ function App() {
                         }
                       </CardView>
                       <CardView className="p-4 h-12 hm:p-2 flex">
-                        <div className="flex">
-                          <div>
-                            <Circle className="bg-chip-red mr-2" />
-                            <RouteText>{t('cycle_index')}</RouteText>
-                          </div>
-                          <div>
-                            <Circle className="bg-chip-blue mx-2" />
-                            <RouteText>{t('direct_index')}</RouteText>
-                          </div> 
-                          <div>
-                            <Circle className="bg-chip-green mx-2" />
-                            <RouteText>{t('yesulin_index')}</RouteText>
-                          </div>
-                          <div>
-                            <Circle className="bg-chip-purple mx-2" />
-                            <RouteText>{t('jungang_index')}</RouteText>
-                          </div>
+                        <div>
+                          <Circle className="bg-chip-red mr-2 hsm:mx-2" />
+                          <RouteText>{t('cycle_index')}</RouteText>
+                        </div>
+                        <div>
+                          <Circle className="bg-chip-blue mx-2" />
+                          <RouteText>{t('direct_index')}</RouteText>
+                        </div>
+                        <div>
+                          <Circle className="bg-chip-green mx-2" />
+                          <RouteText>{t('yesulin_index')}</RouteText>
+                        </div>
+                        <div>
+                          <Circle className="bg-chip-purple mx-2" />
+                          <RouteText>{t('jungang_index')}</RouteText>
                         </div>
                       </CardView>
                       <div className="grid grid-cols-3 gap-4">
