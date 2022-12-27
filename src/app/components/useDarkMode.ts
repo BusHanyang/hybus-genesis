@@ -49,5 +49,5 @@ export const useDarkMode = () => {
     }
   }, [setBackground, setTheme])
 
-  return { toggleTheme }
+  return { toggleTheme, setBackground }
 }

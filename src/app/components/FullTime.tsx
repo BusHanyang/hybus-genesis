@@ -1,9 +1,10 @@
 import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { THEME, useDarkmodeContext } from '../context/ThemeContext'
+import { useDarkMode } from './useDarkMode'
 
 type SingleSchedule = {
   time: string
@@ -182,6 +183,7 @@ const FullTime = () => {
   )
   const [countChip, setCountChip] = useState(0)
   const { theme } = useDarkmodeContext()
+  const { setBackground } = useDarkMode()
   const navigate = useNavigate()
   const { t } = useTranslation()
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
@@ -291,12 +293,13 @@ const FullTime = () => {
     )
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    setBackground()
     getTimetable(season, week, location).then((res) => {
       setCountChip(0)
       setTimetable(res)
     })
-  }, [location, season, week])
+  }, [location, season, setBackground, week])
 
   const arrLocation: Array<[Location, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
