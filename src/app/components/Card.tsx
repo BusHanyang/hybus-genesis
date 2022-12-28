@@ -508,7 +508,7 @@ export const Card = ({ location }: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
-  const RenderTimetable = (): JSX.Element => {
+  const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
     if (!spinning) {
@@ -605,7 +605,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         ) : (
           <></>
         )}
-        {RenderTimetable()}
+        {RenderTimetable(false)}
       </MainTimetable>
     </TimetableWrapper>
   )
