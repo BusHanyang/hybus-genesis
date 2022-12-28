@@ -44,6 +44,10 @@ const Headline = styled.h2`
   ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
 `
 
+const MainTimeTableWrapper = styled.div`
+  ${tw`w-full h-full`}
+`
+
 const MainTimetable = styled.div`
   ${tw`inline-block select-none h-4/5`}
 `
@@ -441,6 +445,7 @@ export const Card = ({ location }: ScheduleInfo) => {
   const [week, setWeek] = useState<string>('')
   const [setting, setSetting] = useState<Settings | null>(null)
   const [currentLocation, setCurrentLocation] = useState<string>('init')
+  const [touched, setTouched] = useState<boolean>(false)
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -516,6 +521,17 @@ export const Card = ({ location }: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(true)
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(false)
+    console.log(touched)
+  }
+
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
@@ -558,12 +574,15 @@ export const Card = ({ location }: ScheduleInfo) => {
                   <SingleTimetable>
                     {getColoredElement(val.type)}
                     <TimeLeftWrapper>
-                      {secondToTimeFormat(
-                        Math.floor(
-                          Number(val.time) - Number(currentTime) / 1000
-                        )
-                      )}{' '}
-                      {t('left')}
+                      {showActualTime
+                        ? reverted[idx].time + ' ' + t('departure')
+                        : secondToTimeFormat(
+                            Math.floor(
+                              Number(val.time) - Number(currentTime) / 1000
+                            )
+                          ) +
+                          ' ' +
+                          t('left')}
                     </TimeLeftWrapper>
                     <ArrowWrapper>▶</ArrowWrapper>
                     <DestinationWrapper>
@@ -585,37 +604,44 @@ export const Card = ({ location }: ScheduleInfo) => {
 
   return (
     <TimetableWrapper>
-      <HeadlineWrapper>
-        <Headline>{titleText(location)}</Headline>
-        <button
-          className="absolute top-0 right-0 h-full"
-          onClick={() => {
-            openNaverMapApp(location)
-          }}
-        >
-          <img
-            src={'../image/map_black_24dp.svg'}
-            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
-            alt="map icon"
-          />
-        </button>
-      </HeadlineWrapper>
-      <MainTimetable>
-        {spinning ? (
-          <NoTimetable>
-            <SyncLoader
-              color="#AFBDCE"
-              margin={4}
-              size={8}
-              loading={spinning}
-              cssOverride={tw`table-cell align-middle`}
+      <div>
+        <HeadlineWrapper>
+          <Headline>{titleText(location)}</Headline>
+          <button
+            className="absolute top-0 right-0 h-full"
+            onClick={() => {
+              openNaverMapApp(location)
+            }}
+          >
+            <img
+              src={'../image/map_black_24dp.svg'}
+              className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
+              alt="map icon"
             />
-          </NoTimetable>
-        ) : (
-          <></>
-        )}
-        {RenderTimetable(false)}
-      </MainTimetable>
+          </button>
+        </HeadlineWrapper>
+      </div>
+      <MainTimeTableWrapper
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <MainTimetable>
+          {spinning ? (
+            <NoTimetable>
+              <SyncLoader
+                color="#AFBDCE"
+                margin={4}
+                size={8}
+                loading={spinning}
+                cssOverride={tw`table-cell align-middle`}
+              />
+            </NoTimetable>
+          ) : (
+            <></>
+          )}
+          {RenderTimetable(touched)}
+        </MainTimetable>
+      </MainTimeTableWrapper>
     </TimetableWrapper>
   )
 }
