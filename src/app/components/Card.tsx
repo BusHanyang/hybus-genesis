@@ -532,6 +532,16 @@ export const Card = ({ location }: ScheduleInfo) => {
     console.log(touched)
   }
 
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(true)
+  }
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(false)
+  }
+
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
@@ -624,6 +634,8 @@ export const Card = ({ location }: ScheduleInfo) => {
       <MainTimeTableWrapper
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
       >
         <MainTimetable>
           {spinning ? (
