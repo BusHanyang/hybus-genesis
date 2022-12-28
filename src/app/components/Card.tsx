@@ -249,6 +249,14 @@ const getTimetable = async (
   )
 }
 
+const convertUnixToTime = (sch: SingleSchedule): SingleSchedule => {
+  const schCopy = {
+    time: dayjs(sch['time'], 'X').format('HH:mm'),
+    type: sch['type'],
+  }
+  return schCopy
+}
+
 const isAfterCurrentTime = (sch: SingleSchedule): boolean => {
   const timestamp = new Date().getTime() / 1000
   return Number(sch.time) - timestamp >= 0
@@ -527,6 +535,7 @@ export const Card = ({ location }: ScheduleInfo) => {
       }
 
       const filtered = timetable.filter((val) => isAfterCurrentTime(val))
+      const reverted = filtered.map((val) => convertUnixToTime(val))
 
       if (filtered.length === 0) {
         // Buses are done for today. User should refresh after midnight.
