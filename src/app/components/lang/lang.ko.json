@@ -12,6 +12,8 @@
     "NA": "미운행",
     "left": "후 출발",
     "departure": "출발",
+    "hour": "시 ",
+    "minute": "분",
 
     "shuttlecoke_o": "셔틀콕",
     "shuttlecoke_i": "셔틀콕 건너편 (기숙사행)",

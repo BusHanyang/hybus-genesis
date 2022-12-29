@@ -83,6 +83,10 @@ const NoTimetableInner = styled.span`
   ${tw`table-cell align-middle`}
 `
 
+const TimeClickableConversionText = styled.span`
+  ${tw`transition duration-300`}
+`
+
 const getSettings = async (): Promise<null | Settings> => {
   return await axios
     .get('https://api.hybus.app/settings/')
@@ -587,15 +591,26 @@ export const Card = ({ location }: ScheduleInfo) => {
                     <TimeLeftWrapper
                       className={`${showActualTime ? 'onTouch' : ''}`}
                     >
-                      {showActualTime
-                        ? reverted[idx].time + ' ' + t('departure')
-                        : secondToTimeFormat(
+                      {showActualTime ? (
+                        <TimeClickableConversionText>
+                          {reverted[idx].time.split(':')[0] +
+                            t('hour') +
+                            reverted[idx].time.split(':')[1] +
+                            t('minute') +
+                            ' ' +
+                            t('departure')}
+                        </TimeClickableConversionText>
+                      ) : (
+                        <TimeClickableConversionText>
+                          {secondToTimeFormat(
                             Math.floor(
                               Number(val.time) - Number(currentTime) / 1000
                             )
                           ) +
-                          ' ' +
-                          t('left')}
+                            ' ' +
+                            t('left')}
+                        </TimeClickableConversionText>
+                      )}
                     </TimeLeftWrapper>
                     <ArrowWrapper>▶</ArrowWrapper>
                     <DestinationWrapper>

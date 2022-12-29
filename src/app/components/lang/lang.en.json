@@ -12,6 +12,8 @@
     "NA": "N/A",
     "left": "Left",
     "departure": "Depart",
+    "hour": ":",
+    "minute": "",
 
     "shuttlecoke_o": "ShuttleCoke",
     "shuttlecoke_i": "ShuttleCoke (To Dorm)",
