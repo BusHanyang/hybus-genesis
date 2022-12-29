@@ -529,7 +529,6 @@ export const Card = ({ location }: ScheduleInfo) => {
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault()
     setTouched(false)
-    console.log(touched)
   }
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
