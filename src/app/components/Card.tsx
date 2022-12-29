@@ -64,7 +64,8 @@ const TimeLeftWrapper = styled.span`
   ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
   &.onTouch {
     ${tw`font-bold text-[#f54040] dark:text-[#ff6060]`}
-  }`
+  }
+`
 
 const ArrowWrapper = styled.div`
   ${tw`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
@@ -256,11 +257,10 @@ const getTimetable = async (
 }
 
 const convertUnixToTime = (sch: SingleSchedule): SingleSchedule => {
-  const schCopy = {
-    time: dayjs(sch['time'], 'X').format('HH:mm'),
-    type: sch['type'],
+  return {
+    ...sch,
+    time: dayjs.unix(Number(sch.time)).format('HH:mm'),
   }
-  return schCopy
 }
 
 const isAfterCurrentTime = (sch: SingleSchedule): boolean => {
@@ -584,7 +584,9 @@ export const Card = ({ location }: ScheduleInfo) => {
                 <React.Fragment key={idx}>
                   <SingleTimetable>
                     {getColoredElement(val.type)}
-                    <TimeLeftWrapper className={`${showActualTime ? 'onTouch' : ''}`}>
+                    <TimeLeftWrapper
+                      className={`${showActualTime ? 'onTouch' : ''}`}
+                    >
                       {showActualTime
                         ? reverted[idx].time + ' ' + t('departure')
                         : secondToTimeFormat(
