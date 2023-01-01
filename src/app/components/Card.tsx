@@ -433,7 +433,6 @@ export const Card = ({ location }: ScheduleInfo) => {
   const [week, setWeek] = useState<string>('')
   const [setting, setSetting] = useState<Settings | null>(null)
   const [currentLocation, setCurrentLocation] = useState<string>('init')
-  const [currentDate, setCurrentDate] = useState<number>(new Date().getDate())
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -454,7 +453,7 @@ export const Card = ({ location }: ScheduleInfo) => {
       setSeason(s)
       setWeek(w)
     }
-  }, [setting, currentDate])
+  }, [setting, currentTime])
 
   // For fetching the timetable for the initial time
   useEffect(() => {
@@ -504,7 +503,6 @@ export const Card = ({ location }: ScheduleInfo) => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentTime(new Date().getTime())
-      setCurrentDate(new Date().getDate())
     }, 1000)
 
     return () => clearTimeout(timer)
