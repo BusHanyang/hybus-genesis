@@ -62,7 +62,7 @@ const SingleTimetable = styled.div`
 
 const TimeLeftWrapper = styled.span`
   ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
-  &.onTouch {
+  &.touched {
     ${tw`font-bold text-[#f54040] dark:text-[#ff6060]`}
   }
 `
@@ -589,7 +589,7 @@ export const Card = ({ location }: ScheduleInfo) => {
                   <SingleTimetable>
                     {getColoredElement(val.type)}
                     <TimeLeftWrapper
-                      className={`${showActualTime ? 'onTouch' : ''}`}
+                      className={`${showActualTime ? 'touched' : ''}`}
                     >
                       {showActualTime ? (
                         <TimeClickableConversionText>
