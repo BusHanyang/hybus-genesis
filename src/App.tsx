@@ -62,12 +62,11 @@ const Button = styled(CardView)`
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 
 function App() {
-  const touchPromptStatus = window.localStorage.getItem('touch_info')
   const [modalOpen, setModalOpen] = useState(false)
   const [modalAni, setModalAni] = useState(false)
   const [triggered, setTriggered] = useState<boolean>(false)
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
-    touchPromptStatus === null
+    window.localStorage.getItem('touch_info') === null
   )
   const intervalMS = 60 * 1000
 
