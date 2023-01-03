@@ -68,5 +68,7 @@
     "yesulin_index": "Direct (Yesulin)",
     "jungang_index": "Jungang Layover",
 
-    "use_naver_map": "Use Naver Map app? \n(Press cancel to use the web version.)"
+    "use_naver_map": "Use Naver Map app? \n(Press cancel to use the web version.)",
+    "check_on_touch": "Try pressing the area above.",
+    "now_actual_time": "Now it is actual departure time!"
 }

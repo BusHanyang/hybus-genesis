@@ -45,11 +45,11 @@ const Headline = styled.h2`
 `
 
 const MainTimeTableWrapper = styled.div`
-  ${tw`w-full h-full`}
+  ${tw`w-full h-[11.25rem] inline-block`}
 `
 
 const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-4/5`}
+  ${tw`inline-block select-none`}
 `
 
 const Chip = styled.div`
@@ -58,6 +58,10 @@ const Chip = styled.div`
 
 const SingleTimetable = styled.div`
   ${tw`text-left mx-auto py-1.5`}
+`
+
+const OnTouchAvailableWrapper = styled.div`
+  ${tw`text-center h-5 w-[fit-content] mx-auto my-1.5 flex`}
 `
 
 const TimeLeftWrapper = styled.span`
@@ -85,6 +89,10 @@ const NoTimetableInner = styled.span`
 
 const TimeClickableConversionText = styled.span`
   ${tw`transition duration-300`}
+`
+
+const TimeClickableNotifyText = styled.div`
+  ${tw`transition-transform float-left my-auto hsm:text-sm hm:text-[0.9rem]`}
 `
 
 const getSettings = async (): Promise<null | Settings> => {
@@ -452,6 +460,9 @@ export const Card = ({ location }: ScheduleInfo) => {
   const [setting, setSetting] = useState<Settings | null>(null)
   const [currentLocation, setCurrentLocation] = useState<string>('init')
   const [touched, setTouched] = useState<boolean>(false)
+  const [infoClosed, setInfoClosed] = useState<boolean>(
+    window.localStorage.getItem('touch_info') === 'closed'
+  )
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -632,23 +643,21 @@ export const Card = ({ location }: ScheduleInfo) => {
 
   return (
     <TimetableWrapper>
-      <div>
-        <HeadlineWrapper>
-          <Headline>{titleText(location)}</Headline>
-          <button
-            className="absolute top-0 right-0 h-full"
-            onClick={() => {
-              openNaverMapApp(location)
-            }}
-          >
-            <img
-              src={'../image/map_black_24dp.svg'}
-              className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
-              alt="map icon"
-            />
-          </button>
-        </HeadlineWrapper>
-      </div>
+      <HeadlineWrapper>
+        <Headline>{titleText(location)}</Headline>
+        <button
+          className="absolute top-0 right-0 h-full"
+          onClick={() => {
+            openNaverMapApp(location)
+          }}
+        >
+          <img
+            src={'../image/map_black_24dp.svg'}
+            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
+            alt="map icon"
+          />
+        </button>
+      </HeadlineWrapper>
       <MainTimeTableWrapper
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
@@ -672,6 +681,31 @@ export const Card = ({ location }: ScheduleInfo) => {
           {RenderTimetable(touched)}
         </MainTimetable>
       </MainTimeTableWrapper>
+      <OnTouchAvailableWrapper
+        className={spinning || infoClosed ? 'hidden' : ''}
+      >
+        {touched ? (
+          <TimeClickableNotifyText>
+            <>{t('now_actual_time')}</>
+          </TimeClickableNotifyText>
+        ) : (
+          <TimeClickableNotifyText>
+            <>{t('check_on_touch')}</>
+          </TimeClickableNotifyText>
+        )}
+        <div className="w-[fit-content] float-right ml-1 h-full flex">
+          <img
+            src={'../image/close_black_24dp.svg'}
+            className="cursor-default dark:invert h-4 w-4 my-auto"
+            alt="close icon"
+            onClick={() => {
+              setInfoClosed(true)
+              window.localStorage.setItem('touch_info', 'closed')
+              window.location.reload()
+            }}
+          />
+        </div>
+      </OnTouchAvailableWrapper>
     </TimetableWrapper>
   )
 }
