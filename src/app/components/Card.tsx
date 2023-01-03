@@ -49,7 +49,7 @@ const MainTimeTableWrapper = styled.div`
 `
 
 const MainTimetable = styled.div`
-  ${tw`inline-block select-none`}
+  ${tw`inline-block select-none h-full`}
 `
 
 const Chip = styled.div`
