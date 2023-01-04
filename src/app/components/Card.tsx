@@ -61,7 +61,7 @@ const SingleTimetable = styled.div`
 `
 
 const OnTouchAvailableWrapper = styled.div`
-  ${tw`text-center h-5 w-[fit-content] mx-auto my-1.5 leading-5`}
+  ${tw`bg-slate-300 dark:bg-slate-500 rounded-md text-center h-8 w-[18.75rem] hm:w-[16.25rem] hsm:w-[14.85rem] mx-auto p-1.5 leading-5`}
 `
 
 const TimeLeftWrapper = styled.span`
@@ -92,7 +92,7 @@ const TimeClickableConversionText = styled.span`
 `
 
 const TimeClickableNotifyText = styled.div`
-  ${tw`transition-transform float-left my-auto hsm:text-sm hm:text-[0.9rem]`}
+  ${tw`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`}
 `
 
 const getSettings = async (): Promise<null | Settings> => {
@@ -693,7 +693,7 @@ export const Card = ({ location }: ScheduleInfo) => {
             <>{t('check_on_touch')}</>
           </TimeClickableNotifyText>
         )}
-        <div className="w-[fit-content] float-right ml-1 h-full flex">
+        <div className="w-[fit-content] float-right ml-1 h-full flex hsm:ml-0">
           <img
             src={'../image/close_black_24dp.svg'}
             className="cursor-default dark:invert h-4 w-4 my-auto"
