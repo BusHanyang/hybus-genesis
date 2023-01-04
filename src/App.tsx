@@ -158,7 +158,7 @@ function App() {
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
     setTouchPrompt(status)
-  })
+  }, [])
 
   return (
     <>
