@@ -463,6 +463,7 @@ export const Card = ({ location }: ScheduleInfo) => {
   const [infoClosed, setInfoClosed] = useState<boolean>(
     window.localStorage.getItem('touch_info') === 'closed'
   )
+  const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -537,6 +538,19 @@ export const Card = ({ location }: ScheduleInfo) => {
 
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
+
+  useEffect(() => {
+    const filtered = timetable.filter((val) => isAfterCurrentTime(val))
+    if (
+      timetable.length === 0 ||
+      (timetable.length === 1 && timetable[0] == null) ||
+      filtered.length === 0
+    ) {
+      setTimetableAlive(false)
+    } else {
+      setTimetableAlive(true)
+    }
+  }, [timetable])
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -682,7 +696,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         </MainTimetable>
       </MainTimeTableWrapper>
       <OnTouchAvailableWrapper
-        className={spinning || infoClosed ? 'hidden' : ''}
+        className={spinning || infoClosed || !timetableAlive ? 'hidden' : ''}
       >
         {touched ? (
           <TimeClickableNotifyText>
