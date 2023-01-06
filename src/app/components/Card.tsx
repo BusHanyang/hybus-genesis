@@ -67,7 +67,7 @@ const OnTouchAvailableWrapper = styled.div`
 const TimeLeftWrapper = styled.span`
   ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
   &.touched {
-    ${tw`font-bold text-[#f54040] dark:text-[#ff6060]`}
+    ${tw`font-bold text-[#22878c] dark:text-[#4ed7de]`}
   }
 `
 
