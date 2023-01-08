@@ -137,7 +137,7 @@ const getSeason = (setting: Settings | null): [string, string] => {
 
   if (setting === null) {
     // Error fetching settings
-    return ['', '']
+    return ['error', '']
   } else {
     const [semesterStart, semesterEnd] = [
       dayjs(setting.semester.start_date, 'YYYY-MM-DD'),
@@ -479,7 +479,9 @@ export const Card = ({ location }: ScheduleInfo) => {
   useEffect(() => {
     if (setting != null) {
       const [s, w] = getSeason(setting)
-      window.localStorage.setItem('season', s)
+      if (['semester', 'vacation_session', 'vacation'].includes(s)) {
+        window.localStorage.setItem('season', s)
+      }
       window.localStorage.setItem('week', w)
       setSeason(s)
       setWeek(w)
