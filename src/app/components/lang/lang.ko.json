@@ -11,6 +11,9 @@
     "cycle_ja": "중앙역",
     "NA": "미운행",
     "left": "후 출발",
+    "departure": "출발",
+    "hour": "시 ",
+    "minute": "분",
 
     "shuttlecoke_o": "셔틀콕",
     "shuttlecoke_i": "셔틀콕 건너편 (기숙사행)",
@@ -37,7 +40,7 @@
     "all_btn": "전체 시간표",
     "to_yesulin": "예술인행",
 
-    "no_today": "오늘 운행하는 셔틀이 존재하지 않습니다.",
+    "no_today": "오늘 운행하는 셔틀이 없습니다.",
     "end_today": "오늘 셔틀 운행이 종료되었습니다.",
 
     "ask": "문의하기",
@@ -65,5 +68,7 @@
     "yesulin_index": "예술인 직행",
     "jungang_index": "중앙역 경유",
 
-    "use_naver_map": "네이버 지도 앱으로 보시겠습니까? \n(취소시 웹 지도로 이동)"
+    "use_naver_map": "네이버 지도 앱으로 보시겠습니까? \n(취소시 웹 지도로 이동)",
+    "check_on_touch": "위에 있는 시간표 부분을 꾹 눌러보세요.",
+    "now_actual_time": "이제부터는 실제 출발 시간을 확인해요!"
 }

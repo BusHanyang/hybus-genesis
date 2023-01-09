@@ -44,8 +44,12 @@ const Headline = styled.h2`
   ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
 `
 
+const MainTimeTableWrapper = styled.div`
+  ${tw`w-full h-[11.25rem] inline-block`}
+`
+
 const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-4/5`}
+  ${tw`inline-block select-none h-full`}
 `
 
 const Chip = styled.div`
@@ -56,8 +60,15 @@ const SingleTimetable = styled.div`
   ${tw`text-left mx-auto py-1.5`}
 `
 
+const OnTouchAvailableWrapper = styled.div`
+  ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mx-auto p-1.5 leading-5`}
+`
+
 const TimeLeftWrapper = styled.span`
   ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
+  &.touched {
+    ${tw`font-bold text-[#ff673d] dark:text-[#ff996a]`}
+  }
 `
 
 const ArrowWrapper = styled.div`
@@ -74,6 +85,14 @@ const NoTimetable = styled.div`
 
 const NoTimetableInner = styled.span`
   ${tw`table-cell align-middle`}
+`
+
+const TimeClickableConversionText = styled.span`
+  ${tw`transition duration-300`}
+`
+
+const TimeClickableNotifyText = styled.div`
+  ${tw`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`}
 `
 
 const getSettings = async (): Promise<null | Settings> => {
@@ -247,6 +266,13 @@ const getTimetable = async (
       return val
     })
   )
+}
+
+const convertUnixToTime = (sch: SingleSchedule): SingleSchedule => {
+  return {
+    ...sch,
+    time: dayjs.unix(Number(sch.time)).format('HH:mm'),
+  }
 }
 
 const isAfterCurrentTime = (sch: SingleSchedule): boolean => {
@@ -433,6 +459,11 @@ export const Card = ({ location }: ScheduleInfo) => {
   const [week, setWeek] = useState<string>('')
   const [setting, setSetting] = useState<Settings | null>(null)
   const [currentLocation, setCurrentLocation] = useState<string>('init')
+  const [touched, setTouched] = useState<boolean>(false)
+  const [infoClosed, setInfoClosed] = useState<boolean>(
+    window.localStorage.getItem('touch_info') === 'closed'
+  )
+  const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -510,7 +541,40 @@ export const Card = ({ location }: ScheduleInfo) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
-  const RenderTimetable = (): JSX.Element => {
+  useEffect(() => {
+    const filtered = timetable.filter((val) => isAfterCurrentTime(val))
+    if (
+      timetable.length === 0 ||
+      (timetable.length === 1 && timetable[0] == null) ||
+      filtered.length === 0
+    ) {
+      setTimetableAlive(false)
+    } else {
+      setTimetableAlive(true)
+    }
+  }, [timetable])
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(true)
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(false)
+  }
+
+  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(true)
+  }
+
+  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault()
+    setTouched(false)
+  }
+
+  const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
     if (!spinning) {
@@ -529,6 +593,7 @@ export const Card = ({ location }: ScheduleInfo) => {
       }
 
       const filtered = timetable.filter((val) => isAfterCurrentTime(val))
+      const reverted = filtered.map((val) => convertUnixToTime(val))
 
       if (filtered.length === 0) {
         // Buses are done for today. User should refresh after midnight.
@@ -550,13 +615,29 @@ export const Card = ({ location }: ScheduleInfo) => {
                 <React.Fragment key={idx}>
                   <SingleTimetable>
                     {getColoredElement(val.type)}
-                    <TimeLeftWrapper>
-                      {secondToTimeFormat(
-                        Math.floor(
-                          Number(val.time) - Number(currentTime) / 1000
-                        )
-                      )}{' '}
-                      {t('left')}
+                    <TimeLeftWrapper
+                      className={`${showActualTime ? 'touched' : ''}`}
+                    >
+                      {showActualTime ? (
+                        <TimeClickableConversionText>
+                          {reverted[idx].time.split(':')[0] +
+                            t('hour') +
+                            reverted[idx].time.split(':')[1] +
+                            t('minute') +
+                            ' ' +
+                            t('departure')}
+                        </TimeClickableConversionText>
+                      ) : (
+                        <TimeClickableConversionText>
+                          {secondToTimeFormat(
+                            Math.floor(
+                              Number(val.time) - Number(currentTime) / 1000
+                            )
+                          ) +
+                            ' ' +
+                            t('left')}
+                        </TimeClickableConversionText>
+                      )}
                     </TimeLeftWrapper>
                     <ArrowWrapper>▶</ArrowWrapper>
                     <DestinationWrapper>
@@ -593,22 +674,54 @@ export const Card = ({ location }: ScheduleInfo) => {
           />
         </button>
       </HeadlineWrapper>
-      <MainTimetable>
-        {spinning ? (
-          <NoTimetable>
-            <SyncLoader
-              color="#AFBDCE"
-              margin={4}
-              size={8}
-              loading={spinning}
-              cssOverride={tw`table-cell align-middle`}
-            />
-          </NoTimetable>
+      <MainTimeTableWrapper
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onMouseDown={handleMouseDown}
+        onMouseUp={handleMouseUp}
+      >
+        <MainTimetable>
+          {spinning ? (
+            <NoTimetable>
+              <SyncLoader
+                color="#AFBDCE"
+                margin={4}
+                size={8}
+                loading={spinning}
+                cssOverride={tw`table-cell align-middle`}
+              />
+            </NoTimetable>
+          ) : (
+            <></>
+          )}
+          {RenderTimetable(touched)}
+        </MainTimetable>
+      </MainTimeTableWrapper>
+      <OnTouchAvailableWrapper
+        className={spinning || infoClosed || !timetableAlive ? 'hidden' : ''}
+      >
+        {touched ? (
+          <TimeClickableNotifyText>
+            <>{t('now_actual_time')}</>
+          </TimeClickableNotifyText>
         ) : (
-          <></>
+          <TimeClickableNotifyText>
+            <>{t('check_on_touch')}</>
+          </TimeClickableNotifyText>
         )}
-        {RenderTimetable()}
-      </MainTimetable>
+        <div className="w-[fit-content] float-right ml-1 h-full flex hsm:ml-0">
+          <img
+            src={'../image/close_black_24dp.svg'}
+            className="cursor-default dark:invert h-4 w-4 my-auto"
+            alt="close icon"
+            onClick={() => {
+              setInfoClosed(true)
+              window.localStorage.setItem('touch_info', 'closed')
+              window.location.reload()
+            }}
+          />
+        </div>
+      </OnTouchAvailableWrapper>
     </TimetableWrapper>
   )
 }
