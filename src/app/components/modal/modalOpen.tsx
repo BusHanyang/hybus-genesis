@@ -29,6 +29,7 @@ const ModalOpen = (props: {
   isModalAni: boolean
   openModal: () => void
   closeModal: () => void
+  mTarget: string
 }) => {
   const [data, setData] = useState<Array<Changelog>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
@@ -58,14 +59,14 @@ const ModalOpen = (props: {
 
   return (
     <React.Fragment>
-      <Modal open={props.isOpen} ani={props.isModalAni} close={props.closeModal}>
+      <Modal open={props.isOpen} ani={props.isModalAni} close={props.closeModal} mTarget={props.mTarget}>
         <div
           className='font-Ptd'
           style={{ overflow: 'auto', maxHeight: '450px' }}
         >
           <ContentArea>
             <ChangelogDiv>
-              {data.map((datas: { date: string; details: Array<string> }) => {
+              {props.mTarget === "Fabs" ? data.map((datas: { date: string; details: Array<string> }) => {
                 const arr: string[] = datas.details
                 return (
                   <ChangelogMargin key={datas.date}>
@@ -75,7 +76,14 @@ const ModalOpen = (props: {
                     ))}
                   </ChangelogMargin>
                 )
-              })}
+              }) : 
+                <iframe
+                title="Iframe"
+                width="100%"
+                height="450"
+                src="https://bushanyang.github.io/hybus-ios-widget/">
+                </iframe>
+              }
             </ChangelogDiv>
           </ContentArea>
         </div>

@@ -45,6 +45,8 @@
     "changelog": "ChangeLog",
     "dark": "Dark",
     "light": "Light",
+    "info":"Info",
+    "close":"Close",
 
     "loading": "Loading...",
     "none_data": "No timetable available.",

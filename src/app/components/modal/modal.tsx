@@ -60,6 +60,7 @@ export const Modal = (props: {
   open: boolean
   close: () => void
   children: React.ReactNode
+  mTarget: string
 }) => {
   const modalBackgroundRef = useRef<HTMLDivElement>(null)
   const handleClickModalBackground = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -77,12 +78,14 @@ export const Modal = (props: {
       <ModalMain isOpen={props.open} isAni={props.ani} ref={modalBackgroundRef}>
         {props.open ? (
           <ModalSection isAni={props.ani}>
-            <ModalHeader theme={theme}>{t('changelog')}</ModalHeader>
+            {props.mTarget === "Fabs"?
+            <ModalHeader theme={theme}>{t('changelog')}</ModalHeader> : 
+            <ModalHeader theme={theme}>{t('info')}</ModalHeader>}
 
             <ModalSubMain theme={theme}>{props.children}</ModalSubMain>
             <ModalFooter theme={theme}>
               <ModalFooterButton className="close" onClick={props.close}>
-                닫기
+                {t('close')}
               </ModalFooterButton>
             </ModalFooter>
           </ModalSection>
