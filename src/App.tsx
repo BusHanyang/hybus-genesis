@@ -66,6 +66,9 @@ function App() {
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [triggered, setTriggered] = useState<boolean>(false)
+  const [touchPrompt, setTouchPrompt] = useState<boolean>(
+    window.localStorage.getItem('touch_info') === null
+  )
   const intervalMS = 60 * 1000
 
   const openModal = () => {
@@ -159,6 +162,11 @@ function App() {
     }
   }, [triggered, updateServiceWorker])
 
+  useEffect(() => {
+    const status = window.localStorage.getItem('touch_info') === null
+    setTouchPrompt(status)
+  }, [])
+
   return (
     <>
       <Reset />
@@ -196,7 +204,13 @@ function App() {
                         </CardView>
                       </header>
 
-                      <CardView className="p-6 h-[17rem] hm:p-4">
+                      <CardView
+                        className={
+                          touchPrompt
+                            ? `p-6 hm:p-4 h-[18rem]`
+                            : `p-6 hm:p-4 h-[17rem]`
+                        }
+                      >
                         {
                           <Card
                             location={
@@ -293,7 +307,7 @@ function App() {
                         id="copyright"
                         className="dark:text-white pt-3 hsm:text-sm hsm:leading-4"
                       >
-                        Copyright © 2020-2022{' '}
+                        Copyright © 2020-2023{' '}
                         <a
                           className="underline"
                           target="_blank"
