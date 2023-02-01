@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
@@ -78,10 +79,10 @@ const ModalOpen = (props: {
                 )
               }) : 
                 <iframe
-                title="Iframe"
+                title="information-iframe"
                 width="100%"
                 height="450"
-                src="https://bushanyang.github.io/hybus-ios-widget/">
+                src={t('info_link')}>
                 </iframe>
               }
             </ChangelogDiv>
