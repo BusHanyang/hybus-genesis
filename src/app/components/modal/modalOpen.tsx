@@ -66,11 +66,11 @@ const ModalOpen = (props: {
         >
           <ContentArea>
             <ChangelogDiv>
-              {props.mTarget === "Fabs" ? data.map((datas: { date: string; details: Array<string> }) => {
-                const arr: string[] = datas.details
+              {props.mTarget === "Fabs" ? data.map((datum: { date: string; details: Array<string> }) => {
+                const arr: string[] = datum.details
                 return (
-                  <ChangelogMargin key={datas.date}>
-                    <h4>{datas.date}</h4>
+                  <ChangelogMargin key={datum.date}>
+                    <h4>{datum.date}</h4>
                     {arr.map((item) => (
                       <P key={item}>{item}</P>
                     ))}
