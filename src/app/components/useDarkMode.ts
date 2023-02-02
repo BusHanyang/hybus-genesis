@@ -61,6 +61,8 @@ export const useDarkMode = () => {
       setTheme(localTheme as THEME)
       setBackground()
       setCookie('_theme', localTheme, 180)
+    } else {
+      setCookie('_theme', THEME.LIGHT, 180)
     }
   }, [setBackground, setTheme])
 
