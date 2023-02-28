@@ -486,7 +486,7 @@ export const Card = ({ location }: ScheduleInfo) => {
       setSeason(s)
       setWeek(w)
     }
-  }, [setting])
+  }, [setting, currentTime])
 
   // For fetching the timetable for the initial time
   useEffect(() => {

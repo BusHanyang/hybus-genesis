@@ -62,8 +62,9 @@ const Button = styled(CardView)`
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(false)
-  const [modalAni, setModalAni] = useState(false)
+  const [modalTarget, setModalTarget] = useState<string>("")
+  const [modalOpen, setModalOpen] = useState<boolean>(false)
+  const [modalAni, setModalAni] = useState<boolean>(false)
   const [triggered, setTriggered] = useState<boolean>(false)
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null
@@ -72,6 +73,11 @@ function App() {
 
   const openModal = () => {
     setModalOpen(true)
+  }
+
+  const handleModalTarget = () => {
+    openModal()
+    setModalTarget("Info")
   }
 
   const closeModal = () => {
@@ -87,6 +93,7 @@ function App() {
       location.reload()
     })
   }
+
 
   const { t, i18n } = useTranslation()
 
@@ -169,7 +176,7 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs openModal={openModal} />
+                <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
@@ -182,12 +189,16 @@ function App() {
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
                       <header className="App-header">
+                        <div className='relative'>
                         <h1
                           id="title"
-                          className="font-bold p-3 text-3xl hm:text-[1.625rem] pt-6 pb-3"
+                          className="font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3"
                         >
                           {t('title')}
+                          <img src='/image/helpblack.svg' onClick={handleModalTarget} className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8">
+                          </img>
                         </h1>
+                        </div>
                         <CardView className="p-3 h-[3rem] w-full">
                           <Notice />
                         </CardView>
@@ -316,6 +327,7 @@ function App() {
                     isOpen={modalOpen}
                     openModal={openModal}
                     closeModal={closeModal}
+                    mTarget={modalTarget}
                   />
                 </Suspense>
               </>

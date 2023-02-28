@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
@@ -29,6 +30,7 @@ const ModalOpen = (props: {
   isModalAni: boolean
   openModal: () => void
   closeModal: () => void
+  mTarget: string
 }) => {
   const [data, setData] = useState<Array<Changelog>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
@@ -58,24 +60,31 @@ const ModalOpen = (props: {
 
   return (
     <React.Fragment>
-      <Modal open={props.isOpen} ani={props.isModalAni} close={props.closeModal}>
+      <Modal open={props.isOpen} ani={props.isModalAni} close={props.closeModal} mTarget={props.mTarget}>
         <div
           className='font-Ptd'
           style={{ overflow: 'auto', maxHeight: '450px' }}
         >
           <ContentArea>
             <ChangelogDiv>
-              {data.map((datas: { date: string; details: Array<string> }) => {
-                const arr: string[] = datas.details
+              {props.mTarget === "Fabs" ? data.map((datum: { date: string; details: Array<string> }) => {
+                const arr: string[] = datum.details
                 return (
-                  <ChangelogMargin key={datas.date}>
-                    <h4>{datas.date}</h4>
+                  <ChangelogMargin key={datum.date}>
+                    <h4>{datum.date}</h4>
                     {arr.map((item) => (
                       <P key={item}>{item}</P>
                     ))}
                   </ChangelogMargin>
                 )
-              })}
+              }) : 
+                <iframe
+                title="information-iframe"
+                width="100%"
+                height="450"
+                src={t('info_link')}>
+                </iframe>
+              }
             </ChangelogDiv>
           </ContentArea>
         </div>

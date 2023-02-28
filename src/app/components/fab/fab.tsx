@@ -30,7 +30,10 @@ const FabBackground = styled.div<{ open: boolean }>`
   }}
 `
 
-export const Fabs = (props: { openModal: () => void }) => {
+export const Fabs = (props: { 
+  openModal: () => void
+  mTarget: React.Dispatch<React.SetStateAction<string>>
+}) => {
   const { toggleTheme } = useDarkMode()
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
@@ -49,6 +52,11 @@ export const Fabs = (props: { openModal: () => void }) => {
     if (e.target === fabBackgroundRef.current) {
       handleClose()
     }
+  }
+
+  const handleModalOpen = () => {
+    props.openModal()
+    props.mTarget("Fabs")
   }
 
   const handleOpen = (): Promise<React.FC> => {
@@ -190,7 +198,7 @@ export const Fabs = (props: { openModal: () => void }) => {
             backgroundColor: metadata.changeColor,
             color: metadata.iconColor,
           }}
-          onClick={props.openModal}
+          onClick={handleModalOpen}
         >
           <Icons theme={metadata.dataTheme}>
             <img
