@@ -2,7 +2,7 @@
 
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BrowserRouter, Link, Route, Router, Navigate } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { Reset } from 'styled-reset'
