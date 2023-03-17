@@ -2,7 +2,7 @@
 
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Route, Router, Navigate } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { Reset } from 'styled-reset'
@@ -18,10 +18,7 @@ const FullTime = lazy(() => import('./app/components/FullTime'))
 const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
-  ${tw`
-    h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
-    dark:bg-zinc-800 dark:text-white
-  `}
+  ${tw`relative h-full pl-5 pr-5 mx-auto text-center text-black bg-white select-none font-Ptd max-w-7xl dark:bg-zinc-800 dark:text-white`}
 `
 
 const Circle = styled.span`
@@ -31,9 +28,7 @@ const Circle = styled.span`
   `}
 `
 const RouteText = styled.div`
-  ${tw`
-    inline-block rt1:text-sm rt2:text-xs hsm:mx-1
-  `}
+  ${tw`inline-block rt1:text-sm rt2:text-xs hsm:mx-1`}
 `
 
 const CardView = styled.div`
@@ -44,25 +39,20 @@ const CardView = styled.div`
   `}
 `
 const Button = styled(CardView)`
-  ${tw`
-    flex will-change-transform overflow-hidden cursor-default 
-    border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
-  `}
+  ${tw`flex px-2 py-6 overflow-hidden border-none cursor-default will-change-transform hm:py-4 hm:text-sm hm:leading-4 dark:text-white`}
   &.active {
-    ${tw`
-      bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
-    `}
+    ${tw`transition-all duration-700 ease-out bg-blue-300 shadow-inner dark:text-black drop-shadow-none`}
   }
 
   &#shuttlecoke_i {
-    ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
+    ${tw`items-center justify-center shuttlei:flex-col shuttlei:gap-x-0 gap-x-1`}
   }
 `
 
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 
 function App() {
-  const [modalTarget, setModalTarget] = useState<string>("")
+  const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [triggered, setTriggered] = useState<boolean>(false)
@@ -77,7 +67,7 @@ function App() {
 
   const handleModalTarget = () => {
     openModal()
-    setModalTarget("Info")
+    setModalTarget('Info')
   }
 
   const closeModal = () => {
@@ -93,7 +83,6 @@ function App() {
       location.reload()
     })
   }
-
 
   const { t, i18n } = useTranslation()
 
@@ -189,15 +178,18 @@ function App() {
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
                       <header className="App-header">
-                        <div className='relative'>
-                        <h1
-                          id="title"
-                          className="font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3"
-                        >
-                          {t('title')}
-                          <img src='/image/helpblack.svg' onClick={handleModalTarget} className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8">
-                          </img>
-                        </h1>
+                        <div className="relative">
+                          <h1
+                            id="title"
+                            className="font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3"
+                          >
+                            {t('title')}
+                            <img
+                              src="/image/helpblack.svg"
+                              onClick={handleModalTarget}
+                              className="absolute right-0 bottom-3 h-9 w-9 dark:invert hsm:h-8 hsm:w-8"
+                            ></img>
+                          </h1>
                         </div>
                         <CardView className="p-3 h-[3rem] w-full">
                           <Notice />
@@ -220,21 +212,21 @@ function App() {
                           />
                         }
                       </CardView>
-                      <CardView className="p-4 h-12 hm:p-2 flex">
+                      <CardView className="flex h-12 p-4 hm:p-2">
                         <div>
-                          <Circle className="bg-chip-red mr-2 hsm:mx-2" />
+                          <Circle className="mr-2 bg-chip-red hsm:mx-2" />
                           <RouteText>{t('cycle_index')}</RouteText>
                         </div>
                         <div>
-                          <Circle className="bg-chip-blue mx-2" />
+                          <Circle className="mx-2 bg-chip-blue" />
                           <RouteText>{t('direct_index')}</RouteText>
                         </div>
                         <div>
-                          <Circle className="bg-chip-green mx-2" />
+                          <Circle className="mx-2 bg-chip-green" />
                           <RouteText>{t('yesulin_index')}</RouteText>
                         </div>
                         <div>
-                          <Circle className="bg-chip-purple mx-2" />
+                          <Circle className="mx-2 bg-chip-purple" />
                           <RouteText>{t('jungang_index')}</RouteText>
                         </div>
                       </CardView>
@@ -305,7 +297,7 @@ function App() {
                       </Link>
                       <p
                         id="copyright"
-                        className="dark:text-white pt-3 hsm:text-sm hsm:leading-4"
+                        className="pt-3 dark:text-white hsm:text-sm hsm:leading-4"
                       >
                         Copyright © 2020-2023{' '}
                         <a
@@ -341,6 +333,7 @@ function App() {
               </Suspense>
             }
           />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </>
