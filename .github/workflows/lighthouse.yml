@@ -1,0 +1,20 @@
+name: Lighthouse CI
+on: [pull_request]
+jobs:
+  lhci:
+    name: Generate Lighthouse Report
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: NodeJS Setup
+        uses: actions/setup-node@v3
+        with:
+            node-version: lts/*
+      - name: Check dependencies & build
+        run: |
+          yarn install
+          yarn build
+      - name: Run Lighthouse CI
+        run: |
+          yarn global add @lhci/cli@latest
+          lhci autorun
