@@ -5,6 +5,13 @@ module.exports = {
       url: 'http://localhost/index.html',
       numberOfRuns: 5,
       settings: {
+        throttling: {
+          // South Korea average rtt: 32.66ms (2022)
+          // Average Download: 151.92Mbps (2022)
+          rttMs: 35,
+          throughputKbps: 50 * 1024, // Slow down x3
+          cpuSlowdownMultiplier: 1,
+        },
         skipAudits: [
           'redirects-http',
           'is-on-https',
