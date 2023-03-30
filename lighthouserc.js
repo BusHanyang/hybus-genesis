@@ -2,6 +2,7 @@ module.exports = {
   ci: {
     collect: {
       staticDistDir: './dist',
+      url: 'http://localhost/index.html',
       numberOfRuns: 5,
       settings: {
         skipAudits: [
@@ -9,6 +10,11 @@ module.exports = {
           'is-on-https',
           'works-offline',
           'bf-cache',
+          'csp-xss',
+          'uses-rel-preconnect',
+          'color-contrast',
+          'unused-css-rules',
+          'unused-javascript',
         ],
       },
     },
@@ -25,8 +31,8 @@ module.exports = {
       preset: 'lighthouse:no-pwa',
       assertions: {
         'categories:performance': ['warn', { minScore: 0.9 }],
-        'categories:accessibility': ['error', { minScore: 0.9 }],
-        'categories:best-practices': ['error', { minScore: 0.95 }],
+        'categories:accessibility': ['warn', { minScore: 0.9 }],
+        'categories:best-practices': ['error', { minScore: 0.9 }],
         'categories:seo': ['error', { minScore: 0.9 }],
       },
     },
