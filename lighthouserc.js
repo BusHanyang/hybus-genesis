@@ -28,7 +28,6 @@ module.exports = {
       },
     },
     assert: {
-      preset: 'lighthouse:no-pwa',
       assertions: {
         'categories:performance': ['warn', { minScore: 0.9 }],
         'categories:accessibility': ['warn', { minScore: 0.9 }],
