@@ -2,6 +2,7 @@ module.exports = {
   ci: {
     collect: {
       staticDistDir: './dist',
+      numberOfRuns: 5,
       settings: {
         skipAudits: [
           'redirects-http',
@@ -21,6 +22,7 @@ module.exports = {
       },
     },
     assert: {
+      preset: 'lighthouse:no-pwa',
       assertions: {
         'categories:performance': ['warn', { minScore: 0.9 }],
         'categories:accessibility': ['error', { minScore: 0.9 }],
