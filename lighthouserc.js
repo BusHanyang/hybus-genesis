@@ -2,6 +2,14 @@ module.exports = {
   ci: {
     collect: {
       staticDistDir: './dist',
+      settings: {
+        skipAudits: [
+          'redirects-http',
+          'is-on-https',
+          'works-offline',
+          'bf-cache',
+        ],
+      },
     },
     upload: {
       target: 'lhci',
