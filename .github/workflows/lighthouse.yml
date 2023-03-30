@@ -29,5 +29,5 @@ jobs:
         with:
           message: |
             Check out your Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-genesis-production
-          mode: recreate
+          mode: upsert
 
