@@ -29,8 +29,7 @@ jobs:
       - name: Post Link to Lighthouse Report
         uses: thollander/actions-comment-pull-request@v2
         with:
-          message: "Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-genesis-production/compare/"$LHCI_RESULT_ID
+          message: |
+            Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-genesis-production/compare/${{ needs.lhci.outputs.lighthouse_result }}
           mode: recreate
-        env:
-          LHCI_RESULT_ID: ${{ needs.lhci.outputs.lighthouse_result }}
 
