@@ -6,8 +6,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       pull-requests: write
-    outputs:
-      lighthouse_result: ${{ steps.step_lhci.outputs.result_id }}
     steps:
       - uses: actions/checkout@v3
       - name: NodeJS Setup
@@ -20,7 +18,7 @@ jobs:
           yarn build
       - name: Run Lighthouse CI
         id: step_lhci
-        run: echo result_id=$(yarn dlx @lhci/cli autorun | sed -n -e 's/.*HYBUS Genesis Production (\([^)]*\)).*/\1/p') >> "$GITHUB_OUTPUT"
+        run: yarn dlx @lhci/cli autorun
         env:
           LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
           LHCI_USERNAME: ${{ secrets.LHCI_USERNAME }}
@@ -30,6 +28,6 @@ jobs:
         uses: thollander/actions-comment-pull-request@v2
         with:
           message: |
-            Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-genesis-production/compare/${{ needs.lhci.outputs.lighthouse_result }}
+            Check out your Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-genesis-production
           mode: recreate
 
