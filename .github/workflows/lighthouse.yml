@@ -17,4 +17,7 @@ jobs:
       - name: Run Lighthouse CI
         run: yarn dlx @lhci/cli autorun
         env:
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
+          LHCI_USERNAME: ${{ secrets.LHCI_USERNAME }}
+          LHCI_PASSWORD: ${{ secrets.LHCI_PASSWORD }}
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
