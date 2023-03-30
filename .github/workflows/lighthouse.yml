@@ -1,0 +1,34 @@
+name: Lighthouse CI
+on: [pull_request]
+jobs:
+  lhci:
+    name: Generate Lighthouse Report
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+      - name: NodeJS Setup
+        uses: actions/setup-node@v3
+        with:
+            node-version: 16
+      - name: Check dependencies & build
+        run: |
+          yarn install
+          yarn build
+      - name: Run Lighthouse CI
+        id: step_lhci
+        run: yarn dlx @lhci/cli autorun
+        env:
+          LHCI_TOKEN: ${{ secrets.LHCI_TOKEN }}
+          LHCI_USERNAME: ${{ secrets.LHCI_USERNAME }}
+          LHCI_PASSWORD: ${{ secrets.LHCI_PASSWORD }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+      - name: Post Link to Lighthouse Report
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          comment_tag: lighthouse
+          message: |
+            Check out your Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-genesis-production
+          mode: recreate
+
