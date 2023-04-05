@@ -2,7 +2,7 @@
 
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { Reset } from 'styled-reset'
@@ -201,6 +201,7 @@ function App() {
                             {t('title')}
                             <img
                               src="/image/helpblack.svg"
+                              alt="information icon"
                               onClick={handleModalTarget}
                               className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8"
                               onContextMenu={handleContextMenu}
@@ -349,6 +350,7 @@ function App() {
               </Suspense>
             }
           />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </>
