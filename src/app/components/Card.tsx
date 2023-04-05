@@ -554,6 +554,10 @@ export const Card = ({ location }: ScheduleInfo) => {
     }
   }, [timetable])
 
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+  };
+
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault()
     setTouched(true)
@@ -671,6 +675,7 @@ export const Card = ({ location }: ScheduleInfo) => {
             src={'../image/map_black_24dp.svg'}
             className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
             alt="map icon"
+            onContextMenu={handleContextMenu}
           />
         </button>
       </HeadlineWrapper>

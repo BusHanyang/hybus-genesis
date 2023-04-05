@@ -71,6 +71,10 @@ function App() {
   )
   const intervalMS = 60 * 1000
 
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+  };
+
   const openModal = () => {
     setModalOpen(true)
   }
@@ -199,6 +203,7 @@ function App() {
                               src="/image/helpblack.svg"
                               onClick={handleModalTarget}
                               className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8"
+                              onContextMenu={handleContextMenu}
                             ></img>
                           </h1>
                         </div>

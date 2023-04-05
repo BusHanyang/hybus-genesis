@@ -1,7 +1,7 @@
 import 'react-tiny-fab/dist/styles.css'
 import './fab.scss'
 
-import React, { useRef, useState } from 'react'
+import React, { MouseEventHandler, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
@@ -45,6 +45,11 @@ export const Fabs = (props: {
     dataTheme: 'white',
     imgIcon: DarkImg,
   }) // white theme is default
+
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+  };
+
   const isOpenClass = document.getElementsByClassName('rtf')
 
   const fabBackgroundRef = useRef<HTMLDivElement>(null)
@@ -142,6 +147,7 @@ export const Fabs = (props: {
             data-theme={metadata.dataTheme}
             alt="floating action button icon"
             draggable="false"
+            onContextMenu={handleContextMenu}
           />
         }
         mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
@@ -163,6 +169,7 @@ export const Fabs = (props: {
             color: metadata.iconColor,
           }}
           onClick={handleDarkOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
@@ -181,6 +188,7 @@ export const Fabs = (props: {
             color: metadata.iconColor,
           }}
           onClick={handleLangOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
@@ -199,6 +207,7 @@ export const Fabs = (props: {
             color: metadata.iconColor,
           }}
           onClick={handleModalOpen}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
@@ -217,6 +226,7 @@ export const Fabs = (props: {
             color: metadata.iconColor,
           }}
           onClick={handleDonateOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
@@ -235,6 +245,7 @@ export const Fabs = (props: {
             color: metadata.iconColor,
           }}
           onClick={handleEmailOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
