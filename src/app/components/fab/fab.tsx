@@ -1,7 +1,7 @@
 import 'react-tiny-fab/dist/styles.css'
 import './fab.scss'
 
-import React, { MouseEventHandler, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
