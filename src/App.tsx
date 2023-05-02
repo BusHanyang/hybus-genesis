@@ -212,6 +212,7 @@ function App() {
                               onClick={handleModalTarget}
                               className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8"
                               onContextMenu={handleContextMenu}
+                              draggable="false"
                             ></img>
                           </h1>
                         </div>
