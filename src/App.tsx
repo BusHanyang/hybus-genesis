@@ -22,6 +22,13 @@ const Apps = styled.div`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
   `}
+    -webkit-touch-callout: none;
+    -webkit-user-drag: none;
+    -user-drag: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 `
 
 const Circle = styled.span`
