@@ -22,13 +22,7 @@ const Apps = styled.div`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
   `}
-    -webkit-touch-callout: none;
-    -webkit-user-drag: none;
-    -user-drag: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+    ${tw`webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none`}
 `
 
 const Circle = styled.span`
@@ -50,6 +44,7 @@ const CardView = styled.div`
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
+
 const Button = styled(CardView)`
   ${tw`
     flex will-change-transform overflow-hidden cursor-default 

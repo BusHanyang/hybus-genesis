@@ -38,13 +38,7 @@ const TimetableWrapper = styled.div`
 
 const HeadlineWrapper = styled.div`
   ${tw`relative`}
-    -webkit-touch-callout: none;
-    -webkit-user-drag: none;
-    -user-drag: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
+  ${tw`webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none`}
 `
 
 const Headline = styled.h2`

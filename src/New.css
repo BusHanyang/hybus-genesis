@@ -37,12 +37,3 @@
 #title{
     @apply font-bold p-3 text-3xl pt-6 pb-3;
 }*/
-html {
-    -webkit-touch-callout: none;
-    -webkit-user-drag: none;
-    -user-drag: none;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}

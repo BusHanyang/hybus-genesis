@@ -142,7 +142,7 @@ export const Fabs = (props: {
       <Fab
         icon={
           <img
-            className="iconImg w-12 h-12 cursor-default mx-auto"
+            className="iconImg w-12 h-12 cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
             src={Arrow}
             data-theme={metadata.dataTheme}
             alt="floating action button icon"
