@@ -1,4 +1,4 @@
-import plugin from 'tailwindcss/plugin'
+const plugin = require('tailwindcss/plugin');
 
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
@@ -123,7 +123,7 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function ({ addUtilities }) {
+    plugin(({ addUtilities }) => {
       addUtilities({
         'webkit-touch-callout-n': {
           '-webkit-touch-callout': 'none',
