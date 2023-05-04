@@ -123,7 +123,7 @@ module.exports = {
     },
   },
   plugins: [
-    plugin(function({addUtilities}){
+    plugin(function ({ addUtilities }) {
       addUtilities({
         'webkit-touch-callout-n': {
           '-webkit-touch-callout': 'none',
@@ -142,9 +142,9 @@ module.exports = {
         },
         'ms-user-select-n': {
           '-ms-user-select': 'none',
-        }
+        },
       })
-    })
+    }),
   ],
   darkMode: 'class',
 }
