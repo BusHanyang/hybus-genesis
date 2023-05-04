@@ -173,7 +173,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
               src={metadata.imgIcon}
               style={{ padding: 8 }}
               alt="light and dark mode icon"
@@ -192,7 +192,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
               src={LangImg}
               style={{ padding: 8 }}
               alt="language icon"
@@ -211,7 +211,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
               src={Info}
               style={{ padding: 8 }}
               alt="changelog icon"
@@ -230,7 +230,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
               src={Donate}
               style={{ padding: 8 }}
               alt="donate a cup of coffee icon"
@@ -249,7 +249,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
               src={Email}
               style={{ padding: 8 }}
               alt="email icon"
