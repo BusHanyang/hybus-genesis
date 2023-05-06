@@ -21,8 +21,7 @@ const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
-  `}
-    ${tw`webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none`}
+  `} drag-save-n
 `
 
 const Circle = styled.span`
@@ -74,8 +73,8 @@ function App() {
   const intervalMS = 60 * 1000
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const openModal = () => {
     setModalOpen(true)
@@ -205,7 +204,7 @@ function App() {
                               src="/image/helpblack.svg"
                               alt="information icon"
                               onClick={handleModalTarget}
-                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8"
+                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n"
                               onContextMenu={handleContextMenu}
                               draggable="false"
                             ></img>

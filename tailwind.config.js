@@ -1,5 +1,3 @@
-const plugin = require('tailwindcss/plugin');
-
 module.exports = {
   content: ['./src/**/*.{ts,tsx}'],
   theme: {
@@ -122,29 +120,5 @@ module.exports = {
       },
     },
   },
-  plugins: [
-    plugin(({ addUtilities }) => {
-      addUtilities({
-        'webkit-touch-callout-n': {
-          '-webkit-touch-callout': 'none',
-        },
-        'webkit-user-drag-n': {
-          '-webkit-user-drag': 'none',
-        },
-        'user-drag-n': {
-          '-user-drag': 'none',
-        },
-        'webkit-user-select-n': {
-          '-webkit-user-select': 'none',
-        },
-        'moz-user-select-n': {
-          '-moz-user-select': 'none',
-        },
-        'ms-user-select-n': {
-          '-ms-user-select': 'none',
-        },
-      })
-    }),
-  ],
   darkMode: 'class',
 }

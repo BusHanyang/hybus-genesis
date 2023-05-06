@@ -37,8 +37,7 @@ const TimetableWrapper = styled.div`
 `
 
 const HeadlineWrapper = styled.div`
-  ${tw`relative`}
-  ${tw`webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none`}
+  ${tw`relative`} drag-save-n
 `
 
 const Headline = styled.h2`
@@ -556,8 +555,8 @@ export const Card = ({ location }: ScheduleInfo) => {
   }, [timetable])
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     e.preventDefault()
@@ -674,7 +673,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         >
           <img
             src={'../image/map_black_24dp.svg'}
-            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
+            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
             alt="map icon"
             draggable="false"
             onContextMenu={handleContextMenu}

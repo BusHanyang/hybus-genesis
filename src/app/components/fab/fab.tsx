@@ -30,7 +30,7 @@ const FabBackground = styled.div<{ open: boolean }>`
   }}
 `
 
-export const Fabs = (props: { 
+export const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
@@ -47,8 +47,8 @@ export const Fabs = (props: {
   }) // white theme is default
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
 
   const isOpenClass = document.getElementsByClassName('rtf')
 
@@ -61,7 +61,7 @@ export const Fabs = (props: {
 
   const handleModalOpen = () => {
     props.openModal()
-    props.mTarget("Fabs")
+    props.mTarget('Fabs')
   }
 
   const handleOpen = (): Promise<React.FC> => {
@@ -142,7 +142,7 @@ export const Fabs = (props: {
       <Fab
         icon={
           <img
-            className="iconImg w-12 h-12 cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
+            className="iconImg w-12 h-12 cursor-default mx-auto drag-save-n"
             src={Arrow}
             data-theme={metadata.dataTheme}
             alt="floating action button icon"
@@ -173,11 +173,12 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
+              className="cursor-default mx-auto drag-save-n"
               src={metadata.imgIcon}
               style={{ padding: 8 }}
               alt="light and dark mode icon"
               draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
             />
           </Icons>
         </Action>
@@ -192,11 +193,12 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
+              className="cursor-default mx-auto drag-save-n"
               src={LangImg}
               style={{ padding: 8 }}
               alt="language icon"
               draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
             />
           </Icons>
         </Action>
@@ -211,7 +213,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
+              className="cursor-default mx-auto drag-save-n"
               src={Info}
               style={{ padding: 8 }}
               alt="changelog icon"
@@ -230,7 +232,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
+              className="cursor-default mx-auto drag-save-n"
               src={Donate}
               style={{ padding: 8 }}
               alt="donate a cup of coffee icon"
@@ -249,7 +251,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default mx-auto webkit-touch-callout-n webkit-user-drag-n user-drag-n webkit-user-select-n moz-user-select-n ms-user-select-n select-none"
+              className="cursor-default mx-auto drag-save-n"
               src={Email}
               style={{ padding: 8 }}
               alt="email icon"
