@@ -46,7 +46,7 @@ export const Fabs = (props: {
     imgIcon: DarkImg,
   }) // white theme is default
 
-  const fabLabelCss: React.CSSProperties = {
+  const fabMainStyle: React.CSSProperties = {
     backgroundColor: metadata.changeColor,
     color: metadata.iconColor,
     userSelect: 'none',
@@ -174,7 +174,7 @@ export const Fabs = (props: {
       >
         <Action
           text={metadata.changeText}
-          style={fabLabelCss}
+          style={fabMainStyle}
           onClick={handleDarkOnClick}
           onContextMenu={handleContextMenu}
         >
@@ -191,7 +191,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('changeLang')}
-          style={fabLabelCss}
+          style={fabMainStyle}
           onClick={handleLangOnClick}
           onContextMenu={handleContextMenu}
         >
@@ -208,7 +208,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('changelog')}
-          style={fabLabelCss}
+          style={fabMainStyle}
           onClick={handleModalOpen}
           onContextMenu={handleContextMenu}
         >
@@ -224,7 +224,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('donate')}
-          style={fabLabelCss}
+          style={fabMainStyle}
           onClick={handleDonateOnClick}
           onContextMenu={handleContextMenu}
         >
@@ -240,7 +240,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('ask')}
-          style={fabLabelCss}
+          style={fabMainStyle}
           onClick={handleEmailOnClick}
           onContextMenu={handleContextMenu}
         >

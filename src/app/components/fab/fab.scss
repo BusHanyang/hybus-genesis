@@ -19,5 +19,14 @@
   padding: 15px !important;
   margin: -15px !important;
 }
-  
- 
+
+.rtf--ab__c>span {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -user-drag: none;
+}
