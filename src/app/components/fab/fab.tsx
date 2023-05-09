@@ -46,6 +46,16 @@ export const Fabs = (props: {
     imgIcon: DarkImg,
   }) // white theme is default
 
+  const fabLabelCss: React.CSSProperties = {
+    backgroundColor: metadata.changeColor,
+    color: metadata.iconColor,
+    userSelect: 'none',
+    msUserSelect: 'none',
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    WebkitTouchCallout: 'none',
+  }
+
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
@@ -164,10 +174,7 @@ export const Fabs = (props: {
       >
         <Action
           text={metadata.changeText}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabLabelCss}
           onClick={handleDarkOnClick}
           onContextMenu={handleContextMenu}
         >
@@ -184,10 +191,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('changeLang')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabLabelCss}
           onClick={handleLangOnClick}
           onContextMenu={handleContextMenu}
         >
@@ -204,10 +208,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('changelog')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabLabelCss}
           onClick={handleModalOpen}
           onContextMenu={handleContextMenu}
         >
@@ -223,10 +224,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('donate')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabLabelCss}
           onClick={handleDonateOnClick}
           onContextMenu={handleContextMenu}
         >
@@ -242,10 +240,7 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('ask')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabLabelCss}
           onClick={handleEmailOnClick}
           onContextMenu={handleContextMenu}
         >
