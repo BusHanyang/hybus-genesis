@@ -45,7 +45,7 @@ const Headline = styled.h2`
 `
 
 const MainTimeTableWrapper = styled.div`
-  ${tw`w-full h-[11.25rem] inline-block`}
+  ${tw`w-full h-[11.25rem] inline-block touch-none`}
 `
 
 const MainTimetable = styled.div`
@@ -554,27 +554,19 @@ export const Card = ({ location }: ScheduleInfo) => {
     }
   }, [timetable])
 
-  const handleContextMenu = (e: { preventDefault: () => void }) => {
-    e.preventDefault()
-  }
-
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(true)
   }
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(false)
   }
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(true)
   }
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(false)
   }
 
@@ -676,7 +668,6 @@ export const Card = ({ location }: ScheduleInfo) => {
             className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
             alt="map icon"
             draggable="false"
-            onContextMenu={handleContextMenu}
           />
         </button>
       </HeadlineWrapper>
