@@ -67,22 +67,22 @@ const ModalOpen = (props: {
         >
           <ContentArea>
             <ChangelogDiv>
-              {props.mTarget === "Fabs" ? data.map((datum: { date: string; details: Array<string> }) => {
-                const arr: string[] = datum.details
-                return (
-                  <ChangelogMargin key={datum.date}>
-                    <h4>{datum.date}</h4>
-                    {arr.map((item) => (
-                      <P key={item}>{item}</P>
-                    ))}
-                  </ChangelogMargin>
-                )
-              }) : 
+              {props.mTarget === 'Fabs' ? data.map((datum: { date: string; details: Array<string> }) => {
+                  const arr: string[] = datum.details
+                  return (
+                    <ChangelogMargin key={datum.date}>
+                      <h4>{datum.date}</h4>
+                      {arr.map((item) => (
+                        <P key={item}>{item}</P>
+                      ))}
+                    </ChangelogMargin>
+                  )
+                }) :
                 <iframe
-                title="information-iframe"
-                width="100%"
-                height="450"
-                src={t('info_link')}>
+                  title='information-iframe'
+                  width='100%'
+                  height='450'
+                  src={t('info_link')}>
                 </iframe>
               }
             </ChangelogDiv>

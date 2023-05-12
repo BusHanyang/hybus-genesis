@@ -77,8 +77,8 @@ const ComboBox = (props: {
   info: string
 }) => {
   const handleContextMenu = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
   return (
     <>
       <div
@@ -325,8 +325,8 @@ const FullTime = () => {
     ['weekend', t('weekend')],
   ]
   const handleContextMenu = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-  };
+    e.preventDefault()
+  }
   return (
     <>
       <div className={`${theme === THEME.DARK ? 'dark' : ''}`}>

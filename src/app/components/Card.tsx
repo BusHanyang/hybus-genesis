@@ -569,7 +569,9 @@ export const Card = ({ location }: ScheduleInfo) => {
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
     setTouched(false)
   }
-  const handleContextMenu = (e: React.MouseEvent<HTMLImageElement, MouseEvent>) => {
+  const handleContextMenu = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
     e.preventDefault()
   }
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
@@ -667,9 +669,9 @@ export const Card = ({ location }: ScheduleInfo) => {
         >
           <img
             src={'../image/map_black_24dp.svg'}
-            onContextMenu={handleContextMenu}
             className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
             alt="map icon"
+            onContextMenu={handleContextMenu}
             draggable="false"
           />
         </button>
