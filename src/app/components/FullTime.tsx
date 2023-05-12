@@ -76,6 +76,9 @@ const ComboBox = (props: {
   func: (arg: Location | Season | Week) => void
   info: string
 }) => {
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+  }
   return (
     <>
       <div
@@ -91,6 +94,7 @@ const ComboBox = (props: {
             className="dark:invert mr-1 w-5 hm:w-4"
             src="../image/done_FILL0_wght600_GRAD0_opsz48.svg"
             alt="check"
+            onContextMenu={handleContextMenu}
           />
         ) : null}
         {props.info}
@@ -320,7 +324,9 @@ const FullTime = () => {
     ['week', t('week')],
     ['weekend', t('weekend')],
   ]
-
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+  }
   return (
     <>
       <div className={`${theme === THEME.DARK ? 'dark' : ''}`}>
@@ -337,6 +343,7 @@ const FullTime = () => {
                   navigate('/', { replace: true })
                 }
               }}
+              onContextMenu={handleContextMenu}
             />
             <span className="text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5">
               {t('all_btn')}

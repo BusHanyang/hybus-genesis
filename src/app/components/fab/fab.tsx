@@ -30,7 +30,7 @@ const FabBackground = styled.div<{ open: boolean }>`
   }}
 `
 
-export const Fabs = (props: { 
+export const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
@@ -45,6 +45,21 @@ export const Fabs = (props: {
     dataTheme: 'white',
     imgIcon: DarkImg,
   }) // white theme is default
+
+  const fabMainStyle: React.CSSProperties = {
+    backgroundColor: metadata.changeColor,
+    color: metadata.iconColor,
+    userSelect: 'none',
+    msUserSelect: 'none',
+    MozUserSelect: 'none',
+    WebkitUserSelect: 'none',
+    WebkitTouchCallout: 'none',
+  }
+
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+  }
+
   const isOpenClass = document.getElementsByClassName('rtf')
 
   const fabBackgroundRef = useRef<HTMLDivElement>(null)
@@ -56,7 +71,7 @@ export const Fabs = (props: {
 
   const handleModalOpen = () => {
     props.openModal()
-    props.mTarget("Fabs")
+    props.mTarget('Fabs')
   }
 
   const handleOpen = (): Promise<React.FC> => {
@@ -137,11 +152,12 @@ export const Fabs = (props: {
       <Fab
         icon={
           <img
-            className="iconImg w-12 h-12 cursor-default mx-auto"
+            className="iconImg w-12 h-12 cursor-default mx-auto drag-save-n"
             src={Arrow}
             data-theme={metadata.dataTheme}
             alt="floating action button icon"
             draggable="false"
+            onContextMenu={handleContextMenu}
           />
         }
         mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
@@ -158,51 +174,47 @@ export const Fabs = (props: {
       >
         <Action
           text={metadata.changeText}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabMainStyle}
           onClick={handleDarkOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto drag-save-n"
               src={metadata.imgIcon}
               style={{ padding: 8 }}
               alt="light and dark mode icon"
               draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
             />
           </Icons>
         </Action>
         <Action
           text={t('changeLang')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabMainStyle}
           onClick={handleLangOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto drag-save-n"
               src={LangImg}
               style={{ padding: 8 }}
               alt="language icon"
               draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
             />
           </Icons>
         </Action>
         <Action
           text={t('changelog')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabMainStyle}
           onClick={handleModalOpen}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto drag-save-n"
               src={Info}
               style={{ padding: 8 }}
               alt="changelog icon"
@@ -212,15 +224,13 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('donate')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabMainStyle}
           onClick={handleDonateOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto drag-save-n"
               src={Donate}
               style={{ padding: 8 }}
               alt="donate a cup of coffee icon"
@@ -230,15 +240,13 @@ export const Fabs = (props: {
         </Action>
         <Action
           text={t('ask')}
-          style={{
-            backgroundColor: metadata.changeColor,
-            color: metadata.iconColor,
-          }}
+          style={fabMainStyle}
           onClick={handleEmailOnClick}
+          onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-default"
+              className="cursor-default mx-auto drag-save-n"
               src={Email}
               style={{ padding: 8 }}
               alt="email icon"

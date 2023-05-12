@@ -21,7 +21,7 @@ const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
-  `}
+  `} drag-save-n
 `
 
 const Circle = styled.span`
@@ -43,6 +43,7 @@ const CardView = styled.div`
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
+
 const Button = styled(CardView)`
   ${tw`
     flex will-change-transform overflow-hidden cursor-default 
@@ -70,6 +71,10 @@ function App() {
     window.localStorage.getItem('touch_info') === null
   )
   const intervalMS = 60 * 1000
+
+  const handleContextMenu = (e: { preventDefault: () => void }) => {
+    e.preventDefault()
+  }
 
   const openModal = () => {
     setModalOpen(true)
@@ -149,8 +154,8 @@ function App() {
     document.documentElement.classList.add('h-dfull')
   }, [])
 
-  useEffect(() => {
-    if (!triggered) {
+  const useMountEffect = () =>
+    useEffect(() => {
       const triggerUpdate = async () => {
         await updateServiceWorker()
         setTriggered(true)
@@ -158,13 +163,14 @@ function App() {
       triggerUpdate().then(() => {
         console.log('App Update Triggered.')
       })
-    }
-  }, [triggered, updateServiceWorker])
+    }, [])
 
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
     setTouchPrompt(status)
   }, [])
+
+  useMountEffect()
 
   return (
     <>
@@ -198,7 +204,9 @@ function App() {
                               src="/image/helpblack.svg"
                               alt="information icon"
                               onClick={handleModalTarget}
-                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8"
+                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n"
+                              onContextMenu={handleContextMenu}
+                              draggable="false"
                             ></img>
                           </h1>
                         </div>

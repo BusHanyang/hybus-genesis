@@ -8,7 +8,7 @@ module.exports = {
         throttling: {
           // South Korea average rtt: 32.66ms (2022)
           // Average Download: 151.92Mbps (2022)
-          rttMs: 35,
+          rttMs: 70, // Slow down x2
           throughputKbps: 50 * 1024, // Slow down x3
           cpuSlowdownMultiplier: 1,
         },

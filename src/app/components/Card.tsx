@@ -37,7 +37,7 @@ const TimetableWrapper = styled.div`
 `
 
 const HeadlineWrapper = styled.div`
-  ${tw`relative`}
+  ${tw`relative`} drag-save-n
 `
 
 const Headline = styled.h2`
@@ -45,7 +45,7 @@ const Headline = styled.h2`
 `
 
 const MainTimeTableWrapper = styled.div`
-  ${tw`w-full h-[11.25rem] inline-block`}
+  ${tw`w-full h-[11.25rem] inline-block touch-none`}
 `
 
 const MainTimetable = styled.div`
@@ -555,25 +555,25 @@ export const Card = ({ location }: ScheduleInfo) => {
   }, [timetable])
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(true)
   }
 
   const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(false)
   }
 
   const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(true)
   }
 
   const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    e.preventDefault()
     setTouched(false)
   }
-
+  const handleContextMenu = (
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+  ) => {
+    e.preventDefault()
+  }
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
@@ -662,15 +662,17 @@ export const Card = ({ location }: ScheduleInfo) => {
       <HeadlineWrapper>
         <Headline>{titleText(location)}</Headline>
         <button
-          className="absolute top-0 right-0 h-full"
+          className="absolute top-0 right-0 h-full drag-save-n"
           onClick={() => {
             openNaverMapApp(location)
           }}
         >
           <img
             src={'../image/map_black_24dp.svg'}
-            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7"
+            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
             alt="map icon"
+            onContextMenu={handleContextMenu}
+            draggable="false"
           />
         </button>
       </HeadlineWrapper>
