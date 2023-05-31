@@ -168,6 +168,7 @@ export const Fabs = (props: {
           margin: '0px',
           padding: '0px',
           zIndex: 15,
+          fontFamily: "Pretendard",
         }}
         alwaysShowTitle={true}
         onClick={handleOpen}
