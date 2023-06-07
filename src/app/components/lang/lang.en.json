@@ -42,6 +42,8 @@
 
     "no_today": "There is no shuttle bus for today.",
     "end_today": "Shuttle bus service has ended today.",
+    "api_error": "API Service Error 😵",
+    "status_check": "Check service status",
 
     "ask": "Contact",
     "donate": "Donate",

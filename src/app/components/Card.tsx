@@ -84,7 +84,7 @@ const NoTimetable = styled.div`
 `
 
 const NoTimetableInner = styled.span`
-  ${tw`table-cell align-middle`}
+  ${tw`table-cell align-middle leading-6`}
 `
 
 const TimeClickableConversionText = styled.span`
@@ -578,11 +578,29 @@ export const Card = ({ location }: ScheduleInfo) => {
     const { t } = useTranslation()
 
     if (!spinning) {
-      if (
-        timetable.length === 0 ||
-        (timetable.length === 1 && timetable[0] == null)
-      ) {
-        // Timetable load failure, or doesn't exist
+      if (timetable.length === 1 && timetable[0] == null) {
+        // Timetable API error
+        return (
+          <>
+            <NoTimetable>
+              <NoTimetableInner>
+                {t('api_error')}
+                <br />
+                <a
+                  target="_blank"
+                  href="https://monitor.hybus.app/status/bushanyang"
+                  rel="noopener noreferrer"
+                >
+                  {t('status_check')}
+                </a>
+              </NoTimetableInner>
+            </NoTimetable>
+          </>
+        )
+      }
+
+      if (timetable.length === 0) {
+        // Timetable doesn't exist
         return (
           <>
             <NoTimetable>
