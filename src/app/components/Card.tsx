@@ -586,13 +586,18 @@ export const Card = ({ location }: ScheduleInfo) => {
               <NoTimetableInner>
                 {t('api_error')}
                 <br />
-                <a
-                  target="_blank"
-                  href="https://monitor.hybus.app/status/bushanyang"
-                  rel="noopener noreferrer"
+                <button
+                  className="rounded-md bg-gray-200 text-gray-700 px-2 py-1 mt-2"
+                  onClick={() => {
+                    window.open(
+                      'https://monitor.hybus.app/status/bushanyang',
+                      '_black',
+                      'noopener noreferrer'
+                    )
+                  }}
                 >
                   {t('status_check')}
-                </a>
+                </button>
               </NoTimetableInner>
             </NoTimetable>
           </>
