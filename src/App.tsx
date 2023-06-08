@@ -46,7 +46,7 @@ const CardView = styled.div`
 
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-default 
+    flex will-change-transform overflow-hidden cursor-pointer 
     border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
   `}
   &.active {
@@ -204,7 +204,7 @@ function App() {
                               src="/image/helpblack.svg"
                               alt="information icon"
                               onClick={handleModalTarget}
-                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n"
+                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n cursor-pointer"
                               onContextMenu={handleContextMenu}
                               draggable="false"
                             ></img>
