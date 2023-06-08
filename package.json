@@ -37,8 +37,8 @@
     "twin.macro": "3.0.0-rc.3"
   },
   "devDependencies": {
-    "@types/react": "^18.2.9",
-    "@types/react-dom": "^18.2.4",
+    "@types/react": "18.0.10",
+    "@types/react-dom": "18.0.5",
     "@types/styled-components": "^5.1.26",
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.59.9",
