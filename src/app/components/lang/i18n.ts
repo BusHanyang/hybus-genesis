@@ -15,6 +15,12 @@ const resources = {
   },
 }
 
+declare module 'i18next' {
+  interface CustomTypeOptions {
+    returnNull: false
+  }
+}
+
 i18n
   .use(Backend)
   .use(LanguageDetector)
@@ -22,6 +28,7 @@ i18n
   .init({
     //lng: "en", // 강제기본값
     fallbackLng: 'ko',
+    returnNull: false,
     debug: false,
     resources,
     //ns: ['translation'],
