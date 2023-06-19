@@ -1,5 +1,3 @@
-//import './App.css'
-
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
