@@ -181,7 +181,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-pointer mx-auto drag-save-n"
+              className="cursor-default mx-auto drag-save-n"
               src={metadata.imgIcon}
               style={{ padding: 8 }}
               alt="light and dark mode icon"
@@ -198,7 +198,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-pointer mx-auto drag-save-n"
+              className="cursor-default mx-auto drag-save-n"
               src={LangImg}
               style={{ padding: 8 }}
               alt="language icon"
@@ -215,7 +215,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-pointer mx-auto drag-save-n"
+              className="cursor-default mx-auto drag-save-n"
               src={Info}
               style={{ padding: 8 }}
               alt="changelog icon"
@@ -231,7 +231,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-pointer mx-auto drag-save-n"
+              className="cursor-default mx-auto drag-save-n"
               src={Donate}
               style={{ padding: 8 }}
               alt="donate a cup of coffee icon"
@@ -247,7 +247,7 @@ export const Fabs = (props: {
         >
           <Icons theme={metadata.dataTheme}>
             <img
-              className="cursor-pointer mx-auto drag-save-n"
+              className="cursor-default mx-auto drag-save-n"
               src={Email}
               style={{ padding: 8 }}
               alt="email icon"

@@ -692,7 +692,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         >
           <img
             src={'../image/map_black_24dp.svg'}
-            className="cursor-pointer dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
+            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
             alt="map icon"
             onContextMenu={handleContextMenu}
             draggable="false"
@@ -737,7 +737,7 @@ export const Card = ({ location }: ScheduleInfo) => {
         <div className="w-[fit-content] float-right ml-1 h-full flex hsm:ml-0">
           <img
             src={'../image/close_black_24dp.svg'}
-            className="cursor-pointer dark:invert h-4 w-4 my-auto"
+            className="cursor-default dark:invert h-4 w-4 my-auto"
             alt="close icon"
             onClick={() => {
               setInfoClosed(true)
