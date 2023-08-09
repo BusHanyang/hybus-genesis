@@ -27,7 +27,7 @@ i18n
   .use(initReactI18next)
   .init({
     //lng: "en", // 강제기본값
-    fallbackLng: 'ko',
+    fallbackLng: 'en',
     returnNull: false,
     debug: false,
     resources,
@@ -39,7 +39,7 @@ i18n
   })
 
 i18n.on('languageChanged', (lng) => {
-  document.documentElement.setAttribute('lang', lng)
+  document.documentElement.setAttribute('language', lng)
 })
 
 export default i18n

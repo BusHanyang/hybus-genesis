@@ -132,13 +132,15 @@ function App() {
   })
 
   useEffect(() => {
-    const whatlang = window.localStorage.getItem('lang') || i18n.language
-    if (whatlang === 'en') {
-      i18n.changeLanguage('en')
-    } else {
+    const savedLanguage =
+      window.localStorage.getItem('language') || i18n.language
+    window.localStorage.removeItem('lang')
+    if (savedLanguage === 'ko') {
       i18n.changeLanguage('ko')
+    } else {
+      i18n.changeLanguage('en')
     }
-    window.localStorage.setItem('lang', i18n.language)
+    window.localStorage.setItem('language', i18n.language)
   }, [i18n])
 
   useEffect(() => {
