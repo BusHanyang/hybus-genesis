@@ -362,7 +362,7 @@ const getMapURLScheme = (loc: string): string => {
   if (loc == 'shuttlecoke_o') {
     return 'nmap://place?lat=37.2987258&lng=126.8379922&zoom=18&name=셔틀콕&appname=hybus.app'
   } else if (loc == 'subway') {
-    return 'nmap://place?lat=37.30851&lng=126.85327&zoom=18&name=한대앞역 셔틀버스 정류장&appname=hybus.app'
+    return 'nmap://place?lat=37.309738&lng=126.852051&zoom=18&name=한대앞역 셔틀버스 정류장&appname=hybus.app'
   } else if (loc == 'yesulin') {
     return 'nmap://place?lat=37.31951&lng=126.84564&zoom=18&name=예술인 셔틀버스 정류장&appname=hybus.app'
   } else if (loc == 'jungang') {
@@ -380,7 +380,7 @@ const getMapURL = (loc: string): string => {
   if (loc == 'shuttlecoke_o') {
     return 'https://map.naver.com/v5/?lng=126.8379922&lat=37.2987258&type=0&title=셔틀콕'
   } else if (loc == 'subway') {
-    return 'https://map.naver.com/v5/?lng=126.85327&lat=37.30851&type=0&title=한대앞역 셔틀버스 정류장'
+    return 'https://map.naver.com/v5/?lng=126.852051&lat=37.309738&type=0&title=한대앞역 셔틀버스 정류장'
   } else if (loc == 'yesulin') {
     return 'https://map.naver.com/v5/?lng=126.84564&lat=37.31951&type=0&title=예술인 셔틀버스 정류장'
   } else if (loc == 'jungang') {
