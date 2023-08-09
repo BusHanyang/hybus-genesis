@@ -20,7 +20,7 @@ const ModalMain = styled(ModalBackground)<{ isOpen: boolean; isAni: boolean }>`
   }}
 `
 const ModalButton = styled.button`
-  ${tw`outline-none cursor-default border-0`}
+  ${tw`outline-none cursor-pointer border-0`}
 `
 const ModalSection = styled.section<{ isAni: boolean }>`
   ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
