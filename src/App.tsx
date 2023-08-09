@@ -1,5 +1,3 @@
-//import './App.css'
-
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
@@ -66,7 +64,7 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
-  const [triggered, setTriggered] = useState<boolean>(false)
+  const [, setTriggered] = useState<boolean>(false)
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null
   )
@@ -134,13 +132,15 @@ function App() {
   })
 
   useEffect(() => {
-    const whatlang = window.localStorage.getItem('lang') || i18n.language
-    if (whatlang === 'en') {
-      i18n.changeLanguage('en')
-    } else {
+    const savedLanguage =
+      window.localStorage.getItem('language') || i18n.language
+    window.localStorage.removeItem('lang')
+    if (savedLanguage === 'ko') {
       i18n.changeLanguage('ko')
+    } else {
+      i18n.changeLanguage('en')
     }
-    window.localStorage.setItem('lang', i18n.language)
+    window.localStorage.setItem('language', i18n.language)
   }, [i18n])
 
   useEffect(() => {
@@ -204,7 +204,7 @@ function App() {
                               src="/image/helpblack.svg"
                               alt="information icon"
                               onClick={handleModalTarget}
-                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n"
+                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n cursor-default"
                               onContextMenu={handleContextMenu}
                               draggable="false"
                             ></img>

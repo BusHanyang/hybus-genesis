@@ -1,5 +1,4 @@
 import './index.css'
-import './New.css'
 import './app/components/lang/i18n'
 
 import { Partytown } from '@builder.io/partytown/react'

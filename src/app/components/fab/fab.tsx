@@ -114,10 +114,10 @@ export const Fabs = (props: {
     return new Promise(() => {
       if (i18n.language === 'en') {
         i18n.changeLanguage('ko')
-        window.localStorage.setItem('lang', 'ko')
+        window.localStorage.setItem('language', 'ko')
       } else {
         i18n.changeLanguage('en')
-        window.localStorage.setItem('lang', 'en')
+        window.localStorage.setItem('language', 'en')
       }
     })
   }
@@ -168,6 +168,7 @@ export const Fabs = (props: {
           margin: '0px',
           padding: '0px',
           zIndex: 15,
+          fontFamily: 'Pretendard',
         }}
         alwaysShowTitle={true}
         onClick={handleOpen}

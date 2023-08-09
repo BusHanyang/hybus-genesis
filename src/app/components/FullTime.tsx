@@ -231,7 +231,7 @@ const FullTime = () => {
       }
     })
 
-    const filterdByType: Array<FilteredTimeTables> = []
+    const filteredByType: Array<FilteredTimeTables> = []
 
     timetableFiltered.forEach((schedules, hour) => {
       const single: FilteredTimeTables = {
@@ -269,14 +269,14 @@ const FullTime = () => {
       }
 
       single.count > countChip ? setCountChip(single.count) : null
-      filterdByType.push(single)
+      filteredByType.push(single)
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
 
     return (
       <div className="grid grid-flow-row gap-2">
-        {filterdByType.map((schedule) => {
+        {filteredByType.map((schedule) => {
           // if schedule.direct.length === 0
           return (
             <React.Fragment key={schedule.time}>
