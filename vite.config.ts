@@ -21,6 +21,23 @@ export default defineConfig({
       registerType: 'autoUpdate',
       workbox: {
         globPatterns: ['**/*.{html,js,css,ico,png,svg,woff2}'],
+        runtimeCaching: [
+          {
+            urlPattern:
+              /^https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/pretendard\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'pretendard-fonts-cache',
+              expiration: {
+                maxEntries: 10,
+                maxAgeSeconds: 60 * 60 * 24 * 14, // <== 14 days
+              },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
       },
 
       // Deployment
