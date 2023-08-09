@@ -95,6 +95,10 @@ const TimeClickableNotifyText = styled.div`
   ${tw`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`}
 `
 
+const ApiStatusButton = styled.button`
+  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
+`
+
 const getSettings = async (): Promise<null | Settings> => {
   return await axios
     .get('https://api.hybus.app/settings/')
@@ -574,6 +578,15 @@ export const Card = ({ location }: ScheduleInfo) => {
   ) => {
     e.preventDefault()
   }
+
+  const openApiMonitor = () => {
+    window.open(
+      'https://monitor.hybus.app/status/bushanyang',
+      '_black',
+      'noopener noreferrer'
+    )
+  }
+
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
@@ -586,18 +599,9 @@ export const Card = ({ location }: ScheduleInfo) => {
               <NoTimetableInner>
                 {t('api_error')}
                 <br />
-                <button
-                  className="rounded-md bg-gray-200 text-gray-700 px-2 py-1 mt-2"
-                  onClick={() => {
-                    window.open(
-                      'https://monitor.hybus.app/status/bushanyang',
-                      '_black',
-                      'noopener noreferrer'
-                    )
-                  }}
-                >
+                <ApiStatusButton onClick={openApiMonitor}>
                   {t('status_check')}
-                </button>
+                </ApiStatusButton>
               </NoTimetableInner>
             </NoTimetable>
           </>
