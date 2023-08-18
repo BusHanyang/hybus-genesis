@@ -193,7 +193,7 @@ function App() {
                 >
                   <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
                     <Apps>
-                      <header className="App-header">
+                      <header>
                         <div className="relative">
                           <h1
                             id="title"
