@@ -61,7 +61,7 @@ const Button = styled(CardView)`
 
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 
-function App() {
+const App = () => {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
