@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@builder.io/partytown": "^0.8.0",
-    "@types/node": "^18.7.14",
     "axios": "^1.4.0",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-styled-components": "^2.0.7",
@@ -37,6 +36,7 @@
     "twin.macro": "3.0.0-rc.3"
   },
   "devDependencies": {
+    "@types/node": "^18.7.14",
     "@types/react": "18.0.10",
     "@types/react-dom": "18.0.5",
     "@types/styled-components": "^5.1.26",
