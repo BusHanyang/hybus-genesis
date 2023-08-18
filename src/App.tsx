@@ -29,6 +29,7 @@ const Circle = styled.span`
     h-3 w-3 rt1:h-2.5 rt1:w-2.5
   `}
 `
+
 const RouteText = styled.div`
   ${tw`
     inline-block rt1:text-sm rt2:text-xs hsm:mx-1
