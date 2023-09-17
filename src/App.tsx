@@ -58,6 +58,12 @@ const Button = styled(CardView)`
   }
 `
 
+const RadioLabel = styled.label`
+  ${tw`
+    block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white
+  `}
+`
+
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 
 function App() {
@@ -101,11 +107,17 @@ function App() {
 
   const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
+  const [RT, setRT] = useState<string>('')
   const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
     setTab(stn)
+  }
+
+  const RealtimeClicked = (isOk: string) => {
+    window.localStorage.setItem('RT', isOk)
+    setRT(isOk)
   }
 
   const { updateServiceWorker } = useRegisterSW({
@@ -147,6 +159,11 @@ function App() {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
   }, [tab])
+
+  useEffect(() => {
+    const aRT = window.localStorage.getItem('RT') || 'nus'
+    RealtimeClicked(aRT)
+  }, [RT])
 
   useEffect(() => {
     document.body.classList.add('h-full')
@@ -216,11 +233,14 @@ function App() {
                       </header>
 
                       <CardView
-                        className={
-                          touchPrompt
-                            ? `p-6 hm:p-4 h-[18rem]`
-                            : `p-6 hm:p-4 h-[17rem]`
-                        }
+                        className={`
+                          ${!touchPrompt 
+                            ? 'p-6 hm:p-4 h-[17rem]' 
+                            : ((tab === 'subway' || tab === 'jungang') 
+                              ? 'p-6 hm:p-4 h-[21rem] flex justify-center' 
+                              : 'p-6 hm:p-4 h-[18rem]')}
+                          ${(tab === 'subway' || tab === 'jungang') ? 'h-[19.6rem] flex-col' : ''}
+                        `}
                       >
                         {
                           <Card
@@ -229,8 +249,24 @@ function App() {
                               'shuttlecoke_o'
                             }
                           />
-                        }
+                        } 
+                        <div className={`
+                            ${(tab === 'subway' || tab === 'jungang') ? '' : 'hidden'} flex justify-center
+                            ${touchPrompt ? 'mt-8' : ''}
+                          `}>
+                            <div className="w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 p-1">
+                              <div>
+                                  <input type="radio" name="option" id="1" value="1" className="peer hidden" onChange={()=> RealtimeClicked('bus')} checked/>
+                                  <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
+                              </div>
+                              <div>
+                                  <input type="radio" name="option" id="2" value="2" className="peer hidden" onChange={()=> RealtimeClicked('sub')} />
+                                  <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
+                              </div>
+                            </div>
+                          </div> 
                       </CardView>
+
                       <CardView className="p-4 h-12 hm:p-2 flex">
                         <div>
                           <Circle className="bg-chip-red mr-2 hsm:mx-2" />
