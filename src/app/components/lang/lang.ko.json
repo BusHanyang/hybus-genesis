@@ -76,5 +76,18 @@
     "check_on_touch": "위에 있는 시간표 부분을 꾹 눌러보세요.",
     "now_actual_time": "이제부터는 실제 출발 시간을 확인해요!",
 
-    "info_link": "https://info-ko.hybus.app/"
+    "info_link": "https://info-ko.hybus.app/",
+
+    "shuttle": "셔틀버스",
+    "subw": "전철",
+    "oido": "오이도",
+    "ansan": "안산",
+    "geumjeong": "금정",
+    "danggogae": "당고개",
+    "nowon": "노원",
+    "hansung": "한성대",
+    "wangsimni": "왕십리",
+    "incheon": "인천",
+    "jukjeon": "죽전",
+    "gosaek": "고색"
 }

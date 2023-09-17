@@ -76,5 +76,18 @@
     "check_on_touch": "Try pressing the area above.",
     "now_actual_time": "Now it is actual departure time!",
 
-    "info_link": "https://info-en.hybus.app/"
+    "info_link": "https://info-en.hybus.app/",
+
+    "shuttle": "Shuttle Bus",
+    "subw": "Subway",
+    "oido": "Oido",
+    "ansan": "Ansan",
+    "geumjeong": "Geumjeong",
+    "danggogae": "Danggogae",
+    "nowon": "Nowon",
+    "hansung": "Hansung U.",
+    "wangsimni": "Wangsimni",
+    "incheon": "Incheon",
+    "jukjeon": "Jukjeon",
+    "gosaek": "Gosaek"
 }

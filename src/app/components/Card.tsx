@@ -33,7 +33,7 @@ type Settings = {
 dayjs.extend(customParse)
 
 const TimetableWrapper = styled.div`
-  ${tw`h-full`}
+  ${tw`h-[14.8rem]`}
 `
 
 const HeadlineWrapper = styled.div`
@@ -468,6 +468,11 @@ export const Card = ({ location }: ScheduleInfo) => {
     window.localStorage.getItem('touch_info') === 'closed'
   )
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
+  const RT = window.localStorage.getItem('RT') || 'bus'
+  
+  useEffect(() => {
+    //RT = window.localStorage.getItem('RT')
+  }, [RT, window.localStorage.getItem('RT')])
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -632,7 +637,6 @@ export const Card = ({ location }: ScheduleInfo) => {
           </>
         )
       }
-
       // Otherwise - normal case
       return (
         <>
@@ -753,4 +757,5 @@ export const Card = ({ location }: ScheduleInfo) => {
       </OnTouchAvailableWrapper>
     </TimetableWrapper>
   )
+
 }
