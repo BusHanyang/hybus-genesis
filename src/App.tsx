@@ -85,6 +85,11 @@ const App = () => {
     setModalTarget('Info')
   }
 
+  const handleLineModalTarget = () => {
+    openModal()
+    setModalTarget('Line')
+  }
+
   const closeModal = () => {
     setModalAni(true)
     setTimeout(() => {
@@ -233,7 +238,7 @@ const App = () => {
                           />
                         }
                       </CardView>
-                      <CardView className="p-4 h-12 hm:p-2 flex">
+                      <CardView className="p-4 h-12 hm:p-2 flex" onClick={handleLineModalTarget} onContextMenu={handleContextMenu}>
                         <div>
                           <Circle className="bg-chip-red mr-2 hsm:mx-2" />
                           <RouteText>{t('cycle_index')}</RouteText>

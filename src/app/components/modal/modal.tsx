@@ -80,9 +80,12 @@ export const Modal = (props: {
           <ModalSection isAni={props.ani}>
             {props.mTarget === 'Fabs' ? (
               <ModalHeader theme={theme}>{t('changelog')}</ModalHeader>
-            ) : (
+            ) : props.mTarget === 'Info' ? (
               <ModalHeader theme={theme}>{t('info')}</ModalHeader>
-            )}
+            ) : (
+              <ModalHeader theme={theme}>{t('line')}</ModalHeader>
+            )
+            }
 
             <ModalSubMain theme={theme}>{props.children}</ModalSubMain>
             <ModalFooter theme={theme}>

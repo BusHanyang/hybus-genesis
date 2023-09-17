@@ -24,7 +24,6 @@ const ContentArea = styled.div`
 const ChangelogDiv = styled(ContentArea)`
   ${tw`text-left`}
 `
-
 const ModalOpen = (props: {
   isOpen: boolean
   isModalAni: boolean
@@ -77,13 +76,14 @@ const ModalOpen = (props: {
                       ))}
                     </ChangelogMargin>
                   )
-                }) :
-                <iframe
-                  title='information-iframe'
-                  width='100%'
-                  height='450'
-                  src={t('info_link')}>
-                </iframe>
+                }) : (props.mTarget === 'Info') ?
+                  <iframe
+                    title='information-iframe'
+                    width='100%'
+                    height='450'
+                    src={t('info_link')}>
+                  </iframe>
+                  : <img src={t('info_link') + 'images/route_information.png'}/>
               }
             </ChangelogDiv>
           </ContentArea>
