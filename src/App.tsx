@@ -161,10 +161,11 @@ function App() {
   }, [tab])
 
   useEffect(() => {
-    const aRT = window.localStorage.getItem('RT') || 'nus'
+    const aRT = window.localStorage.getItem('RT') || 'bus'
+    //document.modifyForm.color['<%=RT%>'].checked = true
     RealtimeClicked(aRT)
   }, [RT])
-
+    
   useEffect(() => {
     document.body.classList.add('h-full')
     document.documentElement.classList.add('h-full')
@@ -256,11 +257,21 @@ function App() {
                           `}>
                             <div className="w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 p-1">
                               <div>
-                                  <input type="radio" name="option" id="1" value="1" className="peer hidden" onChange={()=> RealtimeClicked('bus')} checked/>
+                                  <input 
+                                    type="radio" name="option" 
+                                    id="1" value="1" className="peer hidden" 
+                                    onChange={()=> RealtimeClicked('bus')} 
+                                    checked={RT=='bus' ? true : false}
+                                  />
                                   <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
                               </div>
                               <div>
-                                  <input type="radio" name="option" id="2" value="2" className="peer hidden" onChange={()=> RealtimeClicked('sub')} />
+                                  <input 
+                                    type="radio" name="option" 
+                                    id="2" value="2" className="peer hidden" 
+                                    onChange={()=> RealtimeClicked('sub')} 
+                                    checked={RT=='sub' ? true : false}
+                                  />
                                   <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
                               </div>
                             </div>
