@@ -38,6 +38,7 @@ const ApiStatusButton = styled.button`
 
 
 type SingleSchedule = {
+    btrainNo: string //차량 번호
     subwayId: string //노선
     updnLine: string //상행 0  하행 1
     bstatnNm: string //목적지 ㅇㅇ행
@@ -57,15 +58,16 @@ const arrivalUntil = (arvlMsg2: string, station:string): string => {
     if (arvlMsg2 == '전역 출발' || 
         arvlMsg2 == '전역 도착' || 
         arvlMsg2 == '전역 진입' || 
-        arvlMsg2 == '전역 접근' ||
-        arvlMsg2.indexOf(station) != -1
+        arvlMsg2 == '전역 접근' 
     ) {
-        return '전 역'
+        return '전역'
+    } else if(arvlMsg2.indexOf(station) != -1){
+        return '당역'
     } else {
         //const match = /\[(\d+)\]/g
         //const result = match.exec(arvlMsg2) as RegExpExecArray
         const str = arvlMsg2.substring(arvlMsg2.indexOf('[') + 1, arvlMsg2.indexOf(']'))
-        return str + ' 전 역'
+        return str + ' 전역'
         //String(result[1])
     }
 }
@@ -140,6 +142,11 @@ const getLineMarkElement = (line: string): JSX.Element => {
     }
     return <Chip src="/image/suin.svg"></Chip>
 }
+
+const openRailblue = (btrainNo: string): void => {
+    window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo
+}
+
 
 export const Realtime = ({ location }: ScheduleInfo) => {
     const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
@@ -310,7 +317,10 @@ export const Realtime = ({ location }: ScheduleInfo) => {
             if (idx < 5) {
                 return (
                     <React.Fragment key={idx}>
-                        <div className='flex m-auto gap-3'>
+                        <div className='flex m-auto gap-3' 
+                            onClick={() => {
+                                openRailblue(val.btrainNo)
+                            }}>
                             <div>
                                 {getLineMarkElement(val.subwayId)}
                             </div>
