@@ -10,6 +10,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import { Card, Fabs } from './app/components'
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
+import { Realtime } from './app/components/Realtime'
 import { THEME, useDarkmodeContext } from './app/context/ThemeContext'
 
 const FullTime = lazy(() => import('./app/components/FullTime'))
@@ -57,10 +58,16 @@ const Button = styled(CardView)`
     ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
+const SegmentedControl = styled.div`
+  ${tw`
+    w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800 p-1 
+  `}
+`
 
 const RadioLabel = styled.label`
   ${tw`
-    block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white
+    block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
+    transition-colors ease-out duration-300 
   `}
 `
 
@@ -244,18 +251,29 @@ function App() {
                         `}
                       >
                         {
-                          <Card
+                          RT == 'sub' && (tab == 'subway' || tab == 'jungang') 
+                          ? <>
+                            <Realtime
+                              location={
+                                window.localStorage.getItem('tab') ||
+                                'subway'
+                              }
+                            />
+                          </> 
+                          : <>
+                            <Card
                             location={
                               window.localStorage.getItem('tab') ||
                               'shuttlecoke_o'
                             }
-                          />
-                        } 
+                            />
+                          </>
+                        }
                         <div className={`
                             ${(tab === 'subway' || tab === 'jungang') ? '' : 'hidden'} flex justify-center
                             ${touchPrompt ? 'mt-8' : ''}
                           `}>
-                            <div className="w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 p-1">
+                            <SegmentedControl>
                               <div>
                                   <input 
                                     type="radio" name="option" 
@@ -274,7 +292,7 @@ function App() {
                                   />
                                   <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
                               </div>
-                            </div>
+                            </SegmentedControl>
                           </div> 
                       </CardView>
 
