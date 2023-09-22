@@ -53,7 +53,7 @@ const MainTimetable = styled.div`
 `
 
 const Chip = styled.div`
-  ${tw`dark:text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem]`}
+  ${tw`text-black dark:text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem]`}
 `
 
 const SingleTimetable = styled.div`
@@ -88,7 +88,7 @@ const NoTimetableInner = styled.span`
 `
 
 const TimeClickableConversionText = styled.span`
-  ${tw`transition duration-300`}
+  ${tw`transition-colors duration-100`}
 `
 
 const TimeClickableNotifyText = styled.div`

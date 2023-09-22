@@ -19,7 +19,7 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
-    dark:bg-zinc-800 dark:text-white transition-colors ease-out duration-100
+    dark:bg-zinc-800 dark:text-white transition-colors ease-in-out duration-200
   `} drag-save-n
 `
 
@@ -38,7 +38,7 @@ const RouteText = styled.div`
 
 const CardView = styled.div`
   ${tw`
-    mb-3 justify-center items-center font-medium 
+    mb-3 justify-center items-center font-medium transition-colors duration-300
     bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)] will-change-transform
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
@@ -46,7 +46,7 @@ const CardView = styled.div`
 
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-default transition-colors duration-300
+    flex will-change-transform overflow-hidden cursor-default transition-colors ease-out duration-300
     border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
   `}
   &.active {
@@ -190,6 +190,7 @@ const App = () => {
               <>
                 <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <PullToRefresh
+                  className='transition-colors ease-in-out duration-200'
                   onRefresh={handleRefresh}
                   backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
                   pullingContent=""
