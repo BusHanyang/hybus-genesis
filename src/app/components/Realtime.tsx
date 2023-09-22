@@ -1,41 +1,10 @@
 import axios from 'axios'
-import customParse from 'dayjs/plugin/customParseFormat'
-import dotenv from 'dotenv'
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
-
-const HeadlineWrapper = styled.div`
-  ${tw`relative`} drag-save-n
-`
-
-const Headline = styled.h2`
-  ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
-`
-
-const MainTimeTableWrapper = styled.div`
-  ${tw`w-full h-[11.25rem] inline-block touch-none`}
-`
-
-const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-full`}
-`
-
-const NoTimetable = styled.div`
-  ${tw`h-full table`}
-`
-
-const NoTimetableInner = styled.span`
-  ${tw`table-cell align-middle leading-6`}
-`
-
-const ApiStatusButton = styled.button`
-  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
-`
-
 
 type SingleSchedule = {
     btrainNo: string //차량 번호
@@ -48,185 +17,234 @@ type SingleSchedule = {
 }
 
 type ScheduleInfo = {
-    location: string
+    station: string
 }
+
+const TimetableWrapper = styled.div`
+  ${tw`h-[14.8rem] hm:h-[15.3rem]`}
+`
+
+const HeadlineWrapper = styled.div`
+  ${tw`flex justify-center`} drag-save-n
+`
+
+const Headline = styled.h2`
+  ${tw`font-bold text-2xl mb-2 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
+`
+
+const DestStnLeftWrapper = styled.span`
+  ${tw`font-Ptd tabular-nums inline-block w-[5.1rem] text-right
+  hm:text-[0.9rem]
+  hsm:text-sm hsm:w-[4rem]
+  `}
+`
+
+const ArrivalStnStatusWrapper = styled.span`
+  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1`}
+`
+
+const StatusWrapper = styled.span`
+    ${tw`font-Ptd tabular-nums inline-block px-1 w-[5rem] text-right 
+    hm:text-[0.9rem] hm:w-[4rem] hm:px-0
+    hsm:text-sm hsm:w-[4rem]
+    `}
+    &.here {
+        ${tw`
+            text-red-600 font-bold
+        `}
+    }
+`
+
+const MainTimetable = styled.div`
+  ${tw`inline-block select-none h-full`}
+`
+
+const NoTimetable = styled.div`
+  ${tw`h-full table `}
+`
+
+const NoTimetableInner = styled.span`
+  ${tw`table-cell align-middle leading-6`}
+`
+
+const ApiStatusButton = styled.button`
+  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
+`
+
 const Chip = styled.img`
-    ${tw`py-1 w-[1.5rem] rounded-full inline-block`}
+    ${tw`my-auto w-[1.5rem] inline-block`}
 ` 
 
-const arrivalUntil = (arvlMsg2: string, station:string): string => {
+const arrivalUntil = (arvlMsg2: string, station: string): string => {
     if (arvlMsg2 == '전역 출발' || 
         arvlMsg2 == '전역 도착' || 
         arvlMsg2 == '전역 진입' || 
         arvlMsg2 == '전역 접근' 
     ) {
-        return '전역'
-    } else if(arvlMsg2.indexOf(station) != -1){
-        return '당역'
+        return t('prevstn')
+    } else if(arvlMsg2.includes(station.trim())){
+        return t('here')
     } else {
-        //const match = /\[(\d+)\]/g
-        //const result = match.exec(arvlMsg2) as RegExpExecArray
-        const str = arvlMsg2.substring(arvlMsg2.indexOf('[') + 1, arvlMsg2.indexOf(']'))
-        return str + ' 전역'
-        //String(result[1])
+        const str = arvlMsg2.substring(arvlMsg2.indexOf('[')+1, arvlMsg2.indexOf(']'))
+        return str + t('n_stn')
     }
 }
-    
+
+const stationName = (arvlMsg3: string): string => {
+    if (arvlMsg3 == '남동인더스파크') {
+        return '남동공단'
+    } else if (arvlMsg3 == '정부과천청사') {
+        return '과천청사'
+    } else if (arvlMsg3 == '총신대입구(이수)'){
+        return '이수'
+    } else if (arvlMsg3 == '동대문역사문화공원'){
+        return '동역사'
+    } else if (arvlMsg3 == '성신여대입구'){
+        return '성신여대'
+    } else if (arvlMsg3 == '대모산입구'){
+        return '대모산'
+    } else {
+        return arvlMsg3
+    }
+}
+
 const arrivalStnStatus = (arvlCd: string): string => {
     if (arvlCd == '0') {
-        return '진입'
+        return t('entry')
     } else if (arvlCd == '1') {
-        return '도착'
+        return t('arrival')
     } else if (arvlCd == '2') {
-        return '출발'
+        return t('depart')
     } else if (arvlCd == '3') {
-        return '출발'
+        return t('depart')
     } else if (arvlCd == '4') {
-        return '진입'
+        return t('entry')
     } else if (arvlCd == '5') {
-        return '도착'
+        return t('arrival')
     } else if (arvlCd == '99') {
-        return '운행중'
+        return t('operation')
     }else {
-        return '오류'
+        return 'Error'
     }
 }
 
 const titleText = (location: string): string => {
-    if (location == 'shuttlecoke_o') {
-        return t('shuttlecoke_o')
-    } else if (location == 'subway') {
-        return t('subway')
-    } else if (location == 'jungang') {
-        return t('jungang')
-    } else if (location == 'yesulin') {
-        return t('yesulin')
-    } else if (location == 'shuttlecoke_i') {
-        return t('shuttlecoke_i')
-    } else if (location == 'residence') {
-        return t('residence')
+    if (location.trim() === '한대앞') {
+        return t('hyu_stn')
+    } else if (location.trim() === '중앙') {
+        return t('jungang_stn')
     } else {
         return t('else')
     }
 }
 
 const getDestination = (bstatnNm: string): string => {
-    if (bstatnNm == '오이도') {
-        return t('oido')
-    } else if (bstatnNm == '안산') {
-        return t('ansan')
-    } else if (bstatnNm == '금정') {
-        return t('geumjeong')
-    } else if (bstatnNm == '당고개') {
-        return t('danggogae')
-    } else if (bstatnNm == '노원') {
-        return t('nowon')
-    } else if (bstatnNm == '한성대입구') {
-        return t('hansung')
-    } else if (bstatnNm == '왕십리') {
-        return t('wangsimni')
-    } else if (bstatnNm == '인천') {
-        return t('incheon')
-    } else if (bstatnNm == '죽전') {
-        return t('jukjeon')
-    } else if (bstatnNm == '고색') {
-        return t('gosaek')
-    } else {
-        return bstatnNm
+    let str = ''
+    if(bstatnNm.includes('(막차)')){
+        bstatnNm = bstatnNm.replace(' (막차)', '')
+    } else if(bstatnNm.includes('(급행)')){
+        str = '⚡'
+        bstatnNm.replace(' (급행)', '')
     }
+    
+    if (bstatnNm == '오이도') {
+        str += t('oido')
+    } else if (bstatnNm == '안산') {
+        str += t('ansan')
+    } else if (bstatnNm == '금정') {
+        str += t('geumjeong')
+    } else if (bstatnNm == '당고개') {
+        str += t('danggogae')
+    } else if (bstatnNm == '노원') {
+        str += t('nowon')
+    } else if (bstatnNm == '한성대입구') {
+        str += t('hansung')
+    } else if (bstatnNm == '왕십리') {
+        str += t('wangsimni')
+    } else if (bstatnNm == '인천') {
+        str += t('incheon')
+    } else if (bstatnNm == '죽전') {
+        str += t('jukjeon')
+    } else if (bstatnNm == '고색') {
+        str += t('gosaek')
+    } else {
+        str += bstatnNm
+    }
+
+    return str + t('for')
 } 
 
 const getLineMarkElement = (line: string): JSX.Element => {
     if (line == '1004') {
-        return <Chip src="/image/line4.svg"></Chip>
-    }
-    return <Chip src="/image/suin.svg"></Chip>
+        return <Chip src="/image/line4.svg" />
+    } else if(line == '1075'){
+        return <Chip src={`/image/${t('suin')}.svg`}/>
+    } else return <Chip src="/image/helpblack.svg" />
+    
 }
 
 const openRailblue = (btrainNo: string): void => {
-    window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo
+    window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '#!'
 }
 
 
-export const Realtime = ({ location }: ScheduleInfo) => {
+export const Realtime = ({ station }: ScheduleInfo) => {
     const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
     const [isLoaded, setLoaded] = useState<boolean>(false)
+    const [isBlink, setBlink] = useState<boolean>(false)
     const [currentLocation, setCurrentLocation] = useState<string>('init')
-    const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
-
+    //const [station, setStation] = useState<string>(stationary)
     const [spinning, setSpinning] = useState<boolean>(true)
-    const [CarList, setCarList] = useState<Array<SingleSchedule>>()
-
-    const [a,setA] = useState()
-    const [b,setB] = useState()
-    const [c,setC] = useState()
-
-    const [upNumA, setUpNumA] = useState<boolean>(false)
-    const [upNumB, setUpNumB] = useState<boolean>(false)
-    const [upNumC, setUpNumC] = useState<boolean>(false)
-    
-    let station = '한대앞'
-    if(location == 'jungang') station = '중앙'
 
      // For fetching the timetable for the initial time
+
     useEffect(() => {
         if (!isLoaded) {
-            search(location).then((res) => {
+            search().then((res) => {
                 setTimetable(res)
                 setSpinning(false)
                 setLoaded(true)
-                setCurrentLocation(location)
+                setCurrentLocation(station.trim())
             })
         } 
-    }, [isLoaded, location])
-
-    useEffect(()=>{
-        if(location == 'jungang') {
-            station = '중앙'
-        } else {
-            station = '한대앞'
-        }
-        search(station)
-    },[location, station])
-
-    // For fetching the timetable for the initial time
-    useEffect(() => {
-        if (!isLoaded) {
-        search(station).then((res) => {
-            setTimetable(res)
-            setSpinning(false)
-            setLoaded(true)
-            setCurrentLocation(location)
-        })
-        }
-    }, [isLoaded, location])
+    }, [isLoaded, station])
 
     // For fetching the timetable when tab is changed (Efficient)
-  useEffect(() => {
-    if (
-      isLoaded &&
-      currentLocation !== 'init' &&
-      location !== currentLocation
-    ) {
-      setSpinning(true)
-      setTimetable([])
-      search(location).then((res) => {
-        setTimetable(res)
-        setSpinning(false)
-        setCurrentLocation(location)
-        setCurrentTime(new Date().getTime())
-      })
-    } 
-  }, [currentLocation, isLoaded, location])
+    useEffect(() => {
+        if (
+            isLoaded &&
+            currentLocation !== 'init' &&
+            station.trim() !== currentLocation
+        ) {
+        setSpinning(true)
+        setTimetable([])
+        search().then((res) => {
+            setTimetable(res)
+            setSpinning(false)
+            setCurrentLocation(station.trim())
+        })
+        } 
+    }, [currentLocation, isLoaded, station])
+
+    useEffect(()=>{
+        const timer = setInterval(()=>{ 
+            search().then((res) => {
+                setTimetable(res)
+                setSpinning(false)
+                setLoaded(true)
+                setCurrentLocation(station.trim())
+            })
+        }, 10000)
+
+        return ()=>{ clearTimeout(timer) }
+        })
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-          setCurrentTime(new Date().getTime())
-        }, 10000)
-    
-        return () => clearTimeout(timer)
-    }, [timetable, currentTime])
-        
+        setTimeout(() => {
+            isBlink ? setBlink(false) : setBlink(true)
+        }, 3000)
+    }, [isBlink, setBlink])
+
     const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
         return await axios
         .get(url)
@@ -235,7 +253,11 @@ export const Realtime = ({ location }: ScheduleInfo) => {
             console.log(`Error code: ${response.statusText}`)
             return new Array<SingleSchedule>()
             }
-    
+            
+            if (response.data.code == 'INFO-200'){
+                return new Array<SingleSchedule>()
+            }
+
             return response.data.realtimeArrivalList
         })
         .catch((err) => {
@@ -257,9 +279,9 @@ export const Realtime = ({ location }: ScheduleInfo) => {
         .then((res) => res as Array<SingleSchedule>)
     }
 
-    const search = async(
-        location : string
-    ) : Promise<Array<SingleSchedule>> => {
+    const search = async() : Promise<Array<SingleSchedule>> => {
+        //if(location === 'jungang') setStation('중앙')
+        //else if((location === 'subway')) setStation('한대앞')
         return await timetableApi(
             `http://swopenapi.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/0/5/${station}`
         ).then((res) =>
@@ -280,7 +302,15 @@ export const Realtime = ({ location }: ScheduleInfo) => {
         )
     }
 
-    const RenderTimetable = () => {
+    const countUp = () : number => {
+        let upCnt = 0
+        for(const idx in timetable){
+            if(timetable[idx].updnLine === '상행') upCnt++
+        }
+        return upCnt
+    }
+
+    const RenderTimetable = (updn : string) => {
         const { t } = useTranslation()
         if (!spinning) {
             if (timetable.length === 1 && timetable[0] == null) {
@@ -300,42 +330,56 @@ export const Realtime = ({ location }: ScheduleInfo) => {
             )
         }
 
-    if (timetable.length === 0) {
-        // Buses are done for today. User should refresh after midnight.
+    if (timetable.length === 0 
+        || (updn == '상행' && countUp() === 0) 
+        || (updn == '하행' && timetable.length - countUp() === 0)) {
+        // Trains are done for today. User should refresh after midnight.
         return (
             <>
             <NoTimetable>
-                <NoTimetableInner>{t('end_today')}</NoTimetableInner>
+                <NoTimetableInner>
+                    {countUp() === 0 ? t('no_train_up') : t('no_train_down')}
+                </NoTimetableInner>
             </NoTimetable>
             </>
         )
     }
-      // Otherwise - normal case
+    // Otherwise - normal case
+    let downPrintCnt = 0
     return (
         <>
-        {timetable.map((val, idx) => {
-            if (idx < 5) {
+        {timetable.map((val, idx) => {    
+            if (!(idx==3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3) {
+                if(updn == '하행') {
+                    downPrintCnt++
+                }
                 return (
                     <React.Fragment key={idx}>
-                        <div className='flex m-auto gap-3' 
+                        <div className='flex mb-1 gap-2 leading-6'
                             onClick={() => {
                                 openRailblue(val.btrainNo)
-                            }}>
-                            <div>
-                                {getLineMarkElement(val.subwayId)}
+                        }}>
+                            {getLineMarkElement(val.subwayId)}
+                            <div className='flex-end'>
+                            <DestStnLeftWrapper>
+                                {val.bstatnNm.includes('막차') 
+                                ? <Chip className='h-4 mb-1' src="/image/last_train.svg" /> 
+                                : ''}
+                                {getDestination(val.bstatnNm)}
+                            </DestStnLeftWrapper>
                             </div>
-                            <div>
-                                {getDestination(val.bstatnNm) + ' 행'}
-                            </div>
-                            <div>
-                                {arrivalUntil(val.arvlMsg2, station)}
-                            </div>
-                            <div>
-                                {(val.arvlMsg3)} 
-                            </div>
-                            <div>
+                            <StatusWrapper className={`
+                                ${val.arvlMsg2.includes(station.trim()) 
+                                    || (val.arvlCd == '3') ? 'here' : ''}}
+                            `}>
+                                {isBlink ? 
+                                    stationName(val.arvlMsg3) : 
+                                    arrivalUntil(val.arvlMsg2, station.trim())
+                                }
+                            </StatusWrapper>
+                            <ArrivalStnStatusWrapper>
                                 {arrivalStnStatus(val.arvlCd)}
-                            </div>
+                            </ArrivalStnStatusWrapper>
                         </div>
                     </React.Fragment>
                 )
@@ -351,35 +395,33 @@ export const Realtime = ({ location }: ScheduleInfo) => {
 }
 // 본체라능
     return(
-        <div className='info start'>
-            <div className='pageWrapper'>
-                <div className='content-wrapper'>
-                    <div className='content-container' id='infoContent-container'>
-                        <HeadlineWrapper>
-                            <Headline>{titleText(location)}</Headline>
-                        </HeadlineWrapper>
-                        <div className='info-container'>
-                            <MainTimetable>
-                            {spinning ? (
-                                <NoTimetable>
-                                    <SyncLoader
-                                        color="#AFBDCE"
-                                        margin={4}
-                                        size={8}
-                                        loading={spinning}
-                                        cssOverride={tw`table-cell align-middle`}
-                                    />
-                                </NoTimetable>
-                            ) : (
-                                <></>
-                            )}
-                            {RenderTimetable()}
-                            </MainTimetable>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <TimetableWrapper>
+            <HeadlineWrapper>
+                <Chip className='pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]' src="/image/line4.svg" />
+                <Chip className='pb-2 hm:pb-0 hsm:pb-2 mr-1.5' src={`/image/${t('suin')}.svg`} />
+                <Headline>
+                    {titleText(station)}
+                </Headline>
+            </HeadlineWrapper>
+            <MainTimetable>
+                {spinning ? (
+                <NoTimetable>
+                <SyncLoader
+                    color="#AFBDCE"
+                    margin={4}
+                    size={8}
+                    loading={spinning}
+                    cssOverride={tw`table-cell align-middle`}
+                />
+                </NoTimetable>
+            ) : (
+                <></>
+            )}
+            <div className='h-[5rem]'>{RenderTimetable('상행')}</div>
+            <hr className='my-2' />
+            <div className='h-[5rem]'>{RenderTimetable('하행')}</div>
+            </MainTimetable>
+        </TimetableWrapper>
     )
 }
 

@@ -119,6 +119,8 @@ function App() {
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
+    if(tab == 'subway') window.localStorage.setItem('sta', '한대앞')
+    else if(tab == 'jungnag') window.localStorage.setItem('sta', '중앙')
     setTab(stn)
   }
 
@@ -251,13 +253,12 @@ function App() {
                         `}
                       >
                         {
-                          RT == 'sub' && (tab == 'subway' || tab == 'jungang') 
+                          RT === 'sub' && (tab === 'subway' || tab === 'jungang') 
                           ? <>
                             <Realtime
-                              location={
-                                window.localStorage.getItem('tab') ||
-                                'subway'
-                              }
+                              station={`
+                                ${(tab === 'subway' ? '한대앞' : '중앙').trim()}
+                              `}
                             />
                           </> 
                           : <>
