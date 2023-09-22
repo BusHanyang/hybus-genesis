@@ -78,16 +78,32 @@
 
     "info_link": "https://info-en.hybus.app/",
 
+    "suin": "suin_eng",
     "shuttle": "Shuttle Bus",
     "subw": "Subway",
+    "hyu_stn": "HYU at Ansan",
+    "jungang_stn": "Jungang",
     "oido": "Oido",
     "ansan": "Ansan",
     "geumjeong": "Geumjeong",
     "danggogae": "Danggogae",
     "nowon": "Nowon",
-    "hansung": "Hansung U.",
+    "hansung": "Hansung U",
     "wangsimni": "Wangsimni",
     "incheon": "Incheon",
     "jukjeon": "Jukjeon",
-    "gosaek": "Gosaek"
+    "gosaek": "Gosaek",
+
+    "for": "",
+    "entry": "[Entry]",
+    "depart": "[Depart]",
+    "arrival": "[Arrival]",
+    "operation": "[Operation]",
+    
+    "here": "Here",
+    "prevstn": "1 Left",
+    "n_stn": " Left",
+
+    "no_train_up": "No Up-trains are currently in service.",
+    "no_train_down": "No Down-trains are currently in service."
 }
