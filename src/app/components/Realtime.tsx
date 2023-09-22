@@ -32,8 +32,8 @@ const Headline = styled.h2`
   ${tw`font-bold text-2xl mb-2 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
 `
 
-const DestStnLeftWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block w-[5.1rem] text-right
+const DestStnLeftWrapper = styled.div`
+  ${tw`flex justify-end font-Ptd tabular-nums w-[5.1rem] text-right 
   hm:text-[0.9rem]
   hsm:text-sm hsm:w-[4rem]
   `}
@@ -48,11 +48,6 @@ const StatusWrapper = styled.span`
     hm:text-[0.9rem] hm:w-[4rem] hm:px-0
     hsm:text-sm hsm:w-[4rem]
     `}
-    &.here {
-        ${tw`
-            text-red-600 font-bold
-        `}
-    }
 `
 
 const MainTimetable = styled.div`
@@ -140,13 +135,17 @@ const titleText = (location: string): string => {
 
 const getDestination = (bstatnNm: string): string => {
     let str = ''
+    let isLast = false
+    let isRapid = false
     if(bstatnNm.includes('(막차)')){
+        isLast = true
         bstatnNm = bstatnNm.replace(' (막차)', '')
     } else if(bstatnNm.includes('(급행)')){
-        str = '⚡'
-        bstatnNm.replace(' (급행)', '')
+        //str = '⚡'
+        isRapid = true
+        bstatnNm = bstatnNm.replace(' (급행)', '')
     }
-    
+
     if (bstatnNm == '오이도') {
         str += t('oido')
     } else if (bstatnNm == '안산') {
@@ -170,9 +169,16 @@ const getDestination = (bstatnNm: string): string => {
     } else {
         str += bstatnNm
     }
-
-    return str + t('for')
+    return str + (!isLast && !isRapid ? t('for') : '')
 } 
+
+const getRapidOrLastElement = (bstatnNm : string) => {
+    if (bstatnNm.includes('막차')) {
+        return <img className='h-5 ml-1 items-center' src={t('last_train_img')} /> 
+    } else if(bstatnNm.includes('급행')) {
+        return <img className='h-5 ml-1 items-center' src={t('rapid_train_img')} /> 
+    } 
+}
 
 const getLineMarkElement = (line: string): JSX.Element => {
     if (line == '1004') {
@@ -283,7 +289,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         //if(location === 'jungang') setStation('중앙')
         //else if((location === 'subway')) setStation('한대앞')
         return await timetableApi(
-            `http://swopenapi.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/0/5/${station}`
+            `https:///api.hybus.app/subway/1/7/${station.trim()}`
         ).then((res) =>
         res.map((val : SingleSchedule) => {
             //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
@@ -355,23 +361,19 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                 }
                 return (
                     <React.Fragment key={idx}>
-                        <div className='flex mb-1 gap-2 leading-6'
+                        <div className={`flex mb-1 gap-2 hsm:gap-2 leading-6 
+                            ${val.arvlMsg2.includes(station.trim()) 
+                                || (val.arvlCd == '3') 
+                                ? 'text-[#ff3737] dark:bg-red-200 dark:text-gray-800 rounded-full font-bold' : ''}`}
                             onClick={() => {
                                 openRailblue(val.btrainNo)
                         }}>
                             {getLineMarkElement(val.subwayId)}
-                            <div className='flex-end'>
                             <DestStnLeftWrapper>
-                                {val.bstatnNm.includes('막차') 
-                                ? <Chip className='h-4 mb-1' src="/image/last_train.svg" /> 
-                                : ''}
-                                {getDestination(val.bstatnNm)}
+                                <div>{getDestination(val.bstatnNm)}</div>
+                                {getRapidOrLastElement(val.bstatnNm)}
                             </DestStnLeftWrapper>
-                            </div>
-                            <StatusWrapper className={`
-                                ${val.arvlMsg2.includes(station.trim()) 
-                                    || (val.arvlCd == '3') ? 'here' : ''}}
-                            `}>
+                            <StatusWrapper>
                                 {isBlink ? 
                                     stationName(val.arvlMsg3) : 
                                     arrivalUntil(val.arvlMsg2, station.trim())

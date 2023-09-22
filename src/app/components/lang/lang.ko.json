@@ -105,5 +105,7 @@
     "n_stn": " 전역",
 
     "no_train_up": "현재 운행중인 상행 열차가 없습니다.",
-    "no_train_down": "현재 운행중인 하행 열차가 없습니다."
+    "no_train_down": "현재 운행중인 하행 열차가 없습니다.",
+    "last_train_img": "/image/last_train_kr.svg",
+    "rapid_train_img": "/image/rapid_train_kr.svg"
 }
