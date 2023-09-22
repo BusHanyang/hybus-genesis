@@ -468,11 +468,6 @@ export const Card = ({ location }: ScheduleInfo) => {
     window.localStorage.getItem('touch_info') === 'closed'
   )
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
-  const RT = window.localStorage.getItem('RT') || 'bus'
-  
-  useEffect(() => {
-    //RT = window.localStorage.getItem('RT')
-  }, [RT, window.localStorage.getItem('RT')])
 
   // For fetching timetable setting json
   useEffect(() => {
