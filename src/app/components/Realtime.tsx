@@ -33,9 +33,8 @@ const Headline = styled.h2`
 `
 
 const DestStnLeftWrapper = styled.div`
-  ${tw`flex justify-end font-Ptd tabular-nums w-[5.1rem] text-right 
-  hm:text-[0.9rem]
-  hsm:text-sm hsm:w-[4rem]
+  ${tw`flex justify-end items-center font-Ptd tabular-nums text-right
+  w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]
   `}
 `
 
@@ -55,11 +54,11 @@ const MainTimetable = styled.div`
 `
 
 const NoTimetable = styled.div`
-  ${tw`h-full table `}
+  ${tw`h-full flex items-center justify-center`}
 `
 
 const NoTimetableInner = styled.span`
-  ${tw`table-cell align-middle leading-6`}
+  ${tw`text-center hsm:text-sm table-cell align-middle`}
 `
 
 const ApiStatusButton = styled.button`
@@ -141,7 +140,6 @@ const getDestination = (bstatnNm: string): string => {
         isLast = true
         bstatnNm = bstatnNm.replace(' (막차)', '')
     } else if(bstatnNm.includes('(급행)')){
-        //str = '⚡'
         isRapid = true
         bstatnNm = bstatnNm.replace(' (급행)', '')
     }
@@ -174,9 +172,9 @@ const getDestination = (bstatnNm: string): string => {
 
 const getRapidOrLastElement = (bstatnNm : string) => {
     if (bstatnNm.includes('막차')) {
-        return <img className='h-5 ml-1 items-center' src={t('last_train_img')} /> 
+        return <img className='h-4 ml-1' src={t('last_train_img')} /> 
     } else if(bstatnNm.includes('급행')) {
-        return <img className='h-5 ml-1 items-center' src={t('rapid_train_img')} /> 
+        return <img className='h-4 ml-1' src={t('rapid_train_img')} /> 
     } 
 }
 
@@ -190,7 +188,22 @@ const getLineMarkElement = (line: string): JSX.Element => {
 }
 
 const openRailblue = (btrainNo: string): void => {
-    window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '#!'
+    const today = new Date()
+    const year = today.getFullYear()
+    const month = ('0' + (today.getMonth() + 1)).slice(-2)
+    const day = ('0' + today.getDate()).slice(-2)
+    const hours = ('0' + today.getHours()).slice(-2)
+
+    const yesterday = new Date(today.setDate(today.getDate()-1))
+    const yYear = yesterday.getFullYear()
+    const yMonth = ('0' + (yesterday.getMonth() + 1)).slice(-2)
+    const yDay = ('0' + yesterday.getDate()).slice(-2)
+
+    let date = year + month + day
+    if(hours == '00' || hours == '01'){
+        date = yYear + yMonth + yDay
+    }
+    window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
 }
 
 
@@ -202,8 +215,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     //const [station, setStation] = useState<string>(stationary)
     const [spinning, setSpinning] = useState<boolean>(true)
 
-     // For fetching the timetable for the initial time
+    const { t, i18n } = useTranslation()
 
+     // For fetching the timetable for the initial time
     useEffect(() => {
         if (!isLoaded) {
             search().then((res) => {
@@ -289,7 +303,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         //if(location === 'jungang') setStation('중앙')
         //else if((location === 'subway')) setStation('한대앞')
         return await timetableApi(
-            `https:///api.hybus.app/subway/1/7/${station.trim()}`
+            `http://swopenapi.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/1/7/${station.trim()}`
         ).then((res) =>
         res.map((val : SingleSchedule) => {
             //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
@@ -344,7 +358,8 @@ export const Realtime = ({ station }: ScheduleInfo) => {
             <>
             <NoTimetable>
                 <NoTimetableInner>
-                    {countUp() === 0 ? t('no_train_up') : t('no_train_down')}
+                    {updn == '상행' && countUp() == 0 
+                        ? t('no_train_up') : t('no_train_down')}
                 </NoTimetableInner>
             </NoTimetable>
             </>
@@ -356,20 +371,18 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         <>
         {timetable.map((val, idx) => {    
             if (!(idx==3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3) {
-                if(updn == '하행') {
-                    downPrintCnt++
-                }
+                if(updn == '하행') downPrintCnt++
                 return (
                     <React.Fragment key={idx}>
                         <div className={`flex mb-1 gap-2 hsm:gap-2 leading-6 
                             ${val.arvlMsg2.includes(station.trim()) 
                                 || (val.arvlCd == '3') 
-                                ? 'text-[#ff3737] dark:bg-red-200 dark:text-gray-800 rounded-full font-bold' : ''}`}
+                                ? 'text-[#ff3737] dark:bg-red-200 dark:text-gray-800 rounded-full font-bold items-center' : ''}`}
                             onClick={() => {
                                 openRailblue(val.btrainNo)
                         }}>
                             {getLineMarkElement(val.subwayId)}
-                            <DestStnLeftWrapper>
+                            <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
                                 <div>{getDestination(val.bstatnNm)}</div>
                                 {getRapidOrLastElement(val.bstatnNm)}
                             </DestStnLeftWrapper>
@@ -379,7 +392,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                                     arrivalUntil(val.arvlMsg2, station.trim())
                                 }
                             </StatusWrapper>
-                            <ArrivalStnStatusWrapper>
+                            <ArrivalStnStatusWrapper className={i18n.language=='en' ? 'tracking-tight' : ''}>
                                 {arrivalStnStatus(val.arvlCd)}
                             </ArrivalStnStatusWrapper>
                         </div>
@@ -390,9 +403,8 @@ export const Realtime = ({ station }: ScheduleInfo) => {
             }
             })}
         </>
-      )
-    } else {
-      return <></>
+    )} else {
+        return <></>
     }
 }
 // 본체라능
