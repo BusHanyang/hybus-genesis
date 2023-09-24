@@ -270,8 +270,8 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         .get(url)
         .then((response) => {
             if (response.status !== 200) {
-            console.log(`Error code: ${response.statusText}`)
-            return new Array<SingleSchedule>()
+                console.log(`Error code: ${response.statusText}`)
+                return new Array<SingleSchedule>()
             }
             
             if (response.data.code == 'INFO-200'){
@@ -303,7 +303,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         //if(location === 'jungang') setStation('중앙')
         //else if((location === 'subway')) setStation('한대앞')
         return await timetableApi(
-            `http://api.hybus.app/subway/1/7/${station.trim() == "한대앞" ? 'subway' : 'jungang'}`
+            `https://api.hybus.app/subway/1/7/${station.trim() == "한대앞" ? 'subway' : 'jungang'}`
         ).then((res) =>
         res.map((val : SingleSchedule) => {
             //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
