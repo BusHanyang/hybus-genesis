@@ -303,7 +303,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         //if(location === 'jungang') setStation('중앙')
         //else if((location === 'subway')) setStation('한대앞')
         return await timetableApi(
-            `http://swopenapi.seoul.go.kr/api/subway/sample/json/realtimeStationArrival/1/7/${station.trim()}`
+            `http://api.hybus.app/subway/1/7/${station.trim() == "한대앞" ? 'subway' : 'jungang'}`
         ).then((res) =>
         res.map((val : SingleSchedule) => {
             //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
@@ -419,15 +419,17 @@ export const Realtime = ({ station }: ScheduleInfo) => {
             </HeadlineWrapper>
             <MainTimetable>
                 {spinning ? (
-                <NoTimetable>
-                <SyncLoader
-                    color="#AFBDCE"
-                    margin={4}
-                    size={8}
-                    loading={spinning}
-                    cssOverride={tw`table-cell align-middle`}
-                />
-                </NoTimetable>
+                <div className='h-[12rem]'>
+                    <NoTimetable>
+                        <SyncLoader
+                            color="#AFBDCE"
+                            margin={4}
+                            size={8}
+                            loading={spinning}
+                            cssOverride={tw`table-cell align-middle`}
+                        />
+                    </NoTimetable>
+                </div>
             ) : (
                 <></>
             )}
