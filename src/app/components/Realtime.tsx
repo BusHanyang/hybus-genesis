@@ -379,7 +379,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                             <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
                                 <div className={i18n.language=='en' 
                                                 && getRapidOrLastElement(val.bstatnNm) 
-                                                ? 'tracking-[-0.1em]' : ''}>
+                                                ? 'tracking-[-0.08em]' : ''}>
                                     {getDestination(val.bstatnNm)}
                                 </div>
                                 {getRapidOrLastElement(val.bstatnNm)}
