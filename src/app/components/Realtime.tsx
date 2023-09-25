@@ -103,21 +103,15 @@ const stationName = (arvlMsg3: string): string => {
 }
 
 const arrivalStnStatus = (arvlCd: string): string => {
-    if (arvlCd == '0') {
+    if (arvlCd == '0' || arvlCd == '4') {
         return t('entry')
-    } else if (arvlCd == '1') {
+    } else if (arvlCd == '1' || arvlCd == '5') {
         return t('arrival')
-    } else if (arvlCd == '2') {
+    } else if (arvlCd == '2' || arvlCd == '3') {
         return t('depart')
-    } else if (arvlCd == '3') {
-        return t('depart')
-    } else if (arvlCd == '4') {
-        return t('entry')
-    } else if (arvlCd == '5') {
-        return t('arrival')
     } else if (arvlCd == '99') {
         return t('operation')
-    }else {
+    } else {
         return 'Error'
     }
 }
@@ -206,7 +200,6 @@ const openRailblue = (btrainNo: string): void => {
     window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
 }
 
-
 export const Realtime = ({ station }: ScheduleInfo) => {
     const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
     const [isLoaded, setLoaded] = useState<boolean>(false)
@@ -247,7 +240,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     }, [currentLocation, isLoaded, station])
 
     useEffect(()=>{
-        const timer = setInterval(()=>{ 
+        const timer = setTimeout(()=>{ 
             search().then((res) => {
                 setTimetable(res)
                 setSpinning(false)
@@ -257,7 +250,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         }, 10000)
 
         return ()=>{ clearTimeout(timer) }
-        })
+    }, [timetable])
 
     useEffect(() => {
         setTimeout(() => {
@@ -375,9 +368,10 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                 return (
                     <React.Fragment key={idx}>
                         <div className={`flex mb-1 gap-2 hsm:gap-2 leading-6 
+                                hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
                             ${val.arvlMsg2.includes(station.trim()) 
-                                || (val.arvlCd == '3') 
-                                ? 'text-[#ff3737] dark:bg-red-200 dark:text-gray-800 rounded-full font-bold items-center' : ''}`}
+                                || (val.arvlCd == '3')
+                                ? 'text-[#ff3737] dark:bg-red-200 rounded-full dark:text-gray-800 font-bold items-center' : ''}`}
                             onClick={() => {
                                 openRailblue(val.btrainNo)
                         }}>
