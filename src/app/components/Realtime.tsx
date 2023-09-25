@@ -181,6 +181,55 @@ const getLineMarkElement = (line: string): JSX.Element => {
     
 }
 
+const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
+    return await axios
+    .get(url)
+    .then((response) => {
+        if (response.status !== 200) {
+            console.log(`Error code: ${response.statusText}`)
+            return new Array<SingleSchedule>()
+        }
+        
+        if (response.data.code == 'INFO-200'){
+            return new Array<SingleSchedule>()
+        }
+
+        return response.data.realtimeArrivalList
+    })
+    .catch((err) => {
+        if (err.response) {
+        // 2XX Errors
+        console.log('Error receiving data', err.data)
+        } else if (err.request) {
+        // No Response
+        console.log('No Response Error', err.request)
+        } else {
+        // Somehow error occurred
+        console.log('Error', err.message)
+        }
+
+        // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
+        // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
+        return new Array<SingleSchedule>(1)
+    })
+    .then((res) => res as Array<SingleSchedule>)
+}
+
+const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
+    //if(location === 'jungang') setStation('중앙')
+    //else if((location === 'subway')) setStation('한대앞')
+    return await timetableApi(
+        `https://api.hybus.app/subway/1/7/${staName == "한대앞" ? 'subway' : 'jungang'}`
+    ).then((res) =>
+    res.map((val : SingleSchedule) => {
+        //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
+        return val
+    })
+    //.finally(() => { setSpinning(false) })
+    )
+    //console.log(data.data)
+}
+
 const openRailblue = (btrainNo: string): void => {
     const today = new Date()
     const year = today.getFullYear()
@@ -205,7 +254,6 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     const [isLoaded, setLoaded] = useState<boolean>(false)
     const [isBlink, setBlink] = useState<boolean>(false)
     const [currentLocation, setCurrentLocation] = useState<string>('init')
-    //const [station, setStation] = useState<string>(stationary)
     const [spinning, setSpinning] = useState<boolean>(true)
 
     const { t, i18n } = useTranslation()
@@ -213,7 +261,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
      // For fetching the timetable for the initial time
     useEffect(() => {
         if (!isLoaded) {
-            search().then((res) => {
+            search(station.trim()).then((res) => {
                 setTimetable(res)
                 setSpinning(false)
                 setLoaded(true)
@@ -231,7 +279,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         ) {
         setSpinning(true)
         setTimetable([])
-        search().then((res) => {
+        search(station.trim()).then((res) => {
             setTimetable(res)
             setSpinning(false)
             setCurrentLocation(station.trim())
@@ -241,7 +289,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
 
     useEffect(()=>{
         const timer = setTimeout(()=>{ 
-            search().then((res) => {
+            search(station.trim()).then((res) => {
                 setTimetable(res)
                 setSpinning(false)
                 setLoaded(true)
@@ -250,62 +298,13 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         }, 10000)
 
         return ()=>{ clearTimeout(timer) }
-    }, [timetable])
+    }, [station, timetable])
 
     useEffect(() => {
         setTimeout(() => {
             isBlink ? setBlink(false) : setBlink(true)
         }, 3000)
     }, [isBlink, setBlink])
-
-    const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
-        return await axios
-        .get(url)
-        .then((response) => {
-            if (response.status !== 200) {
-                console.log(`Error code: ${response.statusText}`)
-                return new Array<SingleSchedule>()
-            }
-            
-            if (response.data.code == 'INFO-200'){
-                return new Array<SingleSchedule>()
-            }
-
-            return response.data.realtimeArrivalList
-        })
-        .catch((err) => {
-            if (err.response) {
-            // 2XX Errors
-            console.log('Error receiving data', err.data)
-            } else if (err.request) {
-            // No Response
-            console.log('No Response Error', err.request)
-            } else {
-            // Somehow error occurred
-            console.log('Error', err.message)
-            }
-    
-            // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
-            // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-            return new Array<SingleSchedule>(1)
-        })
-        .then((res) => res as Array<SingleSchedule>)
-    }
-
-    const search = async() : Promise<Array<SingleSchedule>> => {
-        //if(location === 'jungang') setStation('중앙')
-        //else if((location === 'subway')) setStation('한대앞')
-        return await timetableApi(
-            `https://api.hybus.app/subway/1/7/${station.trim() == "한대앞" ? 'subway' : 'jungang'}`
-        ).then((res) =>
-        res.map((val : SingleSchedule) => {
-            //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
-            return val
-        })
-        //.finally(() => { setSpinning(false) })
-        )
-        //console.log(data.data)
-    }
 
     const openApiMonitor = () => {
         window.open(
@@ -412,7 +411,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                 <Chip className='pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]' src="/image/line4.svg" />
                 <Chip className='pb-2 hm:pb-0 hsm:pb-2 mr-1.5' src={`/image/${t('suin')}.svg`} />
                 <Headline>
-                    {titleText(station)}
+                    {titleText(station.trim())}
                 </Headline>
             </HeadlineWrapper>
             <MainTimetable>
