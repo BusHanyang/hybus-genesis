@@ -370,7 +370,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                         <div className={`flex mb-1 gap-2 hsm:gap-2 leading-6 
                                 hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
                             ${val.arvlMsg2.includes(station.trim()) 
-                                || (val.arvlCd == '3')
+                                || (val.arvlCd == '3' || val.arvlCd == '5')
                                 ? 'text-[#ff3737] dark:bg-red-200 rounded-full dark:text-gray-800 font-bold items-center' : ''}`}
                             onClick={() => {
                                 openRailblue(val.btrainNo)
