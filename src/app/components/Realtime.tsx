@@ -377,7 +377,11 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                         }}>
                             {getLineMarkElement(val.subwayId)}
                             <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
-                                <div>{getDestination(val.bstatnNm)}</div>
+                                <div className={i18n.language=='en' 
+                                                && getRapidOrLastElement(val.bstatnNm) 
+                                                ? 'tracking-[-0.1em]' : ''}>
+                                    {getDestination(val.bstatnNm)}
+                                </div>
                                 {getRapidOrLastElement(val.bstatnNm)}
                             </DestStnLeftWrapper>
                             <StatusWrapper>
