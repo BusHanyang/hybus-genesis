@@ -219,7 +219,7 @@ const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
     //if(location === 'jungang') setStation('중앙')
     //else if((location === 'subway')) setStation('한대앞')
     return await timetableApi(
-        `https://api.hybus.app/subway/1/7/${staName == "한대앞" ? 'subway' : 'jungang'}`
+        `https://api.hybus.app/subway/1/8/${staName == "한대앞" ? 'subway' : 'jungang'}`
     ).then((res) =>
     res.map((val : SingleSchedule) => {
         //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
@@ -362,7 +362,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     return (
         <>
         {timetable.map((val, idx) => {    
-            if (!(idx==3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3) {
+            if (!(idx>=3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3) {
                 if(updn == '하행') downPrintCnt++
                 return (
                     <React.Fragment key={idx}>
