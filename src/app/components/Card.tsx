@@ -53,7 +53,7 @@ const MainTimetable = styled.div`
 `
 
 const Chip = styled.div`
-  ${tw`text-black dark:text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem]`}
+  ${tw`text-black tracking-tighter dark:text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem]`}
 `
 
 const SingleTimetable = styled.div`

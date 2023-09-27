@@ -124,7 +124,7 @@ const TimeBox = (props: FilteredTimeTables) => {
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+            <div className="self-center bg-chip-red h-fit tracking-tighter dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
               {t('cycle')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
@@ -136,7 +136,7 @@ const TimeBox = (props: FilteredTimeTables) => {
               props.jungang.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-purple h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+            <div className="self-center bg-chip-purple h-fit tracking-tighter dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
               {t('cycle_ja')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
@@ -148,7 +148,7 @@ const TimeBox = (props: FilteredTimeTables) => {
               props.direct.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center  hm:w-10 hm:py-0.5">
+            <div className="self-center bg-chip-blue h-fit tracking-tighter dark:text-black py-1 w-12 rounded-full inline-block text-center  hm:w-10 hm:py-0.5">
               {t('direct')}
             </div>
             <div className="self-center text-left ml-3 col-span-4 hm:leading-none">
