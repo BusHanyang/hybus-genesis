@@ -24,13 +24,13 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern:
-              /^https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/pretendard\/.*/i,
+              /^https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/pretendard\/.*\.woff2$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'pretendard-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 14, // <== 14 days
+                maxAgeSeconds: 60 * 60 * 24 * 7, // <== 7 days
               },
               cacheableResponse: {
                 statuses: [0, 200],
