@@ -30,7 +30,7 @@ export default defineConfig({
               cacheName: 'pretendard-fonts-cache',
               expiration: {
                 maxEntries: 10,
-                maxAgeSeconds: 60 * 60 * 24 * 14, // <== 14 days
+                maxAgeSeconds: 60 * 60 * 24 * 7, // <== 7 days
               },
               cacheableResponse: {
                 statuses: [0, 200],
