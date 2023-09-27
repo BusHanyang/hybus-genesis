@@ -24,7 +24,7 @@ export default defineConfig({
         runtimeCaching: [
           {
             urlPattern:
-              /^https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/pretendard\/.*/i,
+              /^https:\/\/cdnjs\.cloudflare\.com\/ajax\/libs\/pretendard\/.*\.woff2$/i,
             handler: 'CacheFirst',
             options: {
               cacheName: 'pretendard-fonts-cache',
