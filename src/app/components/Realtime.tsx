@@ -21,25 +21,31 @@ type ScheduleInfo = {
 }
 
 const TimetableWrapper = styled.div`
-  ${tw`h-[14.8rem] hm:h-[15.3rem]`}
+    ${tw`h-[14.8rem] hm:h-[15.3rem]`}
 `
 
 const HeadlineWrapper = styled.div`
-  ${tw`flex justify-center`} drag-save-n
+    ${tw`flex justify-center`} drag-save-n
 `
 
 const Headline = styled.h2`
-  ${tw`font-bold text-2xl mb-2 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
+    ${tw`font-bold text-2xl mb-2 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
+`
+
+const StnListWrapper = styled.div`
+    ${tw`flex mb-1 gap-2 hsm:gap-2 leading-6 rounded-full
+        hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
+    `}
 `
 
 const DestStnLeftWrapper = styled.div`
-  ${tw`flex justify-end items-center font-Ptd tabular-nums text-right
-  w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]
-  `}
+    ${tw`flex justify-end items-center font-Ptd tabular-nums text-right
+    w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem] 
+    `}
 `
 
 const ArrivalStnStatusWrapper = styled.span`
-  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1`}
+    ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1 pr-2`}
 `
 
 const StatusWrapper = styled.span`
@@ -50,19 +56,19 @@ const StatusWrapper = styled.span`
 `
 
 const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-full`}
+    ${tw`inline-block select-none h-full`}
 `
 
 const NoTimetable = styled.div`
-  ${tw`h-full flex items-center justify-center`}
+    ${tw`h-full flex items-center justify-center`}
 `
 
 const NoTimetableInner = styled.span`
-  ${tw`text-center hsm:text-sm table-cell align-middle`}
+    ${tw`text-center hsm:text-sm table-cell align-middle`}
 `
 
 const ApiStatusButton = styled.button`
-  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
+    ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
 `
 
 const Chip = styled.img`
@@ -152,6 +158,8 @@ const getDestination = (bstatnNm: string): string => {
         str += t('hansung')
     } else if (bstatnNm == '왕십리') {
         str += t('wangsimni')
+    } else if (bstatnNm == '청량리') {
+        str += t('cheongnyangni')
     } else if (bstatnNm == '인천') {
         str += t('incheon')
     } else if (bstatnNm == '죽전') {
@@ -166,9 +174,9 @@ const getDestination = (bstatnNm: string): string => {
 
 const getRapidOrLastElement = (bstatnNm : string) => {
     if (bstatnNm.includes('막차')) {
-        return <img className='h-4 ml-1' src={t('last_train_img')} /> 
+        return <img className='h-4 ml-[0.15rem]' src={t('last_train_img')} /> 
     } else if(bstatnNm.includes('급행')) {
-        return <img className='h-4 ml-1' src={t('rapid_train_img')} /> 
+        return <img className='h-4 ml-[0.15rem]' src={t('rapid_train_img')} /> 
     } 
 }
 
@@ -216,8 +224,6 @@ const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
 }
 
 const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
-    //if(location === 'jungang') setStation('중앙')
-    //else if((location === 'subway')) setStation('한대앞')
     return await timetableApi(
         `https://api.hybus.app/subway/1/7/${staName == "한대앞" ? 'subway' : 'jungang'}`
     ).then((res) =>
@@ -366,19 +372,19 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                 if(updn == '하행') downPrintCnt++
                 return (
                     <React.Fragment key={idx}>
-                        <div className={`flex mb-1 gap-2 hsm:gap-2 leading-6 
-                                hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
+                        <StnListWrapper className={`
                             ${val.arvlMsg2.includes(station.trim()) 
                                 || (val.arvlCd == '3' || val.arvlCd == '5')
-                                ? 'text-[#ff3737] dark:bg-red-200 rounded-full dark:text-gray-800 font-bold items-center' : ''}`}
-                            onClick={() => {
-                                openRailblue(val.btrainNo)
-                        }}>
+                                ? 'text-[#ff3737] dark:bg-red-100 dark:text-gray-800 font-bold items-center' : ''}`}
+                            onClick={() => openRailblue(val.btrainNo)}
+                            >
                             {getLineMarkElement(val.subwayId)}
                             <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
-                                <div className={i18n.language=='en' 
-                                                && getRapidOrLastElement(val.bstatnNm) 
-                                                ? 'tracking-[-0.08em]' : ''}>
+                                <div className={`${i18n.language=='en' && getRapidOrLastElement(val.bstatnNm) 
+                                                ? 'tracking-[-0.09em]' : ''} 
+                                                ${i18n.language=='en' && val.bstatnNm.includes('청량리') 
+                                                ? 'tracking-[-0.15em] hsm:text-xs' : ''}
+                                                `}>
                                     {getDestination(val.bstatnNm)}
                                 </div>
                                 {getRapidOrLastElement(val.bstatnNm)}
@@ -389,10 +395,10 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                                     arrivalUntil(val.arvlMsg2, station.trim())
                                 }
                             </StatusWrapper>
-                            <ArrivalStnStatusWrapper className={i18n.language=='en' ? 'tracking-tight' : ''}>
+                            <ArrivalStnStatusWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
                                 {arrivalStnStatus(val.arvlCd)}
                             </ArrivalStnStatusWrapper>
-                        </div>
+                        </StnListWrapper>
                     </React.Fragment>
                 )
             } else {
