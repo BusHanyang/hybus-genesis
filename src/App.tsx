@@ -38,7 +38,7 @@ const RouteText = styled.div`
 
 const CardView = styled.div`
   ${tw`
-    mb-3 justify-center items-center font-medium 
+    mb-3 justify-center items-center font-medium transition-colors
     bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)]
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
@@ -46,7 +46,7 @@ const CardView = styled.div`
 
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-default transition-colors
+    flex will-change-transform overflow-hidden cursor-default
     border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
   `}
   &.active {
