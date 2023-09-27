@@ -190,7 +190,7 @@ const getLineMarkElement = (line: string): JSX.Element => {
     
 }
 
-const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
+const RealtimeAPI = async (url: string): Promise<Array<SingleSchedule>> => {
     return await axios
     .get(url)
     .then((response) => {
@@ -201,20 +201,24 @@ const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
         
         if (response.data.code == 'INFO-200'){
             return new Array<SingleSchedule>()
+        } else{
+            return new Array<SingleSchedule>(1)
+            console.log(`Error code: ${response.data.code}`)
+            console.log(`Error Msg: ${response.data.message}`)
         }
 
         return response.data.realtimeArrivalList
     })
     .catch((err) => {
         if (err.response) {
-        // 2XX Errors
-        console.log('Error receiving data', err.data)
+            // 2XX Errors
+            console.log('Error receiving data', err.data)
         } else if (err.request) {
-        // No Response
-        console.log('No Response Error', err.request)
+            // No Response
+            console.log('No Response Error', err.request)
         } else {
-        // Somehow error occurred
-        console.log('Error', err.message)
+            // Somehow error occurred
+            console.log('Error', err.message)
         }
 
         // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
@@ -225,7 +229,7 @@ const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
 }
 
 const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
-    return await timetableApi(
+    return await RealtimeAPI(
         `https://api.hybus.app/subway/1/8/${staName == "한대앞" ? 'subway' : 'jungang'}`
     ).then((res) =>
     res.map((val : SingleSchedule) => {
@@ -256,7 +260,7 @@ const openRailblue = (btrainNo: string): void => {
     window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
 }
 
-const isExistAPIError = (recptnDt : string): boolean => {
+const isExistAPIError = (recptnDt : string, bstatnNm : string): boolean => {
     // Open API's own data error correction
     const Now : Date =  new Date()
     const Lastest : Date = new Date(recptnDt)
@@ -265,10 +269,10 @@ const isExistAPIError = (recptnDt : string): boolean => {
     const diffMSec = Now.getTime() - Lastest.getTime()
     const diffMin = diffMSec / (60 * 1000)
 
-    if(diffMin >= 3){
-        return false
-    } else {
+    if(bstatnNm.includes('막차') && diffMin >= 3){
         return true
+    } else {
+        return false
     } 
 }
 
@@ -388,15 +392,17 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         {timetable.map((val, idx) => {    
             if (!(idx>=3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3 // Maximum: 3
                 && prevTrain != val.btrainNo // Two same trains to one train
-                && isExistAPIError(val.recptnDt)){ // API Error Prevention
+                && !isExistAPIError(val.recptnDt, val.bstatnNm)){ // API Error Prevention
                 prevTrain = val.btrainNo
                 if(updn == '하행') downPrintCnt++
                 return (
                     <React.Fragment key={idx}>
                         <StnListWrapper className={`
-                            ${val.arvlMsg2.includes(station.trim()) 
-                                || (val.arvlCd == '3' || val.arvlCd == '5')
-                                ? 'text-[#ff3737] dark:bg-red-100 dark:text-gray-800 font-bold items-center' : ''}`}
+                            ${val.arvlMsg2.includes(station.trim()) || val.arvlCd == '3'
+                                ? 'text-[#ff3737] dark:bg-red-100 dark:text-gray-800 font-bold items-center' : ''}
+                            ${val.arvlCd == '5'
+                                ? 'text-[#FFBF00] dark:bg-[#F5ECCE] dark:text-gray-800 font-bold items-center' : ''}
+                            `}
                             onClick={() => openRailblue(val.btrainNo)}
                             >
                             {getLineMarkElement(val.subwayId)}
