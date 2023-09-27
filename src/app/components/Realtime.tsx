@@ -14,6 +14,7 @@ type SingleSchedule = {
     arvlMsg2: string //남은 정거장 수 msg
     arvlMsg3: string //현재 역
     arvlCd: string //현재역에서의 상태
+    recptnDt : string //갱신 시각
 }
 
 type ScheduleInfo = {
@@ -225,7 +226,7 @@ const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
 
 const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
     return await timetableApi(
-        `https://api.hybus.app/subway/1/7/${staName == "한대앞" ? 'subway' : 'jungang'}`
+        `https://api.hybus.app/subway/1/8/${staName == "한대앞" ? 'subway' : 'jungang'}`
     ).then((res) =>
     res.map((val : SingleSchedule) => {
         //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
@@ -253,6 +254,22 @@ const openRailblue = (btrainNo: string): void => {
         date = yYear + yMonth + yDay
     }
     window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
+}
+
+const isExistAPIError = (recptnDt : string): boolean => {
+    // Open API's own data error correction
+    const Now : Date =  new Date()
+    const Lastest : Date = new Date(recptnDt)
+    //Lastest.setSeconds(Lastest.getSeconds() + 300)
+
+    const diffMSec = Now.getTime() - Lastest.getTime()
+    const diffMin = diffMSec / (60 * 1000)
+
+    if(diffMin >= 3){
+        return false
+    } else {
+        return true
+    } 
 }
 
 export const Realtime = ({ station }: ScheduleInfo) => {
@@ -365,10 +382,14 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     }
     // Otherwise - normal case
     let downPrintCnt = 0
+    let prevTrain = ''
     return (
         <>
         {timetable.map((val, idx) => {    
-            if (!(idx==3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3) {
+            if (!(idx>=3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3 // Maximum: 3
+                && prevTrain != val.btrainNo // Two same trains to one train
+                && isExistAPIError(val.recptnDt)){ // API Error Prevention
+                prevTrain = val.btrainNo
                 if(updn == '하행') downPrintCnt++
                 return (
                     <React.Fragment key={idx}>
@@ -410,7 +431,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         return <></>
     }
 }
-// 본체라능
+    // Main Code for Implementation of DOM
     return(
         <TimetableWrapper>
             <HeadlineWrapper>
