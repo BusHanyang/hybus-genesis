@@ -18,9 +18,9 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
   ${tw`
-    h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
-    dark:bg-zinc-800 dark:text-white transition-colors duration-200
-  `} drag-save-n
+    h-full pl-5 pr-5 text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
+    dark:text-white bg-transparent
+  `} drag-save-n  
 `
 
 const Circle = styled.span`
@@ -38,15 +38,15 @@ const RouteText = styled.div`
 
 const CardView = styled.div`
   ${tw`
-    mb-3 justify-center items-center font-medium transition-colors duration-300
-    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)] will-change-transform
+    mb-3 justify-center items-center font-medium 
+    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)]
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
 
 const Button = styled(CardView)`
   ${tw`
-    flex will-change-transform overflow-hidden cursor-default transition-colors ease-out duration-300
+    flex will-change-transform overflow-hidden cursor-default transition-colors
     border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
   `}
   &.active {
@@ -190,7 +190,7 @@ const App = () => {
               <>
                 <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <PullToRefresh
-                  className='transition-colors duration-200 will-change-transform'
+                  className='transition-colors duration-200'
                   onRefresh={handleRefresh}
                   backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
                   pullingContent=""
