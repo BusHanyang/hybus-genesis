@@ -7,14 +7,14 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 
 type SingleSchedule = {
-    btrainNo: string //차량 번호
-    subwayId: string //노선
-    updnLine: string //상행 0  하행 1
-    bstatnNm: string //목적지 ㅇㅇ행
-    arvlMsg2: string //남은 정거장 수 msg
-    arvlMsg3: string //현재 역
-    arvlCd: string //현재역에서의 상태
-    recptnDt : string //갱신 시각
+    btrainNo: string // Train number
+    subwayId: string // Line 4(1004) or Suin-Bundang(1075)
+    updnLine: string // UpLine 0 or DownLine 1
+    bstatnNm: string // Destination
+    arvlMsg2: string // the number of stations left (Msg)
+    arvlMsg3: string // Current Station
+    arvlCd: string // Status of Current Station
+    recptnDt : string // Update time
 }
 
 type ScheduleInfo = {
@@ -201,12 +201,11 @@ const RealtimeAPI = async (url: string): Promise<Array<SingleSchedule>> => {
         
         if (response.data.code == 'INFO-200'){
             return new Array<SingleSchedule>()
-        } else{
-            return new Array<SingleSchedule>(1)
-            console.log(`Error code: ${response.data.code}`)
+        } else if(response.data.code == 'ERROR-337'){
+            console.log(`Error code: 337`)
             console.log(`Error Msg: ${response.data.message}`)
+            return new Array<SingleSchedule>(1)
         }
-
         return response.data.realtimeArrivalList
     })
     .catch((err) => {
@@ -264,7 +263,6 @@ const isExistAPIError = (recptnDt : string, bstatnNm : string): boolean => {
     // Open API's own data error correction
     const Now : Date =  new Date()
     const Lastest : Date = new Date(recptnDt)
-    //Lastest.setSeconds(Lastest.getSeconds() + 300)
 
     const diffMSec = Now.getTime() - Lastest.getTime()
     const diffMin = diffMSec / (60 * 1000)
@@ -398,9 +396,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                 return (
                     <React.Fragment key={idx}>
                         <StnListWrapper className={`
-                            ${val.arvlMsg2.includes(station.trim()) || val.arvlCd == '3'
+                            ${val.arvlMsg2.includes(station.trim()) || val.arvlCd == '3' // This Station & Prev Station(Departure)
                                 ? 'text-[#ff3737] dark:bg-red-100 dark:text-gray-800 font-bold items-center' : ''}
-                            ${val.arvlCd == '5'
+                            ${val.arvlCd == '5' // Prev Station (Arrival)
                                 ? 'text-[#FFBF00] dark:bg-[#F5ECCE] dark:text-gray-800 font-bold items-center' : ''}
                             `}
                             onClick={() => openRailblue(val.btrainNo)}
@@ -409,7 +407,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                             <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
                                 <div className={`${i18n.language=='en' && getRapidOrLastElement(val.bstatnNm) 
                                                 ? 'tracking-[-0.09em]' : ''} 
-                                                ${i18n.language=='en' && val.bstatnNm.includes('청량리') 
+                                                ${i18n.language=='en' && val.bstatnNm.includes('청량리') // Eng Text is so long
                                                 ? 'tracking-[-0.15em] hsm:text-xs' : ''}
                                                 `}>
                                     {getDestination(val.bstatnNm)}
