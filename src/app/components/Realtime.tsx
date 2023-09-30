@@ -261,7 +261,7 @@ const openRailblue = (btrainNo: string): void => {
     window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
 }
 
-const isExistAPIError = (recptnDt : string, bstatnNm : string): boolean => {
+const isExistAPIError = (recptnDt : string, arvlMsg2 : string, station : string): boolean => {
     // Open API's own data error correction
     const Now : Date =  new Date()
     const Lastest : Date = new Date(recptnDt)
@@ -269,7 +269,7 @@ const isExistAPIError = (recptnDt : string, bstatnNm : string): boolean => {
     const diffMSec = Now.getTime() - Lastest.getTime()
     const diffMin = diffMSec / (60 * 1000)
 
-    if(bstatnNm.includes('막차') && diffMin >= 3){
+    if(arvlMsg2.includes((station.trim() + ' 도착') || (station.trim() + ' 진입')) && diffMin >= 2){
         return true
     } else {
         return false
@@ -343,16 +343,18 @@ export const Realtime = ({ station }: ScheduleInfo) => {
 
     const countUp = () : number => {
         let upCnt = 0
-        for(const idx in timetable){
-            if(timetable[idx].updnLine === '상행') upCnt++
+        const filtered = timetable.filter((val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station))
+        for(const idx in filtered){
+            if(filtered[idx].updnLine === '상행') upCnt++
         }
         return upCnt
     }
 
     const RenderTimetable = (updn : string) => {
+        const filtered = timetable.filter((val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station))
         const { t } = useTranslation()
         if (!spinning) {
-            if (timetable.length === 1 && timetable[0] == null) {
+            if (filtered.length === 1 && filtered[0] == null) {
             // Timetable API error
             return (
                 <>
@@ -369,9 +371,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
             )
         }
 
-    if (timetable.length === 0 
+    if (filtered.length === 0 
         || (updn == '상행' && countUp() === 0) 
-        || (updn == '하행' && timetable.length - countUp() === 0)) {
+        || (updn == '하행' && filtered.length - countUp() === 0)) {
         // Trains are done for today. User should refresh after midnight.
         return (
             <>
@@ -389,10 +391,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     let prevTrain = ''
     return (
         <>
-        {timetable.map((val, idx) => {    
+        {filtered.map((val, idx) => {    
             if (!(idx>=3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3 // Maximum: 3
-                && prevTrain != val.btrainNo // Two same trains to one train
-                && !isExistAPIError(val.recptnDt, val.bstatnNm)){ // API Error Prevention
+                && prevTrain != val.btrainNo){ // Two same trains to one train
                 prevTrain = val.btrainNo
                 if(updn == '하행') downPrintCnt++
                 return (
