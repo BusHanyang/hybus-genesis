@@ -134,7 +134,7 @@ const titleText = (location: string): string => {
 }
 
 const getDestination = (bstatnNm: string): string => {
-    let str = ''
+    let str = bstatnNm
     let isLast = false
     let isRapid = false
     if(bstatnNm.includes('(막차)')){
@@ -146,31 +146,31 @@ const getDestination = (bstatnNm: string): string => {
     }
 
     if (bstatnNm == '오이도') {
-        str += t('oido')
+        str = t('oido')
     } else if (bstatnNm == '안산') {
-        str += t('ansan')
+        str = t('ansan')
     } else if (bstatnNm == '금정') {
-        str += t('geumjeong')
+        str = t('geumjeong')
     } else if (bstatnNm == '사당') {
-        str += t('sadang')
+        str = t('sadang')
     } else if (bstatnNm == '당고개') {
-        str += t('danggogae')
+        str = t('danggogae')
     } else if (bstatnNm == '노원') {
-        str += t('nowon')
+        str = t('nowon')
     } else if (bstatnNm == '한성대입구') {
-        str += t('hansung')
+        str = t('hansung')
     } else if (bstatnNm == '왕십리') {
-        str += t('wangsimni')
+        str = t('wangsimni')
     } else if (bstatnNm == '청량리') {
-        str += t('cheongnyangni')
+        str = t('cheongnyangni')
     } else if (bstatnNm == '인천') {
-        str += t('incheon')
+        str = t('incheon')
     } else if (bstatnNm == '죽전') {
-        str += t('jukjeon')
+        str = t('jukjeon')
     } else if (bstatnNm == '고색') {
-        str += t('gosaek')
+        str = t('gosaek')
     } else {
-        str += bstatnNm
+        str = bstatnNm
     }
     return str + (!isLast && !isRapid ? t('for') : '')
 } 
