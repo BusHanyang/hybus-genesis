@@ -26,7 +26,7 @@ const TimetableWrapper = styled.div`
 `
 
 const HeadlineWrapper = styled.div`
-    ${tw`flex justify-center`} drag-save-n
+    ${tw`flex justify-center mb-1 hsm:mb-0`} drag-save-n
 `
 
 const Headline = styled.h2`
@@ -151,6 +151,8 @@ const getDestination = (bstatnNm: string): string => {
         str += t('ansan')
     } else if (bstatnNm == '금정') {
         str += t('geumjeong')
+    } else if (bstatnNm == '사당') {
+        str += t('sadang')
     } else if (bstatnNm == '당고개') {
         str += t('danggogae')
     } else if (bstatnNm == '노원') {
@@ -397,9 +399,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                     <React.Fragment key={idx}>
                         <StnListWrapper className={`
                             ${val.arvlMsg2.includes(station.trim()) || val.arvlCd == '3' // This Station & Prev Station(Departure)
-                                ? 'text-[#ff3737] dark:bg-red-100 dark:text-gray-800 font-bold items-center' : ''}
+                                ? 'text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center' : ''}
                             ${val.arvlCd == '5' // Prev Station (Arrival)
-                                ? 'text-[#FFBF00] dark:bg-[#F5ECCE] dark:text-gray-800 font-bold items-center' : ''}
+                                ? 'text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center' : ''}
                             `}
                             onClick={() => openRailblue(val.btrainNo)}
                             >
@@ -407,7 +409,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                             <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
                                 <div className={`${i18n.language=='en' && getRapidOrLastElement(val.bstatnNm) 
                                                 ? 'tracking-[-0.09em]' : ''} 
-                                                ${i18n.language=='en' && val.bstatnNm.includes('청량리') // Eng Text is so long
+                                                ${i18n.language=='en' && (val.bstatnNm.includes('청량리' || '한성대')) // Eng Text is so long
                                                 ? 'tracking-[-0.15em] hsm:text-xs' : ''}
                                                 `}>
                                     {getDestination(val.bstatnNm)}
