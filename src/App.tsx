@@ -247,7 +247,7 @@ function App() {
                           ${!touchPrompt 
                             ? 'p-6 hm:p-4 h-[17rem]' 
                             : ((tab === 'subway' || tab === 'jungang') 
-                              ? 'p-6 hm:p-4 h-[21rem] flex justify-center' 
+                              ? 'p-6 hm:p-4 h-[21rem]' 
                               : 'p-6 hm:p-4 h-[18rem]')}
                           ${(tab === 'subway' || tab === 'jungang') ? 'h-[19.6rem] flex-col' : ''}
                         `}
@@ -270,9 +270,9 @@ function App() {
                             />
                           </>
                         }
-                        <div className={`
-                            ${(tab === 'subway' || tab === 'jungang') ? '' : 'hidden'} flex justify-center
-                            ${touchPrompt ? 'mt-8' : ''}
+                        <div className={`flex justify-center
+                            ${RT !== 'sub' && touchPrompt ? 'mt-8' : ''}
+                            ${(tab === 'subway' || tab === 'jungang') ? 'mt-0' : 'hidden'} 
                           `}>
                             <SegmentedControl>
                               <div>
