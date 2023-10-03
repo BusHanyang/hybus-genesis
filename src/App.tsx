@@ -38,7 +38,7 @@ const RouteText = styled.div`
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
-    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)] will-change-transform
+    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)]
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
@@ -60,14 +60,14 @@ const Button = styled(CardView)`
 `
 const SegmentedControl = styled.div`
   ${tw`
-    w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800 p-1 
+    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800  
   `}
 `
 
 const RadioLabel = styled.label`
   ${tw`
     block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
-    transition-colors ease-out duration-300 
+    transition-colors ease-in-out duration-300
   `}
 `
 
@@ -243,7 +243,7 @@ function App() {
                       </header>
 
                       <CardView
-                        className={`
+                        className={`transition-[height] delay-75
                           ${!touchPrompt 
                             ? 'p-6 hm:p-4 h-[17rem]' 
                             : ((tab === 'subway' || tab === 'jungang') 
@@ -270,9 +270,9 @@ function App() {
                             />
                           </>
                         }
-                        <div className={`flex justify-center
-                            ${RT !== 'sub' && touchPrompt ? 'mt-8' : ''}
-                            ${(tab === 'subway' || tab === 'jungang') ? 'mt-0' : 'hidden'} 
+                        <div className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0
+                            ${RT !== 'sub' && touchPrompt ? 'mt-4 hm:mt-5' : ''}
+                            ${(tab === 'subway' || tab === 'jungang') ? 'opacity-100' : ''} 
                           `}>
                             <SegmentedControl>
                               <div>
