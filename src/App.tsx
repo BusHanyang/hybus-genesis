@@ -243,12 +243,12 @@ function App() {
                       </header>
 
                       <CardView
-                        className={`transition-[height] delay-75
+                        className={`p-6 hm:p-4 transition-[height] delay-75
                           ${!touchPrompt 
-                            ? 'p-6 hm:p-4 h-[17rem]' 
-                            : ((tab === 'subway' || tab === 'jungang') 
-                              ? 'p-6 hm:p-4 h-[21rem]' 
-                              : 'p-6 hm:p-4 h-[18rem]')}
+                            ? 'h-[17rem]' 
+                            : (RT !== 'sub' &&(tab === 'subway' || tab === 'jungang') 
+                              ? 'h-[21.0rem] hsm:h-[20.7rem]' 
+                              : 'h-[18rem]')}
                           ${(tab === 'subway' || tab === 'jungang') ? 'h-[19.6rem] flex-col' : ''}
                         `}
                       >
@@ -271,7 +271,7 @@ function App() {
                           </>
                         }
                         <div className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
-                            ${RT !== 'sub' && touchPrompt ? 'mt-4 hm:mt-5' : ''}
+                            ${RT !== 'sub' && touchPrompt ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7' : ''}
                             ${(tab === 'subway' || tab === 'jungang') ? 'opacity-100 pointer-events-auto' : ''} 
                           `}>
                             <SegmentedControl>
