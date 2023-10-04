@@ -67,7 +67,7 @@ const SegmentedControl = styled.div`
 const RadioLabel = styled.label`
   ${tw`
     block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
-    transition-colors ease-in-out duration-300
+    transition-colors ease-in-out duration-150
   `}
 `
 
@@ -270,9 +270,9 @@ function App() {
                             />
                           </>
                         }
-                        <div className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0
+                        <div className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
                             ${RT !== 'sub' && touchPrompt ? 'mt-4 hm:mt-5' : ''}
-                            ${(tab === 'subway' || tab === 'jungang') ? 'opacity-100' : ''} 
+                            ${(tab === 'subway' || tab === 'jungang') ? 'opacity-100 pointer-events-auto' : ''} 
                           `}>
                             <SegmentedControl>
                               <div>
