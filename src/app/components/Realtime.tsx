@@ -354,7 +354,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         const filtered = timetable.filter((val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station))
         const { t } = useTranslation()
         if (!spinning) {
-            if (filtered.length === 1 && filtered[0] == null) {
+            if ((filtered.length === 1 && filtered[0] == null) || (timetable.length === 1 && timetable[0] == null)) {
             // Timetable API error
             return (
                 <>
