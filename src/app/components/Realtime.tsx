@@ -267,9 +267,9 @@ const isExistAPIError = (recptnDt : string, arvlMsg2 : string, station : string)
     const Lastest : Date = new Date(recptnDt)
 
     const diffMSec = Now.getTime() - Lastest.getTime()
-    const diffMin = diffMSec / (60 * 1000)
+    //const diffMin = diffMSec / (60 * 1000)
 
-    if(arvlMsg2.includes((station.trim() + ' 도착') || (station.trim() + ' 진입')) && diffMin >= 2){
+    if((arvlMsg2.includes(station.trim() + ' 도착') || arvlMsg2.includes(station.trim() + ' 진입')) && diffMSec >= 90){
         return true
     } else {
         return false
@@ -407,9 +407,14 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                             >
                             {getLineMarkElement(val.subwayId)}
                             <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
-                                <div className={`${i18n.language=='en' && getRapidOrLastElement(val.bstatnNm) 
-                                                ? 'tracking-[-0.09em]' : ''} 
-                                                ${i18n.language=='en' && (val.bstatnNm.includes('청량리' || '한성대')) // Eng Text is so long
+                                <div className={`
+                                                ${i18n.language=='en' 
+                                                && getRapidOrLastElement(val.bstatnNm)
+                                                && (val.bstatnNm.includes('한성대') 
+                                                    || val.bstatnNm.includes('청량리') 
+                                                    || val.bstatnNm.includes('왕십리') 
+                                                    || val.bstatnNm.includes('당고개') 
+                                                    || val.bstatnNm.includes('금정')) // Eng Text is so long
                                                 ? 'tracking-[-0.09em] text-sm hsm:text-xs' : ''}
                                                 `}>
                                     {getDestination(val.bstatnNm)}
