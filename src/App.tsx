@@ -119,8 +119,6 @@ function App() {
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
-    if(tab == 'subway') window.localStorage.setItem('sta', '한대앞')
-    else if(tab == 'jungnag') window.localStorage.setItem('sta', '중앙')
     setTab(stn)
   }
 
@@ -276,22 +274,22 @@ function App() {
                           `}>
                             <SegmentedControl>
                               <div>
-                                  <input 
-                                    type="radio" name="option" 
-                                    id="1" value="1" className="peer hidden" 
-                                    onChange={()=> RealtimeClicked('bus')} 
-                                    checked={RT=='bus' ? true : false}
-                                  />
-                                  <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
+                                <input 
+                                  type="radio" name="option" 
+                                  id="1" value="1" className="peer hidden" 
+                                  onChange={()=> RealtimeClicked('bus')} 
+                                  checked={RT=='bus' ? true : false}
+                                />
+                                <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
                               </div>
                               <div>
-                                  <input 
-                                    type="radio" name="option" 
-                                    id="2" value="2" className="peer hidden" 
-                                    onChange={()=> RealtimeClicked('sub')} 
-                                    checked={RT=='sub' ? true : false}
-                                  />
-                                  <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
+                                <input
+                                  type="radio" name="option" 
+                                  id="2" value="2" className="peer hidden" 
+                                  onChange={()=> RealtimeClicked('sub')} 
+                                  checked={RT=='sub' ? true : false}
+                                />
+                                <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
                               </div>
                             </SegmentedControl>
                           </div> 
