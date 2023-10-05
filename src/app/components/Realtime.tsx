@@ -34,14 +34,14 @@ const Headline = styled.h2`
 `
 
 const StnListWrapper = styled.div`
-    ${tw`flex mb-1 gap-2 hsm:gap-2 leading-6 rounded-full
+    ${tw`flex mb-1 gap-2 hsm:gap-2 leading-6 rounded-full items-center
         hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
     `}
 `
 
 const DestStnLeftWrapper = styled.div`
     ${tw`flex justify-end items-center font-Ptd tabular-nums text-right
-    w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem] 
+    w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]
     `}
 `
 
@@ -320,7 +320,6 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                 setTimetable(res)
                 setSpinning(false)
                 setLoaded(true)
-                setCurrentLocation(station.trim())
             })
         }, 10000)
 
@@ -411,7 +410,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                                 <div className={`${i18n.language=='en' && getRapidOrLastElement(val.bstatnNm) 
                                                 ? 'tracking-[-0.09em]' : ''} 
                                                 ${i18n.language=='en' && (val.bstatnNm.includes('청량리' || '한성대')) // Eng Text is so long
-                                                ? 'tracking-[-0.15em] hsm:text-xs' : ''}
+                                                ? 'tracking-[-0.09em] text-sm hsm:text-xs' : ''}
                                                 `}>
                                     {getDestination(val.bstatnNm)}
                                 </div>
