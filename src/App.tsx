@@ -245,7 +245,7 @@ function App() {
                           ${!touchPrompt 
                             ? 'h-[17rem]' 
                             : (RT !== 'sub' &&(tab === 'subway' || tab === 'jungang') 
-                              ? 'h-[21.0rem] hsm:h-[20.7rem]' 
+                              ? 'h-[20.7rem] hm-[21.1rem] hsm:h-[20.7rem]' 
                               : 'h-[18rem]')}
                           ${(tab === 'subway' || tab === 'jungang') ? 'h-[19.6rem] flex-col' : ''}
                         `}
