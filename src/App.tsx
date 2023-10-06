@@ -243,11 +243,16 @@ function App() {
                       <CardView
                         className={`p-6 hm:p-4 transition-[height] delay-75
                           ${!touchPrompt 
-                            ? 'h-[17rem]' 
-                            : (RT !== 'sub' &&(tab === 'subway' || tab === 'jungang') 
-                              ? 'h-[21rem] hsm:h-[20.7rem]' 
-                              : 'h-[18rem]')}
-                          ${(tab === 'subway' || tab === 'jungang') ? 'h-[19.6rem] flex-col' : ''}
+                            ? ((tab === 'subway' || tab === 'jungang') 
+                                ? 'h-[19.6rem]' // No prompt at Stations
+                                : 'h-[17rem]') // default (No prompt)
+                            : (RT !== 'sub' && (tab === 'subway' || tab === 'jungang') 
+                                ? 'h-[21rem] hsm:h-[20.7rem]' // Shuttle Bus Info at Stations with prompt
+                                : (RT === 'sub' && (tab === 'subway' || tab === 'jungang') 
+                                    ? 'h-[19.6rem]' // Subway info at Stations with prompt
+                                    : 'h-[18rem]') // default with prompt
+                              )
+                            }
                         `}
                       >
                         {
