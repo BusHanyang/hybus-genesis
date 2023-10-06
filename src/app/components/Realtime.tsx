@@ -261,15 +261,18 @@ const openRailblue = (btrainNo: string): void => {
     window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
 }
 
-const isExistAPIError = (recptnDt : string, arvlMsg2 : string, station : string): boolean => {
+const isExistAPIError = (bstatnNm : string, recptnDt : string, arvlMsg2 : string, station : string) : boolean => {
     // Open API's own data error correction
     const Now : Date =  new Date()
     const Lastest : Date = new Date(recptnDt)
 
     const diffMSec = Now.getTime() - Lastest.getTime()
     //const diffMin = diffMSec / (60 * 1000)
-
-    if((arvlMsg2.includes(station.trim() + ' 도착') || arvlMsg2.includes(station.trim() + ' 진입')) && diffMSec >= 90){
+    
+    if(bstatnNm.includes('막차') 
+        && (arvlMsg2.includes(station.trim() + ' 도착') 
+            || arvlMsg2.includes(station.trim() + ' 진입')) 
+        && diffMSec >= 90){
         return true
     } else {
         return false
@@ -342,7 +345,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
 
     const countUp = () : number => {
         let upCnt = 0
-        const filtered = timetable.filter((val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station))
+        const filtered = timetable.filter((val) => !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station))
         for(const idx in filtered){
             if(filtered[idx].updnLine === '상행') upCnt++
         }
@@ -350,7 +353,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     }
 
     const RenderTimetable = (updn : string) => {
-        const filtered = timetable.filter((val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station))
+        const filtered = timetable.filter((val) => !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station))
         const { t } = useTranslation()
         if (!spinning) {
             if ((filtered.length === 1 && filtered[0] == null) || (timetable.length === 1 && timetable[0] == null)) {
