@@ -259,7 +259,7 @@ const openRailblue = (btrainNo: string): void => {
     if(hours === '00' || hours === '01'){
         date = yYear + yMonth + yDay
     }
-    window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
+    window.open('https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!' ,'_blank')
 }
 
 const isExistAPIError = (bstatnNm : string, recptnDt : string, arvlMsg2 : string, station : string) : boolean => {
