@@ -329,7 +329,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# Api Key
-.env
-
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,jetbrains+all,git,node,macos,windows,linux,react
