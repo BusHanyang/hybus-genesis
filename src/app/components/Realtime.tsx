@@ -77,10 +77,10 @@ const Chip = styled.img`
 ` 
 
 const arrivalUntil = (arvlMsg2: string, station: string): string => {
-    if (arvlMsg2 == '전역 출발' || 
-        arvlMsg2 == '전역 도착' || 
-        arvlMsg2 == '전역 진입' || 
-        arvlMsg2 == '전역 접근' 
+    if (arvlMsg2 === '전역 출발' || 
+        arvlMsg2 === '전역 도착' || 
+        arvlMsg2 === '전역 진입' || 
+        arvlMsg2 === '전역 접근' 
     ) {
         return t('prevstn')
     } else if(arvlMsg2.includes(station.trim())){
@@ -92,17 +92,17 @@ const arrivalUntil = (arvlMsg2: string, station: string): string => {
 }
 
 const stationName = (arvlMsg3: string): string => {
-    if (arvlMsg3 == '남동인더스파크') {
+    if (arvlMsg3 === '남동인더스파크') {
         return '남동공단'
-    } else if (arvlMsg3 == '정부과천청사') {
+    } else if (arvlMsg3 === '정부과천청사') {
         return '과천청사'
-    } else if (arvlMsg3 == '총신대입구(이수)'){
+    } else if (arvlMsg3 === '총신대입구(이수)'){
         return '이수'
-    } else if (arvlMsg3 == '동대문역사문화공원'){
+    } else if (arvlMsg3 === '동대문역사문화공원'){
         return '동역사'
-    } else if (arvlMsg3 == '성신여대입구'){
+    } else if (arvlMsg3 === '성신여대입구'){
         return '성신여대'
-    } else if (arvlMsg3 == '대모산입구'){
+    } else if (arvlMsg3 === '대모산입구'){
         return '대모산'
     } else {
         return arvlMsg3
@@ -110,13 +110,13 @@ const stationName = (arvlMsg3: string): string => {
 }
 
 const arrivalStnStatus = (arvlCd: string): string => {
-    if (arvlCd == '0' || arvlCd == '4') {
+    if (arvlCd === '0' || arvlCd === '4') {
         return t('entry')
-    } else if (arvlCd == '1' || arvlCd == '5') {
+    } else if (arvlCd === '1' || arvlCd === '5') {
         return t('arrival')
-    } else if (arvlCd == '2' || arvlCd == '3') {
+    } else if (arvlCd === '2' || arvlCd === '3') {
         return t('depart')
-    } else if (arvlCd == '99') {
+    } else if (arvlCd === '99') {
         return t('operation')
     } else {
         return 'Error'
@@ -137,37 +137,37 @@ const getDestination = (bstatnNm: string): string => {
     let str = bstatnNm
     let isLast = false
     let isRapid = false
-    if(bstatnNm.includes('(막차)')){
+    if(str.includes('(막차)')){
         isLast = true
         bstatnNm = bstatnNm.replace(' (막차)', '')
-    } else if(bstatnNm.includes('(급행)')){
+    } else if(str.includes('(급행)')){
         isRapid = true
         bstatnNm = bstatnNm.replace(' (급행)', '')
     }
 
-    if (bstatnNm == '오이도') {
+    if (bstatnNm === '오이도') {
         str = t('oido')
-    } else if (bstatnNm == '안산') {
+    } else if (bstatnNm === '안산') {
         str = t('ansan')
-    } else if (bstatnNm == '금정') {
+    } else if (bstatnNm === '금정') {
         str = t('geumjeong')
-    } else if (bstatnNm == '사당') {
+    } else if (bstatnNm === '사당') {
         str = t('sadang')
-    } else if (bstatnNm == '당고개') {
+    } else if (bstatnNm === '당고개') {
         str = t('danggogae')
-    } else if (bstatnNm == '노원') {
+    } else if (bstatnNm === '노원') {
         str = t('nowon')
-    } else if (bstatnNm == '한성대입구') {
+    } else if (bstatnNm === '한성대입구') {
         str = t('hansung')
-    } else if (bstatnNm == '왕십리') {
+    } else if (bstatnNm === '왕십리') {
         str = t('wangsimni')
-    } else if (bstatnNm == '청량리') {
+    } else if (bstatnNm === '청량리') {
         str = t('cheongnyangni')
-    } else if (bstatnNm == '인천') {
+    } else if (bstatnNm === '인천') {
         str = t('incheon')
-    } else if (bstatnNm == '죽전') {
+    } else if (bstatnNm === '죽전') {
         str = t('jukjeon')
-    } else if (bstatnNm == '고색') {
+    } else if (bstatnNm === '고색') {
         str = t('gosaek')
     } else {
         str = bstatnNm
@@ -184,9 +184,9 @@ const getRapidOrLastElement = (bstatnNm : string) => {
 }
 
 const getLineMarkElement = (line: string): JSX.Element => {
-    if (line == '1004') {
+    if (line === '1004') {
         return <Chip src="/image/line4.svg" />
-    } else if(line == '1075'){
+    } else if(line === '1075'){
         return <Chip src={`/image/${t('suin')}.svg`}/>
     } else return <Chip src="/image/helpblack.svg" />
     
@@ -201,9 +201,9 @@ const RealtimeAPI = async (url: string): Promise<Array<SingleSchedule>> => {
             return new Array<SingleSchedule>()
         }
         
-        if (response.data.code == 'INFO-200'){
+        if (response.data.code === 'INFO-200'){
             return new Array<SingleSchedule>()
-        } else if(response.data.code == 'ERROR-337'){
+        } else if(response.data.code === 'ERROR-337'){
             console.log(`Error code: 337`)
             console.log(`Error Msg: ${response.data.message}`)
             return new Array<SingleSchedule>(1)
@@ -231,7 +231,7 @@ const RealtimeAPI = async (url: string): Promise<Array<SingleSchedule>> => {
 
 const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
     return await RealtimeAPI(
-        `https://api.hybus.app/subway/1/8/${staName == "한대앞" ? 'subway' : 'jungang'}`
+        `https://api.hybus.app/subway/1/8/${staName === "한대앞" ? 'subway' : 'jungang'}`
     ).then((res) =>
     res.map((val : SingleSchedule) => {
         //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
@@ -255,7 +255,7 @@ const openRailblue = (btrainNo: string): void => {
     const yDay = ('0' + yesterday.getDate()).slice(-2)
 
     let date = year + month + day
-    if(hours == '00' || hours == '01'){
+    if(hours === '00' || hours === '01'){
         date = yYear + yMonth + yDay
     }
     window.location.href = 'https://rail.blue/railroad/logis/Default.aspx?train=K' + btrainNo + '&date=' + date + '#!'
@@ -374,14 +374,14 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         }
 
     if (filtered.length === 0 
-        || (updn == '상행' && countUp() === 0) 
-        || (updn == '하행' && filtered.length - countUp() === 0)) {
+        || (updn === '상행' && countUp() === 0) 
+        || (updn === '하행' && filtered.length - countUp() === 0)) {
         // Trains are done for today. User should refresh after midnight.
         return (
             <>
             <NoTimetable>
                 <NoTimetableInner>
-                    {updn == '상행' && countUp() == 0 
+                    {updn === '상행' && countUp() === 0 
                         ? t('no_train_up') : t('no_train_down')}
                 </NoTimetableInner>
             </NoTimetable>
@@ -394,24 +394,25 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     return (
         <>
         {filtered.map((val, idx) => {    
-            if (!(idx>=3 && updn=='상행') && val.updnLine == updn && downPrintCnt < 3 // Maximum: 3
-                && prevTrain != val.btrainNo){ // Two same trains to one train
+            if (!(idx >= 3 && updn === '상행') 
+                && val.updnLine === updn && downPrintCnt < 3 // Maximum: 3
+                && prevTrain != val.btrainNo) { // Two same trains to one train
                 prevTrain = val.btrainNo
-                if(updn == '하행') downPrintCnt++
+                if(updn === '하행') downPrintCnt++
                 return (
                     <React.Fragment key={idx}>
                         <StnListWrapper className={`
-                            ${val.arvlMsg2.includes(station.trim()) || val.arvlCd == '3' // This Station & Prev Station(Departure)
+                            ${val.arvlMsg2.includes(station.trim()) || val.arvlCd === '3' // This Station & Prev Station(Departure)
                                 ? 'text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center' : ''}
-                            ${val.arvlCd == '5' // Prev Station (Arrival)
+                            ${val.arvlCd === '5' // Prev Station (Arrival)
                                 ? 'text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center' : ''}
                             `}
                             onClick={() => openRailblue(val.btrainNo)}
                             >
                             {getLineMarkElement(val.subwayId)}
-                            <DestStnLeftWrapper className={i18n.language=='en' ? 'tracking-tighter' : ''}>
+                            <DestStnLeftWrapper className={i18n.language === 'en' ? 'tracking-tighter' : ''}>
                                 <div className={`
-                                                ${i18n.language=='en' 
+                                                ${i18n.language === 'en'
                                                 && getRapidOrLastElement(val.bstatnNm)
                                                 && (val.bstatnNm.includes('한성대') 
                                                     || val.bstatnNm.includes('청량리') 

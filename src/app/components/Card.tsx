@@ -752,5 +752,4 @@ export const Card = ({ location }: ScheduleInfo) => {
       </OnTouchAvailableWrapper>
     </TimetableWrapper>
   )
-
 }
