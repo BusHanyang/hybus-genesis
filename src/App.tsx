@@ -127,6 +127,31 @@ function App() {
     setRealtimeMode(isOk === 'sub' ? true : false)
   }
 
+  const getCardHeight = () : string => {
+    if(!touchPrompt){
+      if(tab === 'subway' || tab === 'jungang'){
+        // No prompt at Stations
+        return 'h-[19.6rem]'
+      } else {
+        // default (No prompt)
+        return 'h-[17rem]'
+      }
+    } else{
+      if(tab === 'subway' || tab === 'jungang'){
+        if(!realtimeMode){
+          // Shuttle Bus Info at Stations with prompt
+          return 'h-[21rem] hsm:h-[20.7rem]' 
+        } else {
+          // Subway info at Stations with prompt
+          return 'h-[19.6rem]'
+        }
+      } else{
+        // default with prompt
+        return 'h-[18rem]'
+      }
+    }
+  }
+
   const { updateServiceWorker } = useRegisterSW({
     immediate: true,
     onRegisteredSW(swURL, r) {
@@ -240,19 +265,7 @@ function App() {
                       </header>
 
                       <CardView
-                        className={`p-6 hm:p-4 transition-[height] delay-75
-                          ${!touchPrompt 
-                            ? ((tab === 'subway' || tab === 'jungang') 
-                                ? 'h-[19.6rem]' // No prompt at Stations
-                                : 'h-[17rem]') // default (No prompt)
-                            : (!realtimeMode && (tab === 'subway' || tab === 'jungang') 
-                                ? 'h-[21rem] hsm:h-[20.7rem]' // Shuttle Bus Info at Stations with prompt
-                                : (realtimeMode && (tab === 'subway' || tab === 'jungang') 
-                                    ? 'h-[19.6rem]' // Subway info at Stations with prompt
-                                    : 'h-[18rem]') // default with prompt
-                              )
-                            }
-                        `}
+                        className={`p-6 hm:p-4 transition-[height] delay-75 ${getCardHeight()}`}
                       >
                         {
                           realtimeMode && (tab === 'subway' || tab === 'jungang') 
