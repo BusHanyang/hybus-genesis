@@ -114,7 +114,7 @@ function App() {
 
   const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
-  const [RT, setRT] = useState<string>('')
+  const [realtimeMode, setRealtimeMode] = useState<boolean>()
   const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {
@@ -122,9 +122,9 @@ function App() {
     setTab(stn)
   }
 
-  const RealtimeClicked = (isOk: string) => {
-    window.localStorage.setItem('RT', isOk)
-    setRT(isOk)
+  const realtimeClicked = (isOk: string) => {
+    window.localStorage.setItem('realtimeMode', isOk)
+    setRealtimeMode(isOk === 'sub' ? true : false)
   }
 
   const { updateServiceWorker } = useRegisterSW({
@@ -166,13 +166,12 @@ function App() {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
   }, [tab])
-
-  useEffect(() => {
-    const aRT = window.localStorage.getItem('RT') || 'bus'
-    //document.modifyForm.color['<%=RT%>'].checked = true
-    RealtimeClicked(aRT)
-  }, [RT])
     
+  useEffect(() => {
+    const savedMode = window.localStorage.getItem('realtimeMode') || 'bus'
+    realtimeClicked(savedMode)
+  }, [realtimeMode])
+
   useEffect(() => {
     document.body.classList.add('h-full')
     document.documentElement.classList.add('h-full')
@@ -246,9 +245,9 @@ function App() {
                             ? ((tab === 'subway' || tab === 'jungang') 
                                 ? 'h-[19.6rem]' // No prompt at Stations
                                 : 'h-[17rem]') // default (No prompt)
-                            : (RT !== 'sub' && (tab === 'subway' || tab === 'jungang') 
+                            : (!realtimeMode && (tab === 'subway' || tab === 'jungang') 
                                 ? 'h-[21rem] hsm:h-[20.7rem]' // Shuttle Bus Info at Stations with prompt
-                                : (RT === 'sub' && (tab === 'subway' || tab === 'jungang') 
+                                : (realtimeMode && (tab === 'subway' || tab === 'jungang') 
                                     ? 'h-[19.6rem]' // Subway info at Stations with prompt
                                     : 'h-[18rem]') // default with prompt
                               )
@@ -256,7 +255,7 @@ function App() {
                         `}
                       >
                         {
-                          RT === 'sub' && (tab === 'subway' || tab === 'jungang') 
+                          realtimeMode && (tab === 'subway' || tab === 'jungang') 
                           ? <>
                             <Realtime
                               station={`
@@ -274,7 +273,7 @@ function App() {
                           </>
                         }
                         <div className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
-                            ${RT !== 'sub' && touchPrompt ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7' : ''}
+                            ${!realtimeMode && touchPrompt ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7' : ''}
                             ${(tab === 'subway' || tab === 'jungang') ? 'opacity-100 pointer-events-auto' : ''} 
                           `}>
                             <SegmentedControl>
@@ -282,8 +281,8 @@ function App() {
                                 <input 
                                   type="radio" name="option" 
                                   id="1" value="1" className="peer hidden" 
-                                  onChange={()=> RealtimeClicked('bus')} 
-                                  checked={RT=='bus' ? true : false}
+                                  onChange={()=> realtimeClicked('bus')} 
+                                  checked={!realtimeMode ? true : false}
                                 />
                                 <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
                               </div>
@@ -291,8 +290,8 @@ function App() {
                                 <input
                                   type="radio" name="option" 
                                   id="2" value="2" className="peer hidden" 
-                                  onChange={()=> RealtimeClicked('sub')} 
-                                  checked={RT=='sub' ? true : false}
+                                  onChange={()=> realtimeClicked('sub')} 
+                                  checked={realtimeMode ? true : false}
                                 />
                                 <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
                               </div>
