@@ -6,7 +6,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-type SingleSchedule = {
+type SingleTrainInfo = {
     btrainNo: string // Train number
     subwayId: string // Line 4(1004) or Suin-Bundang(1075)
     updnLine: string // UpLine 0 or DownLine 1
@@ -193,21 +193,21 @@ const getLineMarkElement = (line: string): JSX.Element => {
     
 }
 
-const RealtimeAPI = async (url: string): Promise<Array<SingleSchedule>> => {
+const RealtimeAPI = async (url: string): Promise<Array<SingleTrainInfo>> => {
     return await axios
     .get(url)
     .then((response) => {
         if (response.status !== 200) {
             console.log(`Error code: ${response.statusText}`)
-            return new Array<SingleSchedule>()
+            return new Array<SingleTrainInfo>()
         }
         
         if (response.data.code === 'INFO-200'){
-            return new Array<SingleSchedule>()
+            return new Array<SingleTrainInfo>()
         } else if(response.data.code === 'ERROR-337'){
             console.log(`Error code: 337`)
             console.log(`Error Msg: ${response.data.message}`)
-            return new Array<SingleSchedule>(1)
+            return new Array<SingleTrainInfo>(1)
         }
         return response.data.realtimeArrivalList
     })
@@ -225,16 +225,16 @@ const RealtimeAPI = async (url: string): Promise<Array<SingleSchedule>> => {
 
         // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
         // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-        return new Array<SingleSchedule>(1)
+        return new Array<SingleTrainInfo>(1)
     })
-    .then((res) => res as Array<SingleSchedule>)
+    .then((res) => res as Array<SingleTrainInfo>)
 }
 
-const search = async(staName : string) : Promise<Array<SingleSchedule>> => {
+const search = async(staName : string) : Promise<Array<SingleTrainInfo>> => {
     return await RealtimeAPI(
         `https://api.hybus.app/subway/1/8/${staName === "한대앞" ? 'subway' : 'jungang'}`
     ).then((res) =>
-    res.map((val : SingleSchedule) => {
+    res.map((val : SingleTrainInfo) => {
         //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
         return val
     })
@@ -281,7 +281,7 @@ const isExistAPIError = (bstatnNm : string, recptnDt : string, arvlMsg2 : string
 }
 
 export const Realtime = ({ station }: ScheduleInfo) => {
-    const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
+    const [timetable, setTimetable] = useState<Array<SingleTrainInfo>>([])
     const [isLoaded, setLoaded] = useState<boolean>(false)
     const [isBlink, setBlink] = useState<boolean>(false)
     const [currentLocation, setCurrentLocation] = useState<string>('init')
