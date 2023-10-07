@@ -76,7 +76,7 @@ const Chip = styled.img`
     ${tw`my-auto w-[1.5rem] inline-block`}
 ` 
 
-const arrivalUntil = (arvlMsg2: string, station: string): string => {
+const arrivalUntil = (arvlMsg2: string, station: string) : string => {
     if (arvlMsg2 === '전역 출발' || 
         arvlMsg2 === '전역 도착' || 
         arvlMsg2 === '전역 진입' || 
@@ -91,7 +91,7 @@ const arrivalUntil = (arvlMsg2: string, station: string): string => {
     }
 }
 
-const stationName = (arvlMsg3: string): string => {
+const stationName = (arvlMsg3: string) : string => {
     if (arvlMsg3 === '남동인더스파크') {
         return '남동공단'
     } else if (arvlMsg3 === '정부과천청사') {
@@ -109,7 +109,7 @@ const stationName = (arvlMsg3: string): string => {
     }
 }
 
-const arrivalStnStatus = (arvlCd: string): string => {
+const arrivalStnStatus = (arvlCd: string) : string => {
     if (arvlCd === '0' || arvlCd === '4') {
         return t('entry')
     } else if (arvlCd === '1' || arvlCd === '5') {
@@ -133,46 +133,47 @@ const titleText = (location: string): string => {
     }
 }
 
-const getDestination = (bstatnNm: string): string => {
-    let str = bstatnNm
+const getStationName = (bstatnNm : string) => {
+    if (bstatnNm === '오이도') {
+        return t('oido')
+    } else if (bstatnNm === '안산') {
+        return t('ansan')
+    } else if (bstatnNm === '금정') {
+        return t('geumjeong')
+    } else if (bstatnNm === '사당') {
+        return t('sadang')
+    } else if (bstatnNm === '당고개') {
+        return t('danggogae')
+    } else if (bstatnNm === '노원') {
+        return t('nowon')
+    } else if (bstatnNm === '한성대입구') {
+        return t('hansung')
+    } else if (bstatnNm === '왕십리') {
+        return t('wangsimni')
+    } else if (bstatnNm === '청량리') {
+        return t('cheongnyangni')
+    } else if (bstatnNm === '인천') {
+        return t('incheon')
+    } else if (bstatnNm === '죽전') {
+        return t('jukjeon')
+    } else if (bstatnNm === '고색') {
+        return t('gosaek')
+    } else {
+        return bstatnNm
+    }
+}
+
+const getDestination = (bstatnNm: string) : string => {
     let isLast = false
     let isRapid = false
-    if(str.includes('(막차)')){
+    if(bstatnNm.includes('(막차)')){
         isLast = true
         bstatnNm = bstatnNm.replace(' (막차)', '')
-    } else if(str.includes('(급행)')){
+    } else if(bstatnNm.includes('(급행)')){
         isRapid = true
         bstatnNm = bstatnNm.replace(' (급행)', '')
     }
-
-    if (bstatnNm === '오이도') {
-        str = t('oido')
-    } else if (bstatnNm === '안산') {
-        str = t('ansan')
-    } else if (bstatnNm === '금정') {
-        str = t('geumjeong')
-    } else if (bstatnNm === '사당') {
-        str = t('sadang')
-    } else if (bstatnNm === '당고개') {
-        str = t('danggogae')
-    } else if (bstatnNm === '노원') {
-        str = t('nowon')
-    } else if (bstatnNm === '한성대입구') {
-        str = t('hansung')
-    } else if (bstatnNm === '왕십리') {
-        str = t('wangsimni')
-    } else if (bstatnNm === '청량리') {
-        str = t('cheongnyangni')
-    } else if (bstatnNm === '인천') {
-        str = t('incheon')
-    } else if (bstatnNm === '죽전') {
-        str = t('jukjeon')
-    } else if (bstatnNm === '고색') {
-        str = t('gosaek')
-    } else {
-        str = bstatnNm
-    }
-    return str + (!isLast && !isRapid ? t('for') : '')
+    return getStationName(bstatnNm) + (!isLast && !isRapid ? t('for') : '')
 } 
 
 const getRapidOrLastElement = (bstatnNm : string) => {
