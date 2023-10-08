@@ -244,7 +244,10 @@ function App() {
                   }
                   resistance={3}
                 >
-                  <div className={`${isDarkMode ? 'dark' : ''} h-full`} onContextMenu={(e) => e.preventDefault()}>
+                  <div
+                    className={`${isDarkMode ? 'dark' : ''} h-full`}
+                    onContextMenu={(e) => e.preventDefault()}
+                  >
                     <Apps>
                       <header className="App-header">
                         <div className="relative">
