@@ -514,7 +514,10 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                                                     ) ||
                                                     val.bstatnNm.includes(
                                                       '금정'
-                                                    )) // Eng Text is so long
+                                                    )) ||
+                                                    val.bstatnNm.includes(
+                                                      '한성대'
+                                                    )  // Eng Text is so long
                                                     ? 'tracking-[-0.09em] text-sm hsm:text-xs'
                                                     : ''
                                                 }
@@ -582,7 +585,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
           <></>
         )}
         <div className="h-[5rem]">{RenderTimetable('상행')}</div>
-        <hr className={`my-2${spinning ? ` hidden` : ``}`} />
+        <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
         <div className="h-[5rem]">{RenderTimetable('하행')}</div>
       </MainTimetable>
     </TimetableWrapper>
