@@ -267,7 +267,7 @@ const RealtimeAPI = async (url: string): Promise<Array<SingleTrainInfo>> => {
 const search = async (staName: string): Promise<Array<SingleTrainInfo>> => {
   return await RealtimeAPI(
     `https://api.hybus.app/subway/1/8/${
-      staName === '한대앞' ? 'subway' : 'jungang'
+      staName === '한대앞' ? 'hanyang_univ' : 'jungang'
     }`
   ).then(
     (res) =>
