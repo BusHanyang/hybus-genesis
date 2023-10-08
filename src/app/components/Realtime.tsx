@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { t } from 'i18next'
+import { t, TFunction } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
@@ -412,12 +412,15 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     return upCnt
   }
 
-  const RenderTimetable = (updn: string) => {
+  const renderTimetable = (
+    direction: string,
+    t: TFunction<'translation', undefined, 'translation'>
+  ) => {
     const filtered = timetable.filter(
       (val) =>
         !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
     )
-    const { t } = useTranslation()
+
     if (!spinning) {
       if (
         (filtered.length === 1 && filtered[0] == null) ||
@@ -441,15 +444,15 @@ export const Realtime = ({ station }: ScheduleInfo) => {
 
       if (
         filtered.length === 0 ||
-        (updn === '상행' && countUp() === 0) ||
-        (updn === '하행' && filtered.length - countUp() === 0)
+        (direction === '상행' && countUp() === 0) ||
+        (direction === '하행' && filtered.length - countUp() === 0)
       ) {
         // Trains are done for today. User should refresh after midnight.
         return (
           <>
             <NoTimetable>
               <NoTimetableInner>
-                {updn === '상행' && countUp() === 0
+                {direction === '상행' && countUp() === 0
                   ? t('no_train_up')
                   : t('no_train_down')}
               </NoTimetableInner>
@@ -464,14 +467,14 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         <>
           {filtered.map((val, idx) => {
             if (
-              !(idx >= 3 && updn === '상행') &&
-              val.updnLine === updn &&
+              !(idx >= 3 && direction === '상행') &&
+              val.updnLine === direction &&
               downPrintCnt < 3 && // Maximum: 3
               prevTrain != val.btrainNo
             ) {
               // Two same trains to one train
               prevTrain = val.btrainNo
-              if (updn === '하행') downPrintCnt++
+              if (direction === '하행') downPrintCnt++
               return (
                 <React.Fragment key={idx}>
                   <StnListWrapper
@@ -570,9 +573,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         ) : (
           <></>
         )}
-        <div className="h-[5rem]">{RenderTimetable('상행')}</div>
+        <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
         <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
-        <div className="h-[5rem]">{RenderTimetable('하행')}</div>
+        <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
       </MainTimetable>
     </TimetableWrapper>
   )
