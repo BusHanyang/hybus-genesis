@@ -184,6 +184,7 @@ const getRapidOrLastElement = (bstatnNm: string) => {
   if (bstatnNm.includes('막차')) {
     return (
       <img
+        alt="last train icon"
         className="h-4 ml-[0.15rem]"
         src={t('last_train_img')}
         draggable="false"
@@ -192,6 +193,7 @@ const getRapidOrLastElement = (bstatnNm: string) => {
   } else if (bstatnNm.includes('급행')) {
     return (
       <img
+        alt="rapid train icon"
         className="h-4 ml-[0.15rem]"
         src={t('rapid_train_img')}
         draggable="false"
@@ -204,6 +206,7 @@ const getLineMarkElement = (line: string): JSX.Element => {
   if (line === '1004') {
     return (
       <Chip
+        alt="line 4 icon"
         className="mx-0.5 w-[1.25rem]"
         src="/image/line4.svg"
         draggable="false"
@@ -212,6 +215,7 @@ const getLineMarkElement = (line: string): JSX.Element => {
   } else if (line === '1075') {
     return (
       <Chip
+        alt="line suin-bundang icon"
         className="mx-0.5 w-[1.25rem]"
         src={`/image/${t('suin')}.svg`}
         draggable="false"
@@ -220,6 +224,7 @@ const getLineMarkElement = (line: string): JSX.Element => {
   } else
     return (
       <Chip
+        alt="unknown line icon"
         className="mx-0.5 w-[1.25rem]"
         src="/image/helpblack.svg"
         draggable="false"
