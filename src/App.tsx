@@ -66,7 +66,7 @@ const SegmentedControl = styled.div`
 
 const RadioLabel = styled.label`
   ${tw`
-    block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
+    block cursor-default select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
     transition-colors ease-in-out duration-150
   `}
 `
