@@ -496,14 +496,12 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                       <div
                         className={`
                                                 ${
-                                                  i18n.language === 'en' &&
+                                                  val.bstatnNm.includes('한성대') ||
+                                                  (i18n.language === 'en' &&
                                                   getRapidOrLastElement(
                                                     val.bstatnNm
                                                   ) &&
                                                   (val.bstatnNm.includes(
-                                                    '한성대'
-                                                  ) ||
-                                                    val.bstatnNm.includes(
                                                       '청량리'
                                                     ) ||
                                                     val.bstatnNm.includes(
@@ -514,12 +512,10 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                                                     ) ||
                                                     val.bstatnNm.includes(
                                                       '금정'
-                                                    )) ||
-                                                    val.bstatnNm.includes(
-                                                      '한성대'
-                                                    )  // Eng Text is so long
-                                                    ? 'tracking-[-0.09em] text-sm hsm:text-xs'
-                                                    : ''
+                                                    )
+                                                  )) // Eng Text is so long
+                                                  ? 'tracking-[-0.09em] text-sm hsm:text-xs'
+                                                  : ''
                                                 }
                                                 `}
                       >
