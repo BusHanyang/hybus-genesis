@@ -328,7 +328,8 @@ const isExistAPIError = (
 
   return (
     bstatnNm.includes('막차') &&
-    (arvlMsg2.includes(station.trim() + ' 도착') ||
+    (arvlMsg2.includes('전역 도착') ||
+      arvlMsg2.includes(station.trim() + ' 도착') ||
       arvlMsg2.includes(station.trim() + ' 진입')) &&
     diffMSec >= 90
   )
