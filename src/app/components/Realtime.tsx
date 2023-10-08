@@ -324,16 +324,12 @@ const isExistAPIError = (
   const diffMSec = Now.getTime() - Lastest.getTime()
   //const diffMin = diffMSec / (60 * 1000)
 
-  if (
+  return (
     bstatnNm.includes('막차') &&
     (arvlMsg2.includes(station.trim() + ' 도착') ||
       arvlMsg2.includes(station.trim() + ' 진입')) &&
     diffMSec >= 90
-  ) {
-    return true
-  } else {
-    return false
-  }
+  )
 }
 
 export const Realtime = ({ station }: ScheduleInfo) => {
