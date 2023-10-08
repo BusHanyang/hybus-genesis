@@ -494,30 +494,17 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                       }
                     >
                       <div
-                        className={`
-                                                ${
-                                                  val.bstatnNm.includes('한성대') ||
-                                                  (i18n.language === 'en' &&
-                                                  getRapidOrLastElement(
-                                                    val.bstatnNm
-                                                  ) &&
-                                                  (val.bstatnNm.includes(
-                                                      '청량리'
-                                                    ) ||
-                                                    val.bstatnNm.includes(
-                                                      '왕십리'
-                                                    ) ||
-                                                    val.bstatnNm.includes(
-                                                      '당고개'
-                                                    ) ||
-                                                    val.bstatnNm.includes(
-                                                      '금정'
-                                                    )
-                                                  )) // Eng Text is so long
-                                                  ? 'tracking-[-0.09em] text-sm hsm:text-xs'
-                                                  : ''
-                                                }
-                                                `}
+                        className={`${
+                          val.bstatnNm.includes('한성대') ||
+                          (i18n.language === 'en' &&
+                            getRapidOrLastElement(val.bstatnNm) &&
+                            (val.bstatnNm.includes('청량리') ||
+                              val.bstatnNm.includes('왕십리') ||
+                              val.bstatnNm.includes('당고개') ||
+                              val.bstatnNm.includes('금정'))) // Eng Text is so long
+                            ? 'tracking-[-0.09em] text-sm hsm:text-xs'
+                            : ''
+                        }`}
                       >
                         {getDestination(val.bstatnNm)}
                       </div>
