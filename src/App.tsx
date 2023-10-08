@@ -20,7 +20,7 @@ const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
-  `} drag-save-n
+  `}
 `
 
 const Circle = styled.span`
@@ -240,7 +240,7 @@ function App() {
                   }
                   resistance={3}
                 >
-                  <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
+                  <div className={`${isDarkMode ? 'dark' : ''} h-full`} onContextMenu={(e) => e.preventDefault()}>
                     <Apps>
                       <header className="App-header">
                         <div className="relative">
