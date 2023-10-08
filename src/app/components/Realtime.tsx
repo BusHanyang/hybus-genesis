@@ -233,8 +233,12 @@ const getLineMarkElement = (line: string): JSX.Element => {
 }
 
 const fetchRealtimeInfo = async (
-  url: string
+  staName: string
 ): Promise<Array<SingleTrainInfo>> => {
+  const url = `https://api.hybus.app/subway/1/8/${
+    staName === '한대앞' ? 'hanyang_univ' : 'jungang'
+  }`
+
   return await axios
     .get(url)
     .then((response) => {
@@ -269,22 +273,6 @@ const fetchRealtimeInfo = async (
       return new Array<SingleTrainInfo>(1)
     })
     .then((res) => res as Array<SingleTrainInfo>)
-}
-
-const search = async (staName: string): Promise<Array<SingleTrainInfo>> => {
-  return await fetchRealtimeInfo(
-    `https://api.hybus.app/subway/1/8/${
-      staName === '한대앞' ? 'hanyang_univ' : 'jungang'
-    }`
-  ).then(
-    (res) =>
-      res.map((val: SingleTrainInfo) => {
-        //val['arvlMsg2'] = arrivalUntil(val.arvlMsg2)
-        return val
-      })
-    //.finally(() => { setSpinning(false) })
-  )
-  //console.log(data.data)
 }
 
 const openRailblue = (btrainNo: string): void => {
@@ -347,7 +335,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
   // For fetching the timetable for the initial time
   useEffect(() => {
     if (!isLoaded) {
-      search(station.trim()).then((res) => {
+      fetchRealtimeInfo(station.trim()).then((res) => {
         setTimetable(res)
         setSpinning(false)
         setLoaded(true)
@@ -365,7 +353,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     ) {
       setSpinning(true)
       setTimetable([])
-      search(station.trim()).then((res) => {
+      fetchRealtimeInfo(station.trim()).then((res) => {
         setTimetable(res)
         setSpinning(false)
         setCurrentLocation(station.trim())
@@ -375,7 +363,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      search(station.trim()).then((res) => {
+      fetchRealtimeInfo(station.trim()).then((res) => {
         setTimetable(res)
         setSpinning(false)
         setLoaded(true)
