@@ -549,7 +549,7 @@ export const Realtime = ({ station }: ScheduleInfo) => {
           <></>
         )}
         <div className="h-[5rem]">{RenderTimetable('상행')}</div>
-        <hr className="my-2" />
+        <hr className={`my-2${spinning ? ` hidden` : ``}`} />
         <div className="h-[5rem]">{RenderTimetable('하행')}</div>
       </MainTimetable>
     </TimetableWrapper>
