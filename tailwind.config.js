@@ -11,6 +11,7 @@ module.exports = {
         shuttlei: { max: '580px' },
         rt1: { max: '495px' },
         rt2: { max: '440px' },
+        rt3: { max: '380px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',

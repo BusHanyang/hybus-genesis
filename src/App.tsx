@@ -239,7 +239,11 @@ const App = () => {
                           />
                         }
                       </CardView>
-                      <CardView className="p-4 h-12 hm:p-2 flex" onClick={handleLineModalTarget} onContextMenu={handleContextMenu}>
+                      <CardView 
+                        className="p-4 h-12 hm:p-2 flex" 
+                        onClick={handleLineModalTarget} 
+                        onContextMenu={handleContextMenu}
+                      >
                         <div>
                           <Circle className="bg-chip-red mr-2 hsm:mx-2" />
                           <RouteText>{t('cycle_index')}</RouteText>
@@ -256,6 +260,12 @@ const App = () => {
                           <Circle className="bg-chip-purple mx-2" />
                           <RouteText>{t('jungang_index')}</RouteText>
                         </div>
+                        <img
+                          src="/image/info.svg"
+                          alt="Route Map information icon"
+                          className="absolute opacity-30 mb-4 hm:mb-6 hsm:mb-7 right-7 hm:right-[1.6rem] h-5 rt1:h-4 rt3:h-3 dark:invert drag-save-n"
+                          draggable="false"
+                        ></img>
                       </CardView>
                       <div className="grid grid-cols-3 gap-4">
                         <Button
