@@ -575,5 +575,3 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     </TimetableWrapper>
   )
 }
-
-export default Realtime
