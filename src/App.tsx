@@ -71,6 +71,10 @@ const RadioLabel = styled.label`
   `}
 `
 
+const BetaText = styled.span`
+  ${tw`mx-1 italic font-light`}
+`
+
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
 
 function App() {
@@ -325,7 +329,10 @@ function App() {
                                 onChange={() => realtimeClicked('sub')}
                                 checked={realtimeMode}
                               />
-                              <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
+                              <RadioLabel htmlFor="2">
+                                {t('subw')}
+                                <BetaText>(Beta)</BetaText>
+                              </RadioLabel>
                             </div>
                           </SegmentedControl>
                         </div>
