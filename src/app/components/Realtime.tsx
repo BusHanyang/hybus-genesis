@@ -73,7 +73,7 @@ const ApiStatusButton = styled.button`
 `
 
 const Chip = styled.img`
-  ${tw`my-auto w-[1.5rem] inline-block`}
+  ${tw`my-auto inline-block`}
 `
 
 const arrivalUntil = (arvlMsg2: string, station: string): string => {
@@ -182,18 +182,49 @@ const getDestination = (bstatnNm: string): string => {
 
 const getRapidOrLastElement = (bstatnNm: string) => {
   if (bstatnNm.includes('막차')) {
-    return <img className="h-4 ml-[0.15rem]" src={t('last_train_img')} draggable="false"/>
+    return (
+      <img
+        className="h-4 ml-[0.15rem]"
+        src={t('last_train_img')}
+        draggable="false"
+      />
+    )
   } else if (bstatnNm.includes('급행')) {
-    return <img className="h-4 ml-[0.15rem]" src={t('rapid_train_img')} draggable="false"/>
+    return (
+      <img
+        className="h-4 ml-[0.15rem]"
+        src={t('rapid_train_img')}
+        draggable="false"
+      />
+    )
   }
 }
 
 const getLineMarkElement = (line: string): JSX.Element => {
   if (line === '1004') {
-    return <Chip src="/image/line4.svg" draggable="false"/>
+    return (
+      <Chip
+        className="mx-0.5 w-[1.25rem]"
+        src="/image/line4.svg"
+        draggable="false"
+      />
+    )
   } else if (line === '1075') {
-    return <Chip src={`/image/${t('suin')}.svg`} draggable="false"/>
-  } else return <Chip src="/image/helpblack.svg" draggable="false"/>
+    return (
+      <Chip
+        className="mx-0.5 w-[1.25rem]"
+        src={`/image/${t('suin')}.svg`}
+        draggable="false"
+      />
+    )
+  } else
+    return (
+      <Chip
+        className="mx-0.5 w-[1.25rem]"
+        src="/image/helpblack.svg"
+        draggable="false"
+      />
+    )
 }
 
 const RealtimeAPI = async (url: string): Promise<Array<SingleTrainInfo>> => {
@@ -523,12 +554,12 @@ export const Realtime = ({ station }: ScheduleInfo) => {
     <TimetableWrapper>
       <HeadlineWrapper>
         <Chip
-          className="pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]"
+          className="w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]"
           src="/image/line4.svg"
           draggable="false"
         />
         <Chip
-          className="pb-2 hm:pb-0 hsm:pb-2 mr-1.5"
+          className="w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-1.5"
           src={`/image/${t('suin')}.svg`}
           draggable="false"
         />
