@@ -562,9 +562,28 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         ) : (
           <></>
         )}
-        <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
-        <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
-        <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
+        {
+          timetable.length === 1 && timetable[0] == null
+          ? (
+            <>
+              <NoTimetable>
+                <NoTimetableInner className='mb-[4rem]'>
+                  {t('api_error')}
+                  <br />
+                  <ApiStatusButton onClick={openApiMonitor}>
+                    {t('status_check')}
+                  </ApiStatusButton>
+                </NoTimetableInner>
+              </NoTimetable>
+            </>
+          ) : (
+            <>
+              <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
+              <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
+              <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
+            </>
+          )
+        }
       </MainTimetable>
     </TimetableWrapper>
   )
