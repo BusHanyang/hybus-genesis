@@ -124,7 +124,7 @@ function App() {
 
   const realtimeClicked = (isOk: string) => {
     window.localStorage.setItem('realtimeMode', isOk)
-    setRealtimeMode(isOk === 'sub' ? true : false)
+    setRealtimeMode(isOk === 'sub')
   }
 
   const getCardHeight = () : string => {
@@ -295,7 +295,7 @@ function App() {
                                   type="radio" name="option" 
                                   id="1" value="1" className="peer hidden" 
                                   onChange={()=> realtimeClicked('bus')} 
-                                  checked={!realtimeMode ? true : false}
+                                  checked={!realtimeMode}
                                 />
                                 <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
                               </div>
@@ -304,7 +304,7 @@ function App() {
                                   type="radio" name="option" 
                                   id="2" value="2" className="peer hidden" 
                                   onChange={()=> realtimeClicked('sub')} 
-                                  checked={realtimeMode ? true : false}
+                                  checked={realtimeMode}
                                 />
                                 <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
                               </div>
