@@ -127,25 +127,25 @@ function App() {
     setRealtimeMode(isOk === 'sub')
   }
 
-  const getCardHeight = () : string => {
-    if(!touchPrompt){
-      if(tab === 'subway' || tab === 'jungang'){
+  const getCardHeight = (): string => {
+    if (!touchPrompt) {
+      if (tab === 'subway' || tab === 'jungang') {
         // No prompt at Stations
         return 'h-[19.6rem]'
       } else {
         // default (No prompt)
         return 'h-[17rem]'
       }
-    } else{
-      if(tab === 'subway' || tab === 'jungang'){
-        if(!realtimeMode){
+    } else {
+      if (tab === 'subway' || tab === 'jungang') {
+        if (!realtimeMode) {
           // Shuttle Bus Info at Stations with prompt
-          return 'h-[21rem] hsm:h-[20.7rem]' 
+          return 'h-[21rem] hsm:h-[20.7rem]'
         } else {
           // Subway info at Stations with prompt
           return 'h-[19.6rem]'
         }
-      } else{
+      } else {
         // default with prompt
         return 'h-[18rem]'
       }
@@ -191,7 +191,7 @@ function App() {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
   }, [tab])
-    
+
   useEffect(() => {
     const savedMode = window.localStorage.getItem('realtimeMode') || 'bus'
     realtimeClicked(savedMode)
@@ -267,49 +267,68 @@ function App() {
                       <CardView
                         className={`p-6 hm:p-4 transition-[height] delay-75 ${getCardHeight()}`}
                       >
-                        {
-                          realtimeMode && (tab === 'subway' || tab === 'jungang') 
-                          ? <>
+                        {realtimeMode &&
+                        (tab === 'subway' || tab === 'jungang') ? (
+                          <>
                             <Realtime
                               station={`
                                 ${(tab === 'subway' ? '한대앞' : '중앙').trim()}
                               `}
                             />
-                          </> 
-                          : <>
+                          </>
+                        ) : (
+                          <>
                             <Card
-                            location={
-                              window.localStorage.getItem('tab') ||
-                              'shuttlecoke_o'
-                            }
+                              location={
+                                window.localStorage.getItem('tab') ||
+                                'shuttlecoke_o'
+                              }
                             />
                           </>
-                        }
-                        <div className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
-                            ${!realtimeMode && touchPrompt ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7' : ''}
-                            ${(tab === 'subway' || tab === 'jungang') ? 'opacity-100 pointer-events-auto' : ''} 
-                          `}>
-                            <SegmentedControl>
-                              <div>
-                                <input 
-                                  type="radio" name="option" 
-                                  id="1" value="1" className="peer hidden" 
-                                  onChange={()=> realtimeClicked('bus')} 
-                                  checked={!realtimeMode}
-                                />
-                                <RadioLabel htmlFor="1">{t('shuttle')}</RadioLabel>
-                              </div>
-                              <div>
-                                <input
-                                  type="radio" name="option" 
-                                  id="2" value="2" className="peer hidden" 
-                                  onChange={()=> realtimeClicked('sub')} 
-                                  checked={realtimeMode}
-                                />
-                                <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
-                              </div>
-                            </SegmentedControl>
-                          </div> 
+                        )}
+                        <div
+                          className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
+                            ${
+                              !realtimeMode && touchPrompt
+                                ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7'
+                                : ''
+                            }
+                            ${
+                              tab === 'subway' || tab === 'jungang'
+                                ? 'opacity-100 pointer-events-auto'
+                                : ''
+                            } 
+                          `}
+                        >
+                          <SegmentedControl>
+                            <div>
+                              <input
+                                type="radio"
+                                name="option"
+                                id="1"
+                                value="1"
+                                className="peer hidden"
+                                onChange={() => realtimeClicked('bus')}
+                                checked={!realtimeMode}
+                              />
+                              <RadioLabel htmlFor="1">
+                                {t('shuttle')}
+                              </RadioLabel>
+                            </div>
+                            <div>
+                              <input
+                                type="radio"
+                                name="option"
+                                id="2"
+                                value="2"
+                                className="peer hidden"
+                                onChange={() => realtimeClicked('sub')}
+                                checked={realtimeMode}
+                              />
+                              <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
+                            </div>
+                          </SegmentedControl>
+                        </div>
                       </CardView>
 
                       <CardView className="p-4 h-12 hm:p-2 flex">
