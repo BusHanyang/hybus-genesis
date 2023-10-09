@@ -33,7 +33,7 @@ type Settings = {
 dayjs.extend(customParse)
 
 const TimetableWrapper = styled.div`
-  ${tw`h-full`}
+  ${tw`h-[14.8rem]`}
 `
 
 const HeadlineWrapper = styled.div`
@@ -632,7 +632,6 @@ export const Card = ({ location }: ScheduleInfo) => {
           </>
         )
       }
-
       // Otherwise - normal case
       return (
         <>

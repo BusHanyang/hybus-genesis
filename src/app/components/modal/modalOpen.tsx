@@ -44,7 +44,7 @@ const ModalOpen = (props: {
       })
       .catch((error) => {
         console.log(`error ${error}`)
-        return new Array<Changelog>
+        return new Array<Changelog>()
       })
       .then((response) => response as unknown as Array<Changelog>)
   }
@@ -60,14 +60,20 @@ const ModalOpen = (props: {
 
   return (
     <React.Fragment>
-      <Modal open={props.isOpen} ani={props.isModalAni} close={props.closeModal} mTarget={props.mTarget}>
+      <Modal
+        open={props.isOpen}
+        ani={props.isModalAni}
+        close={props.closeModal}
+        mTarget={props.mTarget}
+      >
         <div
-          className='font-Ptd'
+          className="font-Ptd"
           style={{ overflow: 'auto', maxHeight: '450px' }}
         >
           <ContentArea>
             <ChangelogDiv>
-              {props.mTarget === 'Fabs' ? data.map((datum: { date: string; details: Array<string> }) => {
+              {props.mTarget === 'Fabs' ? (
+                data.map((datum: { date: string; details: Array<string> }) => {
                   const arr: string[] = datum.details
                   return (
                     <ChangelogMargin key={datum.date}>
@@ -77,14 +83,15 @@ const ModalOpen = (props: {
                       ))}
                     </ChangelogMargin>
                   )
-                }) :
+                })
+              ) : (
                 <iframe
-                  title='information-iframe'
-                  width='100%'
-                  height='450'
-                  src={t('info_link')}>
-                </iframe>
-              }
+                  title="information-iframe"
+                  width="100%"
+                  height="450"
+                  src={t('info_link')}
+                ></iframe>
+              )}
             </ChangelogDiv>
           </ContentArea>
         </div>

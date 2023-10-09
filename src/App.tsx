@@ -10,6 +10,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import { Card, Fabs } from './app/components'
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
+import { Realtime } from './app/components/Realtime'
 import { THEME, useDarkmodeContext } from './app/context/ThemeContext'
 
 const FullTime = lazy(() => import('./app/components/FullTime'))
@@ -19,7 +20,7 @@ const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
     dark:bg-zinc-800 dark:text-white
-  `} drag-save-n
+  `}
 `
 
 const Circle = styled.span`
@@ -37,7 +38,7 @@ const RouteText = styled.div`
 const CardView = styled.div`
   ${tw`
     mb-3 justify-center items-center font-medium 
-    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)] will-change-transform
+    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)]
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
 `
@@ -56,6 +57,22 @@ const Button = styled(CardView)`
   &#shuttlecoke_i {
     ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
   }
+`
+const SegmentedControl = styled.div`
+  ${tw`
+    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800  
+  `}
+`
+
+const RadioLabel = styled.label`
+  ${tw`
+    block cursor-default select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
+    transition-colors ease-in-out duration-150
+  `}
+`
+
+const BetaText = styled.span`
+  ${tw`mx-1 italic font-light`}
 `
 
 const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
@@ -101,11 +118,42 @@ function App() {
 
   const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
+  const [realtimeMode, setRealtimeMode] = useState<boolean>()
   const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
     setTab(stn)
+  }
+
+  const realtimeClicked = (isOk: string) => {
+    window.localStorage.setItem('realtimeMode', isOk)
+    setRealtimeMode(isOk === 'sub')
+  }
+
+  const getCardHeight = (): string => {
+    if (!touchPrompt) {
+      if (tab === 'subway' || tab === 'jungang') {
+        // No prompt at Stations
+        return 'h-[19.6rem]'
+      } else {
+        // default (No prompt)
+        return 'h-[17rem]'
+      }
+    } else {
+      if (tab === 'subway' || tab === 'jungang') {
+        if (!realtimeMode) {
+          // Shuttle Bus Info at Stations with prompt
+          return 'h-[21rem] hsm:h-[20.7rem]'
+        } else {
+          // Subway info at Stations with prompt
+          return 'h-[19.6rem]'
+        }
+      } else {
+        // default with prompt
+        return 'h-[18rem]'
+      }
+    }
   }
 
   const { updateServiceWorker } = useRegisterSW({
@@ -147,6 +195,11 @@ function App() {
     const aTab = window.localStorage.getItem('tab') || 'shuttlecoke_o'
     saveClicked(aTab)
   }, [tab])
+
+  useEffect(() => {
+    const savedMode = window.localStorage.getItem('realtimeMode') || 'bus'
+    realtimeClicked(savedMode)
+  }, [realtimeMode])
 
   useEffect(() => {
     document.body.classList.add('h-full')
@@ -191,7 +244,10 @@ function App() {
                   }
                   resistance={3}
                 >
-                  <div className={`${isDarkMode ? 'dark' : ''} h-full`}>
+                  <div
+                    className={`${isDarkMode ? 'dark' : ''} h-full`}
+                    onContextMenu={(e) => e.preventDefault()}
+                  >
                     <Apps>
                       <header className="App-header">
                         <div className="relative">
@@ -216,21 +272,75 @@ function App() {
                       </header>
 
                       <CardView
-                        className={
-                          touchPrompt
-                            ? `p-6 hm:p-4 h-[18rem]`
-                            : `p-6 hm:p-4 h-[17rem]`
-                        }
+                        className={`p-6 hm:p-4 transition-[height] delay-75 ${getCardHeight()}`}
                       >
-                        {
-                          <Card
-                            location={
-                              window.localStorage.getItem('tab') ||
-                              'shuttlecoke_o'
+                        {realtimeMode &&
+                        (tab === 'subway' || tab === 'jungang') ? (
+                          <>
+                            <Realtime
+                              station={`
+                                ${(tab === 'subway' ? '한대앞' : '중앙').trim()}
+                              `}
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <Card
+                              location={
+                                window.localStorage.getItem('tab') ||
+                                'shuttlecoke_o'
+                              }
+                            />
+                          </>
+                        )}
+                        <div
+                          className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
+                            ${
+                              !realtimeMode && touchPrompt
+                                ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7'
+                                : ''
                             }
-                          />
-                        }
+                            ${
+                              tab === 'subway' || tab === 'jungang'
+                                ? 'opacity-100 pointer-events-auto'
+                                : ''
+                            } 
+                          `}
+                        >
+                          <SegmentedControl>
+                            <div>
+                              <input
+                                type="radio"
+                                name="option"
+                                id="1"
+                                value="1"
+                                className="peer hidden"
+                                onChange={() => realtimeClicked('bus')}
+                                checked={!realtimeMode}
+                              />
+                              <RadioLabel htmlFor="1">
+                                {t('shuttle')}
+                              </RadioLabel>
+                            </div>
+                            <div>
+                              <input
+                                type="radio"
+                                name="option"
+                                id="2"
+                                value="2"
+                                className="peer hidden"
+                                onChange={() => realtimeClicked('sub')}
+                                checked={realtimeMode}
+                              />
+                              <RadioLabel htmlFor="2">
+                                {t('subw')}
+                                <BetaText>(Beta)</BetaText>
+                              </RadioLabel>
+                            </div>
+                          </SegmentedControl>
+                        </div>
                       </CardView>
+
                       <CardView className="p-4 h-12 hm:p-2 flex">
                         <div>
                           <Circle className="bg-chip-red mr-2 hsm:mx-2" />

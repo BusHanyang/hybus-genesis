@@ -76,5 +76,38 @@
     "check_on_touch": "Try pressing the area above.",
     "now_actual_time": "Now it is actual departure time!",
 
-    "info_link": "https://info-en.hybus.app/"
+    "info_link": "https://info-en.hybus.app/",
+
+    "suin": "suin_eng",
+    "shuttle": "Shuttle Bus",
+    "subw": "Subway",
+    "hyu_stn": "HYU at Ansan",
+    "jungang_stn": "Jungang",
+    "oido": "Oido",
+    "ansan": "Ansan",
+    "geumjeong": "Geumjeong",
+    "sadang": "Sadang",
+    "danggogae": "Danggogae",
+    "nowon": "Nowon",
+    "hansung": "Hansung Uni.",
+    "wangsimni": "Wangsimni",
+    "cheongnyangni": "Cheongnyangni",
+    "incheon": "Incheon",
+    "jukjeon": "Jukjeon",
+    "gosaek": "Gosaek",
+
+    "for": "",
+    "entry": "[Entry]",
+    "depart": "[Depart]",
+    "arrival": "[Arrival]",
+    "operation": "[Operation]",
+    
+    "here": "Here",
+    "prevstn": "1 Left",
+    "n_stn": " Left",
+
+    "no_train_up": "No Up-trains are currently in service.",
+    "no_train_down": "No Down-trains are currently in service.",
+    "last_train_img": "/image/last_train_en.svg",
+    "rapid_train_img": "/image/rapid_train_en.svg"
 }

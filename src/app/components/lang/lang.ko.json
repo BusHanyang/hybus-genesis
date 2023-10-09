@@ -76,5 +76,38 @@
     "check_on_touch": "위에 있는 시간표 부분을 꾹 눌러보세요.",
     "now_actual_time": "이제부터는 실제 출발 시간을 확인해요!",
 
-    "info_link": "https://info-ko.hybus.app/"
+    "info_link": "https://info-ko.hybus.app/",
+
+    "suin": "suin",
+    "shuttle": "셔틀버스",
+    "subw": "전철",
+    "hyu_stn": "한 대 앞",
+    "jungang_stn": "중  앙",
+    "oido": "오이도",
+    "ansan": "안산",
+    "geumjeong": "금정",
+    "sadang": "사당",
+    "danggogae": "당고개",
+    "nowon": "노원",
+    "hansung": "한성대입구",
+    "wangsimni": "왕십리",
+    "cheongnyangni": "청량리",
+    "incheon": "인천",
+    "jukjeon": "죽전",
+    "gosaek": "고색",
+
+    "for": "  행",
+    "entry": "[진입]",
+    "depart": "[출발]",
+    "arrival": "[도착]",
+    "operation": "[운행중]",
+
+    "here": "당역",
+    "prevstn": "전역",
+    "n_stn": " 전역",
+
+    "no_train_up": "현재 운행중인 상행 열차가 없습니다.",
+    "no_train_down": "현재 운행중인 하행 열차가 없습니다.",
+    "last_train_img": "/image/last_train_kr.svg",
+    "rapid_train_img": "/image/rapid_train_kr.svg"
 }
