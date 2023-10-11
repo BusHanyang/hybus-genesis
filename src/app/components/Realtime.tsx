@@ -492,9 +492,9 @@ export const Realtime = ({ station }: ScheduleInfo) => {
                         className={`${
                           val.bstatnNm.includes('한성대') ||
                           (i18n.language === 'en' &&
-                            getRapidOrLastElement(val.bstatnNm) &&
-                            (val.bstatnNm.includes('청량리') ||
-                              val.bstatnNm.includes('왕십리') ||
+                            val.bstatnNm.includes('청량리')) ||
+                          (getRapidOrLastElement(val.bstatnNm) &&
+                            (val.bstatnNm.includes('왕십리') ||
                               val.bstatnNm.includes('당고개') ||
                               val.bstatnNm.includes('금정'))) // Eng Text is so long
                             ? 'tracking-[-0.09em] text-sm hsm:text-xs'
@@ -562,28 +562,25 @@ export const Realtime = ({ station }: ScheduleInfo) => {
         ) : (
           <></>
         )}
-        {
-          timetable.length === 1 && timetable[0] == null
-          ? (
-            <>
-              <NoTimetable>
-                <NoTimetableInner className='mb-[4rem]'>
-                  {t('api_error')}
-                  <br />
-                  <ApiStatusButton onClick={openApiMonitor}>
-                    {t('status_check')}
-                  </ApiStatusButton>
-                </NoTimetableInner>
-              </NoTimetable>
-            </>
-          ) : (
-            <>
-              <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
-              <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
-              <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
-            </>
-          )
-        }
+        {timetable.length === 1 && timetable[0] == null ? (
+          <>
+            <NoTimetable>
+              <NoTimetableInner className="mb-[4rem]">
+                {t('api_error')}
+                <br />
+                <ApiStatusButton onClick={openApiMonitor}>
+                  {t('status_check')}
+                </ApiStatusButton>
+              </NoTimetableInner>
+            </NoTimetable>
+          </>
+        ) : (
+          <>
+            <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
+            <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
+            <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
+          </>
+        )}
       </MainTimetable>
     </TimetableWrapper>
   )
