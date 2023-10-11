@@ -235,7 +235,7 @@ const getLineMarkElement = (line: string): JSX.Element => {
 const fetchRealtimeInfo = async (
   staName: string
 ): Promise<Array<SingleTrainInfo>> => {
-  const url = `https://api.hybus.app/subway/1/8/${
+  const url = `https://api.hybus.app/subway/1/9/${
     staName === '한대앞' ? 'hanyang_univ' : 'jungang'
   }`
 
@@ -315,8 +315,8 @@ const isExistAPIError = (
   //const diffMin = diffMSec / (60 * 1000)
 
   return (
-    bstatnNm.includes('막차') &&
-    (arvlMsg2.includes('전역 도착') ||
+    (bstatnNm.includes('막차') ||
+      arvlMsg2.includes('전역 도착') ||
       arvlMsg2.includes(station.trim() + ' 도착') ||
       arvlMsg2.includes(station.trim() + ' 진입')) &&
     diffMSec >= 90
