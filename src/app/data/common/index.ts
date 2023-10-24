@@ -1,1 +1,1 @@
-export type { StopLocation } from './StopLocation'
+export type { StopLocation } from './stopLocation'

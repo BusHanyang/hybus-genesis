@@ -1,1 +1,1 @@
-export type { SingleTrainInfo } from './SingleTrainInfo'
+export type { SingleTrainInfo } from './singleTrainInfo'
