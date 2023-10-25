@@ -4,34 +4,16 @@ import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
 import { THEME, useDarkmodeContext } from '../context/ThemeContext'
+import {
+  OrganizedTimetables,
+  Season,
+  SingleShuttleSchedule,
+  StopLocation,
+  Week,
+} from '../data'
 import { useDarkMode } from './useDarkMode'
 
-type SingleSchedule = {
-  time: string
-  type: string
-}
-
-type FilteredTimeTables = {
-  time: string
-  direct: Array<string>
-  circle: Array<string>
-  directY: Array<string>
-  jungang: Array<string>
-  count: number
-}
-
-type Location =
-  | 'residence'
-  | 'shuttlecoke_i'
-  | 'shuttlecoke_o'
-  | 'subway'
-  | 'yesulin'
-  | 'jungang'
-
-type Week = 'week' | 'weekend'
-type Season = 'semester' | 'vacation_session' | 'vacation'
-
-const api = async (url: string): Promise<Array<SingleSchedule>> => {
+const api = async (url: string): Promise<Array<SingleShuttleSchedule>> => {
   return await axios
     .get(url)
     .then((response) => {
@@ -55,16 +37,16 @@ const api = async (url: string): Promise<Array<SingleSchedule>> => {
       }
       // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
       // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-      return new Array<SingleSchedule>(1)
+      return new Array<SingleShuttleSchedule>(1)
     })
-    .then((res) => res as Array<SingleSchedule>)
+    .then((res) => res as Array<SingleShuttleSchedule>)
 }
 
 const getTimetable = async (
   season: Season,
   week: Week,
-  location: Location
-): Promise<Array<SingleSchedule>> => {
+  location: StopLocation
+): Promise<Array<SingleShuttleSchedule>> => {
   return await api(
     `https://api.hybus.app/timetable/${season}/${week}/${location}`
   )
@@ -72,8 +54,8 @@ const getTimetable = async (
 
 const ComboBox = (props: {
   type: string
-  value: Location | Season | Week
-  func: (arg: Location | Season | Week) => void
+  value: StopLocation | Season | Week
+  func: (arg: StopLocation | Season | Week) => void
   info: string
 }) => {
   const handleContextMenu = (e: { preventDefault: () => void }) => {
@@ -103,7 +85,7 @@ const ComboBox = (props: {
   )
 }
 
-const TimeBox = (props: FilteredTimeTables) => {
+const TimeBox = (props: OrganizedTimetables) => {
   const { t } = useTranslation()
   return (
     <>
@@ -175,15 +157,15 @@ const TimeBox = (props: FilteredTimeTables) => {
 }
 
 const FullTime = () => {
-  const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
+  const [timetable, setTimetable] = useState<Array<SingleShuttleSchedule>>([])
   const [season, setSeason] = useState<Season>(
     (window.localStorage.getItem('season') as Season) || 'semester'
   )
   const [week, setWeek] = useState<Week>(
     (window.localStorage.getItem('week') as Week) || 'week'
   )
-  const [location, setLocation] = useState<Location>(
-    (window.localStorage.getItem('tab') as Location) || 'shuttlecoke_o'
+  const [location, setLocation] = useState<StopLocation>(
+    (window.localStorage.getItem('tab') as StopLocation) || 'shuttlecoke_o'
   )
   const [countChip, setCountChip] = useState(0)
   const { theme } = useDarkmodeContext()
@@ -193,7 +175,7 @@ const FullTime = () => {
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   // let hour = '00'
 
-  const changeLocation = (value: Location) => {
+  const changeLocation = (value: StopLocation) => {
     setLocation(value)
     return
   }
@@ -217,7 +199,10 @@ const FullTime = () => {
       )
     }
 
-    const timetableFiltered: Map<string, Array<SingleSchedule>> = new Map()
+    const timetableFiltered: Map<
+      string,
+      Array<SingleShuttleSchedule>
+    > = new Map()
     // Key: 시간, Value: 일정 [{"time": "HH:MM", "type": "DH"}]
 
     timetable.forEach((schedule) => {
@@ -231,10 +216,10 @@ const FullTime = () => {
       }
     })
 
-    const filteredByType: Array<FilteredTimeTables> = []
+    const filteredByType: Array<OrganizedTimetables> = []
 
     timetableFiltered.forEach((schedules, hour) => {
-      const single: FilteredTimeTables = {
+      const single: OrganizedTimetables = {
         time: hour,
         direct: [],
         circle: [],
@@ -305,7 +290,7 @@ const FullTime = () => {
     })
   }, [location, season, setBackground, week])
 
-  const arrLocation: Array<[Location, string]> = [
+  const arrLocation: Array<[StopLocation, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
     ['subway', t('dest_subway')],
     ['jungang', t('dest_jungang')],

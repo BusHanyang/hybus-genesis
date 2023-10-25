@@ -8,27 +8,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-type SingleSchedule = {
-  time: string
-  type: string
-}
-
-type ScheduleInfo = {
-  location: string
-}
-
-type Period = {
-  start_date: string
-  end_date: string
-}
-
-type Settings = {
-  semester: Period
-  vacation_session: Period
-  vacation: Period
-  holiday: Array<string>
-  halt: Array<string>
-}
+import { Settings, ShuttleStop, SingleShuttleSchedule } from '../data'
 
 dayjs.extend(customParse)
 
@@ -227,13 +207,15 @@ const getSeason = (setting: Settings | null): [string, string] => {
   }
 }
 
-const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
+const timetableApi = async (
+  url: string
+): Promise<Array<SingleShuttleSchedule>> => {
   return await axios
     .get(url)
     .then((response) => {
       if (response.status !== 200) {
         console.log(`Error code: ${response.statusText}`)
-        return new Array<SingleSchedule>()
+        return new Array<SingleShuttleSchedule>()
       }
 
       return response.data
@@ -252,16 +234,16 @@ const timetableApi = async (url: string): Promise<Array<SingleSchedule>> => {
 
       // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
       // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-      return new Array<SingleSchedule>(1)
+      return new Array<SingleShuttleSchedule>(1)
     })
-    .then((res) => res as Array<SingleSchedule>)
+    .then((res) => res as Array<SingleShuttleSchedule>)
 }
 
 const getTimetable = async (
   season: string,
   week: string,
   location: string
-): Promise<Array<SingleSchedule>> => {
+): Promise<Array<SingleShuttleSchedule>> => {
   return await timetableApi(
     `https://api.hybus.app/timetable/${season}/${week}/${location}`
   ).then((res) =>
@@ -272,14 +254,16 @@ const getTimetable = async (
   )
 }
 
-const convertUnixToTime = (sch: SingleSchedule): SingleSchedule => {
+const convertUnixToTime = (
+  sch: SingleShuttleSchedule
+): SingleShuttleSchedule => {
   return {
     ...sch,
     time: dayjs.unix(Number(sch.time)).format('HH:mm'),
   }
 }
 
-const isAfterCurrentTime = (sch: SingleSchedule): boolean => {
+const isAfterCurrentTime = (sch: SingleShuttleSchedule): boolean => {
   const timestamp = new Date().getTime() / 1000
   return Number(sch.time) - timestamp >= 0
 }
@@ -453,8 +437,8 @@ const getColoredElement = (type: string): JSX.Element => {
   return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
 }
 
-export const Card = ({ location }: ScheduleInfo) => {
-  const [timetable, setTimetable] = useState<Array<SingleSchedule>>([])
+export const Card = ({ location }: ShuttleStop) => {
+  const [timetable, setTimetable] = useState<Array<SingleShuttleSchedule>>([])
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
   const [fetched, setFetched] = useState<boolean>(false)
   const [isLoaded, setLoaded] = useState<boolean>(false)

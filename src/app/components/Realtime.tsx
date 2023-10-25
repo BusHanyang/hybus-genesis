@@ -6,20 +6,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-type SingleTrainInfo = {
-  btrainNo: string // Train number
-  subwayId: string // Line 4(1004) or Suin-Bundang(1075)
-  updnLine: string // UpLine 0 or DownLine 1
-  bstatnNm: string // Destination
-  arvlMsg2: string // the number of stations left (Msg)
-  arvlMsg3: string // Current Station
-  arvlCd: string // Status of Current Station
-  recptnDt: string // Update time
-}
-
-type ScheduleInfo = {
-  station: string
-}
+import { SingleTrainInfo, SubwayStop } from '../data'
 
 const TimetableWrapper = styled.div`
   ${tw`h-[14.8rem] hm:h-[15.3rem]`}
@@ -323,7 +310,7 @@ const isExistAPIError = (
   )
 }
 
-export const Realtime = ({ station }: ScheduleInfo) => {
+export const Realtime = ({ station }: SubwayStop) => {
   const [timetable, setTimetable] = useState<Array<SingleTrainInfo>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
   const [isBlink, setBlink] = useState<boolean>(false)
