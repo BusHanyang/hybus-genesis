@@ -1,6 +1,0 @@
-export type { Period } from './period'
-export type { Season } from './season'
-export type { Settings } from './settings'
-export type { ShuttleStop } from './shuttleStop'
-export type { SingleShuttleSchedule } from './singleShuttleSchedule'
-export type { Week } from './week'
