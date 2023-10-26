@@ -1,4 +1,6 @@
 export type { StopLocation } from './common/stopLocation'
+export type { NoticeInfo } from './notice/noticeInfo'
+export type { NoticeType } from './notice/noticeType'
 export type { OrganizedTimetables } from './shuttle/organizedTimetables'
 export type { Period } from './shuttle/period'
 export type { Season } from './shuttle/season'

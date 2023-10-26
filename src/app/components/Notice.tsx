@@ -1,12 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
-type Info = {
-  label: '공지' | '소식'
-  title: string
-  date: string
-  url: string
-}
+import { NoticeInfo } from '../data'
+import { noticeType } from '../data/notice/noticeType'
 
 const Box = (props: {
   url: string
@@ -30,10 +26,10 @@ const Box = (props: {
 }
 
 const Notice = () => {
-  const [data, setData] = useState<Array<Info>>([])
+  const [data, setData] = useState<Array<NoticeInfo>>([])
   const [isLoaded, setLoaded] = useState<boolean>(false)
 
-  const getData = async (): Promise<Array<Info>> => {
+  const getData = async (): Promise<Array<NoticeInfo>> => {
     return await axios
       .get('https://api.hybus.app/announcements/')
       .then((res) => {
@@ -41,9 +37,9 @@ const Notice = () => {
       })
       .catch((err) => {
         console.log(err)
-        return new Array<Info>()
+        return new Array<NoticeInfo>()
       })
-      .then((res) => res as Array<Info>)
+      .then((res) => res as Array<NoticeInfo>)
   }
 
   useEffect(() => {
@@ -70,7 +66,7 @@ const Notice = () => {
           <React.Fragment key={idx}>
             <div key={idx} className={idx === num ? '' : 'hidden'}>
               <Box
-                label={item.label}
+                label={item.label === noticeType.GENERAL ? '공지' : '소식'}
                 title={item.title}
                 date={item.date}
                 url={item.url}
