@@ -4,12 +4,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
+import { Changelog } from '../../data'
 import { Modal } from './modal'
-
-type Changelog = {
-  date: string
-  details: Array<string>
-}
 
 const P = styled.p`
   ${tw`my-[0.2em]`}

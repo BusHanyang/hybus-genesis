@@ -1,4 +1,5 @@
 export type { StopLocation } from './common/stopLocation'
+export type { Changelog } from './modal/changelog'
 export type { NoticeInfo } from './notice/noticeInfo'
 export type { NoticeType } from './notice/noticeType'
 export type { OrganizedTimetables } from './shuttle/organizedTimetables'
