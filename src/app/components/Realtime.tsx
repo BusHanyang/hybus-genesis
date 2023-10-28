@@ -6,7 +6,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { SingleTrainInfo, SubwayStop } from '../data'
+import { SingleTrainInfo, SubwayStop } from '@/data'
 
 const TimetableWrapper = styled.div`
   ${tw`h-[14.8rem] hm:h-[15.3rem]`}

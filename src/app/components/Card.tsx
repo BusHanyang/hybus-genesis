@@ -8,7 +8,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { Settings, ShuttleStop, SingleShuttleSchedule } from '../data'
+import { Settings, ShuttleStop, SingleShuttleSchedule } from '@/data'
 
 dayjs.extend(customParse)
 

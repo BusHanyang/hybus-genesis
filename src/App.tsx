@@ -7,11 +7,12 @@ import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
-import { Card, Fabs } from './app/components'
+import { Card, Fabs } from '@/components'
+import { Realtime } from '@/components/Realtime'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
-import { Realtime } from './app/components/Realtime'
-import { THEME, useDarkmodeContext } from './app/context/ThemeContext'
 
 const FullTime = lazy(() => import('./app/components/FullTime'))
 const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))

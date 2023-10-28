@@ -4,7 +4,8 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { Changelog } from '../../data'
+import { Changelog } from '@/data'
+
 import { Modal } from './modal'
 
 const P = styled.p`

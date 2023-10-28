@@ -1,8 +1,8 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 
-import { NoticeInfo } from '../data'
-import { noticeType } from '../data/notice/noticeType'
+import { NoticeInfo } from '@/data'
+import { noticeType } from '@/data/notice/noticeType'
 
 const Box = (props: {
   url: string

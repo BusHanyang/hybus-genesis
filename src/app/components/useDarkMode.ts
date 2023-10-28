@@ -1,6 +1,6 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { THEME, useDarkmodeContext } from '../context/ThemeContext'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
 export const useDarkMode = () => {
   const { setTheme, theme } = useDarkmodeContext()

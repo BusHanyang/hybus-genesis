@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { useDarkmodeContext } from '../../context/ThemeContext'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 
 const ModalBackground = styled.div<{ isOpen: boolean }>`
   ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}

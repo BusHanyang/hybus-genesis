@@ -3,14 +3,15 @@ import React, { useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
-import { THEME, useDarkmodeContext } from '../context/ThemeContext'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 import {
   OrganizedTimetables,
   Season,
   SingleShuttleSchedule,
   StopLocation,
   Week,
-} from '../data'
+} from '@/data'
+
 import { useDarkMode } from './useDarkMode'
 
 const api = async (url: string): Promise<Array<SingleShuttleSchedule>> => {

@@ -14,8 +14,8 @@ import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 
-import { useDarkmodeContext } from '../../context/ThemeContext'
 import { useDarkMode } from '../useDarkMode'
 
 const Icons = styled.div<{ theme: string }>`
