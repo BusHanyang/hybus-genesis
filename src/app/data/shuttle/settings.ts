@@ -1,4 +1,4 @@
-import { Period } from './period'
+import { Period } from '@/data'
 
 export type Settings = {
   semester: Period

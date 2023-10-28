@@ -1,4 +1,4 @@
-import { NoticeType } from './noticeType'
+import { NoticeType } from '@/data'
 
 export type NoticeInfo = {
   label: NoticeType
