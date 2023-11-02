@@ -5,7 +5,6 @@ import PullToRefresh from 'react-simple-pull-to-refresh'
 import styled from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
-import { useRegisterSW } from 'virtual:pwa-register/react'
 
 import { Card, Fabs } from './app/components'
 import Notice from './app/components/Notice'
@@ -85,7 +84,6 @@ function App() {
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null
   )
-  const intervalMS = 60 * 1000
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
@@ -156,29 +154,6 @@ function App() {
     }
   }
 
-  const { updateServiceWorker } = useRegisterSW({
-    immediate: true,
-    onRegisteredSW(swURL, r) {
-      r &&
-        setInterval(async () => {
-          if (!(!r.installing && navigator)) return
-          if ('connection' in navigator && !navigator.onLine) return
-
-          const resp = await fetch(swURL, {
-            cache: 'no-store',
-            headers: {
-              cache: 'no-store',
-              'cache-control': 'no-cache',
-            },
-          })
-
-          if (resp?.status === 200) {
-            await r.update()
-          }
-        }, intervalMS)
-    },
-  })
-
   useEffect(() => {
     const savedLanguage =
       window.localStorage.getItem('language') || i18n.language
@@ -207,23 +182,10 @@ function App() {
     document.documentElement.classList.add('h-dfull')
   }, [])
 
-  const useMountEffect = () =>
-    useEffect(() => {
-      const triggerUpdate = async () => {
-        await updateServiceWorker()
-        setTriggered(true)
-      }
-      triggerUpdate().then(() => {
-        console.log('App Update Triggered.')
-      })
-    }, [])
-
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
     setTouchPrompt(status)
   }, [])
-
-  useMountEffect()
 
   return (
     <>
