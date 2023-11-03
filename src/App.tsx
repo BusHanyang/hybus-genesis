@@ -120,7 +120,7 @@ function App() {
 
   const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
-  const [realtimeMode, setRealtimeMode] = useState<boolean>()
+  const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
   const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {

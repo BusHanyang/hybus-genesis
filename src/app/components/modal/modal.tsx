@@ -5,27 +5,27 @@ import tw from 'twin.macro'
 
 import { useDarkmodeContext } from '@/context/ThemeContext'
 
-const ModalBackground = styled.div<{ isOpen: boolean }>`
+const ModalBackground = styled.div<{ $isopen: boolean }>`
   ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}
-  ${({ isOpen }) => {
-    return isOpen ? tw`flex items-center` : null
+  ${({ $isopen }) => {
+    return $isopen ? tw`flex items-center` : null
   }}
 `
-const ModalMain = styled(ModalBackground)<{ isOpen: boolean; isAni: boolean }>`
-  ${({ isOpen }) => {
-    return isOpen ? tw`flex items-center animate-modalBgShow` : null
+const ModalMain = styled(ModalBackground)<{ $isopen: boolean; $isani: boolean }>`
+  ${({ $isopen }) => {
+    return $isopen ? tw`flex items-center animate-modalBgShow` : null
   }}
-  ${({ isAni }) => {
-    return isAni ? tw`animate-modalBgClose` : null
+  ${({ $isani }) => {
+    return $isani ? tw`animate-modalBgClose` : null
   }}
 `
 const ModalButton = styled.button`
   ${tw`outline-none cursor-pointer border-0`}
 `
-const ModalSection = styled.section<{ isAni: boolean }>`
+const ModalSection = styled.section<{ $isani: boolean }>`
   ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
-  ${({ isAni }) => {
-    return isAni ? tw`animate-modalClose` : null
+  ${({ $isani }) => {
+    return $isani ? tw`animate-modalClose` : null
   }}
 `
 const ModalHeader = styled.header<{ theme: string }>`
@@ -74,10 +74,10 @@ export const Modal = (props: {
   const { t } = useTranslation()
 
   return (
-    <ModalBackground isOpen={props.open} onClick={handleClickModalBackground}>
-      <ModalMain isOpen={props.open} isAni={props.ani} ref={modalBackgroundRef}>
+    <ModalBackground $isopen={props.open} onClick={handleClickModalBackground}>
+      <ModalMain $isopen={props.open} $isani={props.ani} ref={modalBackgroundRef}>
         {props.open ? (
-          <ModalSection isAni={props.ani}>
+          <ModalSection $isani={props.ani}>
             {props.mTarget === 'Fabs' ? (
               <ModalHeader theme={theme}>{t('changelog')}</ModalHeader>
             ) : (
