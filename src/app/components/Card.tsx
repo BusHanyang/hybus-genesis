@@ -539,7 +539,7 @@ export const Card = ({ location }: ShuttleStop) => {
     } else {
       setTimetableAlive(true)
     }
-  }, [timetable])
+  }, [apiStatus, timetable])
 
   const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouched(true)
