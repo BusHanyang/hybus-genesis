@@ -8,7 +8,21 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { Settings, ShuttleStop, SingleShuttleSchedule } from '@/data'
+import {
+  APIResponse,
+  ResponseStatus,
+  Season,
+  Settings,
+  ShuttleStop,
+  SingleShuttleSchedule,
+  StopLocation,
+  Week,
+} from '@/data'
+import { responseStatus } from '@/data/api/responseStatus'
+import { stopLocationKeys } from '@/data/common/stopLocation'
+import { seasonKeys } from '@/data/shuttle/season'
+import { weekKeys } from '@/data/shuttle/week'
+import { shuttleAPI } from '@/network'
 
 dayjs.extend(customParse)
 
@@ -116,12 +130,12 @@ const isWeekend = (): boolean => {
   return dayjs().day() == 0 || dayjs().day() == 6
 }
 
-const getSeason = (setting: Settings | null): [string, string] => {
+const getSeason = (setting: Settings | null): [Season, Week] => {
   const today = dayjs()
 
   if (setting === null) {
     // Error fetching settings
-    return ['error', '']
+    return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
   } else {
     const [semesterStart, semesterEnd] = [
       dayjs(setting.semester.start_date, 'YYYY-MM-DD'),
@@ -169,16 +183,16 @@ const getSeason = (setting: Settings | null): [string, string] => {
         today.month() == haltDay.month() &&
         today.date() == haltDay.date()
       ) {
-        return ['halt', '']
+        return [seasonKeys.HALT, weekKeys.UNKNOWN]
       }
     }
 
     if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
       // Semester
       if (isWeekend() || isHoliday) {
-        return ['semester', 'weekend']
+        return [seasonKeys.SEMESTER, weekKeys.WEEKEND]
       } else {
-        return ['semester', 'week']
+        return [seasonKeys.SEMESTER, weekKeys.WEEK]
       }
     } else if (
       vacationSessionStart.unix() < todayUnix &&
@@ -186,9 +200,9 @@ const getSeason = (setting: Settings | null): [string, string] => {
     ) {
       // Vacation Session
       if (isWeekend() || isHoliday) {
-        return ['vacation_session', 'weekend']
+        return [seasonKeys.VACATION_SESSION, weekKeys.WEEKEND]
       } else {
-        return ['vacation_session', 'week']
+        return [seasonKeys.VACATION_SESSION, weekKeys.WEEK]
       }
     } else if (
       vacationStart.unix() < todayUnix &&
@@ -196,62 +210,31 @@ const getSeason = (setting: Settings | null): [string, string] => {
     ) {
       // Vacation
       if (isWeekend() || isHoliday) {
-        return ['vacation', 'weekend']
+        return [seasonKeys.VACATION, weekKeys.WEEKEND]
       } else {
-        return ['vacation', 'week']
+        return [seasonKeys.VACATION, weekKeys.WEEK]
       }
     } else {
       // Error!
-      return ['error', '']
+      return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
     }
   }
 }
 
-const timetableApi = async (
-  url: string
-): Promise<Array<SingleShuttleSchedule>> => {
-  return await axios
-    .get(url)
-    .then((response) => {
-      if (response.status !== 200) {
-        console.log(`Error code: ${response.statusText}`)
-        return new Array<SingleShuttleSchedule>()
-      }
-
-      return response.data
-    })
-    .catch((err) => {
-      if (err.response) {
-        // 2XX Errors
-        console.log('Error receiving data', err.data)
-      } else if (err.request) {
-        // No Response
-        console.log('No Response Error', err.request)
-      } else {
-        // Somehow error occurred
-        console.log('Error', err.message)
-      }
-
-      // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
-      // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-      return new Array<SingleShuttleSchedule>(1)
-    })
-    .then((res) => res as Array<SingleShuttleSchedule>)
-}
-
 const getTimetable = async (
-  season: string,
-  week: string,
-  location: string
-): Promise<Array<SingleShuttleSchedule>> => {
-  return await timetableApi(
-    `https://api.hybus.app/timetable/${season}/${week}/${location}`
-  ).then((res) =>
-    res.map((val) => {
-      val['time'] = String(dayjs(val.time, 'HH:mm').unix())
-      return val
-    })
-  )
+  season: Season,
+  week: Week,
+  location: StopLocation
+): Promise<APIResponse<Array<SingleShuttleSchedule>>> => {
+  return await shuttleAPI(season, week, location).then((res) => {
+    if (res.data !== null) {
+      res.data.map((data) => {
+        data['time'] = String(dayjs(data.time, 'HH:mm').unix())
+        return data
+      })
+    }
+    return res
+  })
 }
 
 const convertUnixToTime = (
@@ -443,15 +426,18 @@ export const Card = ({ location }: ShuttleStop) => {
   const [fetched, setFetched] = useState<boolean>(false)
   const [isLoaded, setLoaded] = useState<boolean>(false)
   const [spinning, setSpinning] = useState<boolean>(true)
-  const [season, setSeason] = useState<string>('')
-  const [week, setWeek] = useState<string>('')
+  const [season, setSeason] = useState<Season>(seasonKeys.INIT)
+  const [week, setWeek] = useState<Week>(weekKeys.INIT)
   const [setting, setSetting] = useState<Settings | null>(null)
-  const [currentLocation, setCurrentLocation] = useState<string>('init')
+  const [currentLocation, setCurrentLocation] = useState<StopLocation>(
+    stopLocationKeys.INIT
+  )
   const [touched, setTouched] = useState<boolean>(false)
   const [infoClosed, setInfoClosed] = useState<boolean>(
     window.localStorage.getItem('touch_info') === 'closed'
   )
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
+  const [apiStatus, setApiStatus] = useState<ResponseStatus | null>(null)
 
   // For fetching timetable setting json
   useEffect(() => {
@@ -467,7 +453,15 @@ export const Card = ({ location }: ShuttleStop) => {
   useEffect(() => {
     if (setting != null) {
       const [s, w] = getSeason(setting)
-      if (['semester', 'vacation_session', 'vacation'].includes(s)) {
+      if (
+        (
+          [
+            seasonKeys.SEMESTER,
+            seasonKeys.VACATION_SESSION,
+            seasonKeys.VACATION,
+          ] as Array<Season>
+        ).includes(s)
+      ) {
         window.localStorage.setItem('season', s)
       }
       window.localStorage.setItem('week', w)
@@ -478,14 +472,15 @@ export const Card = ({ location }: ShuttleStop) => {
 
   // For fetching the timetable for the initial time
   useEffect(() => {
-    if (season !== '' && week !== '' && !isLoaded) {
+    if (season !== seasonKeys.INIT && week !== weekKeys.INIT && !isLoaded) {
       getTimetable(season, week, location).then((res) => {
-        setTimetable(res)
+        setTimetable(res.data ?? [])
+        setApiStatus(res.status)
         setSpinning(false)
         setLoaded(true)
         setCurrentLocation(location)
       })
-    } else if (season === 'halt' && !isLoaded) {
+    } else if (season === seasonKeys.HALT && !isLoaded) {
       // If the season is halt, then the timetable will be empty.
       setSpinning(false)
       setLoaded(true)
@@ -495,24 +490,26 @@ export const Card = ({ location }: ShuttleStop) => {
   // For fetching the timetable when tab is changed (Efficient)
   useEffect(() => {
     if (
-      season !== '' &&
-      week !== '' &&
+      season !== seasonKeys.INIT &&
+      week !== weekKeys.INIT &&
       isLoaded &&
-      currentLocation !== 'init' &&
+      currentLocation !== stopLocationKeys.INIT &&
       location !== currentLocation
     ) {
       setSpinning(true)
       setTimetable([])
+      setApiStatus(null)
       getTimetable(season, week, location).then((res) => {
-        setTimetable(res)
+        setTimetable(res.data ?? [])
+        setApiStatus(res.status)
         setSpinning(false)
         setCurrentLocation(location)
         setCurrentTime(new Date().getTime())
       })
     } else if (
-      season === 'halt' &&
+      season === seasonKeys.HALT &&
       isLoaded &&
-      currentLocation !== 'init' &&
+      currentLocation !== stopLocationKeys.INIT &&
       location !== currentLocation
     ) {
       setTimetable([])
@@ -521,6 +518,7 @@ export const Card = ({ location }: ShuttleStop) => {
     }
   }, [currentLocation, isLoaded, location, season, week])
 
+  // Recalculate & Rerender every second
   useEffect(() => {
     const timer = setTimeout(() => {
       setCurrentTime(new Date().getTime())
@@ -529,11 +527,12 @@ export const Card = ({ location }: ShuttleStop) => {
     return () => clearTimeout(timer)
   }, [timetable, currentTime])
 
+  // For info card to not show when error or no shuttle available
   useEffect(() => {
     const filtered = timetable.filter((val) => isAfterCurrentTime(val))
     if (
       timetable.length === 0 ||
-      (timetable.length === 1 && timetable[0] == null) ||
+      apiStatus !== responseStatus.SUCCESS ||
       filtered.length === 0
     ) {
       setTimetableAlive(false)
@@ -575,7 +574,7 @@ export const Card = ({ location }: ShuttleStop) => {
     const { t } = useTranslation()
 
     if (!spinning) {
-      if (timetable.length === 1 && timetable[0] == null) {
+      if (apiStatus !== responseStatus.SUCCESS) {
         // Timetable API error
         return (
           <>

@@ -10,6 +10,7 @@ import { useRegisterSW } from 'virtual:pwa-register/react'
 import { Card, Fabs } from '@/components'
 import { Realtime } from '@/components/Realtime'
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import { StopLocation } from '@/data'
 
 import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
@@ -288,8 +289,8 @@ function App() {
                           <>
                             <Card
                               location={
-                                window.localStorage.getItem('tab') ||
-                                'shuttlecoke_o'
+                                (window.localStorage.getItem('tab') ||
+                                  'shuttlecoke_o') as StopLocation
                               }
                             />
                           </>
