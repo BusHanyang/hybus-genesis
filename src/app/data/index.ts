@@ -1,5 +1,3 @@
-export type { APIResponse } from './api/apiResponse'
-export type { ResponseStatus } from './api/responseStatus'
 export type { StopLocation } from './common/stopLocation'
 export type { Changelog } from './modal/changelog'
 export type { NoticeInfo } from './notice/noticeInfo'
