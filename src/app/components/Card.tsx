@@ -390,7 +390,6 @@ export const Card = ({ location }: ShuttleStop) => {
   })
   const [season, week] =
     setting.data !== undefined ? getSeason(setting.data) : [null, null]
-  // TODO: Save Season & Week in LocalStorage
 
   const timetable = useQuery({
     queryKey: ['shuttle', season, week, location],
@@ -431,6 +430,17 @@ export const Card = ({ location }: ShuttleStop) => {
       setTimetableAlive(true)
     }
   }, [timetable.data, timetable.status])
+
+  // Set week and season to localStorage
+  useEffect(() => {
+    if (season !== null) {
+      window.localStorage.setItem('season', season)
+    }
+
+    if (week !== null) {
+      window.localStorage.setItem('week', week)
+    }
+  }, [season, week])
 
   const handleActionStart = (
     e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>
