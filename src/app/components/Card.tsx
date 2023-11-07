@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
@@ -9,8 +9,6 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 
 import {
-  APIResponse,
-  ResponseStatus,
   Season,
   Settings,
   ShuttleStop,
@@ -18,11 +16,9 @@ import {
   StopLocation,
   Week,
 } from '@/data'
-import { responseStatus } from '@/data/api/responseStatus'
-import { stopLocationKeys } from '@/data/common/stopLocation'
 import { seasonKeys } from '@/data/shuttle/season'
 import { weekKeys } from '@/data/shuttle/week'
-import { shuttleAPI } from '@/network'
+import { settingAPI, shuttleAPI } from '@/network'
 
 dayjs.extend(customParse)
 
@@ -92,39 +88,6 @@ const TimeClickableNotifyText = styled.div`
 const ApiStatusButton = styled.button`
   ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
 `
-
-const getSettings = async (): Promise<null | Settings> => {
-  return await axios
-    .get('https://api.hybus.app/settings/')
-    .then((response) => {
-      if (response.status !== 200) {
-        console.log(`Error code: ${response.statusText}`)
-        return null
-      }
-
-      return response.data
-    })
-    .catch((err) => {
-      if (err.response) {
-        // 4XX Errors
-        console.log('Error receiving data', err.data)
-      } else if (err.request) {
-        // No Response
-        console.log('No Response Error', err.request)
-      } else {
-        // Somehow error occurred
-        console.log('Error', err.message)
-      }
-
-      return null
-    })
-    .then((result) => {
-      if (result === null) {
-        return null
-      }
-      return result as Settings
-    })
-}
 
 const isWeekend = (): boolean => {
   return dayjs().day() == 0 || dayjs().day() == 6
@@ -225,10 +188,10 @@ const getTimetable = async (
   season: Season,
   week: Week,
   location: StopLocation
-): Promise<APIResponse<Array<SingleShuttleSchedule>>> => {
+): Promise<Array<SingleShuttleSchedule>> => {
   return await shuttleAPI(season, week, location).then((res) => {
-    if (res.data !== null) {
-      res.data.map((data) => {
+    if (res !== null) {
+      res.map((data) => {
         data['time'] = String(dayjs(data.time, 'HH:mm').unix())
         return data
       })
@@ -421,102 +384,30 @@ const getColoredElement = (type: string): JSX.Element => {
 }
 
 export const Card = ({ location }: ShuttleStop) => {
-  const [timetable, setTimetable] = useState<Array<SingleShuttleSchedule>>([])
+  const setting = useQuery({
+    queryKey: ['settings'],
+    queryFn: settingAPI,
+  })
+  const [season, week] =
+    setting.data !== undefined ? getSeason(setting.data) : [null, null]
+  // TODO: Save Season & Week in LocalStorage
+
+  const timetable = useQuery({
+    queryKey: ['shuttle', season, week, location],
+    queryFn: async () => {
+      if (season === null || week === null) {
+        return Array<SingleShuttleSchedule>()
+      }
+      return getTimetable(season, week, location)
+    },
+    enabled: !!season && !!week && !!location,
+  })
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
-  const [fetched, setFetched] = useState<boolean>(false)
-  const [isLoaded, setLoaded] = useState<boolean>(false)
-  const [spinning, setSpinning] = useState<boolean>(true)
-  const [season, setSeason] = useState<Season>(seasonKeys.INIT)
-  const [week, setWeek] = useState<Week>(weekKeys.INIT)
-  const [setting, setSetting] = useState<Settings | null>(null)
-  const [currentLocation, setCurrentLocation] = useState<StopLocation>(
-    stopLocationKeys.INIT
-  )
   const [touched, setTouched] = useState<boolean>(false)
   const [infoClosed, setInfoClosed] = useState<boolean>(
     window.localStorage.getItem('touch_info') === 'closed'
   )
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
-  const [apiStatus, setApiStatus] = useState<ResponseStatus | null>(null)
-
-  // For fetching timetable setting json
-  useEffect(() => {
-    if (!fetched && setting == null) {
-      getSettings().then((s) => {
-        setSetting(s)
-        setFetched(true)
-      })
-    }
-  }, [fetched, setting])
-
-  // For setting season & week values
-  useEffect(() => {
-    if (setting != null) {
-      const [s, w] = getSeason(setting)
-      if (
-        (
-          [
-            seasonKeys.SEMESTER,
-            seasonKeys.VACATION_SESSION,
-            seasonKeys.VACATION,
-          ] as Array<Season>
-        ).includes(s)
-      ) {
-        window.localStorage.setItem('season', s)
-      }
-      window.localStorage.setItem('week', w)
-      setSeason(s)
-      setWeek(w)
-    }
-  }, [setting, currentTime])
-
-  // For fetching the timetable for the initial time
-  useEffect(() => {
-    if (season !== seasonKeys.INIT && week !== weekKeys.INIT && !isLoaded) {
-      getTimetable(season, week, location).then((res) => {
-        setTimetable(res.data ?? [])
-        setApiStatus(res.status)
-        setSpinning(false)
-        setLoaded(true)
-        setCurrentLocation(location)
-      })
-    } else if (season === seasonKeys.HALT && !isLoaded) {
-      // If the season is halt, then the timetable will be empty.
-      setSpinning(false)
-      setLoaded(true)
-    }
-  }, [isLoaded, location, season, week])
-
-  // For fetching the timetable when tab is changed (Efficient)
-  useEffect(() => {
-    if (
-      season !== seasonKeys.INIT &&
-      week !== weekKeys.INIT &&
-      isLoaded &&
-      currentLocation !== stopLocationKeys.INIT &&
-      location !== currentLocation
-    ) {
-      setSpinning(true)
-      setTimetable([])
-      setApiStatus(null)
-      getTimetable(season, week, location).then((res) => {
-        setTimetable(res.data ?? [])
-        setApiStatus(res.status)
-        setSpinning(false)
-        setCurrentLocation(location)
-        setCurrentTime(new Date().getTime())
-      })
-    } else if (
-      season === seasonKeys.HALT &&
-      isLoaded &&
-      currentLocation !== stopLocationKeys.INIT &&
-      location !== currentLocation
-    ) {
-      setTimetable([])
-      setCurrentLocation(location)
-      setCurrentTime(new Date().getTime())
-    }
-  }, [currentLocation, isLoaded, location, season, week])
 
   // Recalculate & Rerender every second
   useEffect(() => {
@@ -525,37 +416,34 @@ export const Card = ({ location }: ShuttleStop) => {
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [timetable, currentTime])
+  }, [timetable.data, currentTime])
 
   // For info card to not show when error or no shuttle available
   useEffect(() => {
-    const filtered = timetable.filter((val) => isAfterCurrentTime(val))
+    const filtered = timetable.data?.filter((val) => isAfterCurrentTime(val))
     if (
-      timetable.length === 0 ||
-      apiStatus !== responseStatus.SUCCESS ||
-      filtered.length === 0
+      timetable.data?.length === 0 ||
+      timetable.status !== 'success' ||
+      filtered?.length === 0
     ) {
       setTimetableAlive(false)
     } else {
       setTimetableAlive(true)
     }
-  }, [apiStatus, timetable])
+  }, [timetable.data, timetable.status])
 
-  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleActionStart = (
+    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>
+  ) => {
     setTouched(true)
   }
 
-  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+  const handleActionEnd = (
+    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>
+  ) => {
     setTouched(false)
   }
 
-  const handleMouseDown = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTouched(true)
-  }
-
-  const handleMouseUp = (e: React.MouseEvent<HTMLDivElement>) => {
-    setTouched(false)
-  }
   const handleContextMenu = (
     e: React.MouseEvent<HTMLImageElement, MouseEvent>
   ) => {
@@ -573,97 +461,102 @@ export const Card = ({ location }: ShuttleStop) => {
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
-    if (!spinning) {
-      if (apiStatus !== responseStatus.SUCCESS) {
-        // Timetable API error
-        return (
-          <>
-            <NoTimetable>
-              <NoTimetableInner>
-                {t('api_error')}
-                <br />
-                <ApiStatusButton onClick={openApiMonitor}>
-                  {t('status_check')}
-                </ApiStatusButton>
-              </NoTimetableInner>
-            </NoTimetable>
-          </>
-        )
-      }
-
-      if (timetable.length === 0) {
-        // Timetable doesn't exist
-        return (
-          <>
-            <NoTimetable>
-              <NoTimetableInner>{t('no_today')}</NoTimetableInner>
-            </NoTimetable>
-          </>
-        )
-      }
-
-      const filtered = timetable.filter((val) => isAfterCurrentTime(val))
-      const reverted = filtered.map((val) => convertUnixToTime(val))
-
-      if (filtered.length === 0) {
-        // Buses are done for today. User should refresh after midnight.
-        return (
-          <>
-            <NoTimetable>
-              <NoTimetableInner>{t('end_today')}</NoTimetableInner>
-            </NoTimetable>
-          </>
-        )
-      }
-      // Otherwise - normal case
-      return (
-        <>
-          {filtered.map((val, idx) => {
-            if (idx < 5) {
-              return (
-                <React.Fragment key={idx}>
-                  <SingleTimetable>
-                    {getColoredElement(val.type)}
-                    <TimeLeftWrapper
-                      className={`${showActualTime ? 'touched' : ''}`}
-                    >
-                      {showActualTime ? (
-                        <TimeClickableConversionText>
-                          {reverted[idx].time.split(':')[0] +
-                            t('hour') +
-                            reverted[idx].time.split(':')[1] +
-                            t('minute') +
-                            ' ' +
-                            t('departure')}
-                        </TimeClickableConversionText>
-                      ) : (
-                        <TimeClickableConversionText>
-                          {secondToTimeFormat(
-                            Math.floor(
-                              Number(val.time) - Number(currentTime) / 1000
-                            )
-                          ) +
-                            ' ' +
-                            t('left')}
-                        </TimeClickableConversionText>
-                      )}
-                    </TimeLeftWrapper>
-                    <ArrowWrapper>▶</ArrowWrapper>
-                    <DestinationWrapper>
-                      {getBusDestination(val.type, location)}
-                    </DestinationWrapper>
-                  </SingleTimetable>
-                </React.Fragment>
-              )
-            } else {
-              return <React.Fragment key={idx} />
-            }
-          })}
-        </>
-      )
-    } else {
+    if (timetable.data === undefined) {
       return <></>
     }
+
+    if (timetable.isPending) {
+      return <></>
+    }
+
+    if (timetable.status === 'error') {
+      // Timetable API error
+      return (
+        <>
+          <NoTimetable>
+            <NoTimetableInner>
+              {t('api_error')}
+              <br />
+              <ApiStatusButton onClick={openApiMonitor}>
+                {t('status_check')}
+              </ApiStatusButton>
+            </NoTimetableInner>
+          </NoTimetable>
+        </>
+      )
+    }
+
+    if (timetable.data.length === 0) {
+      // Timetable doesn't exist
+      return (
+        <>
+          <NoTimetable>
+            <NoTimetableInner>{t('no_today')}</NoTimetableInner>
+          </NoTimetable>
+        </>
+      )
+    }
+
+    const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+    const reverted = filtered.map((val) => convertUnixToTime(val))
+
+    if (filtered.length === 0) {
+      // Buses are done for today. User should refresh after midnight.
+      return (
+        <>
+          <NoTimetable>
+            <NoTimetableInner>{t('end_today')}</NoTimetableInner>
+          </NoTimetable>
+        </>
+      )
+    }
+
+    // Otherwise - normal case
+    return (
+      <>
+        {filtered.map((val, idx) => {
+          if (idx < 5) {
+            return (
+              <React.Fragment key={idx}>
+                <SingleTimetable>
+                  {getColoredElement(val.type)}
+                  <TimeLeftWrapper
+                    className={`${showActualTime ? 'touched' : ''}`}
+                  >
+                    {showActualTime ? (
+                      <TimeClickableConversionText>
+                        {reverted[idx].time.split(':')[0] +
+                          t('hour') +
+                          reverted[idx].time.split(':')[1] +
+                          t('minute') +
+                          ' ' +
+                          t('departure')}
+                      </TimeClickableConversionText>
+                    ) : (
+                      <TimeClickableConversionText>
+                        {secondToTimeFormat(
+                          Math.floor(
+                            Number(val.time) - Number(currentTime) / 1000
+                          )
+                        ) +
+                          ' ' +
+                          t('left')}
+                      </TimeClickableConversionText>
+                    )}
+                  </TimeLeftWrapper>
+                  <ArrowWrapper>▶</ArrowWrapper>
+                  <DestinationWrapper>
+                    {getBusDestination(val.type, location)}
+                  </DestinationWrapper>
+                </SingleTimetable>
+              </React.Fragment>
+            )
+          } else {
+            return <React.Fragment key={idx} />
+          }
+        })}
+      </>
+    )
   }
 
   return (
@@ -686,19 +579,19 @@ export const Card = ({ location }: ShuttleStop) => {
         </button>
       </HeadlineWrapper>
       <MainTimeTableWrapper
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-        onMouseDown={handleMouseDown}
-        onMouseUp={handleMouseUp}
+        onTouchStart={handleActionStart}
+        onTouchEnd={handleActionEnd}
+        onMouseDown={handleActionStart}
+        onMouseUp={handleActionEnd}
       >
         <MainTimetable>
-          {spinning ? (
+          {timetable.isPending ? (
             <NoTimetable>
               <SyncLoader
                 color="#AFBDCE"
                 margin={4}
                 size={8}
-                loading={spinning}
+                loading={timetable.isPending}
                 cssOverride={tw`table-cell align-middle`}
               />
             </NoTimetable>
@@ -709,7 +602,9 @@ export const Card = ({ location }: ShuttleStop) => {
         </MainTimetable>
       </MainTimeTableWrapper>
       <OnTouchAvailableWrapper
-        className={spinning || infoClosed || !timetableAlive ? 'hidden' : ''}
+        className={
+          timetable.isPending || infoClosed || !timetableAlive ? 'hidden' : ''
+        }
       >
         {touched ? (
           <TimeClickableNotifyText>
