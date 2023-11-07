@@ -1,1 +1,1 @@
-export { shuttleAPI } from './shuttleAPI'
+export { settingAPI, shuttleAPI } from './shuttle'

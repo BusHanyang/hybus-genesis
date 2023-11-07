@@ -1,6 +1,6 @@
 import {
-  APIResponse,
   Season,
+  Settings,
   SingleShuttleSchedule,
   StopLocation,
   Week,
@@ -11,8 +11,12 @@ export const shuttleAPI = async (
   season: Season,
   week: Week,
   location: StopLocation
-): Promise<APIResponse<Array<SingleShuttleSchedule>>> => {
-  return apiHandler<APIResponse<Array<SingleShuttleSchedule>>>(
+): Promise<Array<SingleShuttleSchedule>> => {
+  return apiHandler<Array<SingleShuttleSchedule>>(
     `/timetable/${season}/${week}/${location}`
   )
+}
+
+export const settingAPI = async (): Promise<Settings> => {
+  return apiHandler<Settings>('/settings/')
 }
