@@ -344,20 +344,20 @@ function App() {
                       </CardView>
 
                       <CardView className="p-4 h-12 hm:p-2 flex">
-                        <div>
-                          <Circle className="bg-chip-red mr-2 hsm:mx-2" />
+                        <div className="flex flex-wrap place-content-center items-center">
+                          <Circle className="bg-chip-red mr-2 hsm:mx-2 hsm:my-1" />
                           <RouteText>{t('cycle_index')}</RouteText>
                         </div>
-                        <div>
-                          <Circle className="bg-chip-blue mx-2" />
+                        <div className="flex flex-wrap place-content-center items-center">
+                          <Circle className="bg-chip-blue mx-2 hsm:my-1" />
                           <RouteText>{t('direct_index')}</RouteText>
                         </div>
-                        <div>
-                          <Circle className="bg-chip-green mx-2" />
+                        <div className="flex flex-wrap place-content-center items-center">
+                          <Circle className="bg-chip-green mx-2 hsm:my-1" />
                           <RouteText>{t('yesulin_index')}</RouteText>
                         </div>
-                        <div>
-                          <Circle className="bg-chip-purple mx-2" />
+                        <div className="flex flex-wrap place-content-center items-center">
+                          <Circle className="bg-chip-purple mx-2 hsm:my-1" />
                           <RouteText>{t('jungang_index')}</RouteText>
                         </div>
                       </CardView>
