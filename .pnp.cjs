@@ -64,7 +64,7 @@ const RAW_RUNTIME_STATE =
           ["recoil", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:0.7.7"],\
           ["sass", "npm:1.69.5"],\
           ["styled-components", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:6.1.3"],\
-          ["styled-reset", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.4.2"],\
+          ["styled-reset", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.5.1"],\
           ["tailwindcss", "npm:3.4.0"],\
           ["twin.macro", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:3.4.0"],\
           ["typescript", "patch:typescript@npm%3A4.7.2#optional!builtin<compat/typescript>::version=4.7.2&hash=65a307"],\
@@ -5991,7 +5991,7 @@ const RAW_RUNTIME_STATE =
           ["recoil", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:0.7.7"],\
           ["sass", "npm:1.69.5"],\
           ["styled-components", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:6.1.3"],\
-          ["styled-reset", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.4.2"],\
+          ["styled-reset", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.5.1"],\
           ["tailwindcss", "npm:3.4.0"],\
           ["twin.macro", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:3.4.0"],\
           ["typescript", "patch:typescript@npm%3A4.7.2#optional!builtin<compat/typescript>::version=4.7.2&hash=65a307"],\
@@ -8916,17 +8916,17 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["styled-reset", [\
-      ["npm:4.4.2", {\
-        "packageLocation": "./.yarn/cache/styled-reset-npm-4.4.2-6f715641a7-1ee15f6391.zip/node_modules/styled-reset/",\
+      ["npm:4.5.1", {\
+        "packageLocation": "./.yarn/cache/styled-reset-npm-4.5.1-4f68722d7b-ff6c5bbc73.zip/node_modules/styled-reset/",\
         "packageDependencies": [\
-          ["styled-reset", "npm:4.4.2"]\
+          ["styled-reset", "npm:4.5.1"]\
         ],\
         "linkType": "SOFT"\
       }],\
-      ["virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.4.2", {\
-        "packageLocation": "./.yarn/__virtual__/styled-reset-virtual-053f8f21c5/0/cache/styled-reset-npm-4.4.2-6f715641a7-1ee15f6391.zip/node_modules/styled-reset/",\
+      ["virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.5.1", {\
+        "packageLocation": "./.yarn/__virtual__/styled-reset-virtual-563e9a5f98/0/cache/styled-reset-npm-4.5.1-4f68722d7b-ff6c5bbc73.zip/node_modules/styled-reset/",\
         "packageDependencies": [\
-          ["styled-reset", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.4.2"],\
+          ["styled-reset", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:4.5.1"],\
           ["@types/styled-components", "npm:5.1.34"],\
           ["styled-components", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:6.1.3"]\
         ],\

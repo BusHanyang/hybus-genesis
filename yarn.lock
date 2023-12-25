@@ -4279,7 +4279,7 @@ __metadata:
     recoil: "npm:^0.7.7"
     sass: "npm:^1.55.0"
     styled-components: "npm:^6.1.3"
-    styled-reset: "npm:4.4.2"
+    styled-reset: "npm:^4.5.1"
     tailwindcss: "npm:^3.4.0"
     twin.macro: "npm:^3.4.0"
     typescript: "npm:4.7.2"
@@ -6753,12 +6753,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-reset@npm:4.4.2":
-  version: 4.4.2
-  resolution: "styled-reset@npm:4.4.2"
+"styled-reset@npm:^4.5.1":
+  version: 4.5.1
+  resolution: "styled-reset@npm:4.5.1"
   peerDependencies:
-    styled-components: ">=4.0.0 || >=5.0.0"
-  checksum: 1ee15f63911795d612548d9c77840c0b055ddb168199fb2b6147ab15a5e1a7ce67df573b224c4cabd98f303c61fd05100f9c3653ac011098f7d09b8118226183
+    styled-components: ">=4.0.0 || >=5.0.0 || >=6.0.0"
+  checksum: ff6c5bbc738017a535a5e74cc3b2e7112652691c8e4acae700fe3d051f870035e2d911e6629a9a626349ccc58ba9842b83793bd9111f4e1c9e1fa695f773d2b8
   languageName: node
   linkType: hard
 
