@@ -2,6 +2,11 @@
 
 > HYBUS Project based on React
 
+![up](https://monitor.hybus.app/api/badge/4/status) 
+![uptime](https://monitor.hybus.app/api/badge/4/uptime) 
+![avg_ping](https://monitor.hybus.app/api/badge/4/ping)
+
+
 ## Picture
 ### Main page 
 <img width="370" alt="main page" src="https://user-images.githubusercontent.com/59571464/199035127-8f9b67ca-81b3-40e6-8662-5750282915b3.png">
