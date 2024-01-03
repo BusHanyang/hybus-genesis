@@ -1,5 +1,6 @@
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import React, { useLayoutEffect, useState } from 'react'
+import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 
@@ -11,47 +12,9 @@ import {
   StopLocation,
   Week,
 } from '@/data'
+import { shuttleAPI } from '@/network'
 
 import { useDarkMode } from './useDarkMode'
-
-const api = async (url: string): Promise<Array<SingleShuttleSchedule>> => {
-  return await axios
-    .get(url)
-    .then((response) => {
-      if (response.status !== 200) {
-        console.log(`Error code: ${response.statusText}`)
-
-        throw new Error(response.statusText)
-      }
-      return response.data
-    })
-    .catch((err) => {
-      if (err.response) {
-        // 2XX Errors
-        console.log('Error receiving data', err.data)
-      } else if (err.request) {
-        // No Response
-        console.log('No Response Error', err.request)
-      } else {
-        // Somehow error occurred
-        console.log('Error', err.message)
-      }
-      // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
-      // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-      return new Array<SingleShuttleSchedule>(1)
-    })
-    .then((res) => res as Array<SingleShuttleSchedule>)
-}
-
-const getTimetable = async (
-  season: Season,
-  week: Week,
-  location: StopLocation
-): Promise<Array<SingleShuttleSchedule>> => {
-  return await api(
-    `https://api.hybus.app/timetable/${season}/${week}/${location}`
-  )
-}
 
 const ComboBox = (props: {
   type: string
@@ -62,6 +25,7 @@ const ComboBox = (props: {
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
+
   return (
     <>
       <div
@@ -107,7 +71,7 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-red h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+            <div className="self-center bg-chip-red h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
               {t('cycle')}
             </div>
             <div className="self-center text-left ml-3 col-span-4">
@@ -158,7 +122,6 @@ const TimeBox = (props: OrganizedTimetables) => {
 }
 
 const FullTime = () => {
-  const [timetable, setTimetable] = useState<Array<SingleShuttleSchedule>>([])
   const [season, setSeason] = useState<Season>(
     (window.localStorage.getItem('season') as Season) || 'semester'
   )
@@ -168,6 +131,11 @@ const FullTime = () => {
   const [location, setLocation] = useState<StopLocation>(
     (window.localStorage.getItem('tab') as StopLocation) || 'shuttlecoke_o'
   )
+  const timetable = useQuery({
+    queryKey: ['shuttle', season, week, location],
+    queryFn: async () => await shuttleAPI(season, week, location),
+  })
+
   const [countChip, setCountChip] = useState(0)
   const { theme } = useDarkmodeContext()
   const { setBackground } = useDarkMode()
@@ -189,8 +157,8 @@ const FullTime = () => {
     return
   }
 
-  const renderTimebox = () => {
-    if (timetable.length === 0) {
+  const renderTimeBox = () => {
+    if (timetable.data?.length === 0) {
       return (
         <div className="min-h-screen">
           <div className="h-32 hm:h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]">
@@ -206,7 +174,7 @@ const FullTime = () => {
     > = new Map()
     // Key: 시간, Value: 일정 [{"time": "HH:MM", "type": "DH"}]
 
-    timetable.forEach((schedule) => {
+    timetable.data?.forEach((schedule) => {
       const spt = schedule.time.split(':')
       const hour = spt[0]
 
@@ -285,11 +253,13 @@ const FullTime = () => {
 
   useLayoutEffect(() => {
     setBackground()
-    getTimetable(season, week, location).then((res) => {
+  })
+
+  useEffect(() => {
+    if (timetable.status !== 'pending') {
       setCountChip(0)
-      setTimetable(res)
-    })
-  }, [location, season, setBackground, week])
+    }
+  }, [timetable.status])
 
   const arrLocation: Array<[StopLocation, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
@@ -397,7 +367,7 @@ const FullTime = () => {
               </div>
             </div>
           </div>
-          <div className="pb-6">{renderTimebox()}</div>
+          <div className="pb-6">{renderTimeBox()}</div>
         </div>
       </div>
     </>
