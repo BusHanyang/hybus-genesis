@@ -393,7 +393,7 @@ export const Card = ({ location }: ShuttleStop) => {
 
   const timetable = useQuery({
     queryKey: ['shuttle', season, week, location],
-    queryFn: async () => {
+    queryFn: () => {
       if (season === null || week === null) {
         return Array<SingleShuttleSchedule>()
       }
