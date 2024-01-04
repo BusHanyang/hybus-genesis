@@ -1,8 +1,8 @@
-import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useState } from 'react'
 
-import { NoticeInfo } from '@/data'
 import { noticeType } from '@/data/notice/noticeType'
+import { noticeAPI } from '@/network/notice'
 
 const Box = (props: {
   url: string
@@ -26,42 +26,22 @@ const Box = (props: {
 }
 
 const Notice = () => {
-  const [data, setData] = useState<Array<NoticeInfo>>([])
-  const [isLoaded, setLoaded] = useState<boolean>(false)
-
-  const getData = async (): Promise<Array<NoticeInfo>> => {
-    return await axios
-      .get('https://api.hybus.app/announcements/')
-      .then((res) => {
-        return res.data
-      })
-      .catch((err) => {
-        console.log(err)
-        return new Array<NoticeInfo>()
-      })
-      .then((res) => res as Array<NoticeInfo>)
-  }
-
-  useEffect(() => {
-    if (!isLoaded) {
-      getData().then((res) => {
-        setData(res)
-        setLoaded(true)
-      })
-    }
-  }, [isLoaded])
+  const notices = useQuery({
+    queryKey: ['notice'],
+    queryFn: noticeAPI,
+  })
 
   const [num, changeNum] = useState<number>(0)
 
   useEffect(() => {
     setTimeout(() => {
-      changeNum((num + 1) % data.length)
+      changeNum((num + 1) % (notices.data?.length ?? 1))
     }, 7000)
-  }, [data.length, num])
+  }, [notices.data?.length, num])
 
   return (
     <div className="relative w-full">
-      {data.map((item, idx) => {
+      {notices.data?.map((item, idx) => {
         return (
           <React.Fragment key={idx}>
             <div key={idx} className={idx === num ? '' : 'hidden'}>
