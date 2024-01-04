@@ -253,10 +253,10 @@ const isExistAPIError = (
   station: string
 ): boolean => {
   // Open API's own data error correction
-  const Now: Date = new Date()
-  const Lastest: Date = new Date(recptnDt)
+  const currentDate: Date = new Date()
+  const latestDate: Date = new Date(recptnDt)
 
-  const diffMSec = Now.getTime() - Lastest.getTime()
+  const diffMSec = currentDate.getTime() - latestDate.getTime()
   //const diffMin = diffMSec / (60 * 1000)
 
   return (
