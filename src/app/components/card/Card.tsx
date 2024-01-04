@@ -51,7 +51,7 @@ const SingleTimetable = styled.div`
 `
 
 const OnTouchAvailableWrapper = styled.div`
-  ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mx-auto p-1.5 leading-5`}
+  ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mx-auto p-1.5 leading-5 overflow-hidden`}
 `
 
 const TimeLeftWrapper = styled.span`
