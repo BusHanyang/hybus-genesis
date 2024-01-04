@@ -1,4 +1,4 @@
-import axios from 'axios'
+import { useQuery } from '@tanstack/react-query'
 import { t, TFunction } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -6,7 +6,8 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { SingleTrainInfo, SubwayStop } from '@/data'
+import { SubwayStop } from '@/data'
+import { subwayAPI } from '@/network/subway'
 
 const TimetableWrapper = styled.div`
   ${tw`h-[14.8rem] hm:h-[15.3rem]`}
@@ -219,49 +220,6 @@ const getLineMarkElement = (line: string): JSX.Element => {
     )
 }
 
-const fetchRealtimeInfo = async (
-  staName: string
-): Promise<Array<SingleTrainInfo>> => {
-  const url = `https://api.hybus.app/subway/1/9/${
-    staName === '한대앞' ? 'hanyang_univ' : 'jungang'
-  }`
-
-  return await axios
-    .get(url)
-    .then((response) => {
-      if (response.status !== 200) {
-        console.log(`Error code: ${response.statusText}`)
-        return new Array<SingleTrainInfo>()
-      }
-
-      if (response.data.code === 'INFO-200') {
-        return new Array<SingleTrainInfo>()
-      } else if (response.data.code === 'ERROR-337') {
-        console.log(`Error code: 337`)
-        console.log(`Error Msg: ${response.data.message}`)
-        return new Array<SingleTrainInfo>(1)
-      }
-      return response.data.realtimeArrivalList
-    })
-    .catch((err) => {
-      if (err.response) {
-        // 2XX Errors
-        console.log('Error receiving data', err.data)
-      } else if (err.request) {
-        // No Response
-        console.log('No Response Error', err.request)
-      } else {
-        // Somehow error occurred
-        console.log('Error', err.message)
-      }
-
-      // Setting array length to 1 makes useEffect to identify that the api has fetched the timetable,
-      // but not successfully. If the array length is 0, then due to useEffect the api will call twice.
-      return new Array<SingleTrainInfo>(1)
-    })
-    .then((res) => res as Array<SingleTrainInfo>)
-}
-
 const openRailblue = (btrainNo: string): void => {
   const today = new Date()
   const year = today.getFullYear()
@@ -311,56 +269,13 @@ const isExistAPIError = (
 }
 
 export const Realtime = ({ station }: SubwayStop) => {
-  const [timetable, setTimetable] = useState<Array<SingleTrainInfo>>([])
-  const [isLoaded, setLoaded] = useState<boolean>(false)
+  const timetable = useQuery({
+    queryKey: ['subway_timetable', station],
+    queryFn: async () => await subwayAPI(station),
+    refetchInterval: 10000,
+  })
   const [isBlink, setBlink] = useState<boolean>(false)
-  const [currentLocation, setCurrentLocation] = useState<string>('init')
-  const [spinning, setSpinning] = useState<boolean>(true)
-
   const { t, i18n } = useTranslation()
-
-  // For fetching the timetable for the initial time
-  useEffect(() => {
-    if (!isLoaded) {
-      fetchRealtimeInfo(station.trim()).then((res) => {
-        setTimetable(res)
-        setSpinning(false)
-        setLoaded(true)
-        setCurrentLocation(station.trim())
-      })
-    }
-  }, [isLoaded, station])
-
-  // For fetching the timetable when tab is changed (Efficient)
-  useEffect(() => {
-    if (
-      isLoaded &&
-      currentLocation !== 'init' &&
-      station.trim() !== currentLocation
-    ) {
-      setSpinning(true)
-      setTimetable([])
-      fetchRealtimeInfo(station.trim()).then((res) => {
-        setTimetable(res)
-        setSpinning(false)
-        setCurrentLocation(station.trim())
-      })
-    }
-  }, [currentLocation, isLoaded, station])
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchRealtimeInfo(station.trim()).then((res) => {
-        setTimetable(res)
-        setSpinning(false)
-        setLoaded(true)
-      })
-    }, 10000)
-
-    return () => {
-      clearTimeout(timer)
-    }
-  }, [station, timetable])
 
   useEffect(() => {
     setTimeout(() => {
@@ -378,10 +293,11 @@ export const Realtime = ({ station }: SubwayStop) => {
 
   const countUp = (): number => {
     let upCnt = 0
-    const filtered = timetable.filter(
-      (val) =>
-        !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
-    )
+    const filtered =
+      timetable.data?.filter(
+        (val) =>
+          !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
+      ) ?? []
     for (const idx in filtered) {
       if (filtered[idx].updnLine === '상행') upCnt++
     }
@@ -392,69 +308,70 @@ export const Realtime = ({ station }: SubwayStop) => {
     direction: string,
     t: TFunction<'translation', undefined, 'translation'>
   ) => {
-    const filtered = timetable.filter(
-      (val) =>
-        !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
-    )
+    const filtered =
+      timetable.data?.filter(
+        (val) =>
+          !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
+      ) ?? []
 
-    if (!spinning) {
-      if (
-        (filtered.length === 1 && filtered[0] == null) ||
-        (timetable.length === 1 && timetable[0] == null)
-      ) {
-        // Timetable API error
-        return (
-          <>
-            <NoTimetable>
-              <NoTimetableInner>
-                {t('api_error')}
-                <br />
-                <ApiStatusButton onClick={openApiMonitor}>
-                  {t('status_check')}
-                </ApiStatusButton>
-              </NoTimetableInner>
-            </NoTimetable>
-          </>
-        )
-      }
+    if (timetable.isPending) {
+      return <></>
+    }
 
-      if (
-        filtered.length === 0 ||
-        (direction === '상행' && countUp() === 0) ||
-        (direction === '하행' && filtered.length - countUp() === 0)
-      ) {
-        // Trains are done for today. User should refresh after midnight.
-        return (
-          <>
-            <NoTimetable>
-              <NoTimetableInner>
-                {direction === '상행' && countUp() === 0
-                  ? t('no_train_up')
-                  : t('no_train_down')}
-              </NoTimetableInner>
-            </NoTimetable>
-          </>
-        )
-      }
-      // Otherwise - normal case
-      let downPrintCnt = 0
-      let prevTrain = ''
+    if (timetable.isError) {
+      // Timetable API error
       return (
         <>
-          {filtered.map((val, idx) => {
-            if (
-              !(idx >= 3 && direction === '상행') &&
-              val.updnLine === direction &&
-              downPrintCnt < 3 && // Maximum: 3
-              prevTrain != val.btrainNo
-            ) {
-              // Two same trains to one train
-              prevTrain = val.btrainNo
-              if (direction === '하행') downPrintCnt++
-              return (
-                <React.Fragment key={idx}>
-                  <StnListWrapper
-                    className={`
+          <NoTimetable>
+            <NoTimetableInner>
+              {t('api_error')}
+              <br />
+              <ApiStatusButton onClick={openApiMonitor}>
+                {t('status_check')}
+              </ApiStatusButton>
+            </NoTimetableInner>
+          </NoTimetable>
+        </>
+      )
+    }
+
+    if (
+      filtered.length === 0 ||
+      (direction === '상행' && countUp() === 0) ||
+      (direction === '하행' && filtered.length - countUp() === 0)
+    ) {
+      // Trains are done for today. User should refresh after midnight.
+      return (
+        <>
+          <NoTimetable>
+            <NoTimetableInner>
+              {direction === '상행' && countUp() === 0
+                ? t('no_train_up')
+                : t('no_train_down')}
+            </NoTimetableInner>
+          </NoTimetable>
+        </>
+      )
+    }
+    // Otherwise - normal case
+    let downPrintCnt = 0
+    let prevTrain = ''
+    return (
+      <>
+        {filtered.map((val, idx) => {
+          if (
+            !(idx >= 3 && direction === '상행') &&
+            val.updnLine === direction &&
+            downPrintCnt < 3 && // Maximum: 3
+            prevTrain != val.btrainNo
+          ) {
+            // Two same trains to one train
+            prevTrain = val.btrainNo
+            if (direction === '하행') downPrintCnt++
+            return (
+              <React.Fragment key={idx}>
+                <StnListWrapper
+                  className={`
                             ${
                               val.arvlMsg2.includes(station.trim()) ||
                               val.arvlCd === '3' // This Station & Prev Station(Departure)
@@ -467,55 +384,48 @@ export const Realtime = ({ station }: SubwayStop) => {
                                 : ''
                             }
                             `}
-                    onClick={() => openRailblue(val.btrainNo)}
+                  onClick={() => openRailblue(val.btrainNo)}
+                >
+                  {getLineMarkElement(val.subwayId)}
+                  <DestStnLeftWrapper
+                    className={i18n.language === 'en' ? 'tracking-tighter' : ''}
                   >
-                    {getLineMarkElement(val.subwayId)}
-                    <DestStnLeftWrapper
-                      className={
-                        i18n.language === 'en' ? 'tracking-tighter' : ''
-                      }
+                    <div
+                      className={`${
+                        val.bstatnNm.includes('한성대') ||
+                        (i18n.language === 'en' &&
+                          val.bstatnNm.includes('청량리')) ||
+                        (getRapidOrLastElement(val.bstatnNm) &&
+                          (val.bstatnNm.includes('왕십리') ||
+                            val.bstatnNm.includes('당고개') ||
+                            val.bstatnNm.includes('금정'))) // Eng Text is so long
+                          ? 'tracking-[-0.09em] text-sm hsm:text-xs'
+                          : ''
+                      }`}
                     >
-                      <div
-                        className={`${
-                          val.bstatnNm.includes('한성대') ||
-                          (i18n.language === 'en' &&
-                            val.bstatnNm.includes('청량리')) ||
-                          (getRapidOrLastElement(val.bstatnNm) &&
-                            (val.bstatnNm.includes('왕십리') ||
-                              val.bstatnNm.includes('당고개') ||
-                              val.bstatnNm.includes('금정'))) // Eng Text is so long
-                            ? 'tracking-[-0.09em] text-sm hsm:text-xs'
-                            : ''
-                        }`}
-                      >
-                        {getDestination(val.bstatnNm)}
-                      </div>
-                      {getRapidOrLastElement(val.bstatnNm)}
-                    </DestStnLeftWrapper>
-                    <StatusWrapper>
-                      {isBlink
-                        ? stationName(val.arvlMsg3)
-                        : arrivalUntil(val.arvlMsg2, station.trim())}
-                    </StatusWrapper>
-                    <ArrivalStnStatusWrapper
-                      className={
-                        i18n.language == 'en' ? 'tracking-tighter' : ''
-                      }
-                    >
-                      {arrivalStnStatus(val.arvlCd)}
-                    </ArrivalStnStatusWrapper>
-                  </StnListWrapper>
-                </React.Fragment>
-              )
-            } else {
-              return <React.Fragment key={idx} />
-            }
-          })}
-        </>
-      )
-    } else {
-      return <></>
-    }
+                      {getDestination(val.bstatnNm)}
+                    </div>
+                    {getRapidOrLastElement(val.bstatnNm)}
+                  </DestStnLeftWrapper>
+                  <StatusWrapper>
+                    {isBlink
+                      ? stationName(val.arvlMsg3)
+                      : arrivalUntil(val.arvlMsg2, station.trim())}
+                  </StatusWrapper>
+                  <ArrivalStnStatusWrapper
+                    className={i18n.language == 'en' ? 'tracking-tighter' : ''}
+                  >
+                    {arrivalStnStatus(val.arvlCd)}
+                  </ArrivalStnStatusWrapper>
+                </StnListWrapper>
+              </React.Fragment>
+            )
+          } else {
+            return <React.Fragment key={idx} />
+          }
+        })}
+      </>
+    )
   }
   // Main Code for Implementation of DOM
   return (
@@ -534,14 +444,14 @@ export const Realtime = ({ station }: SubwayStop) => {
         <Headline>{titleText(station.trim())}</Headline>
       </HeadlineWrapper>
       <MainTimetable>
-        {spinning ? (
+        {timetable.isPending ? (
           <div className="h-[12rem]">
             <NoTimetable>
               <SyncLoader
                 color="#AFBDCE"
                 margin={4}
                 size={8}
-                loading={spinning}
+                loading={timetable.isPending}
                 cssOverride={tw`table-cell align-middle`}
               />
             </NoTimetable>
@@ -549,7 +459,7 @@ export const Realtime = ({ station }: SubwayStop) => {
         ) : (
           <></>
         )}
-        {timetable.length === 1 && timetable[0] == null ? (
+        {timetable.isError ? (
           <>
             <NoTimetable>
               <NoTimetableInner className="mb-[4rem]">
@@ -564,7 +474,11 @@ export const Realtime = ({ station }: SubwayStop) => {
         ) : (
           <>
             <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
-            <hr className={`my-2 hsm:mb-4 ${spinning ? ` hidden` : ``}`} />
+            <hr
+              className={`my-2 hsm:mb-4 ${
+                timetable.isPending ? ` hidden` : ``
+              }`}
+            />
             <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
           </>
         )}
