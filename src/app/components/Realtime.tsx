@@ -254,16 +254,7 @@ const isArriving = (arvlMsg2: string, station: string): boolean => {
   )
 }
 
-const isLastTrain = (bstatnNm: string): boolean => {
-  return bstatnNm.includes('막차')
-}
-
-const isRapidTrain = (bstatnNm: string): boolean => {
-  return bstatnNm.includes('급행')
-}
-
 const isExistAPIError = (
-  bstatnNm: string,
   recptnDt: string,
   arvlMsg2: string,
   station: string
@@ -273,13 +264,8 @@ const isExistAPIError = (
   const latestDate: Date = new Date(recptnDt)
 
   const diffMSec = currentDate.getTime() - latestDate.getTime()
-  //const diffMin = diffMSec / (60 * 1000)
 
-  return (
-    ((isLastTrain(bstatnNm) && isArriving(arvlMsg2, station)) ||
-      (isRapidTrain(bstatnNm) && isArriving(arvlMsg2, station))) &&
-    diffMSec >= 90 * 1000
-  )
+  return isArriving(arvlMsg2, station) && diffMSec >= 90 * 1000
 }
 
 export const Realtime = ({ station }: SubwayStop) => {
@@ -309,8 +295,7 @@ export const Realtime = ({ station }: SubwayStop) => {
     let upCnt = 0
     const filtered =
       timetable.data?.filter(
-        (val) =>
-          !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
+        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station)
       ) ?? []
     for (const idx in filtered) {
       if (filtered[idx].updnLine === '상행') upCnt++
@@ -324,8 +309,7 @@ export const Realtime = ({ station }: SubwayStop) => {
   ) => {
     const filtered =
       timetable.data?.filter(
-        (val) =>
-          !isExistAPIError(val.bstatnNm, val.recptnDt, val.arvlMsg2, station)
+        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station)
       ) ?? []
 
     if (timetable.isPending) {
