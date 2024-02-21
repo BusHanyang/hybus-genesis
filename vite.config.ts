@@ -57,6 +57,15 @@ export default defineConfig({
         start_url: '/',
         name: '버스하냥',
         short_name: '버스하냥',
+        shortcuts: [
+          {
+            name: '전체 시간표',
+            short_name: '시간표',
+            description: '전체 시간표 보기',
+            url: '/all',
+            icons: [{ src: 'image/icon_x192.png', sizes: '192x192' }],
+          },
+        ],
         icons: [
           {
             src: 'image/icon_x192.png',
