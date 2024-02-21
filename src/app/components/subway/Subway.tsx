@@ -305,7 +305,7 @@ export const Subway = ({ station }: SubwayStop) => {
 
   const renderTimetable = (
     direction: string,
-    t: TFunction<'translation', undefined, 'translation'>
+    t: TFunction<['translation', ...string[]], undefined>
   ) => {
     const filtered =
       timetable.data?.filter(
