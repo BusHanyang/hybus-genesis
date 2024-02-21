@@ -246,6 +246,22 @@ const openRailblue = (btrainNo: string): void => {
   )
 }
 
+const isArriving = (arvlMsg2: string, station: string): boolean => {
+  return (
+    arvlMsg2.includes('전역 도착') ||
+    arvlMsg2.includes(station.trim() + ' 도착') ||
+    arvlMsg2.includes(station.trim() + ' 진입')
+  )
+}
+
+const isLastTrain = (bstatnNm: string): boolean => {
+  return bstatnNm.includes('막차')
+}
+
+const isRapidTrain = (bstatnNm: string): boolean => {
+  return bstatnNm.includes('급행')
+}
+
 const isExistAPIError = (
   bstatnNm: string,
   recptnDt: string,
@@ -260,11 +276,9 @@ const isExistAPIError = (
   //const diffMin = diffMSec / (60 * 1000)
 
   return (
-    bstatnNm.includes('막차') &&
-    (arvlMsg2.includes('전역 도착') ||
-      arvlMsg2.includes(station.trim() + ' 도착') ||
-      arvlMsg2.includes(station.trim() + ' 진입')) &&
-    diffMSec >= 90
+    ((isLastTrain(bstatnNm) && isArriving(arvlMsg2, station)) ||
+      (isRapidTrain(bstatnNm) && isArriving(arvlMsg2, station))) &&
+    diffMSec >= 90 * 1000
   )
 }
 
