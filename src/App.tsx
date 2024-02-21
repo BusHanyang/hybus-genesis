@@ -81,9 +81,8 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
-  const [, setTriggered] = useState<boolean>(false)
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
-    window.localStorage.getItem('touch_info') === null
+    window.localStorage.getItem('touch_info') === null,
   )
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
