@@ -50,8 +50,8 @@ export default defineConfig({
 
       // PWA setting
       manifest: {
-        theme_color: '#ffffff',
-        background_color: '#ffffff',
+        theme_color: '#FBFBFB',
+        background_color: '#FBFBFB',
         display: 'standalone',
         scope: '/',
         start_url: '/',
@@ -59,26 +59,50 @@ export default defineConfig({
         short_name: '버스하냥',
         icons: [
           {
-            src: 'image/pwa-192x192.png',
+            src: 'image/icon_x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: 'image/pwa-maskable-192x192.png',
+            src: 'image/icon_x384.png',
+            sizes: '384x384',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'image/icon_x512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'image/icon_x1024.png',
+            sizes: '1024x1024',
+            type: 'image/png',
+            purpose: 'any',
+          },
+          {
+            src: 'image/maskable_x192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'maskable',
           },
           {
-            src: 'image/pwa-512x512.png',
-            sizes: '512x512',
+            src: 'image/maskable_x384.png',
+            sizes: '384x384',
             type: 'image/png',
-            purpose: 'any',
+            purpose: 'maskable',
           },
           {
-            src: 'image/pwa-maskable-512x512.png',
+            src: 'image/maskable_x512.png',
             sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
+          },
+          {
+            src: 'image/maskable_x1024.png',
+            sizes: '1024x1024',
             type: 'image/png',
             purpose: 'maskable',
           },
