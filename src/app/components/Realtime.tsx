@@ -260,8 +260,8 @@ const isExistAPIError = (
   //const diffMin = diffMSec / (60 * 1000)
 
   return (
-    (bstatnNm.includes('막차') ||
-      arvlMsg2.includes('전역 도착') ||
+    bstatnNm.includes('막차') &&
+    (arvlMsg2.includes('전역 도착') ||
       arvlMsg2.includes(station.trim() + ' 도착') ||
       arvlMsg2.includes(station.trim() + ' 진입')) &&
     diffMSec >= 90
@@ -368,6 +368,7 @@ export const Realtime = ({ station }: SubwayStop) => {
             // Two same trains to one train
             prevTrain = val.btrainNo
             if (direction === '하행') downPrintCnt++
+
             return (
               <React.Fragment key={idx}>
                 <StnListWrapper
