@@ -6,8 +6,7 @@ import styled from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
-import { Card, Fabs } from '@/components'
-import { Realtime } from '@/components/Realtime'
+import { Fabs, Shuttle, Subway } from '@/components'
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
@@ -241,7 +240,7 @@ function App() {
                         {realtimeMode &&
                         (tab === 'subway' || tab === 'jungang') ? (
                           <>
-                            <Realtime
+                            <Subway
                               station={`
                                 ${(tab === 'subway' ? '한대앞' : '중앙').trim()}
                               `}
@@ -249,7 +248,7 @@ function App() {
                           </>
                         ) : (
                           <>
-                            <Card
+                            <Shuttle
                               location={
                                 (window.localStorage.getItem('tab') ||
                                   'shuttlecoke_o') as StopLocation

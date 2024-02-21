@@ -268,7 +268,7 @@ const isExistAPIError = (
   return isArriving(arvlMsg2, station) && diffMSec >= 90 * 1000
 }
 
-export const Realtime = ({ station }: SubwayStop) => {
+export const Subway = ({ station }: SubwayStop) => {
   const timetable = useQuery({
     queryKey: ['subway_timetable', station],
     queryFn: async () => await subwayAPI(station),
