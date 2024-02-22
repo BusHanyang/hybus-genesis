@@ -390,7 +390,7 @@ function App() {
                         id="copyright"
                         className="dark:text-white pt-3 hsm:text-sm hsm:leading-4"
                       >
-                        Copyright © 2020-2023{' '}
+                        Copyright © 2020-2024{' '}
                         <a
                           className="underline"
                           target="_blank"
