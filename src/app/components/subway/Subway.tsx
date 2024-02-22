@@ -248,7 +248,7 @@ const openRailblue = (btrainNo: string): void => {
 
 const isArriving = (arvlMsg2: string, station: string): boolean => {
   return (
-    arvlMsg2.includes('전역 도착') ||
+    // arvlMsg2.includes('전역 도착') ||
     arvlMsg2.includes(station.trim() + ' 도착') ||
     arvlMsg2.includes(station.trim() + ' 진입')
   )
@@ -265,7 +265,7 @@ const isExistAPIError = (
 
   const diffMSec = currentDate.getTime() - latestDate.getTime()
 
-  return isArriving(arvlMsg2, station) && diffMSec >= 90 * 1000
+  return isArriving(arvlMsg2, station) && diffMSec >= 180 * 1000
 }
 
 export const Subway = ({ station }: SubwayStop) => {
