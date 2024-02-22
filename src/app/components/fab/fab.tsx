@@ -102,7 +102,7 @@ export const Fabs = (props: {
   }
   const handleDonateOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
-      window.open('https://toss.me/bushanyang', '_blank')
+      window.open('https://toss.me/bushanyang/1000', '_blank')
     })
   }
   const handleDarkOnClick = (): Promise<React.FC> => {
