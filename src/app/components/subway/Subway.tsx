@@ -77,7 +77,7 @@ const arrivalUntil = (arvlMsg2: string, station: string): string => {
   } else {
     const str = arvlMsg2.substring(
       arvlMsg2.indexOf('[') + 1,
-      arvlMsg2.indexOf(']')
+      arvlMsg2.indexOf(']'),
     )
     return str + t('n_stn')
   }
@@ -242,7 +242,7 @@ const openRailblue = (btrainNo: string): void => {
       '&date=' +
       date +
       '#!',
-    '_blank'
+    '_blank',
   )
 }
 
@@ -257,7 +257,7 @@ const isArriving = (arvlMsg2: string, station: string): boolean => {
 const isExistAPIError = (
   recptnDt: string,
   arvlMsg2: string,
-  station: string
+  station: string,
 ): boolean => {
   // Open API's own data error correction
   const currentDate: Date = new Date()
@@ -287,7 +287,7 @@ export const Subway = ({ station }: SubwayStop) => {
     window.open(
       'https://monitor.hybus.app/status/bushanyang',
       '_black',
-      'noopener noreferrer'
+      'noopener noreferrer',
     )
   }
 
@@ -295,7 +295,7 @@ export const Subway = ({ station }: SubwayStop) => {
     let upCnt = 0
     const filtered =
       timetable.data?.filter(
-        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station)
+        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station),
       ) ?? []
     for (const idx in filtered) {
       if (filtered[idx].updnLine === '상행') upCnt++
@@ -305,11 +305,11 @@ export const Subway = ({ station }: SubwayStop) => {
 
   const renderTimetable = (
     direction: string,
-    t: TFunction<['translation', ...string[]], undefined>
+    t: TFunction<['translation', ...string[]], undefined>,
   ) => {
     const filtered =
       timetable.data?.filter(
-        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station)
+        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station),
       ) ?? []
 
     if (timetable.isPending) {
