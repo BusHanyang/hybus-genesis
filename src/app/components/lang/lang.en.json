@@ -101,6 +101,7 @@
     "depart": "[Depart]",
     "arrival": "[Arrival]",
     "operation": "[Operation]",
+    "waiting": "[Waiting]",
     
     "here": "Here",
     "prevstn": "1 Left",

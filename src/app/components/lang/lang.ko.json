@@ -101,6 +101,7 @@
     "depart": "[출발]",
     "arrival": "[도착]",
     "operation": "[운행중]",
+    "waiting": "[대기]",
 
     "here": "당역",
     "prevstn": "전역",

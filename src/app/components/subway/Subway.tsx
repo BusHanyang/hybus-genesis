@@ -6,7 +6,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { SubwayStop } from '@/data'
+import { SingleTrainInfo, SubwayStop } from '@/data'
 import { subwayAPI } from '@/network/subway'
 
 const TimetableWrapper = styled.div`
@@ -64,22 +64,13 @@ const Chip = styled.img`
   ${tw`my-auto inline-block`}
 `
 
-const arrivalUntil = (arvlMsg2: string, station: string): string => {
-  if (
-    arvlMsg2 === '전역 출발' ||
-    arvlMsg2 === '전역 도착' ||
-    arvlMsg2 === '전역 진입' ||
-    arvlMsg2 === '전역 접근'
-  ) {
+const arrivalUntil = (stnUntilArrival: number): string => {
+  if (stnUntilArrival === 1) {
     return t('prevstn')
-  } else if (arvlMsg2.includes(station.trim())) {
+  } else if (stnUntilArrival === 0) {
     return t('here')
   } else {
-    const str = arvlMsg2.substring(
-      arvlMsg2.indexOf('[') + 1,
-      arvlMsg2.indexOf(']'),
-    )
-    return str + t('n_stn')
+    return stnUntilArrival + t('n_stn')
   }
 }
 
@@ -101,17 +92,16 @@ const stationName = (arvlMsg3: string): string => {
   }
 }
 
-const arrivalStnStatus = (arvlCd: string): string => {
-  if (arvlCd === '0' || arvlCd === '4') {
+const arrivalStnStatus = (status: number, orgStation: string, currentStation: string): string => {
+  if (status === 1) {
     return t('entry')
-  } else if (arvlCd === '1' || arvlCd === '5') {
-    return t('arrival')
-  } else if (arvlCd === '2' || arvlCd === '3') {
+  } else if (status === 2) {
+    if(orgStation === currentStation) return t('waiting')
+    else return t('arrival')
+  } else if (status === 3) {
     return t('depart')
-  } else if (arvlCd === '99') {
-    return t('operation')
   } else {
-    return 'Error'
+    return t('operation')
   }
 }
 
@@ -155,21 +145,12 @@ const getStationName = (bstatnNm: string) => {
   }
 }
 
-const getDestination = (bstatnNm: string): string => {
-  let isLast = false
-  let isRapid = false
-  if (bstatnNm.includes('(막차)')) {
-    isLast = true
-    bstatnNm = bstatnNm.replace(' (막차)', '')
-  } else if (bstatnNm.includes('(급행)')) {
-    isRapid = true
-    bstatnNm = bstatnNm.replace(' (급행)', '')
-  }
-  return getStationName(bstatnNm) + (!isLast && !isRapid ? t('for') : '')
+const getDestination = (destination: string, isLast: boolean, isExpress: boolean): string => {
+  return getStationName(destination) + (!isLast && !isExpress ? t('for') : '')
 }
 
-const getRapidOrLastElement = (bstatnNm: string) => {
-  if (bstatnNm.includes('막차')) {
+const getRapidOrLastElement = (isLast: boolean, isExpress: boolean) => {
+  if (isLast) {
     return (
       <img
         alt="last train icon"
@@ -178,7 +159,7 @@ const getRapidOrLastElement = (bstatnNm: string) => {
         draggable="false"
       />
     )
-  } else if (bstatnNm.includes('급행')) {
+  } else if (isExpress) {
     return (
       <img
         alt="rapid train icon"
@@ -191,7 +172,7 @@ const getRapidOrLastElement = (bstatnNm: string) => {
 }
 
 const getLineMarkElement = (line: string): JSX.Element => {
-  if (line === '1004') {
+  if (line === '4') {
     return (
       <Chip
         alt="line 4 icon"
@@ -200,7 +181,7 @@ const getLineMarkElement = (line: string): JSX.Element => {
         draggable="false"
       />
     )
-  } else if (line === '1075') {
+  } else if (line === 'SU') {
     return (
       <Chip
         alt="line suin-bundang icon"
@@ -237,35 +218,13 @@ const openRailblue = (btrainNo: string): void => {
     date = yYear + yMonth + yDay
   }
   window.open(
-    'https://rail.blue/railroad/logis/Default.aspx?train=K' +
+    'https://rail.blue/railroad/logis/Default.aspx?train=' +
       btrainNo +
       '&date=' +
       date +
       '#!',
     '_blank',
   )
-}
-
-const isArriving = (arvlMsg2: string, station: string): boolean => {
-  return (
-    // arvlMsg2.includes('전역 도착') ||
-    arvlMsg2.includes(station.trim() + ' 도착') ||
-    arvlMsg2.includes(station.trim() + ' 진입')
-  )
-}
-
-const isExistAPIError = (
-  recptnDt: string,
-  arvlMsg2: string,
-  station: string,
-): boolean => {
-  // Open API's own data error correction
-  const currentDate: Date = new Date()
-  const latestDate: Date = new Date(recptnDt)
-
-  const diffMSec = currentDate.getTime() - latestDate.getTime()
-
-  return isArriving(arvlMsg2, station) && diffMSec >= 180 * 1000
 }
 
 export const Subway = ({ station }: SubwayStop) => {
@@ -291,26 +250,30 @@ export const Subway = ({ station }: SubwayStop) => {
     )
   }
 
-  const countUp = (): number => {
-    let upCnt = 0
-    const filtered =
-      timetable.data?.filter(
-        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station),
-      ) ?? []
-    for (const idx in filtered) {
-      if (filtered[idx].updnLine === '상행') upCnt++
+  function compare(a : SingleTrainInfo, b : SingleTrainInfo) {
+    const aNum = a.stnUntilArrival
+    const bNum = b.stnUntilArrival
+    
+    const aStatus = a.status
+    const bStatus = b.status
+
+    if (aNum < bNum) return -1
+    else if (aNum > bNum) return 1
+    else {
+      if (aStatus < bStatus) return 1
+      else if (aStatus > bStatus) return -1
     }
-    return upCnt
-  }
+    return 0
+}
 
   const renderTimetable = (
-    direction: string,
+    direction: number,
     t: TFunction<['translation', ...string[]], undefined>,
   ) => {
     const filtered =
       timetable.data?.filter(
-        (val) => !isExistAPIError(val.recptnDt, val.arvlMsg2, station),
-      ) ?? []
+        (val) => val.direction === direction,
+      ).sort(compare) ?? []
 
     if (timetable.isPending) {
       return <></>
@@ -334,16 +297,14 @@ export const Subway = ({ station }: SubwayStop) => {
     }
 
     if (
-      filtered.length === 0 ||
-      (direction === '상행' && countUp() === 0) ||
-      (direction === '하행' && filtered.length - countUp() === 0)
+      filtered.length === 0 
     ) {
       // Trains are done for today. User should refresh after midnight.
       return (
         <>
           <NoTimetable>
             <NoTimetableInner>
-              {direction === '상행' && countUp() === 0
+                {direction === 1
                 ? t('no_train_up')
                 : t('no_train_down')}
             </NoTimetableInner>
@@ -352,77 +313,63 @@ export const Subway = ({ station }: SubwayStop) => {
       )
     }
     // Otherwise - normal case
-    let downPrintCnt = 0
-    let prevTrain = ''
     return (
       <>
         {filtered.map((val, idx) => {
-          if (
-            !(idx >= 3 && direction === '상행') &&
-            val.updnLine === direction &&
-            downPrintCnt < 3 && // Maximum: 3
-            prevTrain != val.btrainNo
-          ) {
-            // Two same trains to one train
-            prevTrain = val.btrainNo
-            if (direction === '하행') downPrintCnt++
-
             return (
               <React.Fragment key={idx}>
                 <StnListWrapper
                   className={`
                             ${
-                              val.arvlMsg2.includes(station.trim()) ||
-                              val.arvlCd === '3' // This Station & Prev Station(Departure)
+                              val.destination === station.trim() ||
+                              val.stnUntilArrival === 0 // This Station & Prev Station(Departure)
                                 ? 'text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center'
                                 : ''
                             }
                             ${
-                              val.arvlCd === '5' // Prev Station (Arrival)
+                              val.stnUntilArrival === 1 // Prev Station (Arrival)
                                 ? 'text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center'
                                 : ''
                             }
                             `}
-                  onClick={() => openRailblue(val.btrainNo)}
+                  onClick={() => openRailblue(val.trainCode)}
                 >
-                  {getLineMarkElement(val.subwayId)}
+                  {getLineMarkElement(val.line)}
                   <DestStnLeftWrapper
                     className={i18n.language === 'en' ? 'tracking-tighter' : ''}
                   >
                     <div
                       className={`${
-                        val.bstatnNm.includes('한성대') ||
+                        val.destination.includes('한성대') ||
                         (i18n.language === 'en' &&
-                          val.bstatnNm.includes('청량리')) ||
-                        (getRapidOrLastElement(val.bstatnNm) &&
-                          (val.bstatnNm.includes('왕십리') ||
-                            val.bstatnNm.includes('당고개') ||
-                            val.bstatnNm.includes('금정'))) // Eng Text is so long
+                          val.destination.includes('청량리')) ||
+                        (getRapidOrLastElement(val.isLast, val.isExpress) &&
+                          (val.destination.includes('왕십리') ||
+                            val.destination.includes('당고개') ||
+                            val.destination.includes('금정'))) // Eng Text is so long
                           ? 'tracking-[-0.09em] text-sm hsm:text-xs'
                           : ''
                       }`}
                     >
-                      {getDestination(val.bstatnNm)}
+                      {getDestination(val.destination, val.isLast, val.isExpress)}
                     </div>
-                    {getRapidOrLastElement(val.bstatnNm)}
+                    {getRapidOrLastElement(val.isLast, val.isExpress)}
                   </DestStnLeftWrapper>
                   <StatusWrapper>
                     {isBlink
-                      ? stationName(val.arvlMsg3)
-                      : arrivalUntil(val.arvlMsg2, station.trim())}
+                      ? stationName(val.currentStation)
+                      : arrivalUntil(val.stnUntilArrival)}
                   </StatusWrapper>
                   <ArrivalStnStatusWrapper
                     className={i18n.language == 'en' ? 'tracking-tighter' : ''}
                   >
-                    {arrivalStnStatus(val.arvlCd)}
+                    {arrivalStnStatus(val.status, val.orgStation, val.currentStation)}
                   </ArrivalStnStatusWrapper>
                 </StnListWrapper>
               </React.Fragment>
             )
-          } else {
-            return <React.Fragment key={idx} />
           }
-        })}
+        )}
       </>
     )
   }
@@ -472,13 +419,13 @@ export const Subway = ({ station }: SubwayStop) => {
           </>
         ) : (
           <>
-            <div className="h-[5rem]">{renderTimetable('상행', t)}</div>
+            <div className="h-[5rem]">{renderTimetable(1, t)}</div>
             <hr
               className={`my-2 hsm:mb-4 ${
                 timetable.isPending ? ` hidden` : ``
               }`}
             />
-            <div className="h-[5rem]">{renderTimetable('하행', t)}</div>
+            <div className="h-[5rem]">{renderTimetable(2, t)}</div>
           </>
         )}
       </MainTimetable>
