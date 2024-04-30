@@ -14,7 +14,7 @@ const TimetableWrapper = styled.div`
 `
 
 const HeadlineWrapper = styled.div`
-  ${tw`flex justify-center mb-1 hsm:mb-0`}
+  ${tw`flex justify-center hsm:mb-0`}
 `
 
 const Headline = styled.h2`
@@ -22,7 +22,7 @@ const Headline = styled.h2`
 `
 
 const StnListWrapper = styled.div`
-  ${tw`flex mb-1 gap-2 hsm:gap-2 leading-6 rounded-full items-center
+  ${tw`flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center
         hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
     `}
 `
@@ -273,7 +273,7 @@ export const Subway = ({ station }: SubwayStop) => {
     const filtered =
       timetable.data?.filter(
         (val) => val.direction === direction,
-      ).sort(compare) ?? []
+      ).sort(compare).slice(0, 2) ?? []
 
     if (timetable.isPending) {
       return <></>
@@ -421,8 +421,8 @@ export const Subway = ({ station }: SubwayStop) => {
           <>
             <div className="h-[5rem]">{renderTimetable(1, t)}</div>
             <hr
-              className={`my-2 hsm:mb-4 ${
-                timetable.isPending ? ` hidden` : ``
+              className={`py-1 hsm:mb-4 ${
+                timetable.isPending ? `hidden` : ``
               }`}
             />
             <div className="h-[5rem]">{renderTimetable(2, t)}</div>
