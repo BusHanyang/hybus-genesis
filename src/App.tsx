@@ -19,7 +19,7 @@ const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
-    dark:bg-zinc-800 dark:text-white
+    dark:bg-zinc-800 dark:text-white transition-colors
   `}
 `
 
@@ -60,7 +60,7 @@ const Button = styled(CardView)`
 `
 const SegmentedControl = styled.div`
   ${tw`
-    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800  
+    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800 transition-all will-change-transform  
   `}
 `
 
@@ -205,6 +205,7 @@ function App() {
                     <Refreshing mode={isDarkMode ? THEME.DARK : THEME.LIGHT} />
                   }
                   resistance={3}
+                  className='transition-colors'
                 >
                   <div
                     className={`${isDarkMode ? 'dark' : ''} h-full`}
