@@ -107,8 +107,8 @@
     "prevstn": "1 Left",
     "n_stn": " Left",
 
-    "no_train_up": "No Up-trains are currently in service.",
-    "no_train_down": "No Down-trains are currently in service.",
+    "no_train_up": "No Up-trains are currently within 3 stations.",
+    "no_train_down": "No Down-trains are currently within 3 stations.",
     "last_train_img": "/image/last_train_en.svg",
     "rapid_train_img": "/image/rapid_train_en.svg"
 }
