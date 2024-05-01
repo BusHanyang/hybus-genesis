@@ -398,15 +398,11 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
   }, [season, week])
 
-  const handleActionStart = (
-    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>,
-  ) => {
+  const handleActionStart = () => {
     setTouched(true)
   }
 
-  const handleActionEnd = (
-    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>,
-  ) => {
+  const handleActionEnd = () => {
     setTouched(false)
   }
 
