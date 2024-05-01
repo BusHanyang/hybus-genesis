@@ -55,6 +55,10 @@ const OnTouchAvailableWrapper = styled.div`
   ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mx-auto p-1.5 leading-5 overflow-hidden`}
 `
 
+const OnTouchCloseWrapper = styled.div`
+  ${tw`w-[fit-content] float-right ml-1 h-full flex hsm:ml-0`}
+`
+
 const TimeLeftWrapper = styled.span`
   ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
   &.touched {
@@ -88,6 +92,18 @@ const TimeClickableNotifyText = styled.div`
 
 const ApiStatusButton = styled.button`
   ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
+`
+
+const MapButton = styled.button`
+  ${tw`absolute top-0 right-0 h-full`} drag-save-n
+`
+
+const MapIcon = styled.img`
+  ${tw`cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7`} drag-save-n
+`
+
+const CloseIcon = styled.img`
+  ${tw`cursor-default dark:invert h-4 w-4 my-auto`}
 `
 
 const isWeekend = (): boolean => {
@@ -188,7 +204,7 @@ const getSeason = (setting: Settings | null): [Season, Week] => {
 const getTimetable = async (
   season: Season,
   week: Week,
-  location: StopLocation
+  location: StopLocation,
 ): Promise<Array<SingleShuttleSchedule>> => {
   return await shuttleAPI(season, week, location).then((res) => {
     if (res !== null) {
@@ -202,7 +218,7 @@ const getTimetable = async (
 }
 
 const convertUnixToTime = (
-  sch: SingleShuttleSchedule
+  sch: SingleShuttleSchedule,
 ): SingleShuttleSchedule => {
   return {
     ...sch,
@@ -344,7 +360,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
   const [touched, setTouched] = useState<boolean>(false)
   const [infoClosed, setInfoClosed] = useState<boolean>(
-    window.localStorage.getItem('touch_info') === 'closed'
+    window.localStorage.getItem('touch_info') === 'closed',
   )
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
 
@@ -383,19 +399,19 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   }, [season, week])
 
   const handleActionStart = (
-    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>
+    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>,
   ) => {
     setTouched(true)
   }
 
   const handleActionEnd = (
-    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>
+    e: React.TouchEvent<HTMLDivElement> | React.MouseEvent<HTMLDivElement>,
   ) => {
     setTouched(false)
   }
 
   const handleContextMenu = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>
+    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
   ) => {
     e.preventDefault()
   }
@@ -404,7 +420,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     window.open(
       'https://monitor.hybus.app/status/bushanyang',
       '_black',
-      'noopener noreferrer'
+      'noopener noreferrer',
     )
   }
 
@@ -486,8 +502,8 @@ export const Shuttle = ({ location }: ShuttleStop) => {
                       <TimeClickableConversionText>
                         {secondToTimeFormat(
                           Math.floor(
-                            Number(val.time) - Number(currentTime) / 1000
-                          )
+                            Number(val.time) - Number(currentTime) / 1000,
+                          ),
                         ) +
                           ' ' +
                           t('left')}
@@ -513,20 +529,18 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     <TimetableWrapper>
       <HeadlineWrapper>
         <Headline>{titleText(location)}</Headline>
-        <button
-          className="absolute top-0 right-0 h-full drag-save-n"
+        <MapButton
           onClick={() => {
             openNaverMapApp(location)
           }}
         >
-          <img
+          <MapIcon
             src={'../image/map_black_24dp.svg'}
-            className="cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n"
             alt="map icon"
             onContextMenu={handleContextMenu}
             draggable="false"
           />
-        </button>
+        </MapButton>
       </HeadlineWrapper>
       <MainTimeTableWrapper
         onTouchStart={handleActionStart}
@@ -565,10 +579,9 @@ export const Shuttle = ({ location }: ShuttleStop) => {
             <>{t('check_on_touch')}</>
           </TimeClickableNotifyText>
         )}
-        <div className="w-[fit-content] float-right ml-1 h-full flex hsm:ml-0">
-          <img
+        <OnTouchCloseWrapper>
+          <CloseIcon
             src={'../image/close_black_24dp.svg'}
-            className="cursor-default dark:invert h-4 w-4 my-auto"
             alt="close icon"
             onClick={() => {
               setInfoClosed(true)
@@ -576,7 +589,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
               window.location.reload()
             }}
           />
-        </div>
+        </OnTouchCloseWrapper>
       </OnTouchAvailableWrapper>
     </TimetableWrapper>
   )
