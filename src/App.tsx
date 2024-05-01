@@ -88,7 +88,7 @@ const Button = styled(CardView)`
   }
 `
 
-const FulltimeButton = styled.button`
+const FulltimeButton = styled(Button)`
   ${tw`w-full cursor-default`}
 `
 
