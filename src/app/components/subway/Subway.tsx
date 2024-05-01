@@ -18,12 +18,12 @@ const HeadlineWrapper = styled.div`
 `
 
 const Headline = styled.h2`
-  ${tw`font-bold text-2xl mb-2 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
+  ${tw`font-bold text-2xl mb-3 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
 `
 
 const StnListWrapper = styled.div`
   ${tw`flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center
-        hover:brightness-90 hover:bg-slate-50 dark:hover:text-black
+        hover:brightness-90 hover:bg-slate-50 dark:hover:text-black p-[0.3rem] my-[0.3rem] 
     `}
 `
 
