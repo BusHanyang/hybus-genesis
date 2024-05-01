@@ -271,9 +271,12 @@ export const Subway = ({ station }: SubwayStop) => {
     t: TFunction<['translation', ...string[]], undefined>,
   ) => {
     const filtered =
-      timetable.data?.filter(
-        (val) => val.direction === direction,
-      ).sort(compare).slice(0, 2) ?? []
+      timetable.data
+        ?.filter(
+          (val) => val.direction === direction && val.destination !== null,
+        )
+        .sort(compare)
+        .slice(0, 2) ?? []
 
     if (timetable.isPending) {
       return <></>
