@@ -115,7 +115,7 @@ const SegmentedControl = styled.div`
 `
 
 const SegmentedControlWrapper = styled.div`
-  ${tw`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none`}
+  ${tw`flex justify-center transition-[opacity,margin] delay-75`}
 `
 
 const StationButtonWrapper = styled.div`
@@ -316,7 +316,7 @@ function App() {
                         <SegmentedControlWrapper
                           className={`
                             ${!realtimeMode && touchPrompt ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7' : ''}
-                            ${tab === 'subway' || tab === 'jungang' ? 'opacity-100 pointer-events-auto' : ''} 
+                            ${tab === 'subway' || tab === 'jungang' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} 
                           `}
                         >
                           <SegmentedControl>
