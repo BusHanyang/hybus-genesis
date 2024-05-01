@@ -92,11 +92,15 @@ const stationName = (arvlMsg3: string): string => {
   }
 }
 
-const arrivalStnStatus = (status: number, orgStation: string, currentStation: string): string => {
+const arrivalStnStatus = (
+  status: number,
+  orgStation: string,
+  currentStation: string,
+): string => {
   if (status === 1) {
     return t('entry')
   } else if (status === 2) {
-    if(orgStation === currentStation) return t('waiting')
+    if (orgStation === currentStation) return t('waiting')
     else return t('arrival')
   } else if (status === 3) {
     return t('depart')
@@ -145,7 +149,11 @@ const getStationName = (bstatnNm: string) => {
   }
 }
 
-const getDestination = (destination: string, isLast: boolean, isExpress: boolean): string => {
+const getDestination = (
+  destination: string,
+  isLast: boolean,
+  isExpress: boolean,
+): string => {
   return getStationName(destination) + (!isLast && !isExpress ? t('for') : '')
 }
 
@@ -250,10 +258,10 @@ export const Subway = ({ station }: SubwayStop) => {
     )
   }
 
-  function compare(a : SingleTrainInfo, b : SingleTrainInfo) {
+  function compare(a: SingleTrainInfo, b: SingleTrainInfo) {
     const aNum = a.stnUntilArrival
     const bNum = b.stnUntilArrival
-    
+
     const aStatus = a.status
     const bStatus = b.status
 
@@ -264,7 +272,7 @@ export const Subway = ({ station }: SubwayStop) => {
       else if (aStatus > bStatus) return -1
     }
     return 0
-}
+  }
 
   const renderTimetable = (
     direction: number,
@@ -299,17 +307,13 @@ export const Subway = ({ station }: SubwayStop) => {
       )
     }
 
-    if (
-      filtered.length === 0 
-    ) {
+    if (filtered.length === 0) {
       // Trains are done for today. User should refresh after midnight.
       return (
         <>
           <NoTimetable>
             <NoTimetableInner>
-                {direction === 1
-                ? t('no_train_up')
-                : t('no_train_down')}
+              {direction === 1 ? t('no_train_up') : t('no_train_down')}
             </NoTimetableInner>
           </NoTimetable>
         </>
@@ -319,10 +323,10 @@ export const Subway = ({ station }: SubwayStop) => {
     return (
       <>
         {filtered.map((val, idx) => {
-            return (
-              <React.Fragment key={idx}>
-                <StnListWrapper
-                  className={`
+          return (
+            <React.Fragment key={idx}>
+              <StnListWrapper
+                className={`
                             ${
                               val.destination === station.trim() ||
                               val.stnUntilArrival === 0 // This Station & Prev Station(Departure)
@@ -335,44 +339,47 @@ export const Subway = ({ station }: SubwayStop) => {
                                 : ''
                             }
                             `}
-                  onClick={() => openRailblue(val.trainCode)}
+                onClick={() => openRailblue(val.trainCode)}
+              >
+                {getLineMarkElement(val.line)}
+                <DestStnLeftWrapper
+                  className={i18n.language === 'en' ? 'tracking-tighter' : ''}
                 >
-                  {getLineMarkElement(val.line)}
-                  <DestStnLeftWrapper
-                    className={i18n.language === 'en' ? 'tracking-tighter' : ''}
+                  <div
+                    className={`${
+                      val.destination.includes('한성대') ||
+                      (i18n.language === 'en' &&
+                        val.destination.includes('청량리')) ||
+                      (getRapidOrLastElement(val.isLast, val.isExpress) &&
+                        (val.destination.includes('왕십리') ||
+                          val.destination.includes('당고개') ||
+                          val.destination.includes('금정'))) // Eng Text is so long
+                        ? 'tracking-[-0.09em] text-sm hsm:text-xs'
+                        : ''
+                    }`}
                   >
-                    <div
-                      className={`${
-                        val.destination.includes('한성대') ||
-                        (i18n.language === 'en' &&
-                          val.destination.includes('청량리')) ||
-                        (getRapidOrLastElement(val.isLast, val.isExpress) &&
-                          (val.destination.includes('왕십리') ||
-                            val.destination.includes('당고개') ||
-                            val.destination.includes('금정'))) // Eng Text is so long
-                          ? 'tracking-[-0.09em] text-sm hsm:text-xs'
-                          : ''
-                      }`}
-                    >
-                      {getDestination(val.destination, val.isLast, val.isExpress)}
-                    </div>
-                    {getRapidOrLastElement(val.isLast, val.isExpress)}
-                  </DestStnLeftWrapper>
-                  <StatusWrapper>
-                    {isBlink
-                      ? stationName(val.currentStation)
-                      : arrivalUntil(val.stnUntilArrival)}
-                  </StatusWrapper>
-                  <ArrivalStnStatusWrapper
-                    className={i18n.language == 'en' ? 'tracking-tighter' : ''}
-                  >
-                    {arrivalStnStatus(val.status, val.orgStation, val.currentStation)}
-                  </ArrivalStnStatusWrapper>
-                </StnListWrapper>
-              </React.Fragment>
-            )
-          }
-        )}
+                    {getDestination(val.destination, val.isLast, val.isExpress)}
+                  </div>
+                  {getRapidOrLastElement(val.isLast, val.isExpress)}
+                </DestStnLeftWrapper>
+                <StatusWrapper>
+                  {isBlink
+                    ? stationName(val.currentStation)
+                    : arrivalUntil(val.stnUntilArrival)}
+                </StatusWrapper>
+                <ArrivalStnStatusWrapper
+                  className={i18n.language == 'en' ? 'tracking-tighter' : ''}
+                >
+                  {arrivalStnStatus(
+                    val.status,
+                    val.orgStation,
+                    val.currentStation,
+                  )}
+                </ArrivalStnStatusWrapper>
+              </StnListWrapper>
+            </React.Fragment>
+          )
+        })}
       </>
     )
   }
@@ -424,9 +431,7 @@ export const Subway = ({ station }: SubwayStop) => {
           <>
             <div className="h-[5rem]">{renderTimetable(1, t)}</div>
             <hr
-              className={`py-1 hsm:mb-4 ${
-                timetable.isPending ? `hidden` : ``
-              }`}
+              className={`py-1 hsm:mb-4 ${timetable.isPending ? `hidden` : ``}`}
             />
             <div className="h-[5rem]">{renderTimetable(2, t)}</div>
           </>
