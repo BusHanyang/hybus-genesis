@@ -204,14 +204,14 @@ function App() {
       if (tab === 'subway' || tab === 'jungang') {
         if (!realtimeMode) {
           // Shuttle Bus Info at Stations with prompt
-          return 'h-[21rem] hsm:h-[20.7rem]'
+          return 'h-[21rem] hm:h-[21.5rem] hsm:h-[20.7rem]'
         } else {
           // Subway info at Stations with prompt
           return 'h-[19.6rem]'
         }
       } else {
         // default with prompt
-        return 'h-[18rem]'
+        return 'h-[18.5rem] hm:h-[19rem] hsm:h-[18.5rem]'
       }
     }
   }
@@ -315,7 +315,7 @@ function App() {
                         )}
                         <SegmentedControlWrapper
                           className={`
-                            ${!realtimeMode && touchPrompt ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7' : ''}
+                            ${!realtimeMode && touchPrompt ? 'mt-7 hm:mt-[2.1rem] hsm:mt-7' : ''}
                             ${tab === 'subway' || tab === 'jungang' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} 
                           `}
                         >
