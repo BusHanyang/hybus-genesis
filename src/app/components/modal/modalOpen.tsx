@@ -31,6 +31,7 @@ const ModalOpen = (props: {
   const changelogs = useQuery({
     queryKey: ['changelog'],
     queryFn: changelogAPI,
+    staleTime: 5 * 60 * 1000,
   })
 
   return (

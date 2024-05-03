@@ -240,6 +240,7 @@ export const Subway = ({ station }: SubwayStop) => {
     queryKey: ['subway_timetable', station],
     queryFn: async () => await subwayAPI(station),
     refetchInterval: 10000,
+    staleTime: 5000,
   })
   const [isBlink, setBlink] = useState<boolean>(false)
   const { t, i18n } = useTranslation()

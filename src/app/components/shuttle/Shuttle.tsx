@@ -343,6 +343,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   const setting = useQuery({
     queryKey: ['settings'],
     queryFn: settingAPI,
+    staleTime: 5 * 60 * 1000,
   })
   const [season, week] =
     setting.data !== undefined ? getSeason(setting.data) : [null, null]
@@ -355,6 +356,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       }
       return getTimetable(season, week, location)
     },
+    staleTime: 30 * 1000,
     enabled: !!season && !!week && !!location,
   })
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())

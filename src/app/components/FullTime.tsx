@@ -137,8 +137,9 @@ const FullTime = () => {
     (window.localStorage.getItem('tab') as StopLocation) || 'shuttlecoke_o'
   )
   const timetable = useQuery({
-    queryKey: ['shuttle', season, week, location],
+    queryKey: ['fullTime', season, week, location],
     queryFn: async () => await shuttleAPI(season, week, location),
+    staleTime: 5 * 60 * 1000,
   })
 
   const [countChip, setCountChip] = useState(0)

@@ -29,6 +29,7 @@ const Notice = () => {
   const notices = useQuery({
     queryKey: ['notice'],
     queryFn: noticeAPI,
+    staleTime: 5 * 60 * 1000,
   })
 
   const [num, changeNum] = useState<number>(0)
