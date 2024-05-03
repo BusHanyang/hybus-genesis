@@ -21,6 +21,107 @@ const Chip = styled.div`
   ${tw`self-center h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
 `
 
+const ComboBoxContainer = styled.div`
+  ${tw`flex gap-2 flex-wrap`}
+`
+
+const ComboBoxInner = styled.div<{
+  $comboType: string
+  $comboValue: StopLocation | Season | Week
+}>`
+  ${tw`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg`}
+  ${({ $comboType, $comboValue }) => {
+    if ($comboType === $comboValue) {
+      return tw`pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9] dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759] hm:pl-1.5` // Selected
+    } else {
+      return tw`text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]` // Not Selected
+    }
+  }}
+`
+
+const ControlBox = styled.div`
+  ${tw`h-full scroll-smooth`}
+`
+
+const ControlBoxDivider = styled.hr`
+  ${tw`w-full h-px mb-3 border-slate-400 bg-center justify-center`}
+`
+
+const ControlBoxRow = styled.div`
+  ${tw`grid grid-flow-row gap-2`}
+`
+
+const ControlBoxRowTitle = styled.span`
+  ${tw`text-left font-bold text-lg hm:text-base`}
+`
+
+const NoTimetable = styled.div`
+  ${tw`h-32 hm:h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]`}
+`
+
+const MinuteContainer = styled.div`
+  ${tw`self-center text-left ml-3 col-span-4`}
+`
+
+const DirectMinuteContainer = styled(MinuteContainer)`
+  ${tw`hm:leading-none`}
+`
+
+const FullTimeDocument = styled.div`
+  ${tw`px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white max-w-7xl`}
+`
+
+const FullTimeToolbar = styled.div`
+  ${tw`flex self-center py-5 hm:py-3`}
+`
+
+const FullTimeTitle = styled.span`
+  ${tw`text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5`}
+`
+
+const GoBackIcon = styled.img`
+  ${tw`cursor-default dark:invert w-6 mr-2 hm:w-4`}
+`
+
+const SelectedIcon = styled.img`
+  ${tw`dark:invert mr-1 w-5 hm:w-4`}
+`
+
+const TimeBoxInner = styled.div<{ $maxChips: number }>`
+  ${tw`bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm`}
+  ${({ $maxChips }) => {
+    if ($maxChips === 1) {
+      return tw`h-24 hm:h-20`
+    } else if ($maxChips === 2) {
+      return tw`h-28 hm:h-24`
+    } else if ($maxChips === 3) {
+      return tw`h-32 hm:h-28`
+    }
+  }}
+`
+
+const TimeBoxHeader = styled.div`
+  ${tw`font-bold self-center`}
+`
+
+const TimeBoxBody = styled.div`
+  ${tw`font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px`}
+`
+
+const TimeBoxBodyGrid = styled.div<{ $itemCount: number }>`
+  ${tw`inline-grid grid-cols-5`}
+  ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
+`
+
+const TimetableContainer = styled.div`
+  ${tw`pb-6`}
+`
+
+const YesulinMinuteWrapper = styled.span<{ $itemCount: number }>`
+  ${tw`inline-block text-green-500`}
+  ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
+`
+
 const ComboBox = (props: {
   type: string
   value: StopLocation | Season | Week
@@ -33,24 +134,20 @@ const ComboBox = (props: {
 
   return (
     <>
-      <div
-        className={`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg ${
-          props.type === props.value
-            ? 'pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9]  dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759] hm:pl-1.5' // Selected
-            : 'text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]' // Not Selected
-        }`}
+      <ComboBoxInner
+        $comboType={props.type}
+        $comboValue={props.value}
         onClick={() => props.func(props.value)}
       >
         {props.type === props.value ? (
-          <img
-            className="dark:invert mr-1 w-5 hm:w-4"
-            src="../image/done_FILL0_wght600_GRAD0_opsz48.svg"
+          <SelectedIcon
+            src="../image/selected.svg"
             alt="check"
             onContextMenu={handleContextMenu}
           />
         ) : null}
         {props.info}
-      </div>
+      </ComboBoxInner>
     </>
   )
 }
@@ -59,45 +156,23 @@ const TimeBox = (props: OrganizedTimetables) => {
   const { t } = useTranslation()
   return (
     <>
-      <div
-        className={`h-${
-          props.count
-        } bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:h-${
-          props.count - 4
-        } hm:p-2.5 hm:text-sm`}
-      >
-        <div className="font-bold self-center">
+      <TimeBoxInner $maxChips={props.count}>
+        <TimeBoxHeader>
           {props.time}
           {t('o_clock')}
-        </div>
-        <div className="font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px">
-          <div
-            className={`inline-grid grid-cols-5 ${
-              props.circle.length === 0 ? 'hidden' : 'block'
-            }`}
-          >
+        </TimeBoxHeader>
+        <TimeBoxBody>
+          <TimeBoxBodyGrid $itemCount={props.circle.length}>
             <Chip className="bg-chip-red">{t('cycle')}</Chip>
-            <div className="self-center text-left ml-3 col-span-4">
-              {props.circle.join(' ')}
-            </div>
-          </div>
-          <div
-            className={`inline-grid grid-cols-5 ${
-              props.jungang.length === 0 ? 'hidden' : 'block'
-            }`}
-          >
+            <MinuteContainer>{props.circle.join(' ')}</MinuteContainer>
+          </TimeBoxBodyGrid>
+          <TimeBoxBodyGrid $itemCount={props.jungang.length}>
             <Chip className="bg-chip-purple">{t('cycle_ja')}</Chip>
-            <div className="self-center text-left ml-3 col-span-4">
-              {props.jungang.join(' ')}
-            </div>
-          </div>
-          <div
-            className={`inline-grid grid-cols-5 ${
-              props.direct.length === 0 ? 'hidden' : 'block'
-            }`}
-          >
+            <MinuteContainer>{props.jungang.join(' ')}</MinuteContainer>
+          </TimeBoxBodyGrid>
+          <TimeBoxBodyGrid $itemCount={props.direct.length}>
             <Chip className="bg-chip-blue">{t('direct')}</Chip>
-            <div className="self-center text-left ml-3 col-span-4 hm:leading-none">
+            <DirectMinuteContainer>
               {props.direct.map((time, idx) => {
                 return (
                   <React.Fragment key={idx}>
@@ -105,17 +180,13 @@ const TimeBox = (props: OrganizedTimetables) => {
                   </React.Fragment>
                 )
               })}
-              <span
-                className={`inline-block ${
-                  props.directY.length === 0 ? 'hidden' : 'text-green-500'
-                }`}
-              >
+              <YesulinMinuteWrapper $itemCount={props.directY.length}>
                 {`${props.directY.join(' ')} (${t('to_yesulin')})`}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
+              </YesulinMinuteWrapper>
+            </DirectMinuteContainer>
+          </TimeBoxBodyGrid>
+        </TimeBoxBody>
+      </TimeBoxInner>
     </>
   )
 }
@@ -144,28 +215,9 @@ const FullTime = () => {
   // let minute: TimeTables = { DH: [], DY: [], C: [], R: [], N: [], NA: [] }
   // let hour = '00'
 
-  const changeLocation = (value: StopLocation) => {
-    setLocation(value)
-    return
-  }
-  const changeSeason = (value: Season) => {
-    setSeason(value)
-    return
-  }
-  const changeWeek = (value: Week) => {
-    setWeek(value)
-    return
-  }
-
   const renderTimeBox = () => {
     if (timetable.data?.length === 0) {
-      return (
-        <div className="min-h-screen">
-          <div className="h-32 hm:h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]">
-            {t('none_data')}
-          </div>
-        </div>
-      )
+      return <NoTimetable>{t('none_data')}</NoTimetable>
     }
 
     const timetableFiltered: Map<
@@ -222,11 +274,19 @@ const FullTime = () => {
         single.count++
       }
 
-      single.count > countChip ? setCountChip(single.count) : null
       filteredByType.push(single)
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
+
+    const maxCount = filteredByType.reduce(
+      (prev, curr) => (prev.count > curr.count ? prev : curr),
+      { count: 0 },
+    ).count
+
+    if (maxCount > countChip) {
+      setCountChip(maxCount)
+    }
 
     return (
       <div className="grid grid-flow-row gap-2">
@@ -241,7 +301,7 @@ const FullTime = () => {
                   directY={schedule.directY}
                   circle={schedule.circle}
                   jungang={schedule.jungang}
-                  count={20 + countChip * 4}
+                  count={countChip}
                 />
               )}
             </React.Fragment>
@@ -259,7 +319,7 @@ const FullTime = () => {
     if (timetable.status !== 'pending') {
       setCountChip(0)
     }
-  }, [timetable.status])
+  }, [timetable.status, season, week, location]) // When timetable is changed, the max chip counts has to be recalculated.
 
   const arrLocation: Array<[StopLocation, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
@@ -283,92 +343,86 @@ const FullTime = () => {
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
+
+  const goToHomeScreen = () => {
+    if (window.history.state && window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/', { replace: true })
+    }
+  }
+
   return (
     <>
       <div className={`${theme === THEME.DARK ? 'dark' : ''}`}>
-        <div className="px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white max-w-7xl">
-          <div className="flex self-center py-5 hm:py-3">
-            <img
+        <FullTimeDocument>
+          <FullTimeToolbar>
+            <GoBackIcon
               src="../image/arrow_back_black_36dp.svg"
               alt="back page"
-              className="cursor-default dark:invert w-6 mr-2 hm:w-4"
-              onClick={() => {
-                if (window.history.state && window.history.state.idx > 0) {
-                  navigate(-1)
-                } else {
-                  navigate('/', { replace: true })
-                }
-              }}
+              onClick={() => goToHomeScreen()}
               onContextMenu={handleContextMenu}
             />
-            <span className="text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5">
-              {t('all_btn')}
-            </span>
-          </div>
-          <div className=" h-full scroll-smooth	">
-            <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg hm:text-base">
-                {t('bus_stop')}
-              </span>
-              <div className="flex gap-2 flex-wrap">
+            <FullTimeTitle>{t('all_btn')}</FullTimeTitle>
+          </FullTimeToolbar>
+          <ControlBox>
+            <ControlBoxRow>
+              <ControlBoxRowTitle>{t('bus_stop')}</ControlBoxRowTitle>
+              <ComboBoxContainer>
                 {arrLocation.map((i) => {
                   return (
                     <React.Fragment key={i[0]}>
                       <ComboBox
                         type={location}
                         value={i[0]}
-                        func={() => changeLocation(i[0])}
+                        func={() => setLocation(i[0])}
                         info={i[1]}
                       />
                     </React.Fragment>
                   )
                 })}
-              </div>
-              <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
-            </div>
-            <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg hm:text-base">
-                {t('period')}
-              </span>
-              <div className="flex gap-2 flex-wrap">
+              </ComboBoxContainer>
+              <ControlBoxDivider />
+            </ControlBoxRow>
+            <ControlBoxRow>
+              <ControlBoxRowTitle>{t('period')}</ControlBoxRowTitle>
+              <ComboBoxContainer>
                 {arrSeason.map((i) => {
                   return (
                     <React.Fragment key={i[0]}>
                       <ComboBox
                         type={season}
                         value={i[0]}
-                        func={() => changeSeason(i[0])}
+                        func={() => setSeason(i[0])}
                         info={i[1]}
                       />
                     </React.Fragment>
                   )
                 })}
-                <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
-              </div>
-            </div>
-            <div className=" grid grid-flow-row gap-2 ">
-              <span className="text-left font-bold text-lg hm:text-base">
-                {t('days_week')}
-              </span>
-              <div className="flex gap-2 flex-wrap">
+                <ControlBoxDivider />
+              </ComboBoxContainer>
+            </ControlBoxRow>
+            <ControlBoxRow>
+              <ControlBoxRowTitle>{t('days_week')}</ControlBoxRowTitle>
+              <ComboBoxContainer>
                 {arrWeek.map((i) => {
                   return (
                     <React.Fragment key={i[0]}>
                       <ComboBox
                         type={week}
                         value={i[0]}
-                        func={() => changeWeek(i[0])}
+                        func={() => setWeek(i[0])}
                         info={i[1]}
                       />
                     </React.Fragment>
                   )
                 })}
-                <div className="w-full h-px mb-3 bg-slate-400 bg-center justify-center" />
-              </div>
-            </div>
-          </div>
-          <div className="pb-6">{renderTimeBox()}</div>
-        </div>
+                <ControlBoxDivider />
+              </ComboBoxContainer>
+            </ControlBoxRow>
+          </ControlBox>
+          <TimetableContainer>{renderTimeBox()}</TimetableContainer>
+        </FullTimeDocument>
       </div>
     </>
   )
