@@ -76,9 +76,7 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <Chip className="bg-chip-red">
-              {t('cycle')}
-            </Chip>
+            <Chip className="bg-chip-red">{t('cycle')}</Chip>
             <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
             </div>
@@ -88,9 +86,7 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.jungang.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <Chip className="bg-chip-purple">
-              {t('cycle_ja')}
-            </Chip>
+            <Chip className="bg-chip-purple">{t('cycle_ja')}</Chip>
             <div className="self-center text-left ml-3 col-span-4">
               {props.jungang.join(' ')}
             </div>
@@ -100,9 +96,7 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.direct.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <Chip className="bg-chip-blue">
-              {t('direct')}
-            </Chip>
+            <Chip className="bg-chip-blue">{t('direct')}</Chip>
             <div className="self-center text-left ml-3 col-span-4 hm:leading-none">
               {props.direct.map((time, idx) => {
                 return (
@@ -128,13 +122,13 @@ const TimeBox = (props: OrganizedTimetables) => {
 
 const FullTime = () => {
   const [season, setSeason] = useState<Season>(
-    (window.localStorage.getItem('season') as Season) || 'semester'
+    (window.localStorage.getItem('season') as Season) || 'semester',
   )
   const [week, setWeek] = useState<Week>(
-    (window.localStorage.getItem('week') as Week) || 'week'
+    (window.localStorage.getItem('week') as Week) || 'week',
   )
   const [location, setLocation] = useState<StopLocation>(
-    (window.localStorage.getItem('tab') as StopLocation) || 'shuttlecoke_o'
+    (window.localStorage.getItem('tab') as StopLocation) || 'shuttlecoke_o',
   )
   const timetable = useQuery({
     queryKey: ['fullTime', season, week, location],

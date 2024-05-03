@@ -60,7 +60,7 @@ const ModalOpen = (props: {
                         ))}
                       </ChangelogMargin>
                     )
-                  }
+                  },
                 ) ?? <></>
               ) : (
                 <iframe
