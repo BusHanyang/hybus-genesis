@@ -2,6 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
+import styled from 'styled-components'
+import tw from 'twin.macro'
 
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 import {
@@ -14,6 +16,10 @@ import {
 import { shuttleAPI } from '@/network'
 
 import { useDarkMode } from './useDarkMode'
+
+const Chip = styled.div`
+  ${tw`self-center h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5`}
+`
 
 const ComboBox = (props: {
   type: string
@@ -70,9 +76,9 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.circle.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-red h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+            <Chip className="bg-chip-red">
               {t('cycle')}
-            </div>
+            </Chip>
             <div className="self-center text-left ml-3 col-span-4">
               {props.circle.join(' ')}
             </div>
@@ -82,9 +88,9 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.jungang.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-purple h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5">
+            <Chip className="bg-chip-purple">
               {t('cycle_ja')}
-            </div>
+            </Chip>
             <div className="self-center text-left ml-3 col-span-4">
               {props.jungang.join(' ')}
             </div>
@@ -94,9 +100,9 @@ const TimeBox = (props: OrganizedTimetables) => {
               props.direct.length === 0 ? 'hidden' : 'block'
             }`}
           >
-            <div className="self-center bg-chip-blue h-fit  dark:text-black py-1 w-12 rounded-full inline-block text-center  hm:w-10 hm:py-0.5">
+            <Chip className="bg-chip-blue">
               {t('direct')}
-            </div>
+            </Chip>
             <div className="self-center text-left ml-3 col-span-4 hm:leading-none">
               {props.direct.map((time, idx) => {
                 return (
