@@ -7,13 +7,13 @@ import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
 import { Fabs, Shuttle, Subway } from '@/components'
+import Notice from '@/components/notice/Notice'
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
-import Notice from './app/components/Notice'
 import Refreshing from './app/components/ptr/refreshing-content'
 
-const FullTime = lazy(() => import('./app/components/FullTime'))
+const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
 const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
 
 const Apps = styled.div`
