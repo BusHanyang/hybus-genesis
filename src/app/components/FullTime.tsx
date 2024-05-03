@@ -18,7 +18,7 @@ import { shuttleAPI } from '@/network'
 import { useDarkMode } from './useDarkMode'
 
 const Chip = styled.div`
-  ${tw`self-center h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5`}
+  ${tw`self-center h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
 `
 
 const ComboBox = (props: {
