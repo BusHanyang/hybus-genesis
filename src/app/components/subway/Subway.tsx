@@ -351,6 +351,7 @@ export const Subway = ({ station }: SubwayStop) => {
                       (i18n.language === 'en' &&
                         val.destination.includes('청량리')) ||
                       (getRapidOrLastElement(val.isLast, val.isExpress) &&
+                        i18n.language === 'en' &&
                         (val.destination.includes('왕십리') ||
                           val.destination.includes('당고개') ||
                           val.destination.includes('금정'))) // Eng Text is so long
