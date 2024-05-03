@@ -10,6 +10,7 @@ import tw from 'twin.macro'
 
 import { openNaverMapApp } from '@/components/shuttle/map'
 import {
+  ChipType,
   Season,
   Settings,
   ShuttleStop,
@@ -327,16 +328,16 @@ const titleText = (location: string): string => {
   }
 }
 
-const getColoredElement = (type: string): JSX.Element => {
-  if (type == 'C') {
-    return <Chip className="bg-chip-red">{busTypeToText(type)}</Chip>
-  } else if (type == 'DHJ') {
-    return <Chip className="bg-chip-purple">{busTypeToText(type)}</Chip>
-  } else if (type == 'DY') {
-    return <Chip className="bg-chip-green">{busTypeToText(type)}</Chip>
+const ColoredChip = ({ chipType }: ChipType) => {
+  if (chipType == 'C') {
+    return <Chip className="bg-chip-red">{busTypeToText(chipType)}</Chip>
+  } else if (chipType == 'DHJ') {
+    return <Chip className="bg-chip-purple">{busTypeToText(chipType)}</Chip>
+  } else if (chipType == 'DY') {
+    return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
   }
 
-  return <Chip className="bg-chip-blue">{busTypeToText(type)}</Chip>
+  return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
@@ -483,7 +484,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
             return (
               <React.Fragment key={idx}>
                 <SingleTimetable>
-                  {getColoredElement(val.type)}
+                  <ColoredChip chipType={val.type} />
                   <TimeLeftWrapper
                     className={`${showActualTime ? 'touched' : ''}`}
                   >
