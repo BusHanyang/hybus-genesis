@@ -259,7 +259,7 @@ const Subway = ({ station }: SubwayStop) => {
     )
   }
 
-  function compare(a: SingleTrainInfo, b: SingleTrainInfo) {
+  const compare = (a: SingleTrainInfo, b: SingleTrainInfo) => {
     const aNum = a.stnUntilArrival
     const bNum = b.stnUntilArrival
 
