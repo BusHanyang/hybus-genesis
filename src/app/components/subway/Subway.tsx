@@ -21,27 +21,73 @@ const Headline = styled.h2`
   ${tw`font-bold text-2xl mb-3 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
 `
 
-const StnListWrapper = styled.div`
-  ${tw`flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center
-        hover:brightness-90 hover:bg-slate-50 dark:hover:text-black p-[0.3rem] my-[0.3rem] 
-    `}
+const StnListWrapper = styled.div<{
+  $prevDeparted: boolean
+  $prevArrived: boolean
+}>`
+  ${tw`flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center hover:brightness-90 hover:bg-slate-50 dark:hover:text-black p-[0.3rem] my-[0.3rem]`}
+  ${({ $prevDeparted }) => {
+    if ($prevDeparted) {
+      return tw`text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center`
+    }
+  }}
+    ${({ $prevArrived }) => {
+    if ($prevArrived) {
+      return tw`text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center`
+    }
+  }}
 `
 
-const DestStnLeftWrapper = styled.div`
-  ${tw`flex justify-end items-center font-Ptd tabular-nums text-right
-    w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]
-    `}
+const Chip = styled.img`
+  ${tw`my-auto inline-block`}
 `
 
-const ArrivalStnStatusWrapper = styled.span`
+const DestStnLeftContainer = styled.div<{ $isEnglish: boolean }>`
+  ${tw`flex justify-end items-center font-Ptd tabular-nums text-right w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]`}
+  ${({ $isEnglish }) => ($isEnglish ? tw`tracking-tighter` : undefined)}
+`
+
+const DestStnLeftWrapper = styled.div<{ $isTooLong: boolean }>`
+  ${({ $isTooLong }) =>
+    $isTooLong ? tw`tracking-[-0.09em] text-sm hsm:text-xs` : undefined}
+`
+
+const ArrivalStnStatusWrapper = styled.span<{ $isEnglish: boolean }>`
   ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1 pr-2`}
+  ${({ $isEnglish }) => ($isEnglish ? tw`tracking-tighter` : undefined)}
+`
+
+const SingleDirTimetableWrapper = styled.div`
+  ${tw`h-[5rem]`}
 `
 
 const StatusWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block px-1 w-[5rem] text-right 
-    hm:text-[0.9rem] hm:w-[4rem] hm:px-0
-    hsm:text-sm hsm:w-[4rem]
-    `}
+  ${tw`font-Ptd tabular-nums inline-block px-1 w-[5rem] text-right hm:text-[0.9rem] hm:w-[4rem] hm:px-0 hsm:text-sm hsm:w-[4rem]`}
+`
+
+const SubwayDivider = styled.hr<{ $isLoading: boolean }>`
+  ${tw`py-1 hsm:mb-4`}
+  ${({ $isLoading }) => ($isLoading ? tw`hidden` : undefined)}
+`
+
+const TimetableLoadingContainer = styled.div`
+  ${tw`h-[12rem]`}
+`
+
+const TitleLine4Icon = styled(Chip)`
+  ${tw`w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]`}
+`
+
+const TitleLineSUIcon = styled(Chip)`
+  ${tw`w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-1.5`}
+`
+
+const TrainLineIcon = styled(Chip)`
+  ${tw`mx-0.5 w-[1.25rem]`}
+`
+
+const TrainTypeIcon = styled.img`
+  ${tw`h-4 ml-[0.15rem]`}
 `
 
 const MainTimetable = styled.div`
@@ -58,10 +104,6 @@ const NoTimetableInner = styled.span`
 
 const ApiStatusButton = styled.button`
   ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
-`
-
-const Chip = styled.img`
-  ${tw`my-auto inline-block`}
 `
 
 const arrivalUntil = (stnUntilArrival: number): string => {
@@ -160,18 +202,16 @@ const getDestination = (
 const getRapidOrLastElement = (isLast: boolean, isExpress: boolean) => {
   if (isLast) {
     return (
-      <img
+      <TrainTypeIcon
         alt="last train icon"
-        className="h-4 ml-[0.15rem]"
         src={t('last_train_img')}
         draggable="false"
       />
     )
   } else if (isExpress) {
     return (
-      <img
+      <TrainTypeIcon
         alt="rapid train icon"
-        className="h-4 ml-[0.15rem]"
         src={t('rapid_train_img')}
         draggable="false"
       />
@@ -182,27 +222,24 @@ const getRapidOrLastElement = (isLast: boolean, isExpress: boolean) => {
 const getLineMarkElement = (line: string): JSX.Element => {
   if (line === '4') {
     return (
-      <Chip
+      <TrainLineIcon
         alt="line 4 icon"
-        className="mx-0.5 w-[1.25rem]"
         src="/image/line4.svg"
         draggable="false"
       />
     )
   } else if (line === 'SU') {
     return (
-      <Chip
+      <TrainLineIcon
         alt="line suin-bundang icon"
-        className="mx-0.5 w-[1.25rem]"
         src={`/image/${t('suin')}.svg`}
         draggable="false"
       />
     )
   } else
     return (
-      <Chip
+      <TrainLineIcon
         alt="unknown line icon"
-        className="mx-0.5 w-[1.25rem]"
         src="/image/helpblack.svg"
         draggable="false"
       />
@@ -327,51 +364,38 @@ const Subway = ({ station }: SubwayStop) => {
           return (
             <React.Fragment key={idx}>
               <StnListWrapper
-                className={`
-                            ${
-                              val.destination === station.trim() ||
-                              val.stnUntilArrival === 0 // This Station & Prev Station(Departure)
-                                ? 'text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center'
-                                : ''
-                            }
-                            ${
-                              val.stnUntilArrival === 1 // Prev Station (Arrival)
-                                ? 'text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center'
-                                : ''
-                            }
-                            `}
+                $prevDeparted={
+                  val.destination === station.trim() ||
+                  val.stnUntilArrival === 0
+                }
+                $prevArrived={val.stnUntilArrival === 1}
                 onClick={() => openRailblue(val.trainCode)}
               >
                 {getLineMarkElement(val.line)}
-                <DestStnLeftWrapper
-                  className={i18n.language === 'en' ? 'tracking-tighter' : ''}
-                >
-                  <div
-                    className={`${
+                <DestStnLeftContainer $isEnglish={i18n.language === 'en'}>
+                  <DestStnLeftWrapper
+                    $isTooLong={
                       val.destination.includes('한성대') ||
                       (i18n.language === 'en' &&
                         val.destination.includes('청량리')) ||
-                      (getRapidOrLastElement(val.isLast, val.isExpress) &&
+                      (getRapidOrLastElement(val.isLast, val.isExpress) !==
+                        undefined &&
                         i18n.language === 'en' &&
                         (val.destination.includes('왕십리') ||
                           val.destination.includes('당고개') ||
-                          val.destination.includes('금정'))) // Eng Text is so long
-                        ? 'tracking-[-0.09em] text-sm hsm:text-xs'
-                        : ''
-                    }`}
+                          val.destination.includes('금정')))
+                    }
                   >
                     {getDestination(val.destination, val.isLast, val.isExpress)}
-                  </div>
+                  </DestStnLeftWrapper>
                   {getRapidOrLastElement(val.isLast, val.isExpress)}
-                </DestStnLeftWrapper>
+                </DestStnLeftContainer>
                 <StatusWrapper>
                   {isBlink
                     ? stationName(val.currentStation)
                     : arrivalUntil(val.stnUntilArrival)}
                 </StatusWrapper>
-                <ArrivalStnStatusWrapper
-                  className={i18n.language == 'en' ? 'tracking-tighter' : ''}
-                >
+                <ArrivalStnStatusWrapper $isEnglish={i18n.language == 'en'}>
                   {arrivalStnStatus(
                     val.status,
                     val.orgStation,
@@ -389,21 +413,13 @@ const Subway = ({ station }: SubwayStop) => {
   return (
     <TimetableWrapper>
       <HeadlineWrapper>
-        <Chip
-          className="w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]"
-          src="/image/line4.svg"
-          draggable="false"
-        />
-        <Chip
-          className="w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-1.5"
-          src={`/image/${t('suin')}.svg`}
-          draggable="false"
-        />
+        <TitleLine4Icon src="/image/line4.svg" draggable="false" />
+        <TitleLineSUIcon src={`/image/${t('suin')}.svg`} draggable="false" />
         <Headline>{titleText(station.trim())}</Headline>
       </HeadlineWrapper>
       <MainTimetable>
         {timetable.isPending ? (
-          <div className="h-[12rem]">
+          <TimetableLoadingContainer>
             <NoTimetable>
               <SyncLoader
                 color="#AFBDCE"
@@ -413,7 +429,7 @@ const Subway = ({ station }: SubwayStop) => {
                 cssOverride={tw`table-cell align-middle`}
               />
             </NoTimetable>
-          </div>
+          </TimetableLoadingContainer>
         ) : (
           <></>
         )}
@@ -431,11 +447,13 @@ const Subway = ({ station }: SubwayStop) => {
           </>
         ) : (
           <>
-            <div className="h-[5rem]">{renderTimetable(1, t)}</div>
-            <hr
-              className={`py-1 hsm:mb-4 ${timetable.isPending ? `hidden` : ``}`}
-            />
-            <div className="h-[5rem]">{renderTimetable(2, t)}</div>
+            <SingleDirTimetableWrapper>
+              {renderTimetable(1, t)}
+            </SingleDirTimetableWrapper>
+            <SubwayDivider $isLoading={timetable.isPending} />
+            <SingleDirTimetableWrapper>
+              {renderTimetable(2, t)}
+            </SingleDirTimetableWrapper>
           </>
         )}
       </MainTimetable>
