@@ -20,7 +20,7 @@ export const useDarkmodeContext = () => {
 
 export const DarkmodeContextProvider = ({
   children,
-}: React.PropsWithChildren<unknown>) => {
+}: React.PropsWithChildren) => {
   const [theme, setTheme] = React.useState<THEME>(THEME.LIGHT)
 
   return (

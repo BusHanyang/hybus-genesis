@@ -6,28 +6,52 @@ import styled from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
-import { Card, Fabs } from './app/components'
-import Notice from './app/components/Notice'
-import Refreshing from './app/components/ptr/refreshing-content'
-import { Realtime } from './app/components/Realtime'
-import { THEME, useDarkmodeContext } from './app/context/ThemeContext'
+import { Shuttle } from '@/components'
+import Fabs from '@/components/fab/fab'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import { StopLocation } from '@/data'
 
-const FullTime = lazy(() => import('./app/components/FullTime'))
-const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
+import Refreshing from './app/components/ptr/refreshing-content'
+
+const Notice = lazy(() => import('@/components/notice/Notice'))
+const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
+const ModalOpen = lazy(() => import('@/components/modal/modalOpen'))
+const Subway = lazy(() => import('@/components/subway/Subway'))
 
 const Apps = styled.div`
   ${tw`
     h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
-    dark:bg-zinc-800 dark:text-white
+    dark:bg-zinc-800 dark:text-white transition-colors
   `}
 `
 
 const Circle = styled.span`
   ${tw`
     flex rounded-full inline-block
-    h-3 w-3 rt1:h-2.5 rt1:w-2.5
+    h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1
   `}
 `
+
+const CopyRightText = styled.p`
+  ${tw`dark:text-white pt-3 hsm:text-sm hsm:leading-4`}
+`
+
+const CycleCircle = styled(Circle)`
+  ${tw`bg-chip-red mr-2 hsm:mx-2`}
+`
+
+const DirectCircle = styled(Circle)`
+  ${tw`bg-chip-blue mx-2`}
+`
+
+const YesulinCircle = styled(Circle)`
+  ${tw`bg-chip-green mx-2`}
+`
+
+const JungangCircle = styled(Circle)`
+  ${tw`bg-chip-purple mx-2`}
+`
+
 const RouteText = styled.div`
   ${tw`
     inline-block rt1:text-sm rt2:text-xs hsm:mx-1
@@ -40,6 +64,14 @@ const CardView = styled.div`
     bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)]
     dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
   `}
+`
+
+const MainCardView = styled(CardView)`
+  ${tw`p-6 hm:p-4 transition-[height] delay-75`}
+`
+
+const NoticeWrapper = styled(CardView)`
+  ${tw`p-3 h-[3rem] w-full`}
 `
 
 const Button = styled(CardView)`
@@ -57,10 +89,39 @@ const Button = styled(CardView)`
     ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
   }
 `
+
+const FulltimeButton = styled(Button)`
+  ${tw`w-full cursor-default`}
+`
+
+const HeadlineWrapper = styled.div`
+  ${tw`relative`} drag-save-n
+`
+
+const HelpIcon = styled.img`
+  ${tw`bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
+`
+
+const RouteIndexCardView = styled(CardView)`
+  ${tw`p-4 h-12 hm:p-2 flex`}
+`
+
+const RouteIndexWrapper = styled.div`
+  ${tw`flex flex-wrap place-content-center items-center`}
+`
+
 const SegmentedControl = styled.div`
   ${tw`
-    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800  
+    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800 transition-all will-change-transform  
   `}
+`
+
+const SegmentedControlWrapper = styled.div`
+  ${tw`flex justify-center transition-[opacity,margin] delay-75`}
+`
+
+const StationButtonWrapper = styled.div`
+  ${tw`grid grid-cols-3 gap-4`}
 `
 
 const RadioLabel = styled.label`
@@ -68,6 +129,10 @@ const RadioLabel = styled.label`
     block cursor-default select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
     transition-colors ease-in-out duration-150
   `}
+`
+
+const Title = styled.h1`
+  ${tw`font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3`}
 `
 
 const BetaText = styled.span`
@@ -80,9 +145,8 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
-  const [, setTriggered] = useState<boolean>(false)
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
-    window.localStorage.getItem('touch_info') === null
+    window.localStorage.getItem('touch_info') === null,
   )
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
@@ -116,7 +180,7 @@ function App() {
 
   const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
-  const [realtimeMode, setRealtimeMode] = useState<boolean>()
+  const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
   const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {
@@ -142,14 +206,14 @@ function App() {
       if (tab === 'subway' || tab === 'jungang') {
         if (!realtimeMode) {
           // Shuttle Bus Info at Stations with prompt
-          return 'h-[21rem] hsm:h-[20.7rem]'
+          return 'h-[21rem] hm:h-[21.5rem] hsm:h-[20.7rem]'
         } else {
           // Subway info at Stations with prompt
           return 'h-[19.6rem]'
         }
       } else {
         // default with prompt
-        return 'h-[18rem]'
+        return 'h-[18.5rem] hm:h-[19rem] hsm:h-[18.5rem]'
       }
     }
   }
@@ -205,68 +269,60 @@ function App() {
                     <Refreshing mode={isDarkMode ? THEME.DARK : THEME.LIGHT} />
                   }
                   resistance={3}
+                  className="transition-colors"
                 >
                   <div
                     className={`${isDarkMode ? 'dark' : ''} h-full`}
                     onContextMenu={(e) => e.preventDefault()}
                   >
                     <Apps>
-                      <header className="App-header">
-                        <div className="relative">
-                          <h1
-                            id="title"
-                            className="font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3"
-                          >
+                      <header>
+                        <HeadlineWrapper>
+                          <Title>
                             {t('title')}
-                            <img
+                            <HelpIcon
                               src="/image/helpblack.svg"
                               alt="information icon"
                               onClick={handleModalTarget}
-                              className="bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 drag-save-n cursor-default"
                               onContextMenu={handleContextMenu}
                               draggable="false"
-                            ></img>
-                          </h1>
-                        </div>
-                        <CardView className="p-3 h-[3rem] w-full">
-                          <Notice />
-                        </CardView>
+                            />
+                          </Title>
+                        </HeadlineWrapper>
+                        <NoticeWrapper>
+                          <Suspense fallback={<div />}>
+                            <Notice />
+                          </Suspense>
+                        </NoticeWrapper>
                       </header>
 
-                      <CardView
-                        className={`p-6 hm:p-4 transition-[height] delay-75 ${getCardHeight()}`}
-                      >
+                      <MainCardView className={getCardHeight()}>
                         {realtimeMode &&
                         (tab === 'subway' || tab === 'jungang') ? (
                           <>
-                            <Realtime
-                              station={`
-                                ${(tab === 'subway' ? '한대앞' : '중앙').trim()}
-                              `}
-                            />
+                            <Suspense fallback={<div />}>
+                              <Subway
+                                station={(tab === 'subway'
+                                  ? '한대앞'
+                                  : '중앙'
+                                ).trim()}
+                              />
+                            </Suspense>
                           </>
                         ) : (
                           <>
-                            <Card
+                            <Shuttle
                               location={
-                                window.localStorage.getItem('tab') ||
-                                'shuttlecoke_o'
+                                (window.localStorage.getItem('tab') ||
+                                  'shuttlecoke_o') as StopLocation
                               }
                             />
                           </>
                         )}
-                        <div
-                          className={`flex justify-center transition-[opacity,margin] delay-75 opacity-0 pointer-events-none
-                            ${
-                              !realtimeMode && touchPrompt
-                                ? 'mt-6 hm:mt-[1.85rem] hsm:mt-7'
-                                : ''
-                            }
-                            ${
-                              tab === 'subway' || tab === 'jungang'
-                                ? 'opacity-100 pointer-events-auto'
-                                : ''
-                            } 
+                        <SegmentedControlWrapper
+                          className={`
+                            ${!realtimeMode && touchPrompt ? 'mt-7 hm:mt-[2.1rem] hsm:mt-7' : ''}
+                            ${tab === 'subway' || tab === 'jungang' ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'} 
                           `}
                         >
                           <SegmentedControl>
@@ -300,65 +356,62 @@ function App() {
                               </RadioLabel>
                             </div>
                           </SegmentedControl>
-                        </div>
-                      </CardView>
+                        </SegmentedControlWrapper>
+                      </MainCardView>
 
-                      <CardView className="p-4 h-12 hm:p-2 flex">
-                        <div>
-                          <Circle className="bg-chip-red mr-2 hsm:mx-2" />
+                      <RouteIndexCardView>
+                        <RouteIndexWrapper>
+                          <CycleCircle />
                           <RouteText>{t('cycle_index')}</RouteText>
-                        </div>
-                        <div>
-                          <Circle className="bg-chip-blue mx-2" />
+                        </RouteIndexWrapper>
+                        <RouteIndexWrapper>
+                          <DirectCircle />
                           <RouteText>{t('direct_index')}</RouteText>
-                        </div>
-                        <div>
-                          <Circle className="bg-chip-green mx-2" />
+                        </RouteIndexWrapper>
+                        <RouteIndexWrapper>
+                          <YesulinCircle />
                           <RouteText>{t('yesulin_index')}</RouteText>
-                        </div>
-                        <div>
-                          <Circle className="bg-chip-purple mx-2" />
+                        </RouteIndexWrapper>
+                        <RouteIndexWrapper>
+                          <JungangCircle />
                           <RouteText>{t('jungang_index')}</RouteText>
-                        </div>
-                      </CardView>
-                      <div className="grid grid-cols-3 gap-4">
+                        </RouteIndexWrapper>
+                      </RouteIndexCardView>
+
+                      <StationButtonWrapper>
                         <Button
                           id="shuttlecoke_o"
-                          className={`${
-                            tab === 'shuttlecoke_o' ? 'active' : ''
-                          }`}
+                          className={tab === 'shuttlecoke_o' ? 'active' : ''}
                           onClick={() => saveClicked('shuttlecoke_o')}
                         >
                           {t('shuttlecoke_o_btn')}
                         </Button>
                         <Button
                           id="subway"
-                          className={`${tab === 'subway' ? 'active' : ''}`}
+                          className={tab === 'subway' ? 'active' : ''}
                           onClick={() => saveClicked('subway')}
                         >
                           {t('subway_btn')}
                         </Button>
                         <Button
                           id="yesulin"
-                          className={`${tab === 'yesulin' ? 'active' : ''}`}
+                          className={tab === 'yesulin' ? 'active' : ''}
                           onClick={() => saveClicked('yesulin')}
                         >
                           {t('yesulin_btn')}
                         </Button>
-                      </div>
-                      <div className="grid grid-cols-3 gap-4">
+                      </StationButtonWrapper>
+                      <StationButtonWrapper>
                         <Button
                           id="jungang"
-                          className={`${tab === 'jungang' ? 'active' : ''}`}
+                          className={tab === 'jungang' ? 'active' : ''}
                           onClick={() => saveClicked('jungang')}
                         >
                           {t('jungang_btn')}
                         </Button>
                         <Button
                           id="shuttlecoke_i"
-                          className={`${
-                            tab === 'shuttlecoke_i' ? 'active' : ''
-                          }`}
+                          className={tab === 'shuttlecoke_i' ? 'active' : ''}
                           onClick={() => saveClicked('shuttlecoke_i')}
                         >
                           {t('shuttlecoke_i_btn')
@@ -371,26 +424,20 @@ function App() {
                               )
                             })}
                         </Button>
-
                         <Button
                           id="residence"
-                          className={`${tab === 'residence' ? 'active' : ''}`}
+                          className={tab === 'residence' ? 'active' : ''}
                           onClick={() => saveClicked('residence')}
                         >
                           {t('residence_btn')}
                         </Button>
-                      </div>
+                      </StationButtonWrapper>
 
                       <Link to="/all">
-                        <Button id="all" className="w-full cursor-default">
-                          {t('all_btn')}
-                        </Button>
+                        <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
                       </Link>
-                      <p
-                        id="copyright"
-                        className="dark:text-white pt-3 hsm:text-sm hsm:leading-4"
-                      >
-                        Copyright © 2020-2023{' '}
+                      <CopyRightText id="copyright">
+                        Copyright © 2020-2024{' '}
                         <a
                           className="underline"
                           target="_blank"
@@ -400,7 +447,7 @@ function App() {
                           BusHanyang
                         </a>
                         . All rights reserved
-                      </p>
+                      </CopyRightText>
                     </Apps>
                   </div>
                 </PullToRefresh>

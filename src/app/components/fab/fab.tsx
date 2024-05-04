@@ -14,8 +14,8 @@ import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 
-import { useDarkmodeContext } from '../../context/ThemeContext'
 import { useDarkMode } from '../useDarkMode'
 
 const Icons = styled.div<{ theme: string }>`
@@ -30,7 +30,7 @@ const FabBackground = styled.div<{ open: boolean }>`
   }}
 `
 
-export const Fabs = (props: {
+const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
@@ -102,7 +102,7 @@ export const Fabs = (props: {
   }
   const handleDonateOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
-      window.open('https://toss.me/bushanyang', '_blank')
+      window.open('https://toss.me/bushanyang/1000', '_blank')
     })
   }
   const handleDarkOnClick = (): Promise<React.FC> => {
@@ -259,3 +259,5 @@ export const Fabs = (props: {
     </>
   )
 }
+
+export default Fabs

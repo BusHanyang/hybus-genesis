@@ -14,7 +14,6 @@
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="theme-color" content="#FFFFFF">
     <meta name="viewport" content="width=device-width, initial-scale=1.0 viewport-fit=cover" />
     <meta name="google" content="notranslate">
     <title>버스하냥 - 한양대 ERICA 셔틀버스 시간표 서비스</title>
@@ -63,9 +62,21 @@
           }
         }
       }(window.location))
-      </script>
+    </script>
   </head>
   <body>
+    <script>
+      var meta = document.createElement('meta')
+      meta.name = 'theme-color'
+      if (window.localStorage.getItem('theme') === 'dark') {
+        meta.content = '#27272A'
+        document.body.style.backgroundColor = '#27272A'
+      } else {
+        meta.content = '#FFFFFF'
+        document.body.style.backgroundColor = '#FFFFFF'
+      }
+      document.getElementsByTagName('head')[0].appendChild(meta)
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
