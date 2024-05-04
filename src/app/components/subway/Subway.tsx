@@ -235,7 +235,7 @@ const openRailblue = (btrainNo: string): void => {
   )
 }
 
-export const Subway = ({ station }: SubwayStop) => {
+const Subway = ({ station }: SubwayStop) => {
   const timetable = useQuery({
     queryKey: ['subway_timetable', station],
     queryFn: async () => await subwayAPI(station),
@@ -442,3 +442,5 @@ export const Subway = ({ station }: SubwayStop) => {
     </TimetableWrapper>
   )
 }
+
+export default Subway

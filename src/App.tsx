@@ -6,15 +6,17 @@ import styled from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
-import { Fabs, Shuttle, Subway } from '@/components'
-import Notice from '@/components/notice/Notice'
+import { Shuttle } from '@/components'
+import Fabs from '@/components/fab/fab'
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
 import Refreshing from './app/components/ptr/refreshing-content'
 
+const Notice = lazy(() => import('@/components/notice/Notice'))
 const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
-const ModalOpen = lazy(() => import('./app/components/modal/modalOpen'))
+const ModalOpen = lazy(() => import('@/components/modal/modalOpen'))
+const Subway = lazy(() => import('@/components/subway/Subway'))
 
 const Apps = styled.div`
   ${tw`
@@ -288,7 +290,9 @@ function App() {
                           </Title>
                         </HeadlineWrapper>
                         <NoticeWrapper>
-                          <Notice />
+                          <Suspense fallback={<div />}>
+                            <Notice />
+                          </Suspense>
                         </NoticeWrapper>
                       </header>
 
@@ -296,12 +300,14 @@ function App() {
                         {realtimeMode &&
                         (tab === 'subway' || tab === 'jungang') ? (
                           <>
-                            <Subway
-                              station={(tab === 'subway'
-                                ? '한대앞'
-                                : '중앙'
-                              ).trim()}
-                            />
+                            <Suspense fallback={<div />}>
+                              <Subway
+                                station={(tab === 'subway'
+                                  ? '한대앞'
+                                  : '중앙'
+                                ).trim()}
+                              />
+                            </Suspense>
                           </>
                         ) : (
                           <>

@@ -30,7 +30,7 @@ const FabBackground = styled.div<{ open: boolean }>`
   }}
 `
 
-export const Fabs = (props: {
+const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
@@ -259,3 +259,5 @@ export const Fabs = (props: {
     </>
   )
 }
+
+export default Fabs
