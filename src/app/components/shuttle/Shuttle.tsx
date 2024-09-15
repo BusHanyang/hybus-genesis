@@ -397,11 +397,11 @@ export const Shuttle = ({ location }: ShuttleStop) => {
 
   // Set week and season to localStorage
   useEffect(() => {
-    if (season !== null) {
+    if (season !== null && season !== seasonKeys.HALT) {
       window.localStorage.setItem('season', season)
     }
 
-    if (week !== null) {
+    if (week !== null && week !== weekKeys.UNKNOWN) {
       window.localStorage.setItem('week', week)
     }
   }, [season, week])
