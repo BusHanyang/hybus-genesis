@@ -352,7 +352,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   const timetable = useQuery({
     queryKey: ['shuttle', season, week, location],
     queryFn: () => {
-      if (season === null || week === null) {
+      if (season === null || week === null || season === seasonKeys.HALT) {
         return Array<SingleShuttleSchedule>()
       }
       return getTimetable(season, week, location)
