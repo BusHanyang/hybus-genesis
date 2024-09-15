@@ -352,7 +352,12 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   const timetable = useQuery({
     queryKey: ['shuttle', season, week, location],
     queryFn: () => {
-      if (season === null || week === null) {
+      if (
+        season === null ||
+        week === null ||
+        season === seasonKeys.HALT ||
+        week === weekKeys.UNKNOWN
+      ) {
         return Array<SingleShuttleSchedule>()
       }
       return getTimetable(season, week, location)
@@ -392,12 +397,20 @@ export const Shuttle = ({ location }: ShuttleStop) => {
 
   // Set week and season to localStorage
   useEffect(() => {
-    if (season !== null) {
+    if (season !== null && season !== seasonKeys.HALT) {
       window.localStorage.setItem('season', season)
     }
 
-    if (week !== null) {
+    if (week !== null && week !== weekKeys.UNKNOWN) {
       window.localStorage.setItem('week', week)
+    }
+
+    if (window.localStorage.getItem('season') === seasonKeys.HALT) {
+      window.localStorage.setItem('season', seasonKeys.SEMESTER)
+    }
+
+    if (window.localStorage.getItem('week') === weekKeys.UNKNOWN) {
+      window.localStorage.setItem('week', weekKeys.WEEK)
     }
   }, [season, week])
 
