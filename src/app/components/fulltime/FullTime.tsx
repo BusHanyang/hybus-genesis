@@ -13,6 +13,8 @@ import {
   StopLocation,
   Week,
 } from '@/data'
+import { seasonKeys } from '@/data/shuttle/season'
+import { weekKeys } from '@/data/shuttle/week'
 import { shuttleAPI } from '@/network'
 
 import { useDarkMode } from '../useDarkMode'
@@ -314,6 +316,16 @@ const FullTime = () => {
   useLayoutEffect(() => {
     setBackground()
   })
+
+  useEffect(() => {
+    if (season === seasonKeys.HALT) {
+      setSeason(seasonKeys.SEMESTER)
+    }
+
+    if (week === weekKeys.UNKNOWN) {
+      setWeek(weekKeys.WEEK)
+    }
+  }, [season, week])
 
   useEffect(() => {
     if (timetable.status !== 'pending') {
