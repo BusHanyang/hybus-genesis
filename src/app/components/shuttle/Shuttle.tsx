@@ -404,6 +404,14 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     if (week !== null && week !== weekKeys.UNKNOWN) {
       window.localStorage.setItem('week', week)
     }
+
+    if (window.localStorage.getItem('season') === seasonKeys.HALT) {
+      window.localStorage.setItem('season', seasonKeys.SEMESTER)
+    }
+
+    if (window.localStorage.getItem('week') === weekKeys.UNKNOWN) {
+      window.localStorage.setItem('week', weekKeys.WEEK)
+    }
   }, [season, week])
 
   const handleActionStart = () => {
