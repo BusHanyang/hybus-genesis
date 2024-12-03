@@ -2,9 +2,9 @@
 
 > HYBUS Project based on React
 
-![up](https://monitor.hybus.app/api/badge/4/status) 
-![uptime](https://monitor.hybus.app/api/badge/4/uptime) 
-![avg_ping](https://monitor.hybus.app/api/badge/4/ping)
+![up](https://monitor.hybus.app/api/badge/8/status) 
+![uptime](https://monitor.hybus.app/api/badge/8/uptime) 
+![avg_ping](https://monitor.hybus.app/api/badge/8/ping)
 
 
 ## Picture
