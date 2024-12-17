@@ -118,6 +118,9 @@ module.exports = {
           },
         },
       },
+      transitionProperty:{
+        'height': ['responsive', 'hover', 'focus'],
+      },
     },
   },
   darkMode: 'class',
