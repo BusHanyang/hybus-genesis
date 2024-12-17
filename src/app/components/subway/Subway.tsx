@@ -170,8 +170,8 @@ const getStationName = (bstatnNm: string) => {
     return t('geumjeong')
   } else if (bstatnNm === '사당') {
     return t('sadang')
-  } else if (bstatnNm === '당고개') {
-    return t('danggogae')
+  } else if (bstatnNm === '불암산') {
+    return t('buramsan')
   } else if (bstatnNm === '노원') {
     return t('nowon')
   } else if (bstatnNm === '한성대입구') {
@@ -382,7 +382,7 @@ const Subway = ({ station }: SubwayStop) => {
                         undefined &&
                         i18n.language === 'en' &&
                         (val.destination.includes('왕십리') ||
-                          val.destination.includes('당고개') ||
+                          val.destination.includes('불암산') ||
                           val.destination.includes('금정')))
                     }
                   >
