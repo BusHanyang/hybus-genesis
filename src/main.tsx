@@ -31,7 +31,12 @@ ReactDOM.createRoot(root).render(
             color={'#B4CCCF'}
             snowflakeCount={50}
             wind={[-0.5, 0.5]}
-            style={{ zIndex: 1 }}
+            style={{
+              zIndex: 1,
+              position: 'fixed',
+              height: '100vh',
+              pointerEvents: 'none',
+            }}
           />
           <App />
         </DarkmodeContextProvider>
