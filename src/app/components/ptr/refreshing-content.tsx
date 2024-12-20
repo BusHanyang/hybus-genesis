@@ -10,7 +10,7 @@ const LdsEllipsis = styled.div`
 
 const LdsEllipsisDiv = styled.div<{ theme: string }>`
   ${({ theme }) => {
-    return theme === 'dark'
+    return theme !== 'light'
       ? tw`absolute top-7 w-3 h-3 rounded-full bg-white ease-ptrTran`
       : tw`absolute top-7 w-3 h-3 rounded-full bg-gray-700 ease-ptrTran`
   }}
