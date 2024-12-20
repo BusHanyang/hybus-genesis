@@ -91,10 +91,14 @@ export const Modal = (props: {
       >
         {props.open ? (
           <ModalSection $isani={props.ani}>
-            {props.mTarget === 'Fabs' ? (
+            {props.mTarget === 'Fabs' && (
               <ModalHeader theme={theme}>{t('changelog')}</ModalHeader>
-            ) : (
+            )}
+            {props.mTarget === 'Info' && (
               <ModalHeader theme={theme}>{t('info')}</ModalHeader>
+            )}
+            {props.mTarget === 'Christmas' && (
+              <ModalHeader theme={theme}>{t('christmas')}</ModalHeader>
             )}
 
             <ModalSubMain theme={theme}>{props.children}</ModalSubMain>

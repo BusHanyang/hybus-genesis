@@ -153,6 +153,9 @@ function App() {
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
+  const [xmasAlert, setXmasAlert] = useState<boolean>(
+    window.localStorage.getItem('xmas_alert') === null,
+  )
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
@@ -259,8 +262,8 @@ function App() {
         document.body.classList.add('dark')
       } else if (localTheme === 'christmas') {
         document.body.classList.remove('light')
-        document.body.classList.add('dark')
         document.body.classList.add('christmas')
+        document.body.classList.add('dark')
       } else {
         document.body.classList.remove('dark')
         document.body.classList.remove('christmas')
@@ -273,6 +276,19 @@ function App() {
     const status = window.localStorage.getItem('touch_info') === null
     setTouchPrompt(status)
   }, [])
+
+  useEffect(() => {
+    const status = window.localStorage.getItem('xmas_alert') === null
+    setXmasAlert(status)
+  }, [])
+
+  useEffect(() => {
+    if(xmasAlert){
+      setModalTarget('Christmas')
+      openModal()
+      window.localStorage.setItem('xmas_alert', 'false')
+    }
+  }, [xmasAlert])
 
   return (
     <>
