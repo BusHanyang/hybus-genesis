@@ -120,7 +120,7 @@ const RouteIndexContainer = styled.div<{status: string}>`
   ${(props) => props.status === 'entered' ? tw`hidden`: tw``}
 `
 const RouteToggleImage = styled.img<{status: string}>`
-  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto flex invert h-6 w-6 opacity-30 transition ease-in-out duration-150`}
+  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto flex invert dark:invert-0 h-6 w-6 opacity-30 transition ease-in-out duration-150`}
   ${(props) => props.status === 'entered'? tw`rotate-0`:tw`rotate-180`}
 `
 const SegmentedControl = styled.div`
@@ -401,7 +401,7 @@ function App() {
                                 <RouteText>{t('jungang_index')}</RouteText>
                               </RouteIndexWrapper>
                             </RouteIndexContainer>
-                          <RouteMap status={state}/>
+                          <RouteMap status={state} tab={tab}/>
                           <RouteToggleImage src={Arrow} status={state}/>
                           </RouteIndexCardView>
                             </>

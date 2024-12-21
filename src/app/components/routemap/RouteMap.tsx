@@ -1,4 +1,5 @@
-import React, { LegacyRef, useEffect,useRef, useState } from 'react';
+import React, {useEffect,useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
@@ -15,9 +16,6 @@ const CycleCircle = styled(Circle)`
 
 const DirectCircle = styled(Circle)`
   ${tw`bg-chip-blue mx-2`}
-  /* &::after{
-    ${tw`content-[''] absolute top-1/2 left-full w-[850%] h-[2px] translate-y-[-50%]`}
-  } */
 `
 
 const YesulinCircle = styled(Circle)`
@@ -34,14 +32,15 @@ ${tw`grid grid-rows-5 gap-2`}
 const RouteColsContainer = styled.div`
 ${tw`grid grid-cols-6 place-items-center`}
 `
-const RouteTextContainer =  styled.div`
-${tw`hm:text-xs`}
+const RouteTextContainer =  styled.div<{lang:string}>`
+${tw`whitespace-nowrap text-center`}
+${(props) => props.lang === 'ko' ? tw`text-[15px] hm:text-[13px]` : tw`text-[12px] rt1:text-[9px]`}
 `
 const RouteStations = styled.div`
 ${tw`flex relative`}
 `
 const RouteMethod = styled.div`
-${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center`}
+${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center dark:text-black`}
 `
 const MainContainer = styled.div<{status: string}>`
 ${tw`transition duration-150 ease-in-out mx-auto`}
@@ -49,40 +48,98 @@ ${tw`transition duration-150 ease-in-out mx-auto`}
 `
 export const RouteMap = (props: {
     status:string,
+    tab: string
 }) => {
+    const { t, i18n } = useTranslation()
+    // dots
     const [direct, setDirect] = useState<JSX.Element[]>([])
     const [cycle, setCycle] = useState<JSX.Element[]>([])
+    const [yesulin, setYesulin] = useState<JSX.Element[]>([])
+    const [jungang, setJungang] = useState<JSX.Element[]>([])
+    // lines
     const [dirLine, setDirLine] = useState<JSX.Element[]>([])
     const [cycLine, setCycLine] = useState<JSX.Element[]>([])
+    const [yesLine, setYesLine] = useState<JSX.Element[]>([])
+    const [junLine, setJunLine] = useState<JSX.Element[]>([])
+    // dot refs
     const refdir = useRef<Array<HTMLDivElement|null>>([])
-    const linedir = useRef<Array<HTMLDivElement|null>>([])
     const refcyc = useRef<Array<HTMLDivElement|null>>([])
+    const refyes = useRef<Array<HTMLDivElement|null>>([])
+    const refjun = useRef<Array<HTMLDivElement|null>>([])
+    // line refs
+    const linedir = useRef<Array<HTMLDivElement|null>>([])
     const linecyc = useRef<Array<HTMLDivElement|null>>([])
+    const lineyes = useRef<Array<HTMLDivElement|null>>([])
+    const linejun = useRef<Array<HTMLDivElement|null>>([])
+    // langtest
+    const lang = useRef<Array<HTMLParagraphElement | null>>([])
     const directInput = () => {
         const arrdir = []
         const arrcyc = []
+        const arryes = []
+        const arrjun = []
         for(let i = 0; i < 5; i++){
             arrdir.push(<RouteStations key={i} ref={d => refdir.current[i] = d}><DirectCircle/></RouteStations>)
-            arrcyc.push(<RouteStations key={i} ref={d => refcyc.current[i] = d}><CycleCircle/></RouteStations>)
-            }
-            setDirect(arrdir)
-            setCycle(arrcyc)
         }
+        for(let i = 0; i < 6; i++){
+            if(i === 2){
+                arrcyc.push(
+                    <div className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
+                    <RouteStations key={i} ref={d => refcyc.current[i] = d}><CycleCircle/></RouteStations>
+                    <RouteStations key={i+1} ref={d => refcyc.current[i+1] = d}><CycleCircle className='grid grid-rows-2 relative'><p key={0} ref={d => lang.current[0] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></CycleCircle></RouteStations>
+                    <RouteStations key={i+2} ref={d => refcyc.current[i+2] = d}><CycleCircle/></RouteStations>
+                    </div>
+                )
+                arryes.push(
+                    <div className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
+                    <RouteStations key={i} ref={d => refyes.current[i] = d}><YesulinCircle className='opacity-0'/></RouteStations>
+                    <RouteStations key={i+1} ref={d => refyes.current[i+1] = d}><YesulinCircle className='grid grid-rows-2 relative'><p key={1} ref={d => lang.current[1] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></YesulinCircle></RouteStations>
+                    <RouteStations key={i+2} ref={d => refyes.current[i+2] = d}><YesulinCircle/></RouteStations>
+                    </div>
+                )
+                arrjun.push(
+                    <div className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
+                    <RouteStations key={i} ref={d => refjun.current[i] = d}><JungangCircle/></RouteStations>
+                    <RouteStations key={i+1} ref={d => refjun.current[i+1] = d}><JungangCircle className='grid grid-rows-2 relative'><p key={2} ref={d => lang.current[2] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-purple'>{t('jung')}</p></JungangCircle></RouteStations>
+                    <RouteStations key={i+2} ref={d => refjun.current[i+2] = d}><JungangCircle/></RouteStations>
+                    </div>
+                )
+            }
+            if(i >= 2 && i <= 4){continue}
+            arrcyc.push(<RouteStations key={i} ref={d => refcyc.current[i] = d}><CycleCircle/></RouteStations>)
+            arryes.push(<RouteStations key={i} ref={d => refyes.current[i] = d}><YesulinCircle/></RouteStations>)
+            arrjun.push(<RouteStations key={i} ref={d => refjun.current[i] = d}><JungangCircle/></RouteStations>)
+        }
+        setDirect(arrdir)
+        setCycle(arrcyc)
+        setYesulin(arryes)
+        setJungang(arrjun)
+    }
         const directLineInput = () => {
             const arrdir = []
             const arrcyc = []
+            const arryes = []
+            const arrjun = []
             for(let i = 0; i < 4; i++){
                 arrdir.push(
                     <div className={'bg-chip-blue'} key={i} ref={d=> linedir.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
                 )
+            }
+            for(let i = 0; i < 5; i++){
                 arrcyc.push(
                     <div className={'bg-chip-red'} key={i} ref={d=> linecyc.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
                 )
+                arryes.push(
+                    <div className={'bg-chip-green'} key={i} ref={d=> lineyes.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
+                )
+                arrjun.push(
+                    <div className={'bg-chip-purple'} key={i} ref={d=> linejun.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
+                )
             }
-            // setLine(line.current)
-            // return arr
             setDirLine(arrdir)
             setCycLine(arrcyc)
+            setYesLine(arryes)
+            setJunLine(arrjun)
         }
         const fetchLines = (refs, lines) => {
             if(refs.current.length > 0 && lines.current.length > 0){
@@ -104,7 +161,24 @@ export const RouteMap = (props: {
         const updateLines = () => {
             fetchLines(refdir, linedir)
             fetchLines(refcyc, linecyc)
+            fetchLines(refyes, lineyes)
+            fetchLines(refjun, linejun)
         }
+        const fetchLanguages = () => {
+            console.log(lang)
+            lang.current.forEach((element:HTMLParagraphElement | null, index:number) => {
+                if(element != undefined){
+                    if(index <= 1){
+                        element.innerText = t('yesul')
+                    } else {
+                        element.innerText = t('jung')
+                    }
+                }
+            });
+        }
+        useEffect(() => {
+            fetchLanguages()
+        },[i18n.language])
         useEffect(() => {
             directInput()
             directLineInput()
@@ -113,20 +187,25 @@ export const RouteMap = (props: {
         }, [])
         useEffect(() => {
             updateLines()
-        },[direct, cycle, dirLine, cycLine])
+            console.log()
+        },[direct, cycle, yesulin, jungang, dirLine, cycLine, yesLine, junLine])
+        useEffect(() => {
+            if(props.tab === 'shuttlecoke_o'){
+                console.log('route')
+            }
+        }, [props.tab])
     return (
         <MainContainer status={props.status}>
-        {/* <div hidden={props.status === 'entered' || props.status === 'exit' ? false : true}> */}
             <RouteRowsContainer>
                 <RouteColsContainer>
-                    <RouteTextContainer className='col-start-2'>기숙사</RouteTextContainer>
-                    <RouteTextContainer>셔틀콕</RouteTextContainer>
-                    <RouteTextContainer>한대앞역</RouteTextContainer>
-                    <RouteTextContainer>셔틀콕</RouteTextContainer>
-                    <RouteTextContainer>기숙사</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language} className='col-start-2'>{t('dest_dorm')}</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language}>{t('dest_shuttle_o')}</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language}>{t('dest_subway')}</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language}>{t('dest_shuttle_o')}</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language}>{t('dest_dorm')}</RouteTextContainer>
                 </RouteColsContainer>
-                <RouteColsContainer>
-                <RouteMethod className='bg-chip-blue'>직행</RouteMethod>
+                <RouteColsContainer className='grid grid-cols-6'>
+                <RouteMethod className='bg-chip-blue'>{t('direct')}</RouteMethod>
                     {direct.map((item) => {
                         return item
                     })}
@@ -135,11 +214,29 @@ export const RouteMap = (props: {
                     })}
                 </RouteColsContainer>
                 <RouteColsContainer>
-                <RouteMethod className='bg-chip-red'>순환</RouteMethod>
+                <RouteMethod className='bg-chip-red'>{t('cycle')}</RouteMethod>
                     {cycle.map((item) => {
                         return item
                     })}
                     {cycLine.map((item) => {
+                        return item
+                    })}
+                </RouteColsContainer>
+                <RouteColsContainer>
+                <RouteMethod className='bg-chip-green'>{t('yesul')}</RouteMethod>
+                    {yesulin.map((item) => {
+                        return item
+                    })}
+                    {yesLine.map((item) => {
+                        return item
+                    })}
+                </RouteColsContainer>
+                <RouteColsContainer>
+                <RouteMethod className='bg-chip-purple'>{t('jung')}</RouteMethod>
+                    {jungang.map((item) => {
+                        return item
+                    })}
+                    {junLine.map((item) => {
                         return item
                     })}
                 </RouteColsContainer>
