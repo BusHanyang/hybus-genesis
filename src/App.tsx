@@ -111,7 +111,7 @@ const RouteIndexWrapper = styled.div`
 
 const SegmentedControl = styled.div`
   ${tw`
-    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-control-main will-change-transform  
+    relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform
   `}
 `
 
@@ -131,14 +131,25 @@ const SegmentedControlWrapper = styled.div<{
       : tw`opacity-0 pointer-events-none`}
 `
 
+const OptionWrapper = styled.div`
+  ${tw`relative z-10 flex items-center items-center justify-center`}
+`
+
+const ActiveIndicator = styled.div<{ $activeIndex: number }>`
+  ${tw`
+    fixed w-[45%] h-[75%] bg-control-active transition-transform rounded-2xl duration-300 ease-in-out
+  `}
+  transform: translateX(${({ $activeIndex }) => $activeIndex}%);
+`
+
 const StationButtonWrapper = styled.div`
   ${tw`grid grid-cols-3 gap-4`}
 `
 
 const RadioLabel = styled.label`
   ${tw`
-    block cursor-default select-none rounded-xl p-1 text-center 
-    peer-checked:bg-control-active peer-checked:font-bold peer-checked:text-white
+    w-full h-full block cursor-pointer select-none rounded-xl p-1 text-center
+    peer-checked:font-bold peer-checked:text-white transition-colors duration-300
   `}
 `
 
@@ -364,7 +375,8 @@ function App() {
                           $tab={tab}
                         >
                           <SegmentedControl>
-                            <div>
+                            <ActiveIndicator $activeIndex={realtimeMode ? 117 : 5} />
+                            <OptionWrapper>
                               <input
                                 type="radio"
                                 name="option"
@@ -377,8 +389,8 @@ function App() {
                               <RadioLabel htmlFor="1">
                                 {t('shuttle')}
                               </RadioLabel>
-                            </div>
-                            <div>
+                            </OptionWrapper>
+                            <OptionWrapper>
                               <input
                                 type="radio"
                                 name="option"
@@ -389,7 +401,7 @@ function App() {
                                 checked={realtimeMode}
                               />
                               <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
-                            </div>
+                            </OptionWrapper>
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
