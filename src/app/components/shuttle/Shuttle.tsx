@@ -4,6 +4,7 @@ import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
@@ -21,6 +22,7 @@ import {
 import { seasonKeys } from '@/data/shuttle/season'
 import { weekKeys } from '@/data/shuttle/week'
 import { settingAPI, shuttleAPI } from '@/network'
+import { updateActions } from '@/reducer/store'
 
 dayjs.extend(customParse)
 
@@ -341,6 +343,7 @@ const ColoredChip = ({ chipType }: ChipType) => {
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
+  const dispatch = useDispatch()
   const setting = useQuery({
     queryKey: ['settings'],
     queryFn: settingAPI,
@@ -476,6 +479,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+    dispatch(updateActions(filtered[0]))
     const reverted = filtered.map((val) => convertUnixToTime(val))
 
     if (filtered.length === 0) {

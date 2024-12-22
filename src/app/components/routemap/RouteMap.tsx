@@ -1,12 +1,16 @@
-import React, {useEffect,useRef, useState } from 'react';
+import React, {forwardRef, useEffect,useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+
+import { CircleAnimate } from '@/data';
 
 const Circle = styled.span`
   ${tw`
     flex rounded-full inline-block
     h-3 w-3 rt1:h-2.5 rt1:w-2.5
+    z-99
   `}
 `
 
@@ -37,7 +41,7 @@ ${tw`whitespace-nowrap text-center`}
 ${(props) => props.lang === 'ko' ? tw`text-[15px] hm:text-[13px]` : tw`text-[12px] rt1:text-[9px]`}
 `
 const RouteStations = styled.div`
-${tw`flex relative`}
+${tw`transition duration-150 ease-in-out flex relative`}
 `
 const RouteMethod = styled.div`
 ${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center dark:text-black`}
@@ -46,10 +50,14 @@ const MainContainer = styled.div<{status: string}>`
 ${tw`transition duration-150 ease-in-out mx-auto`}
     ${(props) => props.status === 'entered' || props.status === 'exit' ? tw`opacity-100` : tw`opacity-0`}
 `
+const RouteLine = styled.div`
+    ${tw`absolute transition duration-150 ease-in-out h-[3px] z-1`}
+`
 export const RouteMap = (props: {
     status:string,
     tab: string
 }) => {
+    const timetable = useSelector((state : any) => state.actions)
     const { t, i18n } = useTranslation()
     // dots
     const [direct, setDirect] = useState<JSX.Element[]>([])
@@ -122,18 +130,18 @@ export const RouteMap = (props: {
             const arrjun = []
             for(let i = 0; i < 4; i++){
                 arrdir.push(
-                    <div className={'bg-chip-blue'} key={i} ref={d=> linedir.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
+                    <RouteLine className={'bg-chip-blue'} key={i} ref={d=> linedir.current[i] = d}></RouteLine>
                 )
             }
             for(let i = 0; i < 5; i++){
                 arrcyc.push(
-                    <div className={'bg-chip-red'} key={i} ref={d=> linecyc.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
+                    <RouteLine className={'bg-chip-red'} key={i} ref={d=> linecyc.current[i] = d}></RouteLine>
                 )
                 arryes.push(
-                    <div className={'bg-chip-green'} key={i} ref={d=> lineyes.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
+                    <RouteLine className={'bg-chip-green'} key={i} ref={d=> lineyes.current[i] = d}></RouteLine>
                 )
                 arrjun.push(
-                    <div className={'bg-chip-purple'} key={i} ref={d=> linejun.current[i] = d} style={{height:"3px", position:"absolute"}}></div>
+                    <RouteLine className={'bg-chip-purple'} key={i} ref={d=> linejun.current[i] = d}></RouteLine>
                 )
             }
             setDirLine(arrdir)
@@ -150,7 +158,7 @@ export const RouteMap = (props: {
                     const y1 = (rectA.top ?? 0) + (rectA.height ?? 0) / 2
                     const x2 = (rectB.left ?? 0) + (rectB.width ?? 0) / 2
                     const y2 = (rectB.top ?? 0) + (rectB.height ?? 0) / 2
-
+                    
                     const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
                     lines.current[i-1].style.width = `${d}px`
                     lines.current[i-1].style.top = `${(refs.current[i-1]?.offsetTop ?? 0)+4}px`
@@ -165,7 +173,6 @@ export const RouteMap = (props: {
             fetchLines(refjun, linejun)
         }
         const fetchLanguages = () => {
-            console.log(lang)
             lang.current.forEach((element:HTMLParagraphElement | null, index:number) => {
                 if(element != undefined){
                     if(index <= 1){
@@ -176,6 +183,64 @@ export const RouteMap = (props: {
                 }
             });
         }
+        const circleAnimation = (props: CircleAnimate) => {
+            if(!props.ref) return;
+            for(let i = props.index; i <= props.index+1; i++){
+                if(props.ref.current[i].childNodes.length <= 1){
+                    const pingCircle = document.createElement('div')
+                    pingCircle.classList.add('animate-ping', 'absolute', 'rounded-full', 'inline-flex', 'h-3', 'w-3', 'rt1:h-2.5', 'rt1:w-2.5', 'z-99', props.chipColor, 'mx-2');
+                    props.ref.current[i]?.append(pingCircle)
+                }
+            }
+        }
+        const circleAnimationRemove = (refs: React.MutableRefObject<HTMLDivElement|null>) => {
+            for(let refr of refs.current){
+                if(refr?.childNodes.length > 1){
+                    refr?.removeChild(refr?.lastChild as Node)
+                }
+            }
+        //    ref.current[i]?.removeChild(props.ref.current[i]?.lastChild as Node)
+                
+        }
+        const circleAnimationRemoveAll = () => {
+            circleAnimationRemove(refdir)
+            circleAnimationRemove(refcyc)
+            circleAnimationRemove(refyes)
+            circleAnimationRemove(refjun)
+        }
+        const timetableType = (type: string, index:number) => {
+            if(type === 'C'){
+                return {ref: refcyc, index: index, chipColor: 'bg-chip-red'}
+            } else if(type === 'DHJ'){
+                return {ref: refjun, index: index, chipColor: 'bg-chip-purple'}
+            } else if(type === 'DY'){
+                return {ref: refyes, index: index, chipColor: 'bg-chip-green'}
+            }else {
+                return {ref: refdir, index: index, chipColor: 'bg-chip-blue'}
+            }
+        }
+        const updateHighlight = () => {
+            if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0 && timetable.length > 0){
+                circleAnimationRemoveAll()
+                if(props.tab === 'shuttlecoke_o'){
+                    circleAnimation(timetableType(timetable[0].type,1))
+                } else if(props.tab === 'subway'){
+                    circleAnimation(timetableType(timetable[0].type,2))
+                } else if(props.tab === 'yesulin'){
+                    circleAnimation({ref: refcyc, index: 3, chipColor: 'bg-chip-red'})
+                    circleAnimation({ref: refyes, index: 3, chipColor: 'bg-chip-green'})
+                } else if(props.tab === 'jungang'){
+                    circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
+                } else if(props.tab === 'shuttlecoke_i'){
+                    circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
+                    circleAnimation({ref: refjun, index: 4, chipColor: 'bg-chip-purple'})
+                    circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
+                    circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
+                } else {
+                    circleAnimation(timetableType(timetable[0].type,0))
+                }
+            }
+        }
         useEffect(() => {
             fetchLanguages()
         },[i18n.language])
@@ -183,17 +248,17 @@ export const RouteMap = (props: {
             directInput()
             directLineInput()
             window.addEventListener("resize",updateLines)
-            return () => window.removeEventListener("resize", updateLines);
+            return () => {
+                window.removeEventListener("resize", updateLines);
+            }
         }, [])
         useEffect(() => {
             updateLines()
-            console.log()
+            updateHighlight()
         },[direct, cycle, yesulin, jungang, dirLine, cycLine, yesLine, junLine])
         useEffect(() => {
-            if(props.tab === 'shuttlecoke_o'){
-                console.log('route')
-            }
-        }, [props.tab])
+            updateHighlight()
+        }, [props.tab, timetable])
     return (
         <MainContainer status={props.status}>
             <RouteRowsContainer>
