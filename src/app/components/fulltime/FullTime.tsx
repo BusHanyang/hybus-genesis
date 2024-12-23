@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 import {
   OrganizedTimetables,
   Season,
