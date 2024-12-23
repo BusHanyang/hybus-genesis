@@ -2,7 +2,7 @@ import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
@@ -25,10 +25,22 @@ const Apps = styled.div`
   `}
 `
 
-const Circle = styled.span`
+const Circle = styled.span<{ theme: string }>`
   ${tw`
-    flex rounded-full inline-block
+    flex rounded-full inline-block transition-transform
     h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1
+  `}
+
+  ${({ theme }) => theme === 'christmas' &&
+  css`
+    /* For Heart Shape */
+    ${tw`rotate-45 scale-75 rounded-none`}
+
+    &::before,&::after {
+      ${tw`absolute w-full h-full rounded-full bg-inherit content-['']`}
+    }
+    &::before { left: -50%; }
+    &::after { top: -50%; }
   `}
 `
 
@@ -408,19 +420,19 @@ function App() {
 
                       <RouteIndexCardView>
                         <RouteIndexWrapper>
-                          <CycleCircle />
+                          <CycleCircle theme={theme} />
                           <RouteText>{t('cycle_index')}</RouteText>
                         </RouteIndexWrapper>
                         <RouteIndexWrapper>
-                          <DirectCircle />
+                          <DirectCircle theme={theme} />
                           <RouteText>{t('direct_index')}</RouteText>
                         </RouteIndexWrapper>
                         <RouteIndexWrapper>
-                          <YesulinCircle />
+                          <YesulinCircle theme={theme} />
                           <RouteText>{t('yesulin_index')}</RouteText>
                         </RouteIndexWrapper>
                         <RouteIndexWrapper>
-                          <JungangCircle />
+                          <JungangCircle theme={theme} />
                           <RouteText>{t('jungang_index')}</RouteText>
                         </RouteIndexWrapper>
                       </RouteIndexCardView>
