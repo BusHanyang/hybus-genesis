@@ -12,7 +12,7 @@ const actions = createSlice({
     initialState: [] as SingleShuttleSchedule[],
     reducers: {
         updateActions: (state, action: Action) => {
-            if(state.length > 0){
+            while(state.length > 0){
                 state.pop()
             }
             if(action.payload !== undefined){

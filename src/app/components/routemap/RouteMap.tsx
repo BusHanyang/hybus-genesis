@@ -1,4 +1,4 @@
-import React, {forwardRef, useEffect,useRef, useState } from 'react';
+import React, { useEffect,useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -70,15 +70,15 @@ export const RouteMap = (props: {
     const [yesLine, setYesLine] = useState<JSX.Element[]>([])
     const [junLine, setJunLine] = useState<JSX.Element[]>([])
     // dot refs
-    const refdir = useRef<Array<HTMLDivElement|null>>([])
-    const refcyc = useRef<Array<HTMLDivElement|null>>([])
-    const refyes = useRef<Array<HTMLDivElement|null>>([])
-    const refjun = useRef<Array<HTMLDivElement|null>>([])
+    const refdir = useRef<Array<HTMLDivElement>>([])
+    const refcyc = useRef<Array<HTMLDivElement>>([])
+    const refyes = useRef<Array<HTMLDivElement>>([])
+    const refjun = useRef<Array<HTMLDivElement>>([])
     // line refs
-    const linedir = useRef<Array<HTMLDivElement|null>>([])
-    const linecyc = useRef<Array<HTMLDivElement|null>>([])
-    const lineyes = useRef<Array<HTMLDivElement|null>>([])
-    const linejun = useRef<Array<HTMLDivElement|null>>([])
+    const linedir = useRef<Array<HTMLDivElement>>([])
+    const linecyc = useRef<Array<HTMLDivElement>>([])
+    const lineyes = useRef<Array<HTMLDivElement>>([])
+    const linejun = useRef<Array<HTMLDivElement>>([])
     // langtest
     const lang = useRef<Array<HTMLParagraphElement | null>>([])
     const directInput = () => {
@@ -87,36 +87,36 @@ export const RouteMap = (props: {
         const arryes = []
         const arrjun = []
         for(let i = 0; i < 5; i++){
-            arrdir.push(<RouteStations key={i} ref={d => refdir.current[i] = d}><DirectCircle/></RouteStations>)
+            arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><DirectCircle/></RouteStations>)
         }
         for(let i = 0; i < 6; i++){
             if(i === 2){
                 arrcyc.push(
                     <div className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                    <RouteStations key={i} ref={d => refcyc.current[i] = d}><CycleCircle/></RouteStations>
-                    <RouteStations key={i+1} ref={d => refcyc.current[i+1] = d}><CycleCircle className='grid grid-rows-2 relative'><p key={0} ref={d => lang.current[0] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></CycleCircle></RouteStations>
-                    <RouteStations key={i+2} ref={d => refcyc.current[i+2] = d}><CycleCircle/></RouteStations>
+                    <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>
+                    <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}><CycleCircle className='grid grid-rows-2 relative'><p key={0} ref={d => lang.current[0] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></CycleCircle></RouteStations>
+                    <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><CycleCircle/></RouteStations>
                     </div>
                 )
                 arryes.push(
                     <div className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                    <RouteStations key={i} ref={d => refyes.current[i] = d}><YesulinCircle className='opacity-0'/></RouteStations>
-                    <RouteStations key={i+1} ref={d => refyes.current[i+1] = d}><YesulinCircle className='grid grid-rows-2 relative'><p key={1} ref={d => lang.current[1] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></YesulinCircle></RouteStations>
-                    <RouteStations key={i+2} ref={d => refyes.current[i+2] = d}><YesulinCircle/></RouteStations>
+                    <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><YesulinCircle className='opacity-0'/></RouteStations>
+                    <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}><YesulinCircle className='grid grid-rows-2 relative'><p key={1} ref={d => lang.current[1] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></YesulinCircle></RouteStations>
+                    <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><YesulinCircle/></RouteStations>
                     </div>
                 )
                 arrjun.push(
                     <div className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                    <RouteStations key={i} ref={d => refjun.current[i] = d}><JungangCircle/></RouteStations>
-                    <RouteStations key={i+1} ref={d => refjun.current[i+1] = d}><JungangCircle className='grid grid-rows-2 relative'><p key={2} ref={d => lang.current[2] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-purple'>{t('jung')}</p></JungangCircle></RouteStations>
-                    <RouteStations key={i+2} ref={d => refjun.current[i+2] = d}><JungangCircle/></RouteStations>
+                    <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>
+                    <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}><JungangCircle className='grid grid-rows-2 relative'><p key={2} ref={d => lang.current[2] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-purple'>{t('jung')}</p></JungangCircle></RouteStations>
+                    <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><JungangCircle/></RouteStations>
                     </div>
                 )
             }
             if(i >= 2 && i <= 4){continue}
-            arrcyc.push(<RouteStations key={i} ref={d => refcyc.current[i] = d}><CycleCircle/></RouteStations>)
-            arryes.push(<RouteStations key={i} ref={d => refyes.current[i] = d}><YesulinCircle/></RouteStations>)
-            arrjun.push(<RouteStations key={i} ref={d => refjun.current[i] = d}><JungangCircle/></RouteStations>)
+            arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>)
+            arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><YesulinCircle/></RouteStations>)
+            arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>)
         }
         setDirect(arrdir)
         setCycle(arrcyc)
@@ -130,18 +130,18 @@ export const RouteMap = (props: {
             const arrjun = []
             for(let i = 0; i < 4; i++){
                 arrdir.push(
-                    <RouteLine className={'bg-chip-blue'} key={i} ref={d=> linedir.current[i] = d}></RouteLine>
+                    <RouteLine className={'bg-chip-blue'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
                 )
             }
             for(let i = 0; i < 5; i++){
                 arrcyc.push(
-                    <RouteLine className={'bg-chip-red'} key={i} ref={d=> linecyc.current[i] = d}></RouteLine>
+                    <RouteLine className={'bg-chip-red'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>
                 )
                 arryes.push(
-                    <RouteLine className={'bg-chip-green'} key={i} ref={d=> lineyes.current[i] = d}></RouteLine>
+                    <RouteLine className={'bg-chip-green'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>
                 )
                 arrjun.push(
-                    <RouteLine className={'bg-chip-purple'} key={i} ref={d=> linejun.current[i] = d}></RouteLine>
+                    <RouteLine className={'bg-chip-purple'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>
                 )
             }
             setDirLine(arrdir)
@@ -149,7 +149,7 @@ export const RouteMap = (props: {
             setYesLine(arryes)
             setJunLine(arrjun)
         }
-        const fetchLines = (refs, lines) => {
+        const responsiveLines = (refs:React.MutableRefObject<Array<HTMLDivElement>>, lines:React.MutableRefObject<Array<HTMLDivElement>>) => {
             if(refs.current.length > 0 && lines.current.length > 0){
                 for(let i = 1; i <= lines.current.length; i++){
                     const rectA = {"left":refs.current[i-1]?.offsetLeft, "top":refs.current[i-1]?.offsetTop, "width":refs.current[i-1]?.offsetWidth, "height":refs.current[i-1]?.offsetHeight}
@@ -162,15 +162,16 @@ export const RouteMap = (props: {
                     const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
                     lines.current[i-1].style.width = `${d}px`
                     lines.current[i-1].style.top = `${(refs.current[i-1]?.offsetTop ?? 0)+4}px`
-                    lines.current[i-1].style.left = `${refs.current[i-1]?.offsetLeft+refs.current[i-1]?.children[0].offsetLeft+1}px`
+                    const dotchild = refs.current[i-1]?.firstChild as HTMLElement
+                    lines.current[i-1].style.left = `${refs.current[i-1]?.offsetLeft+dotchild.offsetLeft+1}px`
                 }
             }
         }
         const updateLines = () => {
-            fetchLines(refdir, linedir)
-            fetchLines(refcyc, linecyc)
-            fetchLines(refyes, lineyes)
-            fetchLines(refjun, linejun)
+            responsiveLines(refdir, linedir)
+            responsiveLines(refcyc, linecyc)
+            responsiveLines(refyes, lineyes)
+            responsiveLines(refjun, linejun)
         }
         const fetchLanguages = () => {
             lang.current.forEach((element:HTMLParagraphElement | null, index:number) => {
@@ -184,17 +185,20 @@ export const RouteMap = (props: {
             });
         }
         const circleAnimation = (props: CircleAnimate) => {
-            if(!props.ref) return;
             for(let i = props.index; i <= props.index+1; i++){
                 if(props.ref.current[i].childNodes.length <= 1){
                     const pingCircle = document.createElement('div')
                     pingCircle.classList.add('animate-ping', 'absolute', 'rounded-full', 'inline-flex', 'h-3', 'w-3', 'rt1:h-2.5', 'rt1:w-2.5', 'z-99', props.chipColor, 'mx-2');
-                    props.ref.current[i]?.append(pingCircle)
+                    if(props.ref.current[i].style.opacity === '0'){
+                        props.ref.current[i+1]?.append(pingCircle)
+                    } else{
+                        props.ref.current[i]?.append(pingCircle)
+                    }
                 }
             }
         }
-        const circleAnimationRemove = (refs: React.MutableRefObject<HTMLDivElement|null>) => {
-            for(let refr of refs.current){
+        const circleAnimationRemove = (refs: React.MutableRefObject<Array<HTMLDivElement>>) => {
+            for(const refr of refs.current){
                 if(refr?.childNodes.length > 1){
                     refr?.removeChild(refr?.lastChild as Node)
                 }
@@ -220,24 +224,26 @@ export const RouteMap = (props: {
             }
         }
         const updateHighlight = () => {
-            if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0 && timetable.length > 0){
+            if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0){
                 circleAnimationRemoveAll()
-                if(props.tab === 'shuttlecoke_o'){
-                    circleAnimation(timetableType(timetable[0].type,1))
-                } else if(props.tab === 'subway'){
-                    circleAnimation(timetableType(timetable[0].type,2))
-                } else if(props.tab === 'yesulin'){
-                    circleAnimation({ref: refcyc, index: 3, chipColor: 'bg-chip-red'})
-                    circleAnimation({ref: refyes, index: 3, chipColor: 'bg-chip-green'})
-                } else if(props.tab === 'jungang'){
-                    circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
-                } else if(props.tab === 'shuttlecoke_i'){
-                    circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
-                    circleAnimation({ref: refjun, index: 4, chipColor: 'bg-chip-purple'})
-                    circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
-                    circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
-                } else {
-                    circleAnimation(timetableType(timetable[0].type,0))
+                if(timetable.length > 0){
+                    if(props.tab === 'shuttlecoke_o'){
+                        circleAnimation(timetableType(timetable[0].type,1))
+                    } else if(props.tab === 'subway'){
+                        circleAnimation(timetableType(timetable[0].type,2))
+                    } else if(props.tab === 'yesulin'){
+                        circleAnimation({ref: refcyc, index: 3, chipColor: 'bg-chip-red'})
+                        circleAnimation({ref: refyes, index: 3, chipColor: 'bg-chip-green'})
+                    } else if(props.tab === 'jungang'){
+                        circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
+                    } else if(props.tab === 'shuttlecoke_i'){
+                        circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
+                        circleAnimation({ref: refjun, index: 4, chipColor: 'bg-chip-purple'})
+                        circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
+                        circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
+                    } else {
+                        circleAnimation(timetableType(timetable[0].type,0))
+                    }
                 }
             }
         }

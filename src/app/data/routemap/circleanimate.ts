@@ -1,5 +1,5 @@
 export type CircleAnimate = {
-    ref: React.MutableRefObject<Array<HTMLDivElement|null>>,
+    ref: React.MutableRefObject<Array<HTMLDivElement>>,
     index: number,
     chipColor: string,
 }

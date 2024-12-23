@@ -417,6 +417,14 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
   }, [season, week])
 
+  useEffect(() => {
+    if(timetable.data !== undefined){
+      const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+      dispatch(updateActions(filtered[0]))
+    }
+
+  }, [currentTime, dispatch, timetable.data])
+
   const handleActionStart = () => {
     setTouched(true)
   }
@@ -479,9 +487,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
-    dispatch(updateActions(filtered[0]))
     const reverted = filtered.map((val) => convertUnixToTime(val))
-
     if (filtered.length === 0) {
       // Buses are done for today. User should refresh after midnight.
       return (
