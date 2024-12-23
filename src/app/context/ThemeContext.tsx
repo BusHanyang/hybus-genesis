@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const enum THEME {
+export enum THEME {
   LIGHT = 'light',
   DARK = 'dark',
   CHRISTMAS = 'christmas',
@@ -22,7 +22,11 @@ export const useDarkmodeContext = () => {
 export const DarkmodeContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
-  const themeName = window.localStorage.getItem('theme') as THEME || THEME.LIGHT
+  const themeName = 
+    Object
+      .values(THEME)
+      .includes(window.localStorage.getItem('theme') as THEME) 
+    ? window.localStorage.getItem('theme') as THEME : THEME.LIGHT
   const [theme, setTheme] = React.useState<THEME>(themeName)
 
   return (
