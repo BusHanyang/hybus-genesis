@@ -29,6 +29,6 @@ jobs:
         with:
           comment_tag: lighthouse
           message: |
-            Check out your Lighthouse Report: https://lighthouse.hybus.app/app/projects/hybus-production/dashboard
+            Check out your Lighthouse Report: https://lighthouse.hybus.app/app/projects/bushanyang-production/dashboard
           mode: recreate
 
