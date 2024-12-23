@@ -13,4 +13,58 @@
         user-select: none;
         -user-drag: none;
     }
+
+    /* Light */
+    .light {
+        --color-theme-main: #FFFFFF;
+        --color-theme-card: #FFFFFF;
+        --color-theme-text: #000000;
+        --color-theme-border: none;
+        --color-theme-shadow: 0 2.8px 8px rgba(10, 10, 10, 0.2);
+        --color-control-main: theme('colors.gray.200');
+        --color-control-active: theme('colors.blue.400');
+        --color-button-active: theme('colors.blue.300');
+
+        --color-ft-element: #E1E2EC;
+        --color-ft-active: #DBE2F9;
+        --color-ft-active-text: #141B2C;
+        --color-ft-text: #44464E;
+        --color-ft-border: #75777F;
+    }
+
+    /* Dark */
+    .dark {
+        --color-theme-main: theme('colors.zinc.800');
+        --color-theme-card: theme('colors.gray.700');
+        --color-theme-text: #FFFFFF;
+        --color-theme-border: none;
+        --color-theme-shadow: 0 2.8px 8px rgba(10, 10, 10, 0.8);
+        --color-control-main: theme('colors.gray.800');
+        --color-control-active: theme('colors.blue.400');
+        --color-button-active: theme('colors.blue.300');
+
+        --color-ft-element: #44464E;
+        --color-ft-active: #3F4759;
+        --color-ft-active-text: #DBE2F9;
+        --color-ft-text: #C5C6D0;
+        --color-ft-border: #8E9099;
+    }
+    
+    /* Christmas */
+    .christmas {
+        --color-theme-main: #b23e3e;
+        --color-theme-card: #3e5f4b;
+        --color-theme-text: #FFFFFF;
+        --color-theme-border: none;
+        --color-theme-shadow: 0 2.8px 8px rgba(23, 23, 23, 0.8);
+        --color-control-main: #1d3c33;
+        --color-control-active: #6ba768;
+        --color-button-active: #9be1c6;
+
+        --color-ft-element: #813333;
+        --color-ft-active: #397152;
+        --color-ft-active-text: #ffffff;
+        --color-ft-text: #ffffff;
+        --color-ft-border: #ffffff;
+    }
 }

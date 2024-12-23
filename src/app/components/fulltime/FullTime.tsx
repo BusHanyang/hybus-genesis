@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 import {
   OrganizedTimetables,
   Season,
@@ -20,7 +20,7 @@ import { shuttleAPI } from '@/network'
 import { useDarkMode } from '../useDarkMode'
 
 const Chip = styled.div`
-  ${tw`self-center h-fit dark:text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
+  ${tw`self-center h-fit text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
 `
 
 const ComboBoxContainer = styled.div`
@@ -34,9 +34,9 @@ const ComboBoxInner = styled.div<{
   ${tw`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg`}
   ${({ $comboType, $comboValue }) => {
     if ($comboType === $comboValue) {
-      return tw`pl-2 text-[#141B2C] bg-[#DBE2F9] border-[#DBE2F9] dark:text-[#DBE2F9] dark:bg-[#3F4759] dark:border-[#3F4759] hm:pl-1.5` // Selected
+      return tw`pl-2 text-ft-active-text bg-ft-active border-ft-active hm:pl-1.5` // Selected
     } else {
-      return tw`text-[#44464E] border-[#75777F]  dark:text-[#C5C6D0] dark:border-[#8E9099]` // Not Selected
+      return tw`text-ft-text border-ft-border` // Not Selected
     }
   }}
 `
@@ -46,7 +46,7 @@ const ControlBox = styled.div`
 `
 
 const ControlBoxDivider = styled.hr`
-  ${tw`w-full h-px mb-3 border-slate-400 bg-center justify-center`}
+  ${tw`w-full h-px mb-3 border-ft-border bg-center justify-center`}
 `
 
 const ControlBoxRow = styled.div`
@@ -58,7 +58,7 @@ const ControlBoxRowTitle = styled.span`
 `
 
 const NoTimetable = styled.div`
-  ${tw`h-32 hm:h-24 bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]`}
+  ${tw`h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]`}
 `
 
 const MinuteContainer = styled.div`
@@ -70,7 +70,7 @@ const DirectMinuteContainer = styled(MinuteContainer)`
 `
 
 const FullTimeDocument = styled.div`
-  ${tw`px-5 bg-white text-black font-Ptd text-center mx-auto select-none dark:bg-zinc-800 dark:text-white max-w-7xl`}
+  ${tw`px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl`}
 `
 
 const FullTimeToolbar = styled.div`
@@ -90,7 +90,7 @@ const SelectedIcon = styled.img`
 `
 
 const TimeBoxInner = styled.div<{ $maxChips: number }>`
-  ${tw`bg-[#E1E2EC] dark:bg-[#44464E] rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm`}
+  ${tw`bg-ft-element rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm`}
   ${({ $maxChips }) => {
     if ($maxChips === 1) {
       return tw`h-24 hm:h-20`
@@ -366,7 +366,7 @@ const FullTime = () => {
 
   return (
     <>
-      <div className={`${theme === THEME.DARK ? 'dark' : ''}`}>
+      <div className={`${theme}`}>
         <FullTimeDocument>
           <FullTimeToolbar>
             <GoBackIcon

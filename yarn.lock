@@ -4931,6 +4931,7 @@ __metadata:
     react-is: "npm:^18.2.0"
     react-router-dom: "npm:^6.23.0"
     react-simple-pull-to-refresh: "npm:^1.3.3"
+    react-snowfall: "npm:^2.2.0"
     react-spinners: "npm:^0.13.8"
     react-tiny-fab: "npm:^4.0.4"
     recoil: "npm:^0.7.7"
@@ -6635,6 +6636,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-fast-compare@npm:^3.2.2":
+  version: 3.2.2
+  resolution: "react-fast-compare@npm:3.2.2"
+  checksum: 10/a6826180ba75cefba1c8d3ac539735f9b627ca05d3d307fe155487f5d0228d376dac6c9708d04a283a7b9f9aee599b637446635b79c8c8753d0b4eece56c125c
+  languageName: node
+  linkType: hard
+
 "react-i18next@npm:^14.0.5":
   version: 14.0.5
   resolution: "react-i18next@npm:14.0.5"
@@ -6714,6 +6722,18 @@ __metadata:
     react: ^16.10.2 || ^17.0.0 || ^18.0.0
     react-dom: ^16.10.2 || ^17.0.0 || ^18.0.0
   checksum: 10/b485d938e7f1bbac31cf89ddf5cab179941a4876dcee2067181519fa1cef303ebd12b3445dfe4fcff9a871f9ca9cde7289ec0967164a6a084f3d5ab2346ae2f7
+  languageName: node
+  linkType: hard
+
+"react-snowfall@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "react-snowfall@npm:2.2.0"
+  dependencies:
+    react-fast-compare: "npm:^3.2.2"
+  peerDependencies:
+    react: ^16.8 || 17.x || 18.x
+    react-dom: ^16.8 || 17.x || 18.x
+  checksum: 10/ef9945ec75294e44ff17ec2b90f3e6ab9ec07f2a04804b253fc5737e9838baa20085351d019dc6a366f24874f0c58e8360d23b38a08242a022ff86e3a68ed22c
   languageName: node
   linkType: hard
 
