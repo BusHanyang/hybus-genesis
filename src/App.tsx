@@ -496,7 +496,7 @@ function App() {
                         <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
                       </Link>
                       <CopyRightText id="copyright">
-                        Copyright © 2020-2024{' '}
+                        Copyright © 2020-2025{' '}
                         <a
                           className="underline"
                           target="_blank"
