@@ -1,1 +1,1 @@
-declare module '@builder.io/partytown/react/'
+declare module '@builder.io/partytown/react'
