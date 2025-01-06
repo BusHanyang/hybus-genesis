@@ -23,6 +23,7 @@ module.exports = {
         'chip-blue': '#7FAAFF',
         'chip-green': '#81c784',
         'chip-purple': '#d0affb',
+        'chip-orange': '#FFAB40',
       },
       fontFamily: {
         Ptd: ['Pretendard'],

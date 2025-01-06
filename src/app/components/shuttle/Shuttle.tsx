@@ -115,7 +115,6 @@ const isWeekend = (): boolean => {
 
 const getSeason = (setting: Settings | null): [Season, Week] => {
   const today = dayjs()
-
   if (setting === null) {
     // Error fetching settings
     return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
@@ -337,6 +336,9 @@ const ColoredChip = ({ chipType }: ChipType) => {
     return <Chip className="bg-chip-purple">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'DY') {
     return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
+  } else if (chipType == 'R' || chipType == 'NA') {
+    return <Chip className="bg-chip-orange">{busTypeToText(chipType)}</Chip>
+
   }
 
   return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
