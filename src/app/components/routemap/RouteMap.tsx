@@ -1,16 +1,17 @@
-import React, { useEffect,useRef, useState } from 'react';
+import React, { useCallback, useEffect,useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
 import { CircleAnimate } from '@/data';
+import { SingleShuttleSchedule } from "@/data";
 
 const Circle = styled.span`
   ${tw`
     flex rounded-full inline-block
     h-3 w-3 rt1:h-2.5 rt1:w-2.5
-    z-99
+    z-10
   `}
 `
 
@@ -60,7 +61,10 @@ export const RouteMap = (props: {
     status:string,
     tab: string
 }) => {
-    const timetable = useSelector((state : any) => state.actions)
+    interface RootState {
+        actions: SingleShuttleSchedule[]
+    }
+    const timetable = useSelector((state: RootState) => state.actions)
     const { t, i18n } = useTranslation()
     // dots
     const [direct, setDirect] = useState<JSX.Element[]>([])
@@ -84,7 +88,7 @@ export const RouteMap = (props: {
     const linejun = useRef<Array<HTMLDivElement>>([])
     // langtest
     const lang = useRef<Array<HTMLParagraphElement | null>>([])
-    const directInput = () => {
+    const directInput = useCallback(() => {
         const arrdir = []
         const arrcyc = []
         const arryes = []
@@ -137,8 +141,8 @@ export const RouteMap = (props: {
         setCycle(arrcyc)
         setYesulin(arryes)
         setJungang(arrjun)
-    }
-        const directLineInput = () => {
+    },[t])
+        const directLineInput = useCallback(() => {
             const arrdir = []
             const arrcyc = []
             const arryes = []
@@ -175,7 +179,7 @@ export const RouteMap = (props: {
             setCycLine(arrcyc)
             setYesLine(arryes)
             setJunLine(arrjun)
-        }
+        },[])
         const responsiveLines = (refs:React.MutableRefObject<Array<HTMLDivElement>>, lines:React.MutableRefObject<Array<HTMLDivElement>>) => {
             if(refs.current.length > 0 && lines.current.length > 0){
                 for(let i = 1; i <= lines.current.length; i++){
@@ -190,17 +194,19 @@ export const RouteMap = (props: {
                     lines.current[i-1].style.width = `${d}px`
                     lines.current[i-1].style.top = `${(refs.current[i-1]?.offsetTop ?? 0)+4}px`
                     const dotchild = refs.current[i-1]?.firstChild as HTMLElement
-                    lines.current[i-1].style.left = `${refs.current[i-1]?.offsetLeft+dotchild.offsetLeft+1}px`
+                    if(dotchild != undefined){
+                        lines.current[i-1].style.left = `${refs.current[i-1]?.offsetLeft+dotchild.offsetLeft+1}px`
+                    }
                 }
             }
         }
-        const updateLines = () => {
+        const updateLines = useCallback(() => {
             responsiveLines(refdir, linedir)
             responsiveLines(refcyc, linecyc)
             responsiveLines(refyes, lineyes)
             responsiveLines(refjun, linejun)
-        }
-        const fetchLanguages = () => {
+        },[])
+        const fetchLanguages = useCallback(() => {
             lang.current.forEach((element:HTMLParagraphElement | null, index:number) => {
                 if(element != undefined){
                     if(index <= 1){
@@ -210,7 +216,7 @@ export const RouteMap = (props: {
                     }
                 }
             });
-        }
+        }, [t])
         const circleAnimation = (props: CircleAnimate) => {
             for(let i = props.index; i <= props.index+1; i++){
                 if(props.ref.current[i].childNodes.length <= 1){
@@ -245,12 +251,6 @@ export const RouteMap = (props: {
         //    ref.current[i]?.removeChild(props.ref.current[i]?.lastChild as Node)
                 
         }
-        const circleAnimationRemoveAll = () => {
-            circleAnimationRemove(refdir)
-            circleAnimationRemove(refcyc)
-            circleAnimationRemove(refyes)
-            circleAnimationRemove(refjun)
-        }
         const timetableType = (type: string, index:number) => {
             if(type === 'C'){
                 return {ref: refcyc, index: index, chipColor: 'bg-chip-red'}
@@ -262,35 +262,9 @@ export const RouteMap = (props: {
                 return {ref: refdir, index: index, chipColor: 'bg-chip-blue'}
             }
         }
-        const updateHighlight = () => {
-            if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0){
-                circleAnimationRemoveAll()
-                if(timetable.length > 0){
-                    if(props.tab === 'shuttlecoke_o'){
-                        circleAnimation(timetableType(timetable[0].type,1))
-                    } else if(props.tab === 'subway'){
-                        circleAnimation(timetableType(timetable[0].type,2))
-                    } else if(props.tab === 'yesulin'){
-                        circleAnimation(timetableType(timetable[0].type,3))
-                    } else if(props.tab === 'jungang'){
-                        circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
-                    } else if(props.tab === 'shuttlecoke_i'){
-                        if(timetable[0].type === 'NA'){
-                            return
-                        }
-                        circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
-                        circleAnimation({ref: refjun, index: 4, chipColor: 'bg-chip-purple'})
-                        circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
-                        circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
-                    } else {
-                        circleAnimation(timetableType(timetable[0].type,0))
-                    }
-                }
-            }
-        }
         useEffect(() => {
             fetchLanguages()
-        },[i18n.language])
+        },[i18n.language, fetchLanguages])
         useEffect(() => {
             directInput()
             directLineInput()
@@ -298,14 +272,43 @@ export const RouteMap = (props: {
             return () => {
                 window.removeEventListener("resize", updateLines);
             }
-        }, [])
+        }, [updateLines, directInput, directLineInput])
         useEffect(() => {
+            const circleAnimationRemoveAll = () => {
+                circleAnimationRemove(refdir)
+                circleAnimationRemove(refcyc)
+                circleAnimationRemove(refyes)
+                circleAnimationRemove(refjun)
+            }
+            const updateHighlight = () => {
+                if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0){
+                    circleAnimationRemoveAll()
+                    if(timetable.length > 0){
+                        if(props.tab === 'shuttlecoke_o'){
+                            circleAnimation(timetableType(timetable[0].type,1))
+                        } else if(props.tab === 'subway'){
+                            circleAnimation(timetableType(timetable[0].type,2))
+                        } else if(props.tab === 'yesulin'){
+                            circleAnimation(timetableType(timetable[0].type,3))
+                        } else if(props.tab === 'jungang'){
+                            circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
+                        } else if(props.tab === 'shuttlecoke_i'){
+                            if(timetable[0].type === 'NA'){
+                                return
+                            }
+                            circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
+                            circleAnimation({ref: refjun, index: 4, chipColor: 'bg-chip-purple'})
+                            circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
+                            circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
+                        } else {
+                            circleAnimation(timetableType(timetable[0].type,0))
+                        }
+                    }
+                }
+            }
             updateLines()
             updateHighlight()
-        },[direct, cycle, yesulin, jungang, dirLine, cycLine, yesLine, junLine])
-        useEffect(() => {
-            updateHighlight()
-        }, [props.tab, timetable])
+        },[direct, cycle, yesulin, jungang, dirLine, cycLine, yesLine, junLine, props.tab, timetable, updateLines])
     return (
         <MainContainer status={props.status}>
             <RouteRowsContainer>
