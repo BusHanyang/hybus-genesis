@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { t, TFunction } from 'i18next'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'

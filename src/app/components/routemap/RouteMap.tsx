@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect,useRef, useState } from 'react';
+import React, { useCallback, useEffect,useRef, useState, JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components';
@@ -95,47 +95,47 @@ export const RouteMap = (props: {
         const arrjun = []
         for(let i = 0; i < 5; i++){
             if(i === 4){
-                arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><EndCircle/></RouteStations>)
+                arrdir.push(<RouteStations key={i} ref={d => {if(d !=null)refdir.current[i] = d}}><EndCircle/></RouteStations>)
                 continue
             }
-            arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><DirectCircle/></RouteStations>)
+            arrdir.push(<RouteStations key={i} ref={d => {d!= null?refdir.current[i] = d:null}}><DirectCircle/></RouteStations>)
         }
         for(let i = 0; i < 6; i++){
             if(i >= 2 && i <= 4){
                 if(i === 2){
                     arrcyc.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}><CycleCircle className='grid grid-rows-2 relative'><p key={0} ref={d => lang.current[0] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></CycleCircle></RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><CycleCircle/></RouteStations>
+                            <RouteStations key={i} ref={d => {d!= null?refcyc.current[i] = d:null}}><CycleCircle/></RouteStations>
+                            <RouteStations key={i+1} ref={d => {d!= null?refcyc.current[i+1] = d:null}}><CycleCircle className='grid grid-rows-2 relative'><p key={0} ref={d => {lang.current[0] = d}} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></CycleCircle></RouteStations>
+                            <RouteStations key={i+2} ref={d => {d!= null?refcyc.current[i+2] = d:null}}><CycleCircle/></RouteStations>
                         </div>
                     )
                     arryes.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null} title='skip'><YesulinCircle className='opacity-0'/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}><YesulinCircle className='grid grid-rows-2 relative'><p key={1} ref={d => lang.current[1] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></YesulinCircle></RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><YesulinCircle/></RouteStations>
+                            <RouteStations key={i} ref={d => {d!= null?refyes.current[i] = d:null}} title='skip'><YesulinCircle className='opacity-0'/></RouteStations>
+                            <RouteStations key={i+1} ref={d =>{ d!= null?refyes.current[i+1] = d:null}}><YesulinCircle className='grid grid-rows-2 relative'><p key={1} ref={d => {lang.current[1] = d}} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></YesulinCircle></RouteStations>
+                            <RouteStations key={i+2} ref={d => {d!= null?refyes.current[i+2] = d:null}}><YesulinCircle/></RouteStations>
                         </div>
                     )
                     arrjun.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}><JungangCircle className='grid grid-rows-2 relative'><p key={2} ref={d => lang.current[2] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-purple'>{t('jung')}</p></JungangCircle></RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><JungangCircle/></RouteStations>
+                            <RouteStations key={i} ref={d => {d!= null?refjun.current[i] = d:null}}><JungangCircle/></RouteStations>
+                            <RouteStations key={i+1} ref={d => {d!= null?refjun.current[i+1] = d:null}}><JungangCircle className='grid grid-rows-2 relative'><p key={2} ref={d => {lang.current[2] = d}} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-purple'>{t('jung')}</p></JungangCircle></RouteStations>
+                            <RouteStations key={i+2} ref={d => {d!= null?refjun.current[i+2] = d:null}}><JungangCircle/></RouteStations>
                         </div>
                     )
                 }
                 continue
             }
             if(i === 5){
-                arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><EndCircle/></RouteStations>)
-                arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><EndCircle/></RouteStations>)
-                arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><EndCircle/></RouteStations>)
+                arrcyc.push(<RouteStations key={i} ref={d => {d!= null?refcyc.current[i] = d:null}}><EndCircle/></RouteStations>)
+                arryes.push(<RouteStations key={i} ref={d => {d!= null?refyes.current[i] = d:null}}><EndCircle/></RouteStations>)
+                arrjun.push(<RouteStations key={i} ref={d => {d!= null?refjun.current[i] = d:null}}><EndCircle/></RouteStations>)
                 continue
             }
-            arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>)
-            arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><YesulinCircle/></RouteStations>)
-            arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>)
+            arrcyc.push(<RouteStations key={i} ref={d => {d!= null?refcyc.current[i] = d:null}}><CycleCircle/></RouteStations>)
+            arryes.push(<RouteStations key={i} ref={d => {d!= null?refyes.current[i] = d:null}}><YesulinCircle/></RouteStations>)
+            arrjun.push(<RouteStations key={i} ref={d => {d!= null?refjun.current[i] = d:null}}><JungangCircle/></RouteStations>)
         }
         setDirect(arrdir)
         setCycle(arrcyc)
@@ -150,29 +150,29 @@ export const RouteMap = (props: {
             for(let i = 0; i < 4; i++){
                 if(i === 3){
                     arrdir.push(
-                        <RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
+                        <RouteLine className={'bg-chip-orange'} key={i} ref={d=>{ d!= null?linedir.current[i] = d:null}}></RouteLine>
                     )
                     continue
                 }
                 arrdir.push(
-                    <RouteLine className={'bg-chip-blue'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
+                    <RouteLine className={'bg-chip-blue'} key={i} ref={d=> {d!= null?linedir.current[i] = d:null}}></RouteLine>
                 )
             }
             for(let i = 0; i < 5; i++){
                 if(i === 4){
-                    arrcyc.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>)
-                    arryes.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>)
-                    arrjun.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>)
+                    arrcyc.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> {d!= null?linecyc.current[i] = d:null}}></RouteLine>)
+                    arryes.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> {d!= null?lineyes.current[i] = d:null}}></RouteLine>)
+                    arrjun.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> {d!= null?linejun.current[i] = d:null}}></RouteLine>)
                     continue
                 }
                 arrcyc.push(
-                    <RouteLine className={'bg-chip-red'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>
+                    <RouteLine className={'bg-chip-red'} key={i} ref={d=> {d!= null?linecyc.current[i] = d:null}}></RouteLine>
                 )
                 arryes.push(
-                    <RouteLine className={'bg-chip-green'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>
+                    <RouteLine className={'bg-chip-green'} key={i} ref={d=> {d!= null?lineyes.current[i] = d:null}}></RouteLine>
                 )
                 arrjun.push(
-                    <RouteLine className={'bg-chip-purple'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>
+                    <RouteLine className={'bg-chip-purple'} key={i} ref={d=> {d!= null?linejun.current[i] = d:null}}></RouteLine>
                 )
             }
             setDirLine(arrdir)
