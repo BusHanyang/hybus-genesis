@@ -22,6 +22,8 @@ module.exports = {
           'color-contrast',
           'unused-css-rules',
           'unused-javascript',
+          'third-party-cookies',
+          'dobetterweb/inspector-issues',
         ],
       },
     },

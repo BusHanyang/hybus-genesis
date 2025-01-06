@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import {Transition} from 'react-transition-group'
-import {styled} from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
@@ -11,10 +11,10 @@ import Arrow from '/image/expand_less_white_48dp.svg'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
 import { RouteMap } from '@/components/routemap/RouteMap'
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
-import Refreshing from './app/components/ptr/refreshing-content'
+import Refreshing from './app/components/ptr/refreshing-content'  
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
 const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
@@ -23,20 +23,32 @@ const Subway = lazy(() => import('@/components/subway/Subway'))
 
 const Apps = styled.div`
   ${tw`
-    h-full pl-5 pr-5 bg-white text-black font-Ptd text-center mx-auto select-none max-w-7xl relative
-    dark:bg-zinc-800 dark:text-white transition-colors
+    h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative
+    bg-theme-main text-theme-text transition-colors
   `}
 `
 
-const Circle = styled.span`
+const Circle = styled.span<{ theme: string }>`
   ${tw`
-    flex rounded-full inline-block
+    flex rounded-full inline-block transition-transform
     h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1
+  `}
+
+  ${({ theme }) => theme === 'christmas' &&
+  css`
+    /* For Heart Shape */
+    ${tw`rotate-45 scale-75 rounded-none`}
+
+    &::before,&::after {
+      ${tw`absolute w-full h-full rounded-full bg-inherit content-['']`}
+    }
+    &::before { left: -50%; }
+    &::after { top: -50%; }
   `}
 `
 
 const CopyRightText = styled.p`
-  ${tw`dark:text-white pt-3 hsm:text-sm hsm:leading-4`}
+  ${tw`text-theme-text pt-3 hsm:text-sm hsm:leading-4`}
 `
 
 const CycleCircle = styled(Circle)`
@@ -63,14 +75,13 @@ const RouteText = styled.div`
 
 const CardView = styled.div`
   ${tw`
-    mb-3 justify-center items-center font-medium 
-    bg-white rounded-lg shadow-[0_2.8px_8px_rgba(10,10,10,0.2)]
-    dark:bg-gray-700 dark:border-gray-700 dark:text-white dark:shadow-[0_2.8px_8px_rgba(10,10,10,0.8)]
+    mb-3 justify-center items-center font-medium rounded-lg transition-colors
+    bg-theme-card text-theme-text border-theme-border shadow-theme-shadow 
   `}
 `
 
 const MainCardView = styled(CardView)`
-  ${tw`p-6 hm:p-4 transition-[height] delay-75`}
+  ${tw`p-6 hm:p-4 transition-all`}
 `
 
 const NoticeWrapper = styled(CardView)`
@@ -80,11 +91,11 @@ const NoticeWrapper = styled(CardView)`
 const Button = styled(CardView)`
   ${tw`
     flex will-change-transform overflow-hidden cursor-default 
-    border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 dark:text-white
+    border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text 
   `}
   &.active {
     ${tw`
-      bg-blue-300 dark:text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
+      bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
     `}
   }
 
@@ -125,7 +136,7 @@ const RouteToggleImage = styled.img<{status: string}>`
 `
 const SegmentedControl = styled.div`
   ${tw`
-    p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-2 rounded-xl bg-gray-200 dark:bg-gray-800 transition-all will-change-transform  
+    relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform
   `}
 `
 
@@ -134,7 +145,7 @@ const SegmentedControlWrapper = styled.div<{
   $touchPrompt: boolean
   $tab: string
 }>`
-  ${tw`flex justify-center transition-[opacity,margin] delay-75`}
+  ${tw`flex justify-center transition-[opacity,margin]`}
   ${({ $realtimeMode, $touchPrompt }) =>
     !$realtimeMode && $touchPrompt
       ? tw`mt-7 hm:mt-[2.1rem] hsm:mt-7`
@@ -145,14 +156,25 @@ const SegmentedControlWrapper = styled.div<{
       : tw`opacity-0 pointer-events-none`}
 `
 
+const OptionWrapper = styled.div`
+  ${tw`relative z-10 flex items-center items-center justify-center`}
+`
+
+const ActiveIndicator = styled.div<{ $activeIndex: number }>`
+  ${tw`
+    fixed w-[45%] h-[75%] bg-control-active transition-transform rounded-2xl duration-300 ease-in-out
+  `}
+  transform: translateX(${({ $activeIndex }) => $activeIndex}%);
+`
+
 const StationButtonWrapper = styled.div`
   ${tw`grid grid-cols-3 gap-4`}
 `
 
 const RadioLabel = styled.label`
   ${tw`
-    block cursor-default select-none rounded-xl p-1 text-center peer-checked:bg-blue-400 peer-checked:font-bold peer-checked:text-white
-    transition-colors ease-in-out duration-150
+    w-full h-full block cursor-pointer select-none rounded-xl p-1 text-center
+    peer-checked:font-bold peer-checked:text-white transition-colors duration-300
   `}
 `
 
@@ -160,14 +182,15 @@ const Title = styled.h1`
   ${tw`font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3`}
 `
 
-const DARK_MODE_COLOR = '#27272a' //bg-zinc-800
-
 function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
+  )
+  const [xmasAlert, setXmasAlert] = useState<boolean>(
+    window.localStorage.getItem('xmas_alert') === null,
   )
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
 
@@ -203,7 +226,6 @@ function App() {
   const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
   const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
-  const isDarkMode = theme === THEME.DARK
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
@@ -269,9 +291,41 @@ function App() {
   }, [])
 
   useEffect(() => {
+    const localTheme = window.localStorage.getItem('theme')
+    if (localTheme) {
+      if (localTheme === 'dark') {
+        document.body.classList.remove('light')
+        document.body.classList.remove('christmas')
+        document.body.classList.add('dark')
+      } else if (localTheme === 'christmas') {
+        document.body.classList.remove('light')
+        document.body.classList.add('christmas')
+        document.body.classList.add('dark')
+      } else {
+        document.body.classList.remove('dark')
+        document.body.classList.remove('christmas')
+        document.body.classList.add('light')
+      }
+    }
+  }, [theme])
+
+  useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
     setTouchPrompt(status)
   }, [])
+
+  useEffect(() => {
+    const status = window.localStorage.getItem('xmas_alert') === null
+    setXmasAlert(status)
+  }, [])
+
+  useEffect(() => {
+    if(xmasAlert){
+      setModalTarget('Christmas')
+      openModal()
+      window.localStorage.setItem('xmas_alert', 'false')
+    }
+  }, [xmasAlert])
 
   return (
     <>
@@ -285,23 +339,23 @@ function App() {
                 <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
-                  backgroundColor={isDarkMode ? DARK_MODE_COLOR : 'white'}
+                  //backgroundColor={}
                   pullingContent=""
                   refreshingContent={
-                    <Refreshing mode={isDarkMode ? THEME.DARK : THEME.LIGHT} />
+                    <Refreshing mode={theme} />
                   }
                   resistance={3}
-                  className="transition-colors"
+                  //className="transition-colors"
                 >
                   <div
-                    className={`${isDarkMode ? 'dark' : ''} h-full`}
+                    className={`${theme} h-full`}
                     onContextMenu={(e) => e.preventDefault()}
                   >
                     <Apps>
                       <header>
                         <HeadlineWrapper>
                           <Title>
-                            {t('title')}
+                            🎄 {t('title')} 🎄
                             <HelpIcon
                               src="/image/helpblack.svg"
                               alt="information icon"
@@ -347,7 +401,8 @@ function App() {
                           $tab={tab}
                         >
                           <SegmentedControl>
-                            <div>
+                            <ActiveIndicator $activeIndex={realtimeMode ? 117 : 5} />
+                            <OptionWrapper>
                               <input
                                 type="radio"
                                 name="option"
@@ -360,8 +415,8 @@ function App() {
                               <RadioLabel htmlFor="1">
                                 {t('shuttle')}
                               </RadioLabel>
-                            </div>
-                            <div>
+                            </OptionWrapper>
+                            <OptionWrapper>
                               <input
                                 type="radio"
                                 name="option"
@@ -372,7 +427,7 @@ function App() {
                                 checked={realtimeMode}
                               />
                               <RadioLabel htmlFor="2">{t('subw')}</RadioLabel>
-                            </div>
+                            </OptionWrapper>
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
@@ -385,19 +440,19 @@ function App() {
                           <RouteIndexCardView status={state} onClick={() => {setRouteCardClick(!routeCardClick)}}>
                             <RouteIndexContainer status={state}>
                               <RouteIndexWrapper>
-                                <CycleCircle />
+                                <CycleCircle theme={theme}/>
                                 <RouteText>{t('cycle_index')}</RouteText>
                               </RouteIndexWrapper>
                               <RouteIndexWrapper>
-                                <DirectCircle />
+                                <DirectCircle theme={theme}/>
                                 <RouteText>{t('direct_index')}</RouteText>
                               </RouteIndexWrapper>
                               <RouteIndexWrapper>
-                                <YesulinCircle />
+                                <YesulinCircle theme={theme}/>
                                 <RouteText>{t('yesulin_index')}</RouteText>
                               </RouteIndexWrapper>
                               <RouteIndexWrapper>
-                                <JungangCircle />
+                                <JungangCircle theme={theme}/>
                                 <RouteText>{t('jungang_index')}</RouteText>
                               </RouteIndexWrapper>
                             </RouteIndexContainer>
@@ -407,7 +462,6 @@ function App() {
                             </>
                           )}
                         </Transition>
-
                       <StationButtonWrapper>
                         <Button
                           id="shuttlecoke_o"
@@ -467,7 +521,7 @@ function App() {
                         <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
                       </Link>
                       <CopyRightText id="copyright">
-                        Copyright © 2020-2024{' '}
+                        Copyright © 2020-2025{' '}
                         <a
                           className="underline"
                           target="_blank"

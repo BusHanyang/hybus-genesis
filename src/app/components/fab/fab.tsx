@@ -7,6 +7,7 @@ import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
+import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Arrow from '/image/expand_less_white_48dp.svg'
@@ -19,8 +20,9 @@ import { useDarkmodeContext } from '@/context/ThemeContext'
 import { useDarkMode } from '../useDarkMode'
 
 const Icons = styled.div<{ theme: string }>`
+  ${tw`transition duration-300`}
   ${({ theme }) => {
-    return theme === 'dark' ? tw`invert` : null
+    return theme !== 'light' ? tw`invert` : null
   }}
 `
 const FabBackground = styled.div<{ open: boolean }>`
@@ -125,18 +127,28 @@ const Fabs = (props: {
   React.useLayoutEffect(() => {
     if (theme === 'dark') {
       setMetadata({
-        changeText: t('light'),
+        // changeText: t('light'),
+        changeText: t('christmas'),
         changeColor: '#374151',
         iconColor: 'white',
         dataTheme: 'dark',
+        // imgIcon: LightImg,
+        imgIcon: ChristmasImg,
+      })
+    } else if (theme === 'christmas') {
+      setMetadata({
+        changeText: t('light'),
+        changeColor: 'var(--color-theme-main)',
+        iconColor: 'white',
+        dataTheme: 'christmas',
         imgIcon: LightImg,
       })
     } else {
       setMetadata({
         changeText: t('dark'),
-        changeColor: '#ffffff',
+        changeColor: '#FFFFFF',
         iconColor: 'black',
-        dataTheme: 'white',
+        dataTheme: 'light',
         imgIcon: DarkImg,
       })
     }

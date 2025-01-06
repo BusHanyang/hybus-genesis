@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
+import { Snowfall } from 'react-snowfall'
 import { RecoilRoot } from 'recoil'
 
 import { DarkmodeContextProvider } from '@/context/ThemeContext'
@@ -28,11 +29,22 @@ ReactDOM.createRoot(root).render(
       <RecoilRoot>
         <Partytown debug={false} forward={['dataLayer.push']} />
         <DarkmodeContextProvider>
+          <Snowfall
+            color={'#B4CCCF'}
+            snowflakeCount={50}
+            wind={[-0.5, 0.5]}
+            style={{
+              zIndex: 1,
+              position: 'fixed',
+              height: '100vh',
+              pointerEvents: 'none',
+            }}
+          />
           <Provider store={store}>
           <App />
           </Provider>
         </DarkmodeContextProvider>
       </RecoilRoot>
     </QueryClientProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 )
