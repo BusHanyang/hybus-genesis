@@ -30,8 +30,8 @@ export const DarkmodeContextProvider = ({
   const [theme, setTheme] = React.useState<THEME>(themeName)
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    (<ThemeContext value={{ theme, setTheme }}>
       {children}
-    </ThemeContext.Provider>
-  )
+    </ThemeContext>)
+  );
 }

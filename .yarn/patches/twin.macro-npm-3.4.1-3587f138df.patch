@@ -1,0 +1,10 @@
+diff --git a/types/index.d.ts b/types/index.d.ts
+index d66f0cef5e7401292e40d36b983a1abd9305afc4..4141d3464720e19cfbc28e5b713802f67f4974fb 100644
+--- a/types/index.d.ts
++++ b/types/index.d.ts
+@@ -1,4 +1,4 @@
+-import { ComponentType, ElementType } from 'react'
++import { ComponentType, ElementType, JSX } from 'react'
+ import { Config as TailwindConfig } from 'tailwindcss'
+ 
+ export interface TwStyle {

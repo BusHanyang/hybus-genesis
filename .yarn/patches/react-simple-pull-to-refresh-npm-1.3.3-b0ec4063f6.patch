@@ -1,0 +1,10 @@
+diff --git a/build/components/pull-to-refresh.d.ts b/build/components/pull-to-refresh.d.ts
+index 68e2ee097c70e9e5cf5135c17b4b38a5facc3ae9..a025ab0e082a576817b429a86a3a1d0a84c04230 100644
+--- a/build/components/pull-to-refresh.d.ts
++++ b/build/components/pull-to-refresh.d.ts
+@@ -1,4 +1,4 @@
+-import React from 'react';
++import React,{JSX} from 'react';
+ import '../styles/main.scss';
+ interface PullToRefreshProps {
+     isPullable?: boolean;

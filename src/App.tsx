@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react' 
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react' 
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
@@ -157,7 +157,7 @@ const SegmentedControlWrapper = styled.div<{
 `
 
 const OptionWrapper = styled.div`
-  ${tw`relative z-10 flex items-center items-center justify-center`}
+  ${tw`relative z-10 flex items-center justify-center`}
 `
 
 const ActiveIndicator = styled.div<{ $activeIndex: number }>`
@@ -183,6 +183,7 @@ const Title = styled.h1`
 `
 
 function App() {
+  const nodeRef = useRef(null)
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
@@ -434,6 +435,7 @@ function App() {
                         <Transition
                           in={routeCardClick}
                           timeout={150}
+                          nodeRef={nodeRef}
                         >
                           {(state) => (
                             <>

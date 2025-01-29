@@ -1,0 +1,10 @@
+diff --git a/lib/Snowfall.d.ts b/lib/Snowfall.d.ts
+index 81c2c906d81c8329de19a9b9fd4a9ff38cec8c6d..42da71db0f0a46d0d356e2b2e7cbb07bca963dd5 100644
+--- a/lib/Snowfall.d.ts
++++ b/lib/Snowfall.d.ts
+@@ -1,4 +1,4 @@
+-import React from 'react';
++import React,{JSX} from 'react';
+ import { SnowfallCanvasConfig } from './SnowfallCanvas.js';
+ export interface SnowfallProps extends Partial<SnowfallCanvasConfig> {
+     /**

@@ -1,7 +1,7 @@
 import './index.css'
 import './app/components/lang/i18n'
 
-import { Partytown } from '@builder.io/partytown/react'
+import { Partytown } from '@qwik.dev/partytown/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
