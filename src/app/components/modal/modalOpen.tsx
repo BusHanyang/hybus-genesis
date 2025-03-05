@@ -42,7 +42,7 @@ const ModalOpen = (props: {
   })
 
   const toggleTheme = () => {
-    window.localStorage.setItem('theme', 'christmas')
+    window.localStorage.setItem('theme', 'spring')
     window.location.reload()
   }
   
@@ -92,6 +92,18 @@ const ModalOpen = (props: {
                 
                   <ModalFooterButton onClick={toggleTheme}>
                     {t('christmas_btn')}
+                  </ModalFooterButton>
+                </>
+              )}
+              {props.mTarget === 'Spring' && (
+                <>
+                  <Trans
+                    i18nKey='spring_txt'
+                  />
+                  <br/>
+                
+                  <ModalFooterButton onClick={toggleTheme}>
+                    {t('spring_btn')}
                   </ModalFooterButton>
                 </>
               )}

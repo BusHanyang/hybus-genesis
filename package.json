@@ -34,7 +34,8 @@
     "recoil": "^0.7.7",
     "sass": "^1.76.0",
     "styled-components": "^6.1.9",
-    "styled-reset": "^4.5.2"
+    "styled-reset": "^4.5.2",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "devDependencies": {
     "@types/react": "18.3.1",

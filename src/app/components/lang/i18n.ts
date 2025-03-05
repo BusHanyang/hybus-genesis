@@ -27,7 +27,7 @@ i18n
   .use(initReactI18next)
   .init({
     //lng: "en", // 강제기본값
-    fallbackLng: 'en',
+    fallbackLng: 'ko',
     returnNull: false,
     debug: false,
     resources,

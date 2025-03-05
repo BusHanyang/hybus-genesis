@@ -21,6 +21,12 @@ if (!root) throw new Error('Error! Cannot find root element')
 
 root.classList.add('h-full')
 
+const snowflake1 = document.createElement('img')
+const snowflake2 = document.createElement('img')
+snowflake1.src = '/image/flower_pink.png'
+snowflake2.src = '/image/flower_bpink.png'
+const flakes = [snowflake1, snowflake2]
+
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
@@ -28,9 +34,11 @@ ReactDOM.createRoot(root).render(
         <Partytown debug={false} forward={['dataLayer.push']} />
         <DarkmodeContextProvider>
           <Snowfall
-            color={'#B4CCCF'}
-            snowflakeCount={50}
+            //color={'#B4CCCF'}
+            images={flakes}
+            snowflakeCount={30}
             wind={[-0.5, 0.5]}
+            radius={[14.0, 17.0]}
             style={{
               zIndex: 1,
               position: 'fixed',

@@ -7,10 +7,11 @@ import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
+//import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Arrow from '/image/expand_less_white_48dp.svg'
+import SpringImg from '/image/flower.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
@@ -44,7 +45,7 @@ const Fabs = (props: {
     changeText: t('dark'),
     changeColor: '#ffffff',
     iconColor: 'black',
-    dataTheme: 'white',
+    dataTheme: 'light',
     imgIcon: DarkImg,
   }) // white theme is default
 
@@ -128,12 +129,14 @@ const Fabs = (props: {
     if (theme === 'dark') {
       setMetadata({
         // changeText: t('light'),
-        changeText: t('christmas'),
+        // changeText: t('christmas'),
+        changeText: t('spring'),
         changeColor: '#374151',
         iconColor: 'white',
         dataTheme: 'dark',
         // imgIcon: LightImg,
-        imgIcon: ChristmasImg,
+        // imgIcon: ChristmasImg,
+        imgIcon: SpringImg,
       })
     } else if (theme === 'christmas') {
       setMetadata({
@@ -141,6 +144,14 @@ const Fabs = (props: {
         changeColor: 'var(--color-theme-main)',
         iconColor: 'white',
         dataTheme: 'christmas',
+        imgIcon: LightImg,
+      })
+    } else if (theme === 'spring') {
+      setMetadata({
+        changeText: t('light'),
+        changeColor: '#e37da6',
+        iconColor: 'white',
+        dataTheme: 'spring',
         imgIcon: LightImg,
       })
     } else {
@@ -172,7 +183,10 @@ const Fabs = (props: {
             onContextMenu={handleContextMenu}
           />
         }
-        mainButtonStyles={{ backgroundColor: '#7099C1', fontSize: '10px' }}
+        mainButtonStyles={{ 
+          backgroundColor: metadata.dataTheme === 'light' ? '#7099C1' : 'var(--color-fab-color)', 
+          fontSize: '10px' 
+        }}
         style={{
           position: 'absolute',
           bottom: '1.5rem',

@@ -26,6 +26,8 @@ module.exports = {
         'control-main' : 'var(--color-control-main)',
         'control-active' : 'var(--color-control-active)',
         'button-active' : 'var(--color-button-active)',
+        'fab-color': 'var(--color-fab-color)',
+        'ontouch-bg': 'var(--color-ontouch-bg)',
 
         'ft-element' : 'var(--color-ft-element)',
         'ft-active' : 'var(--color-ft-active)',
