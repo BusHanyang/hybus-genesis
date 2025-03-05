@@ -48,7 +48,7 @@ const RAW_RUNTIME_STATE =
           ["https-localhost", "npm:4.7.1"],\
           ["husky", "npm:9.0.11"],\
           ["i18next", "npm:23.11.3"],\
-          ["i18next-browser-languagedetector", "npm:7.2.1"],\
+          ["i18next-browser-languagedetector", "npm:8.0.4"],\
           ["i18next-http-backend", "npm:2.5.1"],\
           ["postcss", "npm:8.4.38"],\
           ["prettier", "npm:3.2.5"],\
@@ -7215,7 +7215,7 @@ const RAW_RUNTIME_STATE =
           ["https-localhost", "npm:4.7.1"],\
           ["husky", "npm:9.0.11"],\
           ["i18next", "npm:23.11.3"],\
-          ["i18next-browser-languagedetector", "npm:7.2.1"],\
+          ["i18next-browser-languagedetector", "npm:8.0.4"],\
           ["i18next-http-backend", "npm:2.5.1"],\
           ["postcss", "npm:8.4.38"],\
           ["prettier", "npm:3.2.5"],\
@@ -7256,10 +7256,10 @@ const RAW_RUNTIME_STATE =
       }]\
     ]],\
     ["i18next-browser-languagedetector", [\
-      ["npm:7.2.1", {\
-        "packageLocation": "./.yarn/cache/i18next-browser-languagedetector-npm-7.2.1-e38754cc4c-20c93cbd23.zip/node_modules/i18next-browser-languagedetector/",\
+      ["npm:8.0.4", {\
+        "packageLocation": "./.yarn/cache/i18next-browser-languagedetector-npm-8.0.4-a64a947fdf-3f82b299cf.zip/node_modules/i18next-browser-languagedetector/",\
         "packageDependencies": [\
-          ["i18next-browser-languagedetector", "npm:7.2.1"],\
+          ["i18next-browser-languagedetector", "npm:8.0.4"],\
           ["@babel/runtime", "npm:7.23.6"]\
         ],\
         "linkType": "HARD"\
