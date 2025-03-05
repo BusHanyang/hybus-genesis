@@ -422,7 +422,7 @@ const Subway = ({ station }: SubwayStop) => {
           <TimetableLoadingContainer>
             <NoTimetable>
               <SyncLoader
-                color="#AFBDCE"
+                color='var(--color-load-color)'
                 margin={4}
                 size={8}
                 loading={timetable.isPending}

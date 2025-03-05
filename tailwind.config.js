@@ -29,6 +29,7 @@ module.exports = {
         'fab-color': 'var(--color-fab-color)',
         'ontouch-bg': 'var(--color-ontouch-bg)',
         'ptr-color': 'var(--color-ptr-color)',
+        'load-color': 'var(--color-load-color)',
 
         'ft-element' : 'var(--color-ft-element)',
         'ft-active' : 'var(--color-ft-active)',
