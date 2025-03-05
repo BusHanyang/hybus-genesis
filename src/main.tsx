@@ -36,9 +36,9 @@ ReactDOM.createRoot(root).render(
           <Snowfall
             //color={'#B4CCCF'}
             images={flakes}
-            snowflakeCount={30}
+            snowflakeCount={28}
             wind={[-0.5, 0.5]}
-            radius={[14.0, 17.0]}
+            radius={[14.0, 16.0]}
             style={{
               zIndex: 1,
               position: 'fixed',

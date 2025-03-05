@@ -28,6 +28,7 @@ module.exports = {
         'button-active' : 'var(--color-button-active)',
         'fab-color': 'var(--color-fab-color)',
         'ontouch-bg': 'var(--color-ontouch-bg)',
+        'ptr-color': 'var(--color-ptr-color)',
 
         'ft-element' : 'var(--color-ft-element)',
         'ft-active' : 'var(--color-ft-active)',
