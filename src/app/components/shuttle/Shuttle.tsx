@@ -548,7 +548,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           }}
         >
           <MapIcon
-            //alt="map icon"
+            aria-label="map icon"
             fill='var(--color-theme-text)'
             onContextMenu={handleContextMenu}
             //draggable="false"

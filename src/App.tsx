@@ -353,7 +353,7 @@ function App() {
                           <Title>
                             {t('title')}
                             <HelpIcon
-                              //alt="information icon"
+                              aria-label="information icon"
                               onClick={handleModalTarget}
                               onContextMenu={handleContextMenu}
                               //draggable="false"
