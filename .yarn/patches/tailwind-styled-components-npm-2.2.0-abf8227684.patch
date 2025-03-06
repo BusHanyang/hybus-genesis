@@ -1,0 +1,27 @@
+diff --git a/dist/domElements.d.ts b/dist/domElements.d.ts
+index 9dfae8bb7d8995c0c959311f6646e3cfab3eecf8..0b35be9858bbfcbc9fddb9f79a5a2f7903e56092 100644
+--- a/dist/domElements.d.ts
++++ b/dist/domElements.d.ts
+@@ -1,2 +1,3 @@
++import {JSX} from 'react';
+ declare const elementsArray: (keyof JSX.IntrinsicElements)[];
+ export default elementsArray;
+diff --git a/dist/tailwind.d.ts b/dist/tailwind.d.ts
+index 58795f30c62ed3e91dc30177b146a3468929f204..185bf20361d336628f493f4eec99536e1feb6f57 100644
+--- a/dist/tailwind.d.ts
++++ b/dist/tailwind.d.ts
+@@ -1,4 +1,4 @@
+-import React, { CSSProperties } from "react";
++import React, { CSSProperties, JSX } from "react";
+ declare const isTwElement: unique symbol;
+ export declare type IsTwElement = {
+     [isTwElement]: true;
+@@ -23,7 +23,7 @@ export declare type RemoveIndex<T> = {
+  * ForwardRef typings
+  */
+ export declare type TailwindExoticComponent<P> = PickU<React.ForwardRefExoticComponent<P>, keyof React.ForwardRefExoticComponent<any>>;
+-declare type MergeProps<O extends object, P extends {} = {}> = P extends any ? IsAny<P, RemoveIndex<P> & O, P & O> : never;
++declare type MergeProps<O extends object, P> = P extends any ? IsAny<P, RemoveIndex<P> & O, P & O> : never;
+ declare type TailwindPropHelper<P, O extends object = {}> = PickU<MergeProps<O, P>, keyof MergeProps<O, P>>;
+ declare type TailwindComponentPropsWith$As<P extends object, O extends object, $As extends string | React.ComponentType<any> = React.ComponentType<P>, P2 = $As extends AnyTailwindComponent ? TailwindComponentAllInnerProps<$As> : $As extends IntrinsicElementsKeys | React.ComponentType<any> ? React.ComponentPropsWithRef<$As> : never> = P & O & TailwindPropHelper<P2> & {
+     $as?: $As;

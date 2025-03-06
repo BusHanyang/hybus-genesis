@@ -1,67 +1,132 @@
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
-import tw from 'twin.macro'
+// import styled from 'styled-components'
+// import tw from 'twin.macro'
+
+import tw from 'tailwind-styled-components'
 
 import { useDarkmodeContext } from '@/context/ThemeContext'
 
-const ModalBackground = styled.div<{ $isopen: boolean }>`
-  ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}
-  ${({ $isopen }) => {
-    return $isopen ? tw`flex items-center` : null
-  }}
+// const ModalBackground = styled.div<{ $isopen: boolean }>`
+//   ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}
+//   ${({ $isopen }) => {
+//     return $isopen ? tw`flex items-center` : null
+//   }}
+// `
+
+interface ModalBackgroundProps {
+  $isopen: boolean
+}
+
+const ModalBackground = tw.div<ModalBackgroundProps>`
+  hidden fixed inset-0 z-99 bg-black/60 select-none
+  ${props => props.$isopen ? `flex items-center` : ``}
 `
 
-const ModalMain = styled(ModalBackground)<{
+// const ModalMain = styled(ModalBackground)<{
+//   $isopen: boolean
+//   $isani: boolean
+// }>`
+//   ${({ $isopen }) => {
+//     return $isopen ? tw`flex items-center animate-modalBgShow` : null
+//   }}
+//   ${({ $isani }) => {
+//     return $isani ? tw`animate-modalBgClose` : null
+//   }}
+// `
+
+interface ModalMainProps {
   $isopen: boolean
   $isani: boolean
-}>`
-  ${({ $isopen }) => {
-    return $isopen ? tw`flex items-center animate-modalBgShow` : null
-  }}
-  ${({ $isani }) => {
-    return $isani ? tw`animate-modalBgClose` : null
-  }}
+}
+
+const ModalMain = tw(ModalBackground)<ModalMainProps>`
+  ${props => props.$isopen ? `flex-auto items-center animate-modalBgShow` : ``}
+  ${props => props.$isani ? `animate-modalBgClose` : ``}
 `
 
-const ModalButton = styled.button`
-  ${tw`outline-none cursor-pointer border-0`}
+// const ModalButton = styled.button`
+//   ${tw`outline-none cursor-pointer border-0`}
+// `
+
+const ModalButton = tw.button`
+  outline-none cursor-pointer border-0
 `
 
-const ModalSection = styled.section<{ $isani: boolean }>`
-  ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
-  ${({ $isani }) => {
-    return $isani ? tw`animate-modalClose` : null
-  }}
+// const ModalSection = styled.section<{ $isani: boolean }>`
+//   ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
+//   ${({ $isani }) => {
+//     return $isani ? tw`animate-modalClose` : null
+//   }}
+// `
+
+interface ModalSectionProps {
+  $isani: boolean
+}
+
+const ModalSection = tw.section<ModalSectionProps>`
+  w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto
+  ${props => props.$isani ? `animate-modalClose` : `animate-modalShow`}
 `
 
-const ModalHeader = styled.header<{ theme: string }>`
-  ${tw`relative pt-4 pr-16 pb-4 pl-4 font-bold font-Ptd`}
-  ${({ theme }) => {
-    return theme === 'dark' ? tw`bg-zinc-800 text-white` : tw`bg-white`
-  }}
+// const ModalHeader = styled.header<{ theme: string }>`
+//   ${tw`relative pt-4 pr-16 pb-4 pl-4 font-bold font-Ptd`}
+//   ${({ theme }) => {
+//     return theme === 'dark' ? tw`bg-zinc-800 text-white` : tw`bg-white`
+//   }}
+// `
+
+interface ModalHeaderProps {
+  theme: string
+}
+
+const ModalHeader = tw.header<ModalHeaderProps>`
+  relative pt-4 pr-16 pb-4 pl-4 font-bold font-Ptd
+  ${props => props.theme === 'dark' ? `bg-zinc-800 text-white` : `bg-white`}
 `
 
-const ModalFooterButton = styled(ModalButton)`
-  ${tw`py-2 px-4 text-white bg-gray-500 font-Ptd rounded-md text-xs`}
+// const ModalFooterButton = styled(ModalButton)`
+//   ${tw`py-2 px-4 text-white bg-gray-500 font-Ptd rounded-md text-xs`}
+// `
+
+const ModalFooterButton = tw(ModalButton)`
+  py-2 px-4 text-white bg-gray-500 font-Ptd rounded-md text-xs
 `
 
-const ModalSubMain = styled.main<{ theme: string }>`
-  ${tw`p-4 border-y border-solid`}
-  ${({ theme }) => {
-    return theme === 'dark'
-      ? tw`border-zinc-800 bg-gray-700 text-white`
-      : tw`border-sky-50`
-  }}
+// const ModalSubMain = styled.main<{ theme: string }>`
+//   ${tw`p-4 border-y border-solid`}
+//   ${({ theme }) => {
+//     return theme === 'dark'
+//       ? tw`border-zinc-800 bg-gray-700 text-white`
+//       : tw`border-sky-50`
+//   }}
+// `
+
+interface ModalSubMainProps {
+  theme: string
+}
+
+const ModalSubMain = tw.main<ModalSubMainProps>`
+  p-4 border-y border-solid
+  ${props => props.theme === 'dark' ? `border-zinc-800 bg-gray-700 text-white` : `border-sky-50`}
 `
 
-const ModalFooter = styled.footer<{ theme: string }>`
-  ${tw`py-3 px-4 text-right`}
-  ${({ theme }) => {
-    if (theme === 'dark') {
-      return tw`text-white bg-gray-700`
-    }
-  }}
+// const ModalFooter = styled.footer<{ theme: string }>`
+//   ${tw`py-3 px-4 text-right`}
+//   ${({ theme }) => {
+//     if (theme === 'dark') {
+//       return tw`text-white bg-gray-700`
+//     }
+//   }}
+// `
+
+interface ModalFooterProps {
+  theme: string
+}
+
+const ModalFooter = tw.footer<ModalFooterProps>`
+  py-3 px-4 text-right
+  ${props => props.theme === 'dark' ? `text-white bg-gray-700` : ``}
 `
 
 export const Modal = (props: {

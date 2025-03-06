@@ -1,207 +1,207 @@
 diff --git a/BarLoader.d.ts b/BarLoader.d.ts
-index 4cceca2798bb76999f1701982120169404dd7a74..efe4d43539d377e08e38f3c0dedfd74c42cd38ea 100644
+index 4cceca2798bb76999f1701982120169404dd7a74..c57997c57e8c08ca4618a739c23e0918ffef196c 100644
 --- a/BarLoader.d.ts
 +++ b/BarLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderHeightWidthProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function BarLoader({ loading, color, speedMultiplier, cssOverride, height, width, ...additionalprops }: LoaderHeightWidthProps): JSX.Element | null;
  export default BarLoader;
 diff --git a/BeatLoader.d.ts b/BeatLoader.d.ts
-index 74693c11a7b093a7838101079263a65de07fbd9e..d8b2989be88483ceadce5a40344bf3c9973f7d15 100644
+index 74693c11a7b093a7838101079263a65de07fbd9e..4ea53ec8ba99962351b076df85ba6a351135c047 100644
 --- a/BeatLoader.d.ts
 +++ b/BeatLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function BeatLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default BeatLoader;
 diff --git a/BounceLoader.d.ts b/BounceLoader.d.ts
-index 8f36dfaa0cade69bddef0c7d7f0719968fefd12a..b3509bf97297a7248a8719099ae86ab1281843fd 100644
+index 8f36dfaa0cade69bddef0c7d7f0719968fefd12a..f25e3d2eb86cd46a2a505e9880418ff25438ed3d 100644
 --- a/BounceLoader.d.ts
 +++ b/BounceLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function BounceLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default BounceLoader;
 diff --git a/CircleLoader.d.ts b/CircleLoader.d.ts
-index 2f913c0a518eb39327fce97276f5eb89bf5f4796..95abac0582999ae75be4310cae0f3aa44b92db05 100644
+index 2f913c0a518eb39327fce97276f5eb89bf5f4796..b5071a458e7d39fdad7a3983a2a0a018628e0c00 100644
 --- a/CircleLoader.d.ts
 +++ b/CircleLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function CircleLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default CircleLoader;
 diff --git a/ClimbingBoxLoader.d.ts b/ClimbingBoxLoader.d.ts
-index 98633485a7fc79f677a990c3b567de2de2b0c51f..6913dd87db120a42435d5f1cb9e7201647177aed 100644
+index 98633485a7fc79f677a990c3b567de2de2b0c51f..20b39437d3f4a9ada07952747cb9284207e86583 100644
 --- a/ClimbingBoxLoader.d.ts
 +++ b/ClimbingBoxLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function ClimbingBoxLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default ClimbingBoxLoader;
 diff --git a/ClipLoader.d.ts b/ClipLoader.d.ts
-index 2c8fb611890705267e084b1728cf83388e3748e9..f042fa3ec9a5c1e03e3ce6513e2d30c8af3eb4f5 100644
+index 2c8fb611890705267e084b1728cf83388e3748e9..417a8dd59657e8b64eeec27e7bf9feda20d1e1ca 100644
 --- a/ClipLoader.d.ts
 +++ b/ClipLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function ClipLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default ClipLoader;
 diff --git a/ClockLoader.d.ts b/ClockLoader.d.ts
-index dfcba1d6df9430186e4d6fc3898e7191b600fbf9..e67e2668040f065c600347d15cb0a3128cff9eab 100644
+index dfcba1d6df9430186e4d6fc3898e7191b600fbf9..b5867213cded9b7e7b073e8bb678809359fbe815 100644
 --- a/ClockLoader.d.ts
 +++ b/ClockLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function ClockLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default ClockLoader;
 diff --git a/DotLoader.d.ts b/DotLoader.d.ts
-index 18277d3a2c203493b052d5dcacceabac059a600b..e9070bc081c617151b883bcede3bfcd16f43fac8 100644
+index 18277d3a2c203493b052d5dcacceabac059a600b..a9ac94518c975ba233af829ed352adccb2a2b6f9 100644
 --- a/DotLoader.d.ts
 +++ b/DotLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function DotLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default DotLoader;
 diff --git a/FadeLoader.d.ts b/FadeLoader.d.ts
-index df5e5c18db1b3a852fa8e3dab0a2c75eaf60c50a..184308e94dd8608e3d7143ca3b130249e6a92a0a 100644
+index df5e5c18db1b3a852fa8e3dab0a2c75eaf60c50a..a1b52b6c7dcb9adcd954249d31722b0e1ed402da 100644
 --- a/FadeLoader.d.ts
 +++ b/FadeLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderHeightWidthRadiusProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function FadeLoader({ loading, color, speedMultiplier, cssOverride, height, width, radius, margin, ...additionalprops }: LoaderHeightWidthRadiusProps): JSX.Element | null;
  export default FadeLoader;
 diff --git a/GridLoader.d.ts b/GridLoader.d.ts
-index 6f18699844cff895663236bf6a7e4db18446c3b9..97b7639115f001439a1dffcbd85bba73dcc3e04f 100644
+index 6f18699844cff895663236bf6a7e4db18446c3b9..6dc0ea291ba7dafe5422047fa551060147388edf 100644
 --- a/GridLoader.d.ts
 +++ b/GridLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function GridLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default GridLoader;
 diff --git a/HashLoader.d.ts b/HashLoader.d.ts
-index a65b85ed218a2248276d7c076190636622aa6319..453c740892c9fcbe39c652c59742352c3a71d9de 100644
+index a65b85ed218a2248276d7c076190636622aa6319..6671125702a256bbaeebf83fe2816b82876881af 100644
 --- a/HashLoader.d.ts
 +++ b/HashLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function HashLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default HashLoader;
 diff --git a/MoonLoader.d.ts b/MoonLoader.d.ts
-index 03241f1969a7a049d2df121dfebb0c773ea9ee31..79b51e1d1775f044d6d6e1accb3bba550b4a7065 100644
+index 03241f1969a7a049d2df121dfebb0c773ea9ee31..3725cf21d68d5a2364a470fed25a0279a13869b7 100644
 --- a/MoonLoader.d.ts
 +++ b/MoonLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function MoonLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default MoonLoader;
 diff --git a/PacmanLoader.d.ts b/PacmanLoader.d.ts
-index d1490477bfb6491ed4a1292b7a2d9d1062cfe9cc..13b95fcb751c20c7be0094bee2614792a62b282f 100644
+index d1490477bfb6491ed4a1292b7a2d9d1062cfe9cc..ff3b7d4afa8ab098a4cf325d258e3735b84c6f05 100644
 --- a/PacmanLoader.d.ts
 +++ b/PacmanLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function PacmanLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default PacmanLoader;
 diff --git a/PropagateLoader.d.ts b/PropagateLoader.d.ts
-index 52847d50a1affb2d5a4cbb620853918a088d8aa2..f0bf07de58664239340b345e5e9265e7f832fde1 100644
+index 52847d50a1affb2d5a4cbb620853918a088d8aa2..c545bf7eb52f23b19ce9c60fd51eacbcbc6fd71e 100644
 --- a/PropagateLoader.d.ts
 +++ b/PropagateLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function PropagateLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default PropagateLoader;
 diff --git a/PuffLoader.d.ts b/PuffLoader.d.ts
-index 510d2db1ed47c8ca7dd118f678bf844636c4ef79..81f8717332bb900d4462d28ed3775115e4b93e29 100644
+index 510d2db1ed47c8ca7dd118f678bf844636c4ef79..922ef1a599c105baf6c61af8f204aecb7e485208 100644
 --- a/PuffLoader.d.ts
 +++ b/PuffLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function PuffLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default PuffLoader;
 diff --git a/PulseLoader.d.ts b/PulseLoader.d.ts
-index 59ed42ffaed094b3af234f875f7e9210cbcb9d87..52270bd9425735911ca28af5171428805359374a 100644
+index 59ed42ffaed094b3af234f875f7e9210cbcb9d87..0b7281733fadade31af8136f2eca1bd65a1fa191 100644
 --- a/PulseLoader.d.ts
 +++ b/PulseLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function PulseLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default PulseLoader;
 diff --git a/RingLoader.d.ts b/RingLoader.d.ts
-index be1379633a1efe6d18f43f6a0d62f1076bac6b64..fe573e0d26f062b87fd3dee78baeeb982c0a2fa5 100644
+index be1379633a1efe6d18f43f6a0d62f1076bac6b64..edf4d5b8720be138cfa3b9bb61e71ce884db2e9b 100644
 --- a/RingLoader.d.ts
 +++ b/RingLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function RingLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default RingLoader;
 diff --git a/RiseLoader.d.ts b/RiseLoader.d.ts
-index 9fa04c165da91aa49a10855b3c677e2eb655ba5b..7efd78f772038e97042d2c2d4b3ee283eb84752c 100644
+index 9fa04c165da91aa49a10855b3c677e2eb655ba5b..5a2982c697081b759b2d5d549cc21eef7b13b536 100644
 --- a/RiseLoader.d.ts
 +++ b/RiseLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function RiseLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default RiseLoader;
 diff --git a/RotateLoader.d.ts b/RotateLoader.d.ts
-index e76cbbd08fb23e060aa2245f2a1681961cc57234..d2406fe3333abe4665f7cb04cb42467a8689f72b 100644
+index e76cbbd08fb23e060aa2245f2a1681961cc57234..e10a9e4b4cdc1b84e07fd52a4328f4542f26cad8 100644
 --- a/RotateLoader.d.ts
 +++ b/RotateLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function RotateLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default RotateLoader;
 diff --git a/ScaleLoader.d.ts b/ScaleLoader.d.ts
-index 6faabd4437efa09cf883828299ac04a17bec9ab2..3f2c2ab956bf5d21c14162d69d7a160dd30dd3f3 100644
+index 6faabd4437efa09cf883828299ac04a17bec9ab2..731d20ded7daaa2ade75c8d7d238ed780b8c961e 100644
 --- a/ScaleLoader.d.ts
 +++ b/ScaleLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderHeightWidthRadiusProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function ScaleLoader({ loading, color, speedMultiplier, cssOverride, height, width, radius, margin, ...additionalprops }: LoaderHeightWidthRadiusProps): JSX.Element | null;
  export default ScaleLoader;
 diff --git a/SkewLoader.d.ts b/SkewLoader.d.ts
-index be3ad8622b4c45ebdb7900e8abf80ca902c97909..0b53c669e0ac7ae095a9a499a7a6e83df211ed21 100644
+index be3ad8622b4c45ebdb7900e8abf80ca902c97909..76939565c8bc3d1f81ce621266f4e5959204c3fd 100644
 --- a/SkewLoader.d.ts
 +++ b/SkewLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function SkewLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default SkewLoader;
 diff --git a/SquareLoader.d.ts b/SquareLoader.d.ts
-index 3943e3622d50e933358c7bf379a7ae0eaf22200f..1a233178a0c6ccc033e9d70b63f2fdffbdb8a09b 100644
+index 3943e3622d50e933358c7bf379a7ae0eaf22200f..18b7b8d1f6acf035a234c7b685600ab7767ae98e 100644
 --- a/SquareLoader.d.ts
 +++ b/SquareLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function SquareLoader({ loading, color, speedMultiplier, cssOverride, size, ...additionalprops }: LoaderSizeProps): JSX.Element | null;
  export default SquareLoader;
 diff --git a/SyncLoader.d.ts b/SyncLoader.d.ts
-index 4ea3556fba0f7f7e0a0c1438a77bdaf7ba6be3b9..5ddb7cd59b5637a5255ce145b105c1fb7d4312ff 100644
+index 4ea3556fba0f7f7e0a0c1438a77bdaf7ba6be3b9..a193b26c97f74382c5a4496dee5746885cfbd5af 100644
 --- a/SyncLoader.d.ts
 +++ b/SyncLoader.d.ts
 @@ -1,3 +1,4 @@
++import {JSX} from "react";
  import { LoaderSizeMarginProps } from "./helpers/props";
-+import { JSX } from "react"
  declare function SyncLoader({ loading, color, speedMultiplier, cssOverride, size, margin, ...additionalprops }: LoaderSizeMarginProps): JSX.Element | null;
  export default SyncLoader;

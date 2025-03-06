@@ -46,71 +46,11 @@ module.exports = {
         Ptd: ['Pretendard'],
       },
       animation: {
-        carousel: 'upOut 7s ease-in-out infinite',
-        modalShow: 'modalShow 0.3s',
-        modalBgShow: 'modalBgShow 0.3s',
-        modalBgClose: 'modalBgClose 0.3s',
-        modalClose: 'modalClose 0.3s',
         ldsEllipsis1: 'ldsEllipsis1 0.6s infinite',
         ldsEllipsis2: 'ldsEllipsis2 0.6s infinite',
         ldsEllipsis3: 'ldsEllipsis3 0.6s infinite',
       },
       keyframes: {
-        upOut: {
-          from: {
-            opacity: '0',
-            transform: 'translate3d(0, 10%, 0)',
-          },
-
-          '30%': {
-            opacity: '1',
-            transform: 'translate3d(0, 0%, 0)',
-          },
-          '70%': {
-            opacity: '1',
-            transform: 'translate3d(0, 0%, 0)',
-          },
-          to: {
-            opacity: '0',
-            transform: 'translate3d(0, -10%, 0)',
-          },
-        },
-        modalShow: {
-          from: {
-            opacity: '0',
-            marginTop: '-50px',
-          },
-          to: {
-            opacity: '1',
-            marginTop: '0px',
-          },
-        },
-        modalBgShow: {
-          from: {
-            opacity: '0',
-          },
-          to: {
-            opacity: '1',
-          },
-        },
-        modalBgClose: {
-          from: {
-            opacity: '1',
-          },
-          to: {
-            opacity: '0',
-          },
-        },
-        modalClose: {
-          from: {
-            opacity: '1',
-            marginTop: '0px',
-          },
-          to: {
-            opacity: '0',
-            marginTop: '-50px',
-          },
-        },
         ldsEllipsis1: {
           '0%': {
             transform: 'scale(0)',
@@ -135,6 +75,10 @@ module.exports = {
             transform: 'scale(0)',
           },
         },
+        refSpinner: {
+          '0%':{transform: "rotate(-180deg)"},
+          '100%':{transform: "rotate(180deg)"},
+        }
       },
       transitionProperty:{
         'height': ['responsive', 'hover', 'focus'],

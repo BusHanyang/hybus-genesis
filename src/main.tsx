@@ -4,7 +4,7 @@ import './app/components/lang/i18n'
 import { Partytown } from '@qwik.dev/partytown/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
-import ReactDOM from 'react-dom/client'
+import {createRoot} from 'react-dom/client'
 import { Provider } from 'react-redux'
 import { Snowfall } from 'react-snowfall'
 import { RecoilRoot } from 'recoil'
@@ -16,14 +16,19 @@ import App from './App'
 // import { Ptr } from './app/components/ptr/Ptr'
 
 const queryClient = new QueryClient()
+// let root2 = "" as unknown as HTMLElement
+// const root = createRoot(document.getElementById('root') as HTMLElement)
+
 
 const root = document.getElementById('root')
+
+const renderer = createRoot(root as HTMLElement)
 
 if (!root) throw new Error('Error! Cannot find root element')
 
 root.classList.add('h-full')
 
-ReactDOM.createRoot(root).render(
+renderer.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>

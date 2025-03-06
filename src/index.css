@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@layer base;
+@config "../tailwind.config.js";
 
 @layer base {
     body {
@@ -67,4 +67,73 @@
         --color-ft-text: #ffffff;
         --color-ft-border: #ffffff;
     }
+}
+
+@theme{
+    --animate-modalShow: modalShow 0.3s;
+    --animate-modalBgShow: modalBgShow 0.3s;
+    --animate-modalClose: modalClose 0.3s;
+    --animate-modalBgClose: modalBgClose 0.3s;
+    --animate-carousel: upOut 7s ease-in-out infinite;
+    --animate-refSpinner: refSpinner 1s linear infinite;
+
+    @keyframes modalBgShow {
+        0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+    }
+    @keyframes modalBgClose {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+      @keyframes modalShow {
+        0% {
+          opacity: 0;
+        margin-top: -50px;
+        }
+        100% {
+          opacity: 1;
+          margin-top: 0px;
+        }
+      }
+      @keyframes modalClose {
+        0% {
+          opacity: 1;
+          margin-top: 0px;
+        }
+        100% {
+          opacity: 0;
+          margin-top: -50px;
+        }
+      }
+      @keyframes upOut {
+        0% {
+            opacity: 0;
+            transform: translate3d(0, 10%, 0);
+          }
+
+          30% {
+            opacity: 1;
+            transform: translate3d(0, 0%, 0);
+          }
+          70% {
+            opacity: 1;
+            transform: translate3d(0, 0%, 0);
+          }
+          100% {
+            opacity: 0;
+            transform: translate3d(0, -10%, 0);
+          }
+      }
+      @keyframes refSpinner {
+        0% {transform: rotate(-180deg)}
+        100% {transform: rotate(180deg)}
+      }
 }

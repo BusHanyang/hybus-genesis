@@ -2,8 +2,10 @@ import { useQuery } from '@tanstack/react-query'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import tw from 'twin.macro'
+// import styled from 'styled-components'
+// import tw from 'twin.macro'
+
+import tw from 'tailwind-styled-components'
 
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import {
@@ -19,106 +21,213 @@ import { shuttleAPI } from '@/network'
 
 import { useDarkMode } from '../useDarkMode'
 
-const Chip = styled.div`
-  ${tw`self-center h-fit text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
+// const Chip = styled.div`
+//   ${tw`self-center h-fit text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
+// `
+
+const Chip = tw.div`
+  self-center h-fit text-black w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter
 `
 
-const ComboBoxContainer = styled.div`
-  ${tw`flex gap-2 flex-wrap`}
+// const ComboBoxContainer = styled.div`
+//   ${tw`flex gap-2 flex-wrap`}
+// `
+
+const ComboBoxContainer = tw.div`
+  flex gap-2 flex-wrap
 `
 
-const ComboBoxInner = styled.div<{
+// const ComboBoxInner = styled.div<{
+//   $comboType: string
+//   $comboValue: StopLocation | Season | Week
+// }>`
+//   ${tw`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg`}
+//   ${({ $comboType, $comboValue }) => {
+//     if ($comboType === $comboValue) {
+//       return tw`pl-2 text-ft-active-text bg-ft-active border-ft-active hm:pl-1.5` // Selected
+//     } else {
+//       return tw`text-ft-text border-ft-border` // Not Selected
+//     }
+//   }}
+// `
+
+interface ComboBoxInnerProps {
   $comboType: string
   $comboValue: StopLocation | Season | Week
-}>`
-  ${tw`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg`}
-  ${({ $comboType, $comboValue }) => {
-    if ($comboType === $comboValue) {
-      return tw`pl-2 text-ft-active-text bg-ft-active border-ft-active hm:pl-1.5` // Selected
-    } else {
-      return tw`text-ft-text border-ft-border` // Not Selected
+}
+
+const ComboBoxInner = tw.div<ComboBoxInnerProps>`
+  flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg
+  ${props => props.$comboType === props.$comboValue ? `pl-2 text-ft-active-text bg-ft-active border-ft-active hm:pl-1.5` : `text-ft-text border-ft-border`}
+`
+
+// const ControlBox = styled.div`
+//   ${tw`h-full scroll-smooth`}
+// `
+
+const ControlBox = tw.div`
+  h-full scroll-smooth
+`
+
+// const ControlBoxDivider = styled.hr`
+//   ${tw`w-full h-px mb-3 border-ft-border bg-center justify-center`}
+// `
+
+const ControlBoxDivider = tw.hr`
+  w-full h-px mb-3 border-ft-border bg-center justify-center
+`
+
+// const ControlBoxRow = styled.div`
+//   ${tw`grid grid-flow-row gap-2`}
+// `
+
+const ControlBoxRow = tw.div`
+  grid grid-flow-row gap-2
+`
+
+// const ControlBoxRowTitle = styled.span`
+//   ${tw`text-left font-bold text-lg hm:text-base`}
+// `
+
+const ControlBoxRowTitle = tw.span`
+  text-left font-bold text-lg hm:text-base
+`
+
+// const NoTimetable = styled.div`
+//   ${tw`h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]`}
+// `
+
+const NoTimetable = tw.div`
+  h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]
+`
+
+// const MinuteContainer = styled.div`
+//   ${tw`self-center text-left ml-3 col-span-4`}
+// `
+
+const MinuteContainer = tw.div`
+  self-center text-left ml-3 col-span-4
+`
+
+// const DirectMinuteContainer = styled(MinuteContainer)`
+//   ${tw`hm:leading-none`}
+// `
+
+const DirectMinuteContainer = tw(MinuteContainer)`
+  hm:leading-none
+`
+
+// const FullTimeDocument = styled.div`
+//   ${tw`px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl`}
+// `
+
+const FullTimeDocument = tw.div`
+  px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl
+`
+
+// const FullTimeToolbar = styled.div`
+//   ${tw`flex self-center py-5 hm:py-3`}
+// `
+
+const FullTimeToolbar = tw.div`
+  flex self-center py-5 hm:py-3
+`
+
+// const FullTimeTitle = styled.span`
+//   ${tw`text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5`}
+// `
+
+const FullTimeTitle = tw.span`
+  text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5
+`
+
+// const GoBackIcon = styled.img`
+//   ${tw`cursor-default dark:invert w-6 mr-2 hm:w-4`}
+// `
+
+const GoBackIcon = tw.img`
+  cursor-default dark:invert w-6 mr-2 hm:w-4
+`
+
+// const SelectedIcon = styled.img`
+//   ${tw`dark:invert mr-1 w-5 hm:w-4`}
+// `
+
+const SelectedIcon = tw.img`
+  dark:invert mr-1 w-5 hm:w-4
+`
+
+// const TimeBoxInner = styled.div<{ $maxChips: number }>`
+//   ${tw`bg-ft-element rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm`}
+//   ${({ $maxChips }) => {
+//     if ($maxChips === 1) {
+//       return tw`h-24 hm:h-20`
+//     } else if ($maxChips === 2) {
+//       return tw`h-28 hm:h-24`
+//     } else if ($maxChips === 3) {
+//       return tw`h-32 hm:h-28`
+//     } else if ($maxChips === 4) {
+//       return tw`h-40 hm:h-32`
+//     }
+//   }}
+// `
+
+interface TimeBoxInnerProps {
+  $maxChips: number
+}
+
+const TimeBoxInner = tw.div<TimeBoxInnerProps>`
+  bg-ft-element rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm
+  ${props => {
+    if (props.$maxChips === 1) {
+      return `h-24 hm:h-20`
+    } else if (props.$maxChips === 2) {
+      return `h-28 hm:h-24`
+    } else if (props.$maxChips === 3) {
+      return `h-32 hm:h-28`
+    } else if (props.$maxChips === 4) {
+      return `h-40 hm:h-32`
     }
   }}
 `
 
-const ControlBox = styled.div`
-  ${tw`h-full scroll-smooth`}
+// const TimeBoxHeader = styled.div`
+//   ${tw`font-bold self-center`}
+// `
+
+const TimeBoxHeader = tw.div`
+  font-bold self-center
 `
 
-const ControlBoxDivider = styled.hr`
-  ${tw`w-full h-px mb-3 border-ft-border bg-center justify-center`}
+// const TimeBoxBody = styled.div`
+//   ${tw`font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px`}
+// `
+
+const TimeBoxBody = tw.div`
+  font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px
 `
 
-const ControlBoxRow = styled.div`
-  ${tw`grid grid-flow-row gap-2`}
+// const TimeBoxBodyGrid = styled.div<{ $itemCount: number }>`
+//   ${tw`inline-grid grid-cols-5`}
+//   ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
+// `
+
+interface TimeBoxBodyGridProps {
+  $itemCount: number
+}
+
+const TimeBoxBodyGrid = tw.div<TimeBoxBodyGridProps>`
+  inline-grid grid-cols-5
+  ${props => props.$itemCount === 0 ? `hidden` : ``}
 `
 
-const ControlBoxRowTitle = styled.span`
-  ${tw`text-left font-bold text-lg hm:text-base`}
-`
+// const TimetableContainer = styled.div`
+//   ${tw`pb-6`}
+// `
 
-const NoTimetable = styled.div`
-  ${tw`h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]`}
-`
 
-const MinuteContainer = styled.div`
-  ${tw`self-center text-left ml-3 col-span-4`}
-`
-
-const DirectMinuteContainer = styled(MinuteContainer)`
-  ${tw`hm:leading-none`}
-`
-
-const FullTimeDocument = styled.div`
-  ${tw`px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl`}
-`
-
-const FullTimeToolbar = styled.div`
-  ${tw`flex self-center py-5 hm:py-3`}
-`
-
-const FullTimeTitle = styled.span`
-  ${tw`text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5`}
-`
-
-const GoBackIcon = styled.img`
-  ${tw`cursor-default dark:invert w-6 mr-2 hm:w-4`}
-`
-
-const SelectedIcon = styled.img`
-  ${tw`dark:invert mr-1 w-5 hm:w-4`}
-`
-
-const TimeBoxInner = styled.div<{ $maxChips: number }>`
-  ${tw`bg-ft-element rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm`}
-  ${({ $maxChips }) => {
-    if ($maxChips === 1) {
-      return tw`h-24 hm:h-20`
-    } else if ($maxChips === 2) {
-      return tw`h-28 hm:h-24`
-    } else if ($maxChips === 3) {
-      return tw`h-32 hm:h-28`
-    } else if ($maxChips === 4) {
-      return tw`h-40 hm:h-32`
-    }
-  }}
-`
-
-const TimeBoxHeader = styled.div`
-  ${tw`font-bold self-center`}
-`
-
-const TimeBoxBody = styled.div`
-  ${tw`font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px`}
-`
-
-const TimeBoxBodyGrid = styled.div<{ $itemCount: number }>`
-  ${tw`inline-grid grid-cols-5`}
-  ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
-`
-
-const TimetableContainer = styled.div`
-  ${tw`pb-6`}
+const TimetableContainer = tw.div`
+  pb-6
 `
 
 // const YesulinMinuteWrapper = styled.span<{ $itemCount: number }>`

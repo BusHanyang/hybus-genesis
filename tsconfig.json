@@ -13,8 +13,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "preserve",
-    "types": ["vite-plugin-pwa/react"],
+    "jsx": "react-jsx",
+    "types": ["vite-plugin-pwa/react","node","react","react-dom","react-transition-group"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/app/*"],

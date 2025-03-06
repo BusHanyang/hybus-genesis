@@ -6,8 +6,10 @@ import React, { useEffect, useState, JSX } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useDispatch } from 'react-redux'
 import { SyncLoader } from 'react-spinners'
-import styled from 'styled-components'
-import tw from 'twin.macro'
+// import styled from 'styled-components'
+// import tw from 'twin.macro'
+
+import tw from 'tailwind-styled-components'
 
 import { openNaverMapApp } from '@/components/shuttle/map'
 import {
@@ -26,88 +28,134 @@ import { updateActions } from '@/reducer/store'
 
 dayjs.extend(customParse)
 
-const TimetableWrapper = styled.div`
-  ${tw`h-[14.8rem]`}
+// const TimetableWrapper = styled.div`
+//   ${tw`h-[14.8rem]`}
+// `
+
+const TimetableWrapper = tw.div`h-[14.8rem]`
+
+// const HeadlineWrapper = styled.div`
+//   ${tw`relative`} drag-save-n
+// `
+
+const HeadlineWrapper = tw.div`relative drag-save-n`
+
+// const Headline = styled.h2`
+//   ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
+// `
+
+const Headline = tw.h2`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`
+
+// const MainTimeTableWrapper = styled.div`
+//   ${tw`w-full h-[11.25rem] inline-block touch-none`}
+// `
+
+const MainTimeTableWrapper = tw.div`w-full h-[11.25rem] inline-block touch-none`
+
+// const MainTimetable = styled.div`
+//   ${tw`inline-block select-none h-full`}
+// `
+
+const MainTimetable = tw.div`inline-block select-none h-full`
+
+// const Chip = styled.div`
+//   ${tw`text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem] tracking-tighter`}
+// `
+
+const Chip = tw.div`text-black w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem] tracking-tighter`
+
+// const SingleTimetable = styled.div`
+//   ${tw`text-left mx-auto py-1.5`}
+// `
+
+const SingleTimetable = tw.div`text-left mx-auto py-1.5`
+
+// const OnTouchAvailableWrapper = styled.div`
+//   ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden`}
+// `
+
+const OnTouchAvailableWrapper = tw.div`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden`
+
+// const OnTouchCloseWrapper = styled.div`
+//   ${tw`w-[fit-content] float-right ml-1 h-full flex hsm:ml-0`}
+// `
+
+const OnTouchCloseWrapper = tw.div`w-[fit-content] float-right ml-1 h-full flex hsm:ml-0`
+
+// const TimeLeftWrapper = styled.span`
+//   ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
+//   &.touched {
+//     ${tw`font-bold text-[#ff673d] dark:text-[#ff996a]`}
+//   }
+// `
+
+interface TimeLeftWrapperProps {
+  $touched: boolean
+}
+
+const TimeLeftWrapper = tw.span<TimeLeftWrapperProps>`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6
+  ${props => props.$touched ? `font-bold text-[#ff673d] dark:text-[#ff996a]`: ``}
 `
 
-const HeadlineWrapper = styled.div`
-  ${tw`relative`} drag-save-n
-`
+// const ArrowWrapper = styled.div`
+//   ${tw`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
+// `
 
-const Headline = styled.h2`
-  ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
-`
+const ArrowWrapper = tw.div`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`
 
-const MainTimeTableWrapper = styled.div`
-  ${tw`w-full h-[11.25rem] inline-block touch-none`}
-`
+// const DestinationWrapper = styled.span`
+//   ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6`}
+// `
 
-const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-full`}
-`
+const DestinationWrapper = tw.span`text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6`
 
-const Chip = styled.div`
-  ${tw`text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem] tracking-tighter`}
-`
+// const NoTimetable = styled.div`
+//   ${tw`h-full table`}
+// `
 
-const SingleTimetable = styled.div`
-  ${tw`text-left mx-auto py-1.5`}
-`
+const NoTimetable = tw.div`h-full table`
 
-const OnTouchAvailableWrapper = styled.div`
-  ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden`}
-`
+// const NoTimetableInner = styled.span`
+//   ${tw`table-cell align-middle leading-6`}
+// `
 
-const OnTouchCloseWrapper = styled.div`
-  ${tw`w-[fit-content] float-right ml-1 h-full flex hsm:ml-0`}
-`
+const NoTimetableInner = tw.span`table-cell align-middle leading-6`
 
-const TimeLeftWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
-  &.touched {
-    ${tw`font-bold text-[#ff673d] dark:text-[#ff996a]`}
-  }
-`
+// const TimeClickableConversionText = styled.span`
+//   ${tw`transition duration-300`}
+// `
 
-const ArrowWrapper = styled.div`
-  ${tw`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
-`
+const TimeClickableConversionText = tw.span`transition duration-300`
 
-const DestinationWrapper = styled.span`
-  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6`}
-`
+// const TimeClickableNotifyText = styled.div`
+//   ${tw`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`}
+// `
 
-const NoTimetable = styled.div`
-  ${tw`h-full table`}
-`
+const TimeClickableNotifyText = tw.div`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`
 
-const NoTimetableInner = styled.span`
-  ${tw`table-cell align-middle leading-6`}
-`
+// const ApiStatusButton = styled.button`
+//   ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
+// `
 
-const TimeClickableConversionText = styled.span`
-  ${tw`transition duration-300`}
-`
+const ApiStatusButton = tw.button`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`
 
-const TimeClickableNotifyText = styled.div`
-  ${tw`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`}
-`
+// const MapButton = styled.button`
+//   ${tw`absolute top-0 right-0 h-full`} drag-save-n
+// `
 
-const ApiStatusButton = styled.button`
-  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
-`
+const MapButton = tw.button`absolute top-0 right-0 h-full drag-save-n`
 
-const MapButton = styled.button`
-  ${tw`absolute top-0 right-0 h-full`} drag-save-n
-`
+// const MapIcon = styled.img`
+//   ${tw`cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7`} drag-save-n
+// `
 
-const MapIcon = styled.img`
-  ${tw`cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7`} drag-save-n
-`
+const MapIcon = tw.img`cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n`
 
-const CloseIcon = styled.img`
-  ${tw`cursor-default dark:invert h-4 w-4 my-auto`}
-`
+// const CloseIcon = styled.img`
+//   ${tw`cursor-default dark:invert h-4 w-4 my-auto`}
+// `
+
+const CloseIcon = tw.img`cursor-default dark:invert h-4 w-4 my-auto`
 
 const isWeekend = (): boolean => {
   return dayjs().day() == 0 || dayjs().day() == 6
@@ -511,7 +559,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
                 <SingleTimetable>
                   <ColoredChip chipType={val.type} />
                   <TimeLeftWrapper
-                    className={`${showActualTime ? 'touched' : ''}`}
+                    $touched={touched}
                   >
                     {showActualTime ? (
                       <TimeClickableConversionText>
@@ -580,7 +628,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
                 margin={4}
                 size={8}
                 loading={timetable.isPending}
-                cssOverride={tw`table-cell align-middle`}
+                className='table-cell align-middle'
               />
             </NoTimetable>
           ) : (

@@ -4,8 +4,9 @@ import './fab.scss'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
-import styled from 'styled-components'
-import tw from 'twin.macro'
+// import styled from 'styled-components'
+// import tw from 'twin.macro'
+import tw from 'tailwind-styled-components'
 
 import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
@@ -19,17 +20,35 @@ import { useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
 
-const Icons = styled.div<{ theme: string }>`
-  ${tw`transition duration-300`}
-  ${({ theme }) => {
-    return theme !== 'light' ? tw`invert` : null
-  }}
+// const Icons = styled.div<{ theme: string }>`
+//   ${tw`transition duration-300`}
+//   ${({ theme }) => {
+//     return theme !== 'light' ? tw`invert` : null
+//   }}
+// `
+
+interface IconsProps {
+  theme: string
+}
+
+const Icons = tw.div<IconsProps>`
+  transition duration-300
+  ${props => props.theme !== 'light' ? `invert` : ``}
 `
-const FabBackground = styled.div<{ open: boolean }>`
-  ${tw`select-none font-Ptd`}
-  ${({ open }) => {
-    return open ? tw`fixed inset-0 z-10` : null
-  }}
+// const FabBackground = styled.div<{ open: boolean }>`
+//   ${tw`select-none font-Ptd`}
+//   ${({ open }) => {
+//     return open ? tw`fixed inset-0 z-10` : null
+//   }}
+// `
+
+interface FabBackgroundProps {
+  open: boolean
+}
+
+const FabBackground = tw.div<FabBackgroundProps>`
+  select-none font-Ptd
+  ${props => props.open ? `fixed inset-0 z-10` : ``}
 `
 
 const Fabs = (props: {
