@@ -9,6 +9,7 @@ import tw from 'twin.macro'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
+import { useDarkMode } from '@/components/useDarkMode'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
@@ -174,6 +175,7 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
+  const { toggleTheme } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
@@ -291,7 +293,7 @@ function App() {
         document.body.classList.remove('spring')
         document.body.classList.remove('christmas')
         document.body.classList.remove('dark')
-        window.localStorage.setItem('theme', 'light')
+        toggleTheme()
       } else if (localTheme === 'spring') {
         document.body.classList.remove('light')
         document.body.classList.remove('dark')
@@ -304,7 +306,7 @@ function App() {
         document.body.classList.add('light')
       }
     }
-  }, [theme])
+  }, [theme, toggleTheme])
 
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
