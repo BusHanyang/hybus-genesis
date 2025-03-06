@@ -287,10 +287,11 @@ function App() {
         document.body.classList.remove('spring')
         document.body.classList.add('dark')
       } else if (localTheme === 'christmas') {
-        document.body.classList.remove('light')
+        document.body.classList.add('light') // 강제 light 적용
         document.body.classList.remove('spring')
-        document.body.classList.add('christmas')
-        document.body.classList.add('dark')
+        document.body.classList.remove('christmas')
+        document.body.classList.remove('dark')
+        window.localStorage.setItem('theme', 'light')
       } else if (localTheme === 'spring') {
         document.body.classList.remove('light')
         document.body.classList.remove('dark')
