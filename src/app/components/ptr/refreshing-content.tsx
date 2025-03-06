@@ -9,11 +9,8 @@ const LdsEllipsis = styled.div`
 `
 
 const LdsEllipsisDiv = styled.div<{ theme: string }>`
-  ${({ theme }) => {
-    return theme !== 'light'
-      ? tw`absolute top-7 w-3 h-3 rounded-full bg-ptr-color ease-ptrTran`
-      : tw`absolute top-7 w-3 h-3 rounded-full bg-ptr-color ease-ptrTran`
-  }}
+  ${tw`absolute top-7 w-3 h-3 rounded-full bg-ptr-color ease-ptrTran`}
+  
   &:nth-child(1) {
     ${tw`left-1.5 animate-ldsEllipsis1`}
   }
