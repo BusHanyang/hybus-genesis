@@ -24,12 +24,17 @@
         --color-control-main: theme('colors.gray.200');
         --color-control-active: theme('colors.blue.400');
         --color-button-active: theme('colors.blue.300');
+        --color-fab-color: #7099C1;
+        --color-ontouch-bg: theme('colors.slate.200');
+        --color-ptr-color: theme('colors.gray.700');
+        --color-load-color: #AFBDCE;
 
         --color-ft-element: #E1E2EC;
         --color-ft-active: #DBE2F9;
         --color-ft-active-text: #141B2C;
         --color-ft-text: #44464E;
         --color-ft-border: #75777F;
+        --color-ft-selected: #000000;
     }
 
     /* Dark */
@@ -42,12 +47,17 @@
         --color-control-main: theme('colors.gray.800');
         --color-control-active: theme('colors.blue.400');
         --color-button-active: theme('colors.blue.300');
+        --color-fab-color: #7099C1;
+        --color-ontouch-bg: theme('colors.slate.500');
+        --color-ptr-color: #FFFFFF;
+        --color-load-color: #AFBDCE;
 
         --color-ft-element: #44464E;
         --color-ft-active: #3F4759;
         --color-ft-active-text: #DBE2F9;
         --color-ft-text: #C5C6D0;
         --color-ft-border: #8E9099;
+        --color-ft-selected: #ffffff;
     }
     
     /* Christmas */
@@ -60,11 +70,39 @@
         --color-control-main: #1d3c33;
         --color-control-active: #6ba768;
         --color-button-active: #9be1c6;
+        --color-fab-color: #7099C1;
+        --color-ontouch-bg: theme('colors.slate.500');
+        --color-ptr-color: #FFFFFF;
+        --color-load-color: #AFBDCE;
 
         --color-ft-element: #813333;
         --color-ft-active: #397152;
         --color-ft-active-text: #ffffff;
         --color-ft-text: #ffffff;
         --color-ft-border: #ffffff;
+        --color-ft-selected: #ffffff;
+    }
+
+    /* Spring */
+    .spring {
+        --color-theme-main: #fff4f4;
+        --color-theme-card: #fffafa;
+        --color-theme-text: #c9255e;
+        --color-theme-border: none;
+        --color-theme-shadow: 0 2.8px 8px rgba(241, 139, 178, 0.6);
+        --color-control-main: #ffd3e6;
+        --color-control-active: #f16da4;
+        --color-button-active: #fec1dc;
+        --color-fab-color: #db659e;
+        --color-ontouch-bg: #ffd8ea;
+        --color-ptr-color: #c9255e;
+        --color-load-color: #c9255e;
+
+        --color-ft-element: #ffe4ea;
+        --color-ft-active: #f16da4;
+        --color-ft-active-text: #ffffff;
+        --color-ft-text: #c9255e;
+        --color-ft-border: #c9255e;
+        --color-ft-selected: #ffffff;
     }
 }

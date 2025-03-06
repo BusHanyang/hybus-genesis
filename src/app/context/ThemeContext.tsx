@@ -4,6 +4,7 @@ export enum THEME {
   LIGHT = 'light',
   DARK = 'dark',
   CHRISTMAS = 'christmas',
+  SPRING = 'spring',
 }
 
 interface ThemeContextProps {

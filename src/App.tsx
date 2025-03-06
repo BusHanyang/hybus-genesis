@@ -6,8 +6,10 @@ import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
+import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
+import { useDarkMode } from '@/components/useDarkMode'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
@@ -31,7 +33,7 @@ const Circle = styled.span<{ theme: string }>`
     h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1
   `}
 
-  ${({ theme }) => theme === 'christmas' &&
+  ${({ theme }) => theme === 'spring' &&
   css`
     /* For Heart Shape */
     ${tw`rotate-45 scale-75 rounded-none`}
@@ -109,8 +111,8 @@ const HeadlineWrapper = styled.div`
   ${tw`relative`} drag-save-n
 `
 
-const HelpIcon = styled.img`
-  ${tw`bottom-3 right-0 absolute h-9 w-9 dark:invert hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
+const HelpIcon = styled(HelpImg)`
+  ${tw`bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
 `
 
 const RouteIndexCardView = styled(CardView)`
@@ -173,11 +175,13 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
+  const { toggleTheme } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
-  const [xmasAlert, setXmasAlert] = useState<boolean>(
-    window.localStorage.getItem('xmas_alert') === null,
+  const [themeAlert, setThemeAlert] = useState<boolean>(
+    //window.localStorage.getItem('xmas_alert') === null,
+    window.localStorage.getItem('spring_2025') === null,
   )
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
@@ -282,18 +286,27 @@ function App() {
       if (localTheme === 'dark') {
         document.body.classList.remove('light')
         document.body.classList.remove('christmas')
+        document.body.classList.remove('spring')
         document.body.classList.add('dark')
       } else if (localTheme === 'christmas') {
+        document.body.classList.add('light') // 강제 light 적용
+        document.body.classList.remove('spring')
+        document.body.classList.remove('christmas')
+        document.body.classList.remove('dark')
+        toggleTheme()
+      } else if (localTheme === 'spring') {
         document.body.classList.remove('light')
-        document.body.classList.add('christmas')
-        document.body.classList.add('dark')
+        document.body.classList.remove('dark')
+        document.body.classList.remove('christmas')
+        document.body.classList.add('spring')
       } else {
         document.body.classList.remove('dark')
         document.body.classList.remove('christmas')
+        document.body.classList.remove('spring')
         document.body.classList.add('light')
       }
     }
-  }, [theme])
+  }, [theme, toggleTheme])
 
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
@@ -301,17 +314,17 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const status = window.localStorage.getItem('xmas_alert') === null
-    setXmasAlert(status)
+    const status = window.localStorage.getItem('spring_2025') === null
+    setThemeAlert(status)
   }, [])
 
   useEffect(() => {
-    if(xmasAlert){
-      setModalTarget('Christmas')
+    if(themeAlert){
+      setModalTarget('Spring')
       openModal()
-      window.localStorage.setItem('xmas_alert', 'false')
+      window.localStorage.setItem('spring_2025', 'false')
     }
-  }, [xmasAlert])
+  }, [themeAlert])
 
   return (
     <>
@@ -341,14 +354,15 @@ function App() {
                       <header>
                         <HeadlineWrapper>
                           <Title>
-                            🎄 {t('title')} 🎄
+                            {t('title')}
                             <HelpIcon
-                              src="/image/helpblack.svg"
-                              alt="information icon"
+                              aria-label="information icon"
                               onClick={handleModalTarget}
                               onContextMenu={handleContextMenu}
-                              draggable="false"
-                            />
+                              //draggable="false"
+                              fill='var(--color-theme-text)'
+                            >
+                            </HelpIcon>
                           </Title>
                         </HeadlineWrapper>
                         <NoticeWrapper>

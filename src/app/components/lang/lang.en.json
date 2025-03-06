@@ -114,5 +114,9 @@
 
     "christmas": "Merry Christmas!",
     "christmas_txt": "Discover the new Christmas theme now 🎄 <br/> You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
-    "christmas_btn": "Switch Now 🎁"
+    "christmas_btn": "Switch Now 🎁",
+
+    "spring": "Happy Spring!",
+    "spring_txt": "Discover the new spring theme now🌸 <br/>  You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
+    "spring_btn": "Coloring with flowers 🌸"
 }

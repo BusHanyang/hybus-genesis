@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
+import ArrowImg from '/public/image/arrow_back_black_36dp.svg?react'
+import CheckImg from '/public/image/selected2.svg?react'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import {
   OrganizedTimetables,
@@ -81,12 +83,12 @@ const FullTimeTitle = styled.span`
   ${tw`text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5`}
 `
 
-const GoBackIcon = styled.img`
-  ${tw`cursor-default dark:invert w-6 mr-2 hm:w-4`}
+const GoBackIcon = styled(ArrowImg)`
+  ${tw`cursor-default w-6 mr-2 hm:w-4`}
 `
 
-const SelectedIcon = styled.img`
-  ${tw`dark:invert mr-1 w-5 hm:w-4`}
+const SelectedIcon = styled(CheckImg)`
+  ${tw`mr-1 w-5 h-2.5 hm:w-4`}
 `
 
 const TimeBoxInner = styled.div<{ $maxChips: number }>`
@@ -143,8 +145,9 @@ const ComboBox = (props: {
       >
         {props.type === props.value ? (
           <SelectedIcon
-            src="../image/selected.svg"
-            alt="check"
+            //src="../image/selected.svg"
+            //alt="check"
+            fill='var(--color-ft-selected)'
             onContextMenu={handleContextMenu}
           />
         ) : null}
@@ -370,8 +373,9 @@ const FullTime = () => {
         <FullTimeDocument>
           <FullTimeToolbar>
             <GoBackIcon
-              src="../image/arrow_back_black_36dp.svg"
-              alt="back page"
+              //src="../image/arrow_back_black_36dp.svg"
+              //alt="back page"
+              fill='var(--color-theme-text)'
               onClick={() => goToHomeScreen()}
               onContextMenu={handleContextMenu}
             />

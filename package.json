@@ -19,7 +19,7 @@
     "babel-plugin-styled-components": "^2.1.4",
     "dayjs": "^1.11.11",
     "i18next": "^23.11.3",
-    "i18next-browser-languagedetector": "^7.2.1",
+    "i18next-browser-languagedetector": "^8.0.4",
     "i18next-http-backend": "^2.5.1",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -34,7 +34,8 @@
     "recoil": "^0.7.7",
     "sass": "^1.76.0",
     "styled-components": "^6.1.9",
-    "styled-reset": "^4.5.2"
+    "styled-reset": "^4.5.2",
+    "vite-plugin-svgr": "^4.3.0"
   },
   "devDependencies": {
     "@types/react": "18.3.1",

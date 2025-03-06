@@ -7,11 +7,11 @@ import langEN from './lang.en.json'
 import langKO from './lang.ko.json'
 
 const resources = {
-  en: {
-    translation: langEN,
-  },
   ko: {
     translation: langKO,
+  },
+  en: {
+    translation: langEN,
   },
 }
 
@@ -26,13 +26,16 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    //lng: "en", // 강제기본값
-    fallbackLng: 'en',
+    lng: "ko", // 강제기본값
+    fallbackLng: 'ko',
     returnNull: false,
     debug: false,
     resources,
     //ns: ['translation'],
-    detection: { order: ['cookie', 'navigator'] },
+    detection: { 
+      order: ['querystring', 'cookie', 'localStorage', 'navigator'],
+      caches: ['cookie', 'localStorage']
+    },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default
     },

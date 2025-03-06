@@ -8,6 +8,7 @@ import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
+import MapImg from '/public/image/map_black_24dp.svg?react'
 import { openNaverMapApp } from '@/components/shuttle/map'
 import {
   ChipType,
@@ -53,7 +54,7 @@ const SingleTimetable = styled.div`
 `
 
 const OnTouchAvailableWrapper = styled.div`
-  ${tw`bg-slate-200 dark:bg-slate-500 rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden`}
+  ${tw`bg-ontouch-bg rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden`}
 `
 
 const OnTouchCloseWrapper = styled.div`
@@ -99,8 +100,8 @@ const MapButton = styled.button`
   ${tw`absolute top-0 right-0 h-full`} drag-save-n
 `
 
-const MapIcon = styled.img`
-  ${tw`cursor-default dark:invert h-8 w-8 hsm:h-7 hsm:w-7`} drag-save-n
+const MapIcon = styled(MapImg)`
+  ${tw`cursor-default h-8 w-8 hsm:h-7 hsm:w-7`} drag-save-n
 `
 
 const CloseIcon = styled.img`
@@ -423,7 +424,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   }
 
   const handleContextMenu = (
-    e: React.MouseEvent<HTMLImageElement, MouseEvent>,
+    e: React.MouseEvent<SVGSVGElement, MouseEvent>,
   ) => {
     e.preventDefault()
   }
@@ -547,10 +548,10 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           }}
         >
           <MapIcon
-            src={'../image/map_black_24dp.svg'}
-            alt="map icon"
+            aria-label="map icon"
+            fill='var(--color-theme-text)'
             onContextMenu={handleContextMenu}
-            draggable="false"
+            //draggable="false"
           />
         </MapButton>
       </HeadlineWrapper>
@@ -564,7 +565,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           {timetable.isPending ? (
             <NoTimetable>
               <SyncLoader
-                color="#AFBDCE"
+                color='var(--color-load-color)'
                 margin={4}
                 size={8}
                 loading={timetable.isPending}

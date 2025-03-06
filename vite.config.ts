@@ -5,6 +5,7 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
+import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -14,6 +15,7 @@ export default defineConfig({
         plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
       },
     }),
+    svgr(),
     viteCompression({ algorithm: 'brotliCompress' }),
     VitePWA({
       // Service worker setting
