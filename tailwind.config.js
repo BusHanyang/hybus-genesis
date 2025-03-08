@@ -141,7 +141,7 @@ module.exports = {
         },
       },
       transitionProperty:{
-        'height': ['responsive', 'hover', 'focus'],
+        'height': 'height',
       },
     },
   },
