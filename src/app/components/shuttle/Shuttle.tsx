@@ -4,6 +4,7 @@ import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useDispatch } from 'react-redux'
 import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
@@ -22,6 +23,7 @@ import {
 import { seasonKeys } from '@/data/shuttle/season'
 import { weekKeys } from '@/data/shuttle/week'
 import { settingAPI, shuttleAPI } from '@/network'
+import { updateActions } from '@/reducer/store'
 
 dayjs.extend(customParse)
 
@@ -114,7 +116,6 @@ const isWeekend = (): boolean => {
 
 const getSeason = (setting: Settings | null): [Season, Week] => {
   const today = dayjs()
-
   if (setting === null) {
     // Error fetching settings
     return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
@@ -336,12 +337,16 @@ const ColoredChip = ({ chipType }: ChipType) => {
     return <Chip className="bg-chip-purple">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'DY') {
     return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
+  } else if (chipType == 'R' || chipType == 'NA') {
+    return <Chip className="bg-chip-orange">{busTypeToText(chipType)}</Chip>
+
   }
 
   return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
+  const dispatch = useDispatch()
   const setting = useQuery({
     queryKey: ['settings'],
     queryFn: settingAPI,
@@ -415,6 +420,14 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
   }, [season, week])
 
+  useEffect(() => {
+    if(timetable.data !== undefined){
+      const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+      dispatch(updateActions(filtered[0]))
+    }
+
+  }, [currentTime, dispatch, timetable.data])
+
   const handleActionStart = () => {
     setTouched(true)
   }
@@ -478,7 +491,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
 
     const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
     const reverted = filtered.map((val) => convertUnixToTime(val))
-
     if (filtered.length === 0) {
       // Buses are done for today. User should refresh after midnight.
       return (

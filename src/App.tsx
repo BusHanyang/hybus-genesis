@@ -1,15 +1,20 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react' 
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
+import {Transition} from 'react-transition-group'
 import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
+
 
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
+import Arrow from '/image/expand_less_white_48dp.svg'
+import { RouteMap } from '@/components/routemap/RouteMap'
+
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
@@ -115,14 +120,24 @@ const HelpIcon = styled(HelpImg)`
   ${tw`bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
 `
 
-const RouteIndexCardView = styled(CardView)`
-  ${tw`p-4 h-12 hm:p-2 flex`}
+const RouteIndexCardView = styled(CardView)<{status: string}>`
+  ${tw`relative p-4 h-12 hsm:h-20 hm:p-2 transition-[height] ease-in-out duration-150`}
+  ${(props) => props.status === 'entered' ? tw`h-48 hm:h-48` : tw`h-16 hm:h-20`}
 `
 
 const RouteIndexWrapper = styled.div`
   ${tw`flex flex-wrap place-content-center items-center`}
 `
 
+const RouteIndexContainer = styled.div<{status: string}>`
+  ${tw`absolute top-0 inset-0 flex place-content-center items-center transition ease-in-out duration-300`}
+  ${(props) => props.status === 'exited' ? tw`opacity-100` : tw`opacity-0`}
+  ${(props) => props.status === 'entered' ? tw`hidden`: tw``}
+`
+const RouteToggleImage = styled.img<{status: string}>`
+  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto flex invert dark:invert-0 h-6 w-6 opacity-30 transition ease-in-out duration-150`}
+  ${(props) => props.status === 'entered'? tw`rotate-0`:tw`rotate-180`}
+`
 const SegmentedControl = styled.div`
   ${tw`
     relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform
@@ -183,6 +198,7 @@ function App() {
     //window.localStorage.getItem('xmas_alert') === null,
     window.localStorage.getItem('spring_2025') === null,
   )
+  const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
@@ -431,26 +447,37 @@ function App() {
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
-
-                      <RouteIndexCardView>
-                        <RouteIndexWrapper>
-                          <CycleCircle theme={theme} />
-                          <RouteText>{t('cycle_index')}</RouteText>
-                        </RouteIndexWrapper>
-                        <RouteIndexWrapper>
-                          <DirectCircle theme={theme} />
-                          <RouteText>{t('direct_index')}</RouteText>
-                        </RouteIndexWrapper>
-                        <RouteIndexWrapper>
-                          <YesulinCircle theme={theme} />
-                          <RouteText>{t('yesulin_index')}</RouteText>
-                        </RouteIndexWrapper>
-                        <RouteIndexWrapper>
-                          <JungangCircle theme={theme} />
-                          <RouteText>{t('jungang_index')}</RouteText>
-                        </RouteIndexWrapper>
-                      </RouteIndexCardView>
-
+                        <Transition
+                          in={routeCardClick}
+                          timeout={150}
+                        >
+                          {(state) => (
+                            <>
+                          <RouteIndexCardView status={state} onClick={() => {setRouteCardClick(!routeCardClick)}}>
+                            <RouteIndexContainer status={state}>
+                              <RouteIndexWrapper>
+                                <CycleCircle theme={theme}/>
+                                <RouteText>{t('cycle_index')}</RouteText>
+                              </RouteIndexWrapper>
+                              <RouteIndexWrapper>
+                                <DirectCircle theme={theme}/>
+                                <RouteText>{t('direct_index')}</RouteText>
+                              </RouteIndexWrapper>
+                              <RouteIndexWrapper>
+                                <YesulinCircle theme={theme}/>
+                                <RouteText>{t('yesulin_index')}</RouteText>
+                              </RouteIndexWrapper>
+                              <RouteIndexWrapper>
+                                <JungangCircle theme={theme}/>
+                                <RouteText>{t('jungang_index')}</RouteText>
+                              </RouteIndexWrapper>
+                            </RouteIndexContainer>
+                          <RouteMap status={state} tab={tab}/>
+                          <RouteToggleImage src={Arrow} status={state}/>
+                          </RouteIndexCardView>
+                            </>
+                          )}
+                        </Transition>
                       <StationButtonWrapper>
                         <Button
                           id="shuttlecoke_o"

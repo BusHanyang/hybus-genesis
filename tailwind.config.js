@@ -41,6 +41,7 @@ module.exports = {
         'chip-blue': '#7FAAFF',
         'chip-green': '#81c784',
         'chip-purple': '#d0affb',
+        'chip-orange': '#FFAB40',
       },
       boxShadow: { 
         'theme-shadow' : 'var(--color-theme-shadow)',
@@ -138,6 +139,9 @@ module.exports = {
             transform: 'scale(0)',
           },
         },
+      },
+      transitionProperty:{
+        'height': ['responsive', 'hover', 'focus'],
       },
     },
   },
