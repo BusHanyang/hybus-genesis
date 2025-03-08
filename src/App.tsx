@@ -7,14 +7,12 @@ import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
-
+import Arrow from '/image/expand_less_white_48dp.svg'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
-import { useDarkMode } from '@/components/useDarkMode'
-import Arrow from '/image/expand_less_white_48dp.svg'
 import { RouteMap } from '@/components/routemap/RouteMap'
-
+import { useDarkMode } from '@/components/useDarkMode'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
