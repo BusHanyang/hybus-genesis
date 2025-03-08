@@ -47,7 +47,7 @@ const RouteStations = styled.div`
 ${tw`transition duration-150 ease-in-out flex relative`}
 `
 const RouteMethod = styled.div`
-${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center dark:text-black`}
+${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center text-black`}
 `
 const MainContainer = styled.div<{status: string}>`
 ${tw`transition duration-150 ease-in-out mx-auto`}
