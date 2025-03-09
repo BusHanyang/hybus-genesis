@@ -7,7 +7,7 @@ import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
-import Arrow from '/image/expand_less_white_48dp.svg'
+import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
@@ -120,7 +120,7 @@ const HelpIcon = styled(HelpImg)`
 
 const RouteIndexCardView = styled(CardView)<{status: string}>`
   ${tw`relative p-4 h-12 hsm:h-20 hm:p-2 transition-[height] ease-in-out duration-150`}
-  ${(props) => props.status === 'entered' ? tw`h-48 hm:h-48` : tw`h-16 hm:h-20`}
+  ${(props) => props.status === 'entered' ? tw`h-48 hm:h-48` : tw`h-14 hsm:h-16`}
 `
 
 const RouteIndexWrapper = styled.div`
@@ -132,9 +132,9 @@ const RouteIndexContainer = styled.div<{status: string}>`
   ${(props) => props.status === 'exited' ? tw`opacity-100` : tw`opacity-0`}
   ${(props) => props.status === 'entered' ? tw`hidden`: tw``}
 `
-const RouteToggleImage = styled.img<{status: string}>`
-  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto flex invert dark:invert-0 h-6 w-6 opacity-30 transition ease-in-out duration-150`}
-  ${(props) => props.status === 'entered'? tw`rotate-0`:tw`rotate-180`}
+const RouteToggleImage = styled(Arrow)<{status: string}>`
+  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto h-[1.3rem] w-[1.3rem] opacity-80 transition ease-in-out duration-150`}
+  ${(props) => props.status === 'entered'? tw`rotate-0`:tw`inset-y-12 rotate-180 hsm:inset-y-14`}
 `
 const SegmentedControl = styled.div`
   ${tw`
@@ -451,28 +451,28 @@ function App() {
                         >
                           {(state) => (
                             <>
-                          <RouteIndexCardView status={state} onClick={() => {setRouteCardClick(!routeCardClick)}}>
-                            <RouteIndexContainer status={state}>
-                              <RouteIndexWrapper>
-                                <CycleCircle theme={theme}/>
-                                <RouteText>{t('cycle_index')}</RouteText>
-                              </RouteIndexWrapper>
-                              <RouteIndexWrapper>
-                                <DirectCircle theme={theme}/>
-                                <RouteText>{t('direct_index')}</RouteText>
-                              </RouteIndexWrapper>
-                              <RouteIndexWrapper>
-                                <YesulinCircle theme={theme}/>
-                                <RouteText>{t('yesulin_index')}</RouteText>
-                              </RouteIndexWrapper>
-                              <RouteIndexWrapper>
-                                <JungangCircle theme={theme}/>
-                                <RouteText>{t('jungang_index')}</RouteText>
-                              </RouteIndexWrapper>
-                            </RouteIndexContainer>
-                          <RouteMap status={state} tab={tab}/>
-                          <RouteToggleImage src={Arrow} status={state}/>
-                          </RouteIndexCardView>
+                              <RouteIndexCardView status={state} onClick={() => {setRouteCardClick(!routeCardClick)}}>
+                                <RouteIndexContainer status={state}>
+                                  <RouteIndexWrapper>
+                                    <CycleCircle theme={theme}/>
+                                    <RouteText>{t('cycle_index')}</RouteText>
+                                  </RouteIndexWrapper>
+                                  <RouteIndexWrapper>
+                                    <DirectCircle theme={theme}/>
+                                    <RouteText>{t('direct_index')}</RouteText>
+                                  </RouteIndexWrapper>
+                                  <RouteIndexWrapper>
+                                    <YesulinCircle theme={theme}/>
+                                    <RouteText>{t('yesulin_index')}</RouteText>
+                                  </RouteIndexWrapper>
+                                  <RouteIndexWrapper>
+                                    <JungangCircle theme={theme}/>
+                                    <RouteText>{t('jungang_index')}</RouteText>
+                                  </RouteIndexWrapper>
+                                </RouteIndexContainer>
+                                <RouteMap status={state} tab={tab}/>
+                                <RouteToggleImage fill='var(--color-arrow-color)' status={state}/>
+                              </RouteIndexCardView>
                             </>
                           )}
                         </Transition>

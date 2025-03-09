@@ -106,21 +106,42 @@ export const RouteMap = (props: {
                     arrcyc.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
                             <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}><CycleCircle className='grid grid-rows-2 relative'><p key={0} ref={d => lang.current[0] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></CycleCircle></RouteStations>
+                            <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}>
+                                <CycleCircle className='grid grid-rows-2 relative'>
+                                    <p key={0} ref={d => lang.current[0] = d} 
+                                    className='absolute text-xs top-[-17px] left-[-14px] text-center w-10 text-chip-red'>
+                                        {t('yesul')}
+                                    </p>
+                                </CycleCircle>
+                            </RouteStations>
                             <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><CycleCircle/></RouteStations>
                         </div>
                     )
                     arryes.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
                             <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null} title='skip'><YesulinCircle className='opacity-0'/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}><YesulinCircle className='grid grid-rows-2 relative'><p key={1} ref={d => lang.current[1] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-green'>{t('yesul')}</p></YesulinCircle></RouteStations>
+                            <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}>
+                                <YesulinCircle className='grid grid-rows-2 relative'>
+                                    <p key={1} ref={d => lang.current[1] = d} 
+                                    className='absolute text-xs top-[-17px] left-[-14px] text-center w-10 text-chip-green'>
+                                        {t('yesul')}
+                                    </p>
+                                </YesulinCircle>
+                            </RouteStations>
                             <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><YesulinCircle/></RouteStations>
                         </div>
                     )
                     arrjun.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
                             <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}><JungangCircle className='grid grid-rows-2 relative'><p key={2} ref={d => lang.current[2] = d} className='absolute text-xs top-[-20px] left-[-14px] text-center w-10 text-chip-purple'>{t('jung')}</p></JungangCircle></RouteStations>
+                            <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}>
+                                <JungangCircle className='grid grid-rows-2 relative'>
+                                    <p key={2} ref={d => lang.current[2] = d} 
+                                        className='absolute text-xs top-[-17px] left-[-14px] text-center w-10 text-chip-purple'>
+                                        {t('jung')}
+                                    </p>
+                                </JungangCircle>
+                            </RouteStations>
                             <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><JungangCircle/></RouteStations>
                         </div>
                     )

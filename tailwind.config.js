@@ -30,6 +30,7 @@ module.exports = {
         'ontouch-bg': 'var(--color-ontouch-bg)',
         'ptr-color': 'var(--color-ptr-color)',
         'load-color': 'var(--color-load-color)',
+        'arrow-color': 'var(--color-arrow-color)',
 
         'ft-element' : 'var(--color-ft-element)',
         'ft-active' : 'var(--color-ft-active)',
