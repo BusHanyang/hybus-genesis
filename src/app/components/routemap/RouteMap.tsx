@@ -222,7 +222,7 @@ export const RouteMap = (props: {
                 if(props.ref.current[i].childNodes.length <= 1){
                     if(i === 5 || (i === 4 && props.chipColor === 'bg-chip-blue')){
                         const pingCircle = document.createElement('div')
-                        pingCircle.classList.add('animate-ping', 'absolute', 'rounded-full', 'inline-flex', 'h-3', 'w-3', 'rt1:h-2.5', 'rt1:w-2.5', 'z-99', 'bg-chip-orange', 'mx-2');
+                        pingCircle.classList.add('animate-ping', 'absolute', 'rounded-full', 'inline-flex', 'h-3', 'w-3', 'rt1:h-2.5', 'rt1:w-2.5', 'z-11', 'bg-chip-orange', 'mx-2');
                         if(props.ref.current[i].title === 'skip'){
                             props.ref.current[i+1]?.append(pingCircle)
                         } else{
@@ -233,7 +233,7 @@ export const RouteMap = (props: {
 
                     }
                     const pingCircle = document.createElement('div')
-                    pingCircle.classList.add('animate-ping', 'absolute', 'rounded-full', 'inline-flex', 'h-3', 'w-3', 'rt1:h-2.5', 'rt1:w-2.5', 'z-99', props.chipColor, 'mx-2');
+                    pingCircle.classList.add('animate-ping', 'absolute', 'rounded-full', 'inline-flex', 'h-3', 'w-3', 'rt1:h-2.5', 'rt1:w-2.5', 'z-11', props.chipColor, 'mx-2');
                     if(props.ref.current[i].title === 'skip'){
                         props.ref.current[i+1]?.append(pingCircle)
                     } else{
