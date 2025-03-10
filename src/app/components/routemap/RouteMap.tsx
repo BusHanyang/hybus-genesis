@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect,useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 
+import { useTimeTableContext } from '@/context/TimeTableContext';
 import { CircleAnimate } from '@/data';
-import { SingleShuttleSchedule } from "@/data";
 
 const Circle = styled.span`
     ${tw`
@@ -74,10 +73,8 @@ export const RouteMap = (props: {
     status:string,
     tab: string
 }) => {
-    interface RootState {
-        actions: SingleShuttleSchedule[]
-    }
-    const timetable = useSelector((state: RootState) => state.actions)
+    const timetable = useTimeTableContext().timetable
+    
     const { t, i18n } = useTranslation()
     // dots
     const [direct, setDirect] = useState<JSX.Element[]>([])
@@ -316,17 +313,17 @@ export const RouteMap = (props: {
         const updateHighlight = () => {
             if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0){
                 circleAnimationRemoveAll()
-                if(timetable.length > 0){
+                if(timetable !== null && timetable !== undefined){
                     if(props.tab === 'shuttlecoke_o'){
-                        circleAnimation(timetableType(timetable[0].type,1))
+                        circleAnimation(timetableType(timetable.type,1))
                     } else if(props.tab === 'subway'){
-                        circleAnimation(timetableType(timetable[0].type,2))
+                        circleAnimation(timetableType(timetable.type,2))
                     } else if(props.tab === 'yesulin'){
-                        circleAnimation(timetableType(timetable[0].type,3))
+                        circleAnimation(timetableType(timetable.type,3))
                     } else if(props.tab === 'jungang'){
                         circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
                     } else if(props.tab === 'shuttlecoke_i'){
-                        if(timetable[0].type === 'NA'){
+                        if(timetable.type === 'NA'){
                             return
                         }
                         circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
@@ -334,7 +331,7 @@ export const RouteMap = (props: {
                         circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
                         circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
                     } else {
-                        circleAnimation(timetableType(timetable[0].type,0))
+                        circleAnimation(timetableType(timetable.type,0))
                     }
                 }
             }

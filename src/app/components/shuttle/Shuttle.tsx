@@ -4,13 +4,13 @@ import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useDispatch } from 'react-redux'
 import { SyncLoader } from 'react-spinners'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
 import { openNaverMapApp } from '@/components/shuttle/map'
+import { useTimeTableContext } from '@/context/TimeTableContext'
 import {
   ChipType,
   Season,
@@ -23,7 +23,6 @@ import {
 import { seasonKeys } from '@/data/shuttle/season'
 import { weekKeys } from '@/data/shuttle/week'
 import { settingAPI, shuttleAPI } from '@/network'
-import { updateActions } from '@/reducer/store'
 
 dayjs.extend(customParse)
 
@@ -346,12 +345,14 @@ const ColoredChip = ({ chipType }: ChipType) => {
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
-  const dispatch = useDispatch()
   const setting = useQuery({
     queryKey: ['settings'],
     queryFn: settingAPI,
     staleTime: 5 * 60 * 1000,
   })
+  
+  const { setTimetable } = useTimeTableContext()
+
   const [season, week] =
     setting.data !== undefined ? getSeason(setting.data) : [null, null]
 
@@ -423,9 +424,9 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   useEffect(() => {
     if(timetable.data !== undefined){
       const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
-      dispatch(updateActions(filtered[0]))
+      setTimetable(filtered[0])
     }
-  }, [currentTime, dispatch, timetable.data])
+  }, [currentTime, setTimetable, timetable.data])
 
   const handleActionStart = () => {
     setTouched(true)
