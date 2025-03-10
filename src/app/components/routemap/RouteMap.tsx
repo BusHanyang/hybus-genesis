@@ -8,55 +8,55 @@ import { CircleAnimate } from '@/data';
 import { SingleShuttleSchedule } from "@/data";
 
 const Circle = styled.span`
-  ${tw`
-    flex rounded-full inline-block
-    h-3 w-3 rt1:h-2.5 rt1:w-2.5
-    z-10
-  `}
+    ${tw`
+        flex rounded-full inline-block
+        h-3 w-3 rt1:h-2.5 rt1:w-2.5
+        z-10
+    `}
 `
-
 const CycleCircle = styled(Circle)`
-  ${tw`bg-chip-red mx-2`}
+    ${tw`bg-chip-red mx-2`}
 `
-
 const DirectCircle = styled(Circle)`
-  ${tw`bg-chip-blue mx-2`}
+    ${tw`bg-chip-blue mx-2`}
 `
-
 const YesulinCircle = styled(Circle)`
-  ${tw`bg-chip-green mx-2`}
+    ${tw`bg-chip-green mx-2`}
 `
-
 const JungangCircle = styled(Circle)`
-  ${tw`bg-chip-purple mx-2`}
+    ${tw`bg-chip-purple mx-2`}
 `
 const EndCircle = styled(Circle)`
     ${tw`bg-chip-orange mx-2`}
 `
 const RouteRowsContainer = styled.div`
-${tw`grid grid-rows-5 gap-2`}
+    ${tw`grid grid-rows-5 gap-2`}
 `
 const RouteColsContainer = styled.div`
-${tw`grid grid-cols-6 place-items-center`}
+    ${tw`grid grid-cols-6 place-items-center`}
 `
 const RouteTextContainer =  styled.div<{lang:string}>`
-${tw`whitespace-nowrap text-center`}
-${(props) => props.lang === 'ko' ? tw`text-[15px] hm:text-[13px]` : tw`text-[12px] rt1:text-[9px]`}
+    ${tw`whitespace-nowrap text-center tracking-tighter mt-1 hm:mt-2 hsm:mt-2`}
+    ${(props) => props.lang === 'ko' ? tw`text-[15px] hm:text-[13px] hsm:text-[12px]` : tw`wide:text-[13px] mwide:text-[12px] text-[11px] hm:text-[11px] hsm:text-[9.3px]`}
 `
 const RouteStations = styled.div`
-${tw`transition duration-150 ease-in-out flex relative`}
+    ${tw`transition duration-150 ease-in-out flex relative`}
 `
 const RouteMethod = styled.div`
-${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center text-black`}
+    ${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center text-black tracking-tight`}
 `
 const MainContainer = styled.div<{status: string}>`
-${tw`transition duration-150 ease-in-out mx-auto`}
+    ${tw`transition duration-150 ease-in-out mx-auto`}
     ${(props) => props.status === 'entered' || props.status === 'exit' ? tw`opacity-100` : tw`opacity-0`}
 `
 const RouteLine = styled.div`
     ${tw`absolute transition duration-150 ease-in-out h-[3px] z-1`}
-
 `
+const SpecialStopsText = styled.p<{key:number, lang:string}>`
+    ${tw`absolute text-xs top-[-17px] left-[-15px] text-center w-10 font-bold`}
+    ${(props) => props.lang === 'ko' ? tw`tracking-tight` : tw`tracking-tighter text-[0.7rem]`}
+`
+
 export const RouteMap = (props: {
     status:string,
     tab: string
@@ -108,10 +108,9 @@ export const RouteMap = (props: {
                             <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>
                             <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}>
                                 <CycleCircle className='grid grid-rows-2 relative'>
-                                    <p key={0} ref={d => lang.current[0] = d} 
-                                    className='absolute text-xs top-[-17px] left-[-14px] text-center w-10 text-chip-red'>
+                                    <SpecialStopsText key={0} ref={d => lang.current[0] = d} lang={i18n.language} className='text-chip-red'>
                                         {t('yesul')}
-                                    </p>
+                                    </SpecialStopsText>
                                 </CycleCircle>
                             </RouteStations>
                             <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><CycleCircle/></RouteStations>
@@ -122,10 +121,9 @@ export const RouteMap = (props: {
                             <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null} title='skip'><YesulinCircle className='opacity-0'/></RouteStations>
                             <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}>
                                 <YesulinCircle className='grid grid-rows-2 relative'>
-                                    <p key={1} ref={d => lang.current[1] = d} 
-                                    className='absolute text-xs top-[-17px] left-[-14px] text-center w-10 text-chip-green'>
+                                    <SpecialStopsText key={1} ref={d => lang.current[1] = d} lang={i18n.language} className='text-chip-green'>
                                         {t('yesul')}
-                                    </p>
+                                    </SpecialStopsText>
                                 </YesulinCircle>
                             </RouteStations>
                             <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><YesulinCircle/></RouteStations>
@@ -136,10 +134,9 @@ export const RouteMap = (props: {
                             <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>
                             <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}>
                                 <JungangCircle className='grid grid-rows-2 relative'>
-                                    <p key={2} ref={d => lang.current[2] = d} 
-                                        className='absolute text-xs top-[-17px] left-[-14px] text-center w-10 text-chip-purple'>
+                                    <SpecialStopsText key={2} ref={d => lang.current[2] = d} lang={i18n.language} className='text-chip-purple'>
                                         {t('jung')}
-                                    </p>
+                                    </SpecialStopsText>
                                 </JungangCircle>
                             </RouteStations>
                             <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><JungangCircle/></RouteStations>
@@ -162,7 +159,7 @@ export const RouteMap = (props: {
         setCycle(arrcyc)
         setYesulin(arryes)
         setJungang(arrjun)
-    },[t])
+    },[i18n.language, t])
         const directLineInput = useCallback(() => {
             const arrdir = []
             const arrcyc = []
@@ -334,11 +331,11 @@ export const RouteMap = (props: {
         <MainContainer status={props.status}>
             <RouteRowsContainer>
                 <RouteColsContainer>
-                    <RouteTextContainer lang={i18n.language} className='col-start-2'>{t('dest_dorm')}</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language} className='col-start-2'>{t('dorm')}</RouteTextContainer>
                     <RouteTextContainer lang={i18n.language}>{t('dest_shuttle_o')}</RouteTextContainer>
                     <RouteTextContainer lang={i18n.language}>{t('dest_subway')}</RouteTextContainer>
                     <RouteTextContainer lang={i18n.language}>{t('dest_shuttle_o')}</RouteTextContainer>
-                    <RouteTextContainer lang={i18n.language}>{t('dest_dorm')}</RouteTextContainer>
+                    <RouteTextContainer lang={i18n.language}>{t('dorm')}</RouteTextContainer>
                 </RouteColsContainer>
                 <RouteColsContainer className='grid grid-cols-6'>
                 <RouteMethod className='bg-chip-blue'>{t('direct')}</RouteMethod>
