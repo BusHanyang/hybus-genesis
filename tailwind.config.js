@@ -11,6 +11,8 @@ module.exports = {
         shuttlei: { max: '580px' },
         rt1: { max: '495px' },
         rt2: { max: '440px' },
+        wide: { min: '455px' },
+        mwide: { min: '430px' },
       },
       transitionTimingFunction: {
         ptrTran: 'cubic-bezier(0, 1, 1, 0)',
@@ -30,6 +32,7 @@ module.exports = {
         'ontouch-bg': 'var(--color-ontouch-bg)',
         'ptr-color': 'var(--color-ptr-color)',
         'load-color': 'var(--color-load-color)',
+        'arrow-color': 'var(--color-arrow-color)',
 
         'ft-element' : 'var(--color-ft-element)',
         'ft-active' : 'var(--color-ft-active)',
@@ -41,6 +44,7 @@ module.exports = {
         'chip-blue': '#7FAAFF',
         'chip-green': '#81c784',
         'chip-purple': '#d0affb',
+        'chip-orange': '#FFAB40',
       },
       boxShadow: { 
         'theme-shadow' : 'var(--color-theme-shadow)',
@@ -138,6 +142,9 @@ module.exports = {
             transform: 'scale(0)',
           },
         },
+      },
+      transitionProperty:{
+        'height': 'height',
       },
     },
   },

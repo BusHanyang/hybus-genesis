@@ -13,7 +13,7 @@ export const shuttleAPI = async (
   location: StopLocation
 ): Promise<Array<SingleShuttleSchedule>> => {
   return apiHandler<Array<SingleShuttleSchedule>>(
-    `/timetable/${season}/${week}/${location}`
+    `/v2/timetable/${season}/${week}/${location}`
   )
 }
 

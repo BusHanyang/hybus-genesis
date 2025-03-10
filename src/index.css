@@ -28,6 +28,7 @@
         --color-ontouch-bg: theme('colors.slate.200');
         --color-ptr-color: theme('colors.gray.700');
         --color-load-color: #AFBDCE;
+        --color-arrow-color: #ababab;
 
         --color-ft-element: #E1E2EC;
         --color-ft-active: #DBE2F9;
@@ -51,6 +52,7 @@
         --color-ontouch-bg: theme('colors.slate.500');
         --color-ptr-color: #FFFFFF;
         --color-load-color: #AFBDCE;
+        --color-arrow-color: #dbdbdb;
 
         --color-ft-element: #44464E;
         --color-ft-active: #3F4759;
@@ -74,6 +76,7 @@
         --color-ontouch-bg: theme('colors.slate.500');
         --color-ptr-color: #FFFFFF;
         --color-load-color: #AFBDCE;
+        --color-arrow-color: #000000;
 
         --color-ft-element: #813333;
         --color-ft-active: #397152;
@@ -97,6 +100,7 @@
         --color-ontouch-bg: #ffd8ea;
         --color-ptr-color: #c9255e;
         --color-load-color: #c9255e;
+        --color-arrow-color: #bf6081;
 
         --color-ft-element: #ffe4ea;
         --color-ft-active: #f16da4;
