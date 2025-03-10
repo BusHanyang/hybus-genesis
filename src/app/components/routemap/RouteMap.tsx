@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect,useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import React, { useCallback, useEffect,useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import styled from 'styled-components'
+import tw from 'twin.macro'
 
-import { useTimeTableContext } from '@/context/TimeTableContext';
-import { CircleAnimate } from '@/data';
+import { useTimeTableContext } from '@/context/TimeTableContext'
+import { CircleAnimate } from '@/data'
 
 const Circle = styled.span`
     ${tw`
@@ -74,7 +74,7 @@ export const RouteMap = (props: {
     tab: string
 }) => {
     const timetable = useTimeTableContext().timetable
-    
+
     const { t, i18n } = useTranslation()
     // dots
     const [direct, setDirect] = useState<JSX.Element[]>([])
@@ -248,7 +248,7 @@ export const RouteMap = (props: {
                     element.innerText = t('jung')
                 }
             }
-        });
+        })
     }, [t])
 
     const circleAnimation = (props: CircleAnimate) => {
@@ -264,7 +264,7 @@ export const RouteMap = (props: {
                 'rt1:w-2.5',
                 'z-1',
                 i === 5 || (i === 4 && props.chipColor === 'bg-chip-blue') ? 'bg-chip-orange': props.chipColor,
-                'mx-2');
+                'mx-2')
             const ind = props.ref.current[i].title === 'skip' ? i+1 : i
             props.ref.current[ind]?.append(pingCircle)
         }
@@ -299,7 +299,7 @@ export const RouteMap = (props: {
         directLineInput()
         window.addEventListener("resize",updateLines)
         return () => {
-            window.removeEventListener("resize", updateLines);
+            window.removeEventListener("resize", updateLines)
         }
     }, [updateLines, directInput, directLineInput])
 

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useState } from "react"
 
-import { SingleShuttleSchedule } from "@/data";
+import { SingleShuttleSchedule } from "@/data"
 
 interface TimeTableContextProps {
     timetable: SingleShuttleSchedule | null,
     setTimetable: React.Dispatch<React.SetStateAction<SingleShuttleSchedule | null>>
 }
 
-const TimeTableContext = React.createContext<TimeTableContextProps | null>(null);
+const TimeTableContext = React.createContext<TimeTableContextProps | null>(null)
 
 export const useTimeTableContext = () => {
     const context = React.useContext(TimeTableContext)
