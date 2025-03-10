@@ -10,6 +10,7 @@ import tw from 'twin.macro'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
 import { openNaverMapApp } from '@/components/shuttle/map'
+import { useTimeTableContext } from '@/context/TimeTableContext'
 import {
   ChipType,
   Season,
@@ -114,7 +115,6 @@ const isWeekend = (): boolean => {
 
 const getSeason = (setting: Settings | null): [Season, Week] => {
   const today = dayjs()
-
   if (setting === null) {
     // Error fetching settings
     return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
@@ -336,6 +336,9 @@ const ColoredChip = ({ chipType }: ChipType) => {
     return <Chip className="bg-chip-purple">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'DY') {
     return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
+  } else if (chipType == 'R' || chipType == 'NA') {
+    return <Chip className="bg-chip-orange">{busTypeToText(chipType)}</Chip>
+
   }
 
   return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
@@ -347,6 +350,9 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     queryFn: settingAPI,
     staleTime: 5 * 60 * 1000,
   })
+  
+  const { setTimetable } = useTimeTableContext()
+
   const [season, week] =
     setting.data !== undefined ? getSeason(setting.data) : [null, null]
 
@@ -415,6 +421,13 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
   }, [season, week])
 
+  useEffect(() => {
+    if(timetable.data !== undefined){
+      const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+      setTimetable(filtered[0])
+    }
+  }, [currentTime, setTimetable, timetable.data])
+
   const handleActionStart = () => {
     setTouched(true)
   }
@@ -478,7 +491,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
 
     const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
     const reverted = filtered.map((val) => convertUnixToTime(val))
-
     if (filtered.length === 0) {
       // Buses are done for today. User should refresh after midnight.
       return (

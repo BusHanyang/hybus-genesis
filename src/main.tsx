@@ -9,6 +9,7 @@ import { Snowfall } from 'react-snowfall'
 import { RecoilRoot } from 'recoil'
 
 import { DarkmodeContextProvider } from '@/context/ThemeContext'
+import { TimeTableContextProvider } from '@/context/TimeTableContext'
 
 import App from './App'
 // import { Ptr } from './app/components/ptr/Ptr'
@@ -40,13 +41,15 @@ ReactDOM.createRoot(root).render(
             wind={[-0.5, 0.5]}
             radius={[14.0, 16.0]}
             style={{
-              zIndex: 1,
+              zIndex: 2,
               position: 'fixed',
               height: '100vh',
               pointerEvents: 'none',
             }}
           />
-          <App />
+          <TimeTableContextProvider>
+            <App />
+          </TimeTableContextProvider>
         </DarkmodeContextProvider>
       </RecoilRoot>
     </QueryClientProvider>
