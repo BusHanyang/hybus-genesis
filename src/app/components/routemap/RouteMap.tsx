@@ -36,14 +36,14 @@ const RouteColsContainer = styled.div`
     ${tw`grid grid-cols-6 place-items-center`}
 `
 const RouteTextContainer =  styled.div<{lang:string}>`
-    ${tw`whitespace-nowrap text-center tracking-tighter mt-1 hm:mt-2 hsm:mt-2`}
+    ${tw`whitespace-nowrap text-center tracking-tighter mt-1 hm:mt-2 hsm:mt-2 font-semibold`}
     ${(props) => props.lang === 'ko' ? tw`text-[15px] hm:text-[13px] hsm:text-[12px]` : tw`wide:text-[13px] mwide:text-[12px] text-[11px] hm:text-[11px] hsm:text-[9.3px]`}
 `
 const RouteStations = styled.div`
     ${tw`transition duration-150 ease-in-out flex relative`}
 `
 const RouteMethod = styled.div`
-    ${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center text-black tracking-tight`}
+    ${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center text-black tracking-tight font-semibold`}
 `
 const MainContainer = styled.div<{status: string}>`
     ${tw`transition duration-150 ease-in-out mx-auto`}
