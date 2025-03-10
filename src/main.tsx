@@ -42,7 +42,7 @@ ReactDOM.createRoot(root).render(
             wind={[-0.5, 0.5]}
             radius={[14.0, 16.0]}
             style={{
-              zIndex: 12,
+              zIndex: 2,
               position: 'fixed',
               height: '100vh',
               pointerEvents: 'none',

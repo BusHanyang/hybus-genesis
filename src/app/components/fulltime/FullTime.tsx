@@ -123,11 +123,6 @@ const TimetableContainer = styled.div`
   ${tw`pb-6`}
 `
 
-// const YesulinMinuteWrapper = styled.span<{ $itemCount: number }>`
-//   ${tw`inline-block text-green-500`}
-//   ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
-// `
-
 const ComboBox = (props: {
   type: string
   value: StopLocation | Season | Week

@@ -1,8 +1,8 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react' 
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
-import {Transition} from 'react-transition-group'
+import { Transition } from 'react-transition-group'
 import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
@@ -16,7 +16,7 @@ import { useDarkMode } from '@/components/useDarkMode'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
-import Refreshing from './app/components/ptr/refreshing-content'  
+import Refreshing from './app/components/ptr/refreshing-content'
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
 const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
@@ -159,7 +159,7 @@ const SegmentedControlWrapper = styled.div<{
 `
 
 const OptionWrapper = styled.div`
-  ${tw`relative z-10 flex items-center items-center justify-center`}
+  ${tw`relative z-10 flex items-center justify-center`}
 `
 
 const ActiveIndicator = styled.div<{ $activeIndex: number }>`

@@ -425,7 +425,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
       dispatch(updateActions(filtered[0]))
     }
-
   }, [currentTime, dispatch, timetable.data])
 
   const handleActionStart = () => {
