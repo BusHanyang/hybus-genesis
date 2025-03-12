@@ -301,7 +301,7 @@ export const RouteMap = (props: {
         const updateHighlight = () => {
             if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0){
                 circleAnimationRemoveAll()
-                if(timetable !== null && timetable !== undefined){
+                if(timetable?.time !== ''){
                     if(props.tab === 'shuttlecoke_o'){
                         circleAnimation(timetableType(timetable.type,1))
                     } else if(props.tab === 'subway'){
