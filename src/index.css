@@ -20,7 +20,7 @@
         --color-theme-card: #FFFFFF;
         --color-theme-text: #000000;
         --color-theme-border: none;
-        --color-theme-shadow: 0 2.8px 8px rgba(10, 10, 10, 0.2);
+        --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.2);
         --color-control-main: theme('colors.gray.200');
         --color-control-active: theme('colors.blue.400');
         --color-button-active: theme('colors.blue.300');
@@ -44,7 +44,7 @@
         --color-theme-card: theme('colors.gray.700');
         --color-theme-text: #FFFFFF;
         --color-theme-border: none;
-        --color-theme-shadow: 0 2.8px 8px rgba(10, 10, 10, 0.8);
+        --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.8);
         --color-control-main: theme('colors.gray.800');
         --color-control-active: theme('colors.blue.400');
         --color-button-active: theme('colors.blue.300');
@@ -68,7 +68,7 @@
         --color-theme-card: #3e5f4b;
         --color-theme-text: #FFFFFF;
         --color-theme-border: none;
-        --color-theme-shadow: 0 2.8px 8px rgba(23, 23, 23, 0.8);
+        --color-theme-shadow: 0 0.175rem 0.5rem rgba(23, 23, 23, 0.8);
         --color-control-main: #1d3c33;
         --color-control-active: #6ba768;
         --color-button-active: #9be1c6;
@@ -92,7 +92,7 @@
         --color-theme-card: #fffafa;
         --color-theme-text: #c9255e;
         --color-theme-border: none;
-        --color-theme-shadow: 0 2.8px 8px rgba(241, 139, 178, 0.6);
+        --color-theme-shadow: 0 0.175rem 0.5rem rgba(241, 139, 178, 0.6);
         --color-control-main: #ffd3e6;
         --color-control-active: #f16da4;
         --color-button-active: #fec1dc;
