@@ -80,38 +80,11 @@ export const RouteMap = (props: {
     const lang = useRef<Array<HTMLParagraphElement | null>>([])
 
     const isPrevStop = useCallback((line: string, index: number) => {
-        if(props.tab === 'shuttlecoke_o'){
-            if (index === 0) return false
-            else return true
-        } else if (props.tab === 'shuttlecoke_i'){
-            if (line === 'direct') {
-                if (index < 3) return false
-                else return true
-            } else {
-                if (index < 4) return false
-                else return true
-            }
-        } else if (props.tab === 'subway'){
-            if (line === 'yesulin') return false
-            else {
-                if (index < 2) return false
-                else return true
-            }
-        } else if (props.tab === 'yesulin'){
-            if (line === 'direct' || line === 'jungang') return false
-            else {
-                if (index < 3) return false
-                else return true
-            }
-        } else if (props.tab === 'jungang'){ 
-            if (line === 'jungang') {
-                if (index < 3) return false
-                else return true
-            } else return false
-        } else {
-            // domitory is a terminal
-            return true
-        }
+        return props.tab === 'shuttlecoke_o' ? index !== 0 :
+            props.tab === 'shuttlecoke_i' ? line === 'direct' ? index >= 3 : index >= 4 :
+            props.tab === 'subway' ? line === 'yesulin' ? false : index >= 2 :
+            props.tab === 'yesulin' ? line === 'direct' || line === 'jungang' ? false : index >= 3 :
+            props.tab === 'jungang' ? line === 'jungang' ? index >= 3 : false : true
     }, [props.tab])
 
     const directInput = useCallback(() => {
