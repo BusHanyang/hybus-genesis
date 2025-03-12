@@ -32,11 +32,11 @@ const RouteStations = styled.div`
 `
 
 const RouteMethod = styled.div`
-    ${tw`text-center rounded-full py-1 w-16 hm:w-12 hm:text-xs self-center text-black tracking-tight font-semibold`}
+    ${tw`text-center rounded-full py-1 w-16 text-sm hm:w-12 hm:text-xs self-center text-black tracking-tight font-semibold`}
 `
 
 const MainContainer = styled.div<{status: string}>`
-    ${tw`transition duration-150 ease-in-out mx-auto`}
+    ${tw`transition duration-150 ease-in-out mx-auto h-[14rem]`}
     ${(props) => props.status === 'entered' || props.status === 'exit' ? tw`opacity-100` : tw`opacity-0`}
 `
 

@@ -120,7 +120,7 @@ const HelpIcon = styled(HelpImg)`
 
 const RouteIndexCardView = styled(CardView)<{status: string}>`
   ${tw`relative p-4 h-12 hsm:h-20 hm:p-2 transition-[height] ease-in-out duration-150`}
-  ${(props) => props.status === 'entered' ? tw`h-48 hm:h-48` : tw`h-14 hsm:h-16`}
+  ${(props) => props.status === 'entered' ? tw`h-[13.7rem] hm:h-[11.7rem]` : tw`h-14 hsm:h-16`}
 `
 
 const RouteIndexWrapper = styled.div`
