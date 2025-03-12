@@ -133,7 +133,7 @@ const RouteIndexContainer = styled.div<{status: string}>`
   ${(props) => props.status === 'entered' ? tw`hidden`: tw``}
 `
 const RouteToggleImage = styled(Arrow)<{status: string}>`
-  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto h-[1.3rem] w-[1.3rem] opacity-80 transition ease-in-out duration-150`}
+  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto h-[1.2rem] w-[1.2rem] opacity-80 transition ease-in-out duration-150`}
   ${(props) => props.status === 'entered'? tw`rotate-0`:tw`rotate-180`}
 `
 const SegmentedControl = styled.div`
