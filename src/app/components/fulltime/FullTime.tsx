@@ -293,7 +293,7 @@ const FullTime = () => {
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
-  
+
     const maxCount = filteredByType.reduce(
       (prev, curr) => (prev.count > curr.count ? prev : curr),
       { count: 0 },
@@ -302,7 +302,7 @@ const FullTime = () => {
     if (maxCount > countChip) {
       setCountChip(maxCount)
     }
-    
+
     return (
       <div className="grid grid-flow-row gap-2">
         {filteredByType.map((schedule) => {

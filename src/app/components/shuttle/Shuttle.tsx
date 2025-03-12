@@ -350,7 +350,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     queryFn: settingAPI,
     staleTime: 5 * 60 * 1000,
   })
-  
+
   const { setTimetable } = useTimeTableContext()
 
   const [season, week] =

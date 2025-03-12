@@ -95,6 +95,7 @@ const Button = styled(CardView)`
     flex will-change-transform overflow-hidden cursor-default 
     border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text 
   `}
+
   &.active {
     ${tw`
       bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700

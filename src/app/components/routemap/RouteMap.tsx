@@ -113,7 +113,7 @@ export const RouteMap = (props: {
             return true
         }
     }, [props.tab])
-    
+
     const directInput = useCallback(() => {
         const arrdir = []
         const arrcyc = []
@@ -186,7 +186,7 @@ export const RouteMap = (props: {
         setYesulin(arryes)
         setJungang(arrjun)
     },[i18n.language, isPrevStop, t])
-    
+
     const directLineInput = useCallback(() => {
         const arrdir = []
         const arrcyc = []
