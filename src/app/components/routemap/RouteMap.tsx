@@ -10,28 +10,8 @@ const Circle = styled.span`
     ${tw`
         flex rounded-full inline-block
         h-3 w-3 rt1:h-2.5 rt1:w-2.5
-        z-1
+        z-1 mx-2
     `}
-`
-
-const CycleCircle = styled(Circle)`
-    ${tw`bg-chip-red mx-2`}
-`
-
-const DirectCircle = styled(Circle)`
-    ${tw`bg-chip-blue mx-2`}
-`
-
-const YesulinCircle = styled(Circle)`
-    ${tw`bg-chip-green mx-2`}
-`
-
-const JungangCircle = styled(Circle)`
-    ${tw`bg-chip-purple mx-2`}
-`
-
-const EndCircle = styled(Circle)`
-    ${tw`bg-chip-orange mx-2`}
 `
 
 const RouteRowsContainer = styled.div`
@@ -99,6 +79,41 @@ export const RouteMap = (props: {
     // langtest
     const lang = useRef<Array<HTMLParagraphElement | null>>([])
 
+    const isPrevStop = useCallback((line: string, index: number) => {
+        if(props.tab === 'shuttlecoke_o'){
+            if (index === 0) return false
+            else return true
+        } else if (props.tab === 'shuttlecoke_i'){
+            if (line === 'direct') {
+                if (index < 3) return false
+                else return true
+            } else {
+                if (index < 4) return false
+                else return true
+            }
+        } else if (props.tab === 'subway'){
+            if (line === 'yesulin') return false
+            else {
+                if (index < 2) return false
+                else return true
+            }
+        } else if (props.tab === 'yesulin'){
+            if (line === 'direct' || line === 'jungang') return false
+            else {
+                if (index < 3) return false
+                else return true
+            }
+        } else if (props.tab === 'jungang'){ 
+            if (line === 'jungang') {
+                if (index < 3) return false
+                else return true
+            } else return false
+        } else {
+            // domitory is a terminal
+            return true
+        }
+    }, [props.tab])
+    
     const directInput = useCallback(() => {
         const arrdir = []
         const arrcyc = []
@@ -106,71 +121,71 @@ export const RouteMap = (props: {
         const arrjun = []
         for(let i = 0; i < 5; i++){
             if(i === 4){
-                arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><EndCircle/></RouteStations>)
+                arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><Circle className={isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} /></RouteStations>)
                 continue
             }
-            arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><DirectCircle/></RouteStations>)
+            arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><Circle className={isPrevStop('direct', i) ? 'bg-chip-blue' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
         }
         for(let i = 0; i < 6; i++){
             if(i >= 2 && i <= 4){
                 if(i === 2){
                     arrcyc.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>
+                            <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><Circle className={isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
                             <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}>
-                                <CycleCircle className='grid grid-rows-2 relative'>
-                                    <SpecialStopsText key={0} ref={d => lang.current[0] = d} lang={i18n.language} className='text-chip-red'>
+                                <Circle className={`${isPrevStop('cycle', i+1) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
+                                    <SpecialStopsText key={0} ref={d => lang.current[0] = d} lang={i18n.language} className={isPrevStop('cycle', 3) ? 'text-chip-red' : 'text-zinc-200 dark:text-slate-500'}>
                                         {t('yesul')}
                                     </SpecialStopsText>
-                                </CycleCircle>
+                                </Circle>
                             </RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><CycleCircle/></RouteStations>
+                            <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><Circle className={isPrevStop('cycle', i+2) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
                         </div>
                     )
                     arryes.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null} title='skip'><YesulinCircle className='opacity-0'/></RouteStations>
+                            <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null} title='skip'><Circle className='opacity-0'/></RouteStations>
                             <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}>
-                                <YesulinCircle className='grid grid-rows-2 relative'>
-                                    <SpecialStopsText key={1} ref={d => lang.current[1] = d} lang={i18n.language} className='text-chip-green'>
+                                <Circle className={`${isPrevStop('yesulin', i+1) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
+                                    <SpecialStopsText key={1} ref={d => lang.current[1] = d} lang={i18n.language} className={isPrevStop('yesulin', 3) ? 'text-chip-green' : 'text-zinc-200 dark:text-slate-500'}>
                                         {t('yesul')}
                                     </SpecialStopsText>
-                                </YesulinCircle>
+                                </Circle>
                             </RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><YesulinCircle/></RouteStations>
+                            <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><Circle className={isPrevStop('yesulin', i+2) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
                         </div>
                     )
                     arrjun.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>
+                            <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><Circle className={isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
                             <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}>
-                                <JungangCircle className='grid grid-rows-2 relative'>
-                                    <SpecialStopsText key={2} ref={d => lang.current[2] = d} lang={i18n.language} className='text-chip-purple'>
+                                <Circle className={`${isPrevStop('jungang', i+1) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
+                                    <SpecialStopsText key={2} ref={d => lang.current[2] = d} lang={i18n.language} className={isPrevStop('jungang', i+1) ? 'text-chip-purple' : 'text-zinc-200 dark:text-slate-500'}>
                                         {t('jung')}
                                     </SpecialStopsText>
-                                </JungangCircle>
+                                </Circle>
                             </RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><JungangCircle/></RouteStations>
+                            <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><Circle className={isPrevStop('jungang', i+2) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
                         </div>
                     )
                 }
                 continue
             }
             if(i === 5){
-                arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><EndCircle/></RouteStations>)
-                arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><EndCircle/></RouteStations>)
-                arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><EndCircle/></RouteStations>)
+                arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><Circle className={isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+                arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><Circle className={isPrevStop('yesulin', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+                arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><Circle className={isPrevStop('jungang', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
                 continue
             }
-            arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><CycleCircle/></RouteStations>)
-            arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><YesulinCircle/></RouteStations>)
-            arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><JungangCircle/></RouteStations>)
+            arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><Circle className={isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+            arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><Circle className={isPrevStop('yesulin', i) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+            arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><Circle className={isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
         }
         setDirect(arrdir)
         setCycle(arrcyc)
         setYesulin(arryes)
         setJungang(arrjun)
-    },[i18n.language, t])
+    },[i18n.language, isPrevStop, t])
     
     const directLineInput = useCallback(() => {
         const arrdir = []
@@ -180,36 +195,36 @@ export const RouteMap = (props: {
         for(let i = 0; i < 4; i++){
             if(i === 3){
                 arrdir.push(
-                    <RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
+                    <RouteLine className={isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
                 )
                 continue
             }
             arrdir.push(
-                <RouteLine className={'bg-chip-blue'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
+                <RouteLine className={isPrevStop('cycle', i) ? 'bg-chip-blue' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
             )
         }
         for(let i = 0; i < 5; i++){
             if(i === 4){
-                arrcyc.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>)
-                arryes.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>)
-                arrjun.push(<RouteLine className={'bg-chip-orange'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>)
+                arrcyc.push(<RouteLine className={isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>)
+                arryes.push(<RouteLine className={isPrevStop('yesulin', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>)
+                arrjun.push(<RouteLine className={isPrevStop('jungang', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>)
                 continue
             }
             arrcyc.push(
-                <RouteLine className={'bg-chip-red'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>
+                <RouteLine className={isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>
             )
             arryes.push(
-                <RouteLine className={'bg-chip-green'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>
+                <RouteLine className={isPrevStop('yesulin', i) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>
             )
             arrjun.push(
-                <RouteLine className={'bg-chip-purple'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>
+                <RouteLine className={isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>
             )
         }
         setDirLine(arrdir)
         setCycLine(arrcyc)
         setYesLine(arryes)
         setJunLine(arrjun)
-    },[])
+    },[isPrevStop])
 
     const responsiveLines = (refs:React.MutableRefObject<Array<HTMLDivElement>>, lines:React.MutableRefObject<Array<HTMLDivElement>>) => {
         if(refs.current.length > 0 && lines.current.length > 0){
