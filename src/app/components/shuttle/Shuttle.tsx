@@ -425,7 +425,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     if(timetable.data !== undefined){
       const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
       filtered[0] === undefined ? setTimetable({time : "", type : "NA"}) : setTimetable(filtered[0])
-      console.log("test: ",filtered[0])
     }
   }, [timetable.data, setTimetable])
 

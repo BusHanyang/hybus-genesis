@@ -1,10 +1,10 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
 import { useTimeTableContext } from '@/context/TimeTableContext'
-import { CircleAnimate } from '@/data'
+import { CircleAnimate, SingleShuttleSchedule } from '@/data'
 
 const Circle = styled.span`
     ${tw`
@@ -59,7 +59,7 @@ const DotRoute = (props: {
         const arrDir = []
 
         for (let i = 0; i < 5; i++){
-            if(i === 4){
+            if (i === 4){
                 arrDir.push(<RouteStations id='dirdot' key={i}><Circle className={props.isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} /></RouteStations>)
                 continue
             }
@@ -98,7 +98,7 @@ const DotRoute = (props: {
                 }
                 continue
             }
-            if(i === 5){
+            if (i === 5){
                 arrCyc.push(<RouteStations id='cycdot' key={i}><Circle className={props.isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
                 continue
             }
@@ -190,7 +190,7 @@ const DotRoute = (props: {
         )
     }
 
-    switch(props.rootStatus){
+    switch (props.rootStatus){
         case 'direct':
             return directDot()
         case 'cycle':
@@ -311,23 +311,24 @@ const RouteMap = (props: {
     tab: string
 }) => {
     const timetable = useTimeTableContext().timetable
+    const timeCheck = useRef<SingleShuttleSchedule>(timetable)
 
     const { t, i18n } = useTranslation()
     // main ref
     const mainRef = useRef<HTMLDivElement>(null)
-    // dot refs
+    // dot nodes
     const dotDir = useRef<NodeListOf<HTMLDivElement>>()
     const dotCyc = useRef<NodeListOf<HTMLDivElement>>()
     const dotYes = useRef<NodeListOf<HTMLDivElement>>()
     const dotJun = useRef<NodeListOf<HTMLDivElement>>()
-    // line refs
+    // line nodes
     const lineDir = useRef<NodeListOf<HTMLDivElement>>()
     const lineCyc = useRef<NodeListOf<HTMLDivElement>>()
     const lineYes = useRef<NodeListOf<HTMLDivElement>>()
     const lineJun = useRef<NodeListOf<HTMLDivElement>>()
 
     const isPrevStop = (line: string, index: number) => {
-        switch(props.tab){
+        switch (props.tab){
             case 'shuttlecoke_o':
                 return index !== 0
             case 'shuttlecoke_i':
@@ -348,8 +349,8 @@ const RouteMap = (props: {
     }
 
     const responsiveLines = (refs:React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>, lines:React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>) => {
-        if(refs.current !== undefined && lines.current !== undefined && refs.current.length > 0 && lines.current.length > 0){
-            for(let i = 1; i <= lines.current.length; i++){
+        if (refs.current !== undefined && lines.current !== undefined && refs.current.length > 0 && lines.current.length > 0){
+            for (let i = 1; i <= lines.current.length; i++){
                 const rectA = {"left":refs.current[i-1]?.offsetLeft, "top":refs.current[i-1]?.offsetTop, "width":refs.current[i-1]?.offsetWidth, "height":refs.current[i-1]?.offsetHeight}
                 const rectB = {"left":refs.current[i]?.offsetLeft, "top":refs.current[i]?.offsetTop, "width":refs.current[i]?.offsetWidth, "height":refs.current[i]?.offsetHeight}
                 const x1 = (rectA.left ?? 0) + (rectA.width ?? 0) / 2
@@ -361,9 +362,7 @@ const RouteMap = (props: {
                 lines.current[i-1].style.width = `${d}px`
                 lines.current[i-1].style.top = `${(refs.current[i-1]?.offsetTop ?? 0)+4}px`
                 const dotchild = refs.current[i-1]?.firstChild as HTMLElement
-                if(dotchild != undefined){
-                    lines.current[i-1].style.left = `${refs.current[i-1]?.offsetLeft+dotchild.offsetLeft+1}px`
-                }
+                if (dotchild != undefined) lines.current[i-1].style.left = `${refs.current[i-1]?.offsetLeft+dotchild.offsetLeft+1}px`
             }
         }
     }
@@ -418,36 +417,38 @@ const RouteMap = (props: {
 
     const circleAnimationRemove = (refs: React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>) => {
         if (refs.current === undefined) return
+
         for (const refr of refs.current){
-            if (refr?.childNodes.length > 1){
-                refr?.removeChild(refr?.lastChild as Node)
-            }
+            if (refr?.childNodes.length > 1) refr?.removeChild(refr?.lastChild as Node)
         }
     }
 
-    const circleAnimationRemoveAll = () => {
+    const timetableType = (type: string, index:number) => {
+        if (type === 'C') return {ref: dotCyc, index: index, chipColor: 'bg-chip-red'}
+
+        else if(type === 'DHJ') return {ref: dotJun, index: index, chipColor: 'bg-chip-purple'}
+
+        else if(type === 'DY') return {ref: dotYes, index: index, chipColor: 'bg-chip-green'}
+
+        else return {ref: dotDir, index: index, chipColor: 'bg-chip-blue'}
+    }
+
+    const circleAnimationRemoveAll = useCallback(() => {
         circleAnimationRemove(dotDir)
         circleAnimationRemove(dotCyc)
         circleAnimationRemove(dotYes)
         circleAnimationRemove(dotJun)
-    }
+    },[])
 
-    const timetableType = (type: string, index:number) => {
-        if(type === 'C'){
-            return {ref: dotCyc, index: index, chipColor: 'bg-chip-red'}
-        } else if(type === 'DHJ'){
-            return {ref: dotJun, index: index, chipColor: 'bg-chip-purple'}
-        } else if(type === 'DY'){
-            return {ref: dotYes, index: index, chipColor: 'bg-chip-green'}
-        } else {
-            return {ref: dotDir, index: index, chipColor: 'bg-chip-blue'}
-        }
-    }
+    const updateHighlight = useCallback(() => {
+        circleAnimationRemoveAll()
 
-    const updateHighlight = () => {
-        console.log(timetable)
-        if(timetable?.time !== ''){
-            switch(props.tab){
+        if (timeCheck.current === timetable) return
+
+        timeCheck.current = timetable
+
+        if (timetable?.time !== ''){
+            switch (props.tab){
                 case 'shuttlecoke_o':
                     circleAnimation(timetableType(timetable.type,1))
                     break
@@ -461,7 +462,8 @@ const RouteMap = (props: {
                     circleAnimation({ref: dotJun, index: 3, chipColor: 'bg-chip-purple'})
                     break
                 case 'shuttlecoke_i':
-                    if(timetable.type === 'NA') return
+                    if (timetable.type === 'NA') return
+
                     circleAnimation({ref: dotDir, index: 3, chipColor: 'bg-chip-blue'})
                     circleAnimation({ref: dotJun, index: 4, chipColor: 'bg-chip-purple'})
                     circleAnimation({ref: dotCyc, index: 4, chipColor: 'bg-chip-red'})
@@ -472,13 +474,11 @@ const RouteMap = (props: {
                     break
             }
         }
-    }
-
-    circleAnimationRemoveAll()
+    }, [timetable, circleAnimationRemoveAll, props.tab])
 
     useEffect(() => {
         updateHighlight()
-    })
+    }, [timetable, updateHighlight])
 
     return (
         <MainContainer status={props.status}>
