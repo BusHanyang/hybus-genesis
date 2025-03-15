@@ -21,7 +21,7 @@ const circleAnimation = (props: CircleAnimate) => {
             'h-3', 'w-3',
             'rt1:h-2.5',
             'rt1:w-2.5',
-            'z-1',
+            'z-[1]',
             i === 5 || (i === 4 && props.chipColor === 'bg-chip-blue') ? 'bg-chip-orange': props.chipColor,
             'mx-2')
         const ind = props.ref.current[i].title === 'skip' ? i+1 : i
