@@ -11,7 +11,6 @@ import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
-import { RouteMap } from '@/components/routemap/RouteMap'
 import { useDarkMode } from '@/components/useDarkMode'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
@@ -22,6 +21,7 @@ const Notice = lazy(() => import('@/components/notice/Notice'))
 const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
 const ModalOpen = lazy(() => import('@/components/modal/modalOpen'))
 const Subway = lazy(() => import('@/components/subway/Subway'))
+const RouteMap = lazy(() => import('@/components/routemap/RouteMap'))
 
 const Apps = styled.div`
   ${tw`

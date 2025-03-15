@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect,useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import tw from 'twin.macro'
@@ -49,158 +49,306 @@ const SpecialStopsText = styled.p<{key:number, lang:string}>`
     ${(props) => props.lang === 'ko' ? tw`tracking-tight` : tw`tracking-tighter text-[0.7rem]`}
 `
 
-export const RouteMap = (props: {
-    status:string,
-    tab: string
+const DotRoute = (props: {
+    rootStatus: string,
+    isPrevStop: (line: string, index: number) => boolean
 }) => {
-    const timetable = useTimeTableContext().timetable
-
     const { t, i18n } = useTranslation()
-    // dots
-    const [direct, setDirect] = useState<JSX.Element[]>([])
-    const [cycle, setCycle] = useState<JSX.Element[]>([])
-    const [yesulin, setYesulin] = useState<JSX.Element[]>([])
-    const [jungang, setJungang] = useState<JSX.Element[]>([])
-    // lines
-    const [dirLine, setDirLine] = useState<JSX.Element[]>([])
-    const [cycLine, setCycLine] = useState<JSX.Element[]>([])
-    const [yesLine, setYesLine] = useState<JSX.Element[]>([])
-    const [junLine, setJunLine] = useState<JSX.Element[]>([])
-    // dot refs
-    const refdir = useRef<Array<HTMLDivElement>>([])
-    const refcyc = useRef<Array<HTMLDivElement>>([])
-    const refyes = useRef<Array<HTMLDivElement>>([])
-    const refjun = useRef<Array<HTMLDivElement>>([])
-    // line refs
-    const linedir = useRef<Array<HTMLDivElement>>([])
-    const linecyc = useRef<Array<HTMLDivElement>>([])
-    const lineyes = useRef<Array<HTMLDivElement>>([])
-    const linejun = useRef<Array<HTMLDivElement>>([])
-    // langtest
-    const lang = useRef<Array<HTMLParagraphElement | null>>([])
 
-    const isPrevStop = useCallback((line: string, index: number) => {
-        return props.tab === 'shuttlecoke_o' ? index !== 0 :
-            props.tab === 'shuttlecoke_i' ? line === 'direct' ? index >= 3 : index >= 4 :
-            props.tab === 'subway' ? line === 'yesulin' ? false : index >= 2 :
-            props.tab === 'yesulin' ? line === 'direct' || line === 'jungang' ? false : index >= 3 :
-            props.tab === 'jungang' ? line === 'jungang' ? index >= 3 : false : true
-    }, [props.tab])
+    const directDot = () => {
+        const arrDir = []
 
-    const directInput = useCallback(() => {
-        const arrdir = []
-        const arrcyc = []
-        const arryes = []
-        const arrjun = []
-        for(let i = 0; i < 5; i++){
+        for (let i = 0; i < 5; i++){
             if(i === 4){
-                arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><Circle className={isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} /></RouteStations>)
+                arrDir.push(<RouteStations id='dirdot' key={i}><Circle className={props.isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} /></RouteStations>)
                 continue
             }
-            arrdir.push(<RouteStations key={i} ref={d => d!= null?refdir.current[i] = d:null}><Circle className={isPrevStop('direct', i) ? 'bg-chip-blue' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+            arrDir.push(<RouteStations id='dirdot' key={i}><Circle className={props.isPrevStop('direct', i) ? 'bg-chip-blue' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
         }
-        for(let i = 0; i < 6; i++){
-            if(i >= 2 && i <= 4){
-                if(i === 2){
-                    arrcyc.push(
+
+        return (
+            <>
+                {arrDir.map((item) => {
+                    return item
+                })}
+            </>
+            
+        )
+    }
+
+    const cycleDot = () => {
+        const arrCyc = []
+
+        for (let i = 0; i < 6; i++){
+            if (i >= 2 && i <= 4){
+                if (i === 2){
+                    arrCyc.push(
                         <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><Circle className={isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refcyc.current[i+1] = d:null}>
-                                <Circle className={`${isPrevStop('cycle', i+1) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
-                                    <SpecialStopsText key={0} ref={d => lang.current[0] = d} lang={i18n.language} className={isPrevStop('cycle', 3) ? 'text-chip-red' : 'text-zinc-200 dark:text-slate-500'}>
+                            <RouteStations id='cycdot' key={i}><Circle className={props.isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
+                            <RouteStations id='cycdot' key={i+1}>
+                                <Circle className={`${props.isPrevStop('cycle', i+1) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
+                                    <SpecialStopsText key={0} lang={i18n.language} className={props.isPrevStop('cycle', 3) ? 'text-chip-red' : 'text-zinc-200 dark:text-slate-500'}>
                                         {t('yesul')}
                                     </SpecialStopsText>
                                 </Circle>
                             </RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refcyc.current[i+2] = d:null}><Circle className={isPrevStop('cycle', i+2) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
-                        </div>
-                    )
-                    arryes.push(
-                        <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null} title='skip'><Circle className='opacity-0'/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refyes.current[i+1] = d:null}>
-                                <Circle className={`${isPrevStop('yesulin', i+1) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
-                                    <SpecialStopsText key={1} ref={d => lang.current[1] = d} lang={i18n.language} className={isPrevStop('yesulin', 3) ? 'text-chip-green' : 'text-zinc-200 dark:text-slate-500'}>
-                                        {t('yesul')}
-                                    </SpecialStopsText>
-                                </Circle>
-                            </RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refyes.current[i+2] = d:null}><Circle className={isPrevStop('yesulin', i+2) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
-                        </div>
-                    )
-                    arrjun.push(
-                        <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
-                            <RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><Circle className={isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
-                            <RouteStations key={i+1} ref={d => d!= null?refjun.current[i+1] = d:null}>
-                                <Circle className={`${isPrevStop('jungang', i+1) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
-                                    <SpecialStopsText key={2} ref={d => lang.current[2] = d} lang={i18n.language} className={isPrevStop('jungang', i+1) ? 'text-chip-purple' : 'text-zinc-200 dark:text-slate-500'}>
-                                        {t('jung')}
-                                    </SpecialStopsText>
-                                </Circle>
-                            </RouteStations>
-                            <RouteStations key={i+2} ref={d => d!= null?refjun.current[i+2] = d:null}><Circle className={isPrevStop('jungang', i+2) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
+                            <RouteStations id='cycdot' key={i+2}><Circle className={props.isPrevStop('cycle', i+2) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
                         </div>
                     )
                 }
                 continue
             }
             if(i === 5){
-                arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><Circle className={isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
-                arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><Circle className={isPrevStop('yesulin', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
-                arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><Circle className={isPrevStop('jungang', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+                arrCyc.push(<RouteStations id='cycdot' key={i}><Circle className={props.isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
                 continue
             }
-            arrcyc.push(<RouteStations key={i} ref={d => d!= null?refcyc.current[i] = d:null}><Circle className={isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
-            arryes.push(<RouteStations key={i} ref={d => d!= null?refyes.current[i] = d:null}><Circle className={isPrevStop('yesulin', i) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
-            arrjun.push(<RouteStations key={i} ref={d => d!= null?refjun.current[i] = d:null}><Circle className={isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+            arrCyc.push(<RouteStations id='cycdot' key={i}><Circle className={props.isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
         }
-        setDirect(arrdir)
-        setCycle(arrcyc)
-        setYesulin(arryes)
-        setJungang(arrjun)
-    },[i18n.language, isPrevStop, t])
 
-    const directLineInput = useCallback(() => {
-        const arrdir = []
-        const arrcyc = []
-        const arryes = []
-        const arrjun = []
-        for(let i = 0; i < 4; i++){
-            if(i === 3){
-                arrdir.push(
-                    <RouteLine className={isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
-                )
-                continue
-            }
-            arrdir.push(
-                <RouteLine className={isPrevStop('cycle', i) ? 'bg-chip-blue' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linedir.current[i] = d:null}></RouteLine>
-            )
-        }
-        for(let i = 0; i < 5; i++){
-            if(i === 4){
-                arrcyc.push(<RouteLine className={isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>)
-                arryes.push(<RouteLine className={isPrevStop('yesulin', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>)
-                arrjun.push(<RouteLine className={isPrevStop('jungang', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>)
-                continue
-            }
-            arrcyc.push(
-                <RouteLine className={isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linecyc.current[i] = d:null}></RouteLine>
-            )
-            arryes.push(
-                <RouteLine className={isPrevStop('yesulin', i) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?lineyes.current[i] = d:null}></RouteLine>
-            )
-            arrjun.push(
-                <RouteLine className={isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} key={i} ref={d=> d!= null?linejun.current[i] = d:null}></RouteLine>
-            )
-        }
-        setDirLine(arrdir)
-        setCycLine(arrcyc)
-        setYesLine(arryes)
-        setJunLine(arrjun)
-    },[isPrevStop])
+        return (
+            <>
+                {arrCyc.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
 
-    const responsiveLines = (refs:React.MutableRefObject<Array<HTMLDivElement>>, lines:React.MutableRefObject<Array<HTMLDivElement>>) => {
-        if(refs.current.length > 0 && lines.current.length > 0){
+    const yesulDot = () => {
+        const arrYes = []
+
+        for (let i = 0; i < 6; i++){
+            if (i >= 2 && i <= 4){
+                if (i === 2){
+                    arrYes.push(
+                        <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
+                            <RouteStations id='yesdot' key={i} title='skip'><Circle className='opacity-0'/></RouteStations>
+                            <RouteStations id='yesdot' key={i+1}>
+                                <Circle className={`${props.isPrevStop('yesulin', i+1) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
+                                    <SpecialStopsText key={1} lang={i18n.language} className={props.isPrevStop('yesulin', 3) ? 'text-chip-green' : 'text-zinc-200 dark:text-slate-500'}>
+                                        {t('yesul')}
+                                    </SpecialStopsText>
+                                </Circle>
+                            </RouteStations>
+                            <RouteStations id='yesdot' key={i+2}><Circle className={props.isPrevStop('yesulin', i+2) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
+                        </div>
+                    )
+                }
+                continue
+            }
+            if (i === 5){
+                arrYes.push(<RouteStations id='yesdot' key={i}><Circle className={props.isPrevStop('yesulin', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+                continue
+            }
+            arrYes.push(<RouteStations id='yesdot' key={i}><Circle className={props.isPrevStop('yesulin', i) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+        }
+
+        return (
+            <>
+                {arrYes.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
+
+    const jungDot = () => {
+        const arrJun = []
+
+        for (let i = 0; i < 6; i++){
+            if (i >= 2 && i <= 4){
+                if (i === 2){
+                    arrJun.push(
+                        <div key={i} className='col-span-2 grid grid-cols-3 w-[75%] place-items-center'>
+                            <RouteStations id='jundot' key={i}><Circle className={props.isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
+                            <RouteStations id='jundot' key={i+1}>
+                                <Circle className={`${props.isPrevStop('jungang', i+1) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}>
+                                    <SpecialStopsText key={2} lang={i18n.language} className={props.isPrevStop('jungang', i+1) ? 'text-chip-purple' : 'text-zinc-200 dark:text-slate-500'}>
+                                        {t('jung')}
+                                    </SpecialStopsText>
+                                </Circle>
+                            </RouteStations>
+                            <RouteStations id='jundot' key={i+2}><Circle className={props.isPrevStop('jungang', i+2) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>
+                        </div>
+                    )
+                }
+                continue
+            }
+            if (i === 5){
+                arrJun.push(<RouteStations id='jundot' key={i}><Circle className={props.isPrevStop('jungang', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+                continue
+            }
+            arrJun.push(<RouteStations id='jundot' key={i}><Circle className={props.isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'}/></RouteStations>)
+        }
+
+        return(
+            <>
+                {arrJun.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
+
+    switch(props.rootStatus){
+        case 'direct':
+            return directDot()
+        case 'cycle':
+            return cycleDot()
+        case 'yesulin':
+            return yesulDot()
+        case 'jungang':
+            return jungDot()
+        default:
+            return <></>
+    }
+}
+
+const LineRoute = (props: {
+    rootStatus: string,
+    isPrevStop: (line: string, index: number) => boolean
+}) => {
+    const directLine = () => {
+        const arrDir = []
+
+        for (let i = 0; i < 4; i++){
+            if (i === 3){
+                arrDir.push(<RouteLine id='dirline' className={props.isPrevStop('direct', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+                continue
+            }
+
+            arrDir.push(<RouteLine id='dirline' className={props.isPrevStop('cycle', i) ? 'bg-chip-blue' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+        }
+
+        return(
+            <>
+                {arrDir.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
+
+    const cycleLine = () => {
+        const arrCyc = []
+
+        for (let i = 0; i < 5; i++){
+            if (i === 4){
+                arrCyc.push(<RouteLine id='cycline' className={props.isPrevStop('cycle', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+                continue
+            }
+
+            arrCyc.push(<RouteLine id='cycline' className={props.isPrevStop('cycle', i) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+        }
+
+        return(
+            <>
+                {arrCyc.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
+
+    const yesulLine = () => {
+        const arrYes = []
+
+        for (let i = 0; i < 5; i++){
+            if (i === 4){
+                arrYes.push(<RouteLine id='yesline' className={props.isPrevStop('yesulin', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+                continue
+            }
+
+            arrYes.push(<RouteLine id='yesline' className={props.isPrevStop('yesulin', i) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+        }
+
+        return(
+            <>
+                {arrYes.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
+
+    const jungLine = () => {
+        const arrJun = []
+
+        for (let i = 0; i < 5; i++){
+            if (i === 4){
+                arrJun.push(<RouteLine id='junline' className={props.isPrevStop('jungang', i) ? 'bg-chip-orange' : 'bg-zinc-200 dark:bg-slate-500'}key={i}></RouteLine>)
+                continue
+            }
+
+            arrJun.push(<RouteLine id='junline' className={props.isPrevStop('jungang', i) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} key={i}></RouteLine>)
+        }
+
+        return(
+            <>
+                {arrJun.map((item) => {
+                    return item
+                })}
+            </>
+        )
+    }
+
+    switch(props.rootStatus){
+        case 'direct':
+            return directLine()
+        case 'cycle':
+            return cycleLine()
+        case 'yesulin':
+            return yesulLine()
+        case 'jungang':
+            return jungLine()
+        default:
+            return <></>
+    }
+}
+
+const RouteMap = (props: {
+    status:string,
+    tab: string
+}) => {
+    const timetable = useTimeTableContext().timetable
+
+    const { t, i18n } = useTranslation()
+    // main ref
+    const mainRef = useRef<HTMLDivElement>(null)
+    // dot refs
+    const dotDir = useRef<NodeListOf<HTMLDivElement>>()
+    const dotCyc = useRef<NodeListOf<HTMLDivElement>>()
+    const dotYes = useRef<NodeListOf<HTMLDivElement>>()
+    const dotJun = useRef<NodeListOf<HTMLDivElement>>()
+    // line refs
+    const lineDir = useRef<NodeListOf<HTMLDivElement>>()
+    const lineCyc = useRef<NodeListOf<HTMLDivElement>>()
+    const lineYes = useRef<NodeListOf<HTMLDivElement>>()
+    const lineJun = useRef<NodeListOf<HTMLDivElement>>()
+
+    const isPrevStop = (line: string, index: number) => {
+        switch(props.tab){
+            case 'shuttlecoke_o':
+                return index !== 0
+            case 'shuttlecoke_i':
+                if (line === 'direct') return index >= 3
+                return index >= 4
+            case 'subway':
+                if (line === 'yesulin') return false
+                return index >= 2
+            case 'yesulin':
+                if (line === 'direct' || line === 'jungang') return false
+                return index >= 3
+            case 'jungang':
+                if (line === 'jungang') return index >= 3
+                return false
+            default:
+                return true
+        }
+    }
+
+    const responsiveLines = (refs:React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>, lines:React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>) => {
+        if(refs.current !== undefined && lines.current !== undefined && refs.current.length > 0 && lines.current.length > 0){
             for(let i = 1; i <= lines.current.length; i++){
                 const rectA = {"left":refs.current[i-1]?.offsetLeft, "top":refs.current[i-1]?.offsetTop, "width":refs.current[i-1]?.offsetWidth, "height":refs.current[i-1]?.offsetHeight}
                 const rectB = {"left":refs.current[i]?.offsetLeft, "top":refs.current[i]?.offsetTop, "width":refs.current[i]?.offsetWidth, "height":refs.current[i]?.offsetHeight}
@@ -208,7 +356,7 @@ export const RouteMap = (props: {
                 const y1 = (rectA.top ?? 0) + (rectA.height ?? 0) / 2
                 const x2 = (rectB.left ?? 0) + (rectB.width ?? 0) / 2
                 const y2 = (rectB.top ?? 0) + (rectB.height ?? 0) / 2
-                
+
                 const d = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
                 lines.current[i-1].style.width = `${d}px`
                 lines.current[i-1].style.top = `${(refs.current[i-1]?.offsetTop ?? 0)+4}px`
@@ -220,26 +368,36 @@ export const RouteMap = (props: {
         }
     }
 
-    const updateLines = useCallback(() => {
-        responsiveLines(refdir, linedir)
-        responsiveLines(refcyc, linecyc)
-        responsiveLines(refyes, lineyes)
-        responsiveLines(refjun, linejun)
-    },[])
+    useEffect(() => {
+        // dot
+        dotDir.current = mainRef.current?.querySelectorAll('#dirdot')
+        dotCyc.current = mainRef.current?.querySelectorAll('#cycdot')
+        dotYes.current = mainRef.current?.querySelectorAll('#yesdot')
+        dotJun.current = mainRef.current?.querySelectorAll('#jundot')
+        // line
+        lineDir.current = mainRef.current?.querySelectorAll('#dirline')
+        lineCyc.current = mainRef.current?.querySelectorAll('#cycline')
+        lineYes.current = mainRef.current?.querySelectorAll('#yesline')
+        lineJun.current = mainRef.current?.querySelectorAll('#junline')
 
-    const fetchLanguages = useCallback(() => {
-        lang.current.forEach((element:HTMLParagraphElement | null, index:number) => {
-            if(element != undefined){
-                if(index <= 1){
-                    element.innerText = t('yesul')
-                } else {
-                    element.innerText = t('jung')
-                }
-            }
-        })
-    }, [t])
+        const updateLines = () => {
+            responsiveLines(dotDir, lineDir)
+            responsiveLines(dotCyc, lineCyc)
+            responsiveLines(dotYes, lineYes)
+            responsiveLines(dotJun, lineJun)
+        }
+
+        updateLines()
+
+        window.addEventListener("resize",updateLines)
+
+        return () => {
+            window.removeEventListener("resize", updateLines)
+        }
+    }, [])
 
     const circleAnimation = (props: CircleAnimate) => {
+        if (props.ref.current === undefined) return
         for(let i = props.index; i <= props.index+1 && props.ref.current[i].childNodes.length <= 1; i++){
             const pingCircle = document.createElement('div')
             pingCircle.classList.add(
@@ -258,79 +416,73 @@ export const RouteMap = (props: {
         }
     }
 
-    const circleAnimationRemove = (refs: React.MutableRefObject<Array<HTMLDivElement>>) => {
-        for(const refr of refs.current){
-            if(refr?.childNodes.length > 1){
+    const circleAnimationRemove = (refs: React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>) => {
+        if (refs.current === undefined) return
+        for (const refr of refs.current){
+            if (refr?.childNodes.length > 1){
                 refr?.removeChild(refr?.lastChild as Node)
             }
         }
     }
 
+    const circleAnimationRemoveAll = () => {
+        circleAnimationRemove(dotDir)
+        circleAnimationRemove(dotCyc)
+        circleAnimationRemove(dotYes)
+        circleAnimationRemove(dotJun)
+    }
+
     const timetableType = (type: string, index:number) => {
         if(type === 'C'){
-            return {ref: refcyc, index: index, chipColor: 'bg-chip-red'}
+            return {ref: dotCyc, index: index, chipColor: 'bg-chip-red'}
         } else if(type === 'DHJ'){
-            return {ref: refjun, index: index, chipColor: 'bg-chip-purple'}
+            return {ref: dotJun, index: index, chipColor: 'bg-chip-purple'}
         } else if(type === 'DY'){
-            return {ref: refyes, index: index, chipColor: 'bg-chip-green'}
+            return {ref: dotYes, index: index, chipColor: 'bg-chip-green'}
         } else {
-            return {ref: refdir, index: index, chipColor: 'bg-chip-blue'}
+            return {ref: dotDir, index: index, chipColor: 'bg-chip-blue'}
         }
     }
 
-    useEffect(() => {
-        fetchLanguages()
-    },[i18n.language, fetchLanguages])
-
-    useEffect(() => {
-        directInput()
-        directLineInput()
-        window.addEventListener("resize",updateLines)
-        return () => {
-            window.removeEventListener("resize", updateLines)
-        }
-    }, [updateLines, directInput, directLineInput])
-
-    useEffect(() => {
-        const circleAnimationRemoveAll = () => {
-            circleAnimationRemove(refdir)
-            circleAnimationRemove(refcyc)
-            circleAnimationRemove(refyes)
-            circleAnimationRemove(refjun)
-        }
-        const updateHighlight = () => {
-            if(linecyc.current.length > 0 && linedir.current.length > 0 && lineyes.current.length > 0 && linejun.current.length > 0){
-                circleAnimationRemoveAll()
-                if(timetable?.time !== ''){
-                    if(props.tab === 'shuttlecoke_o'){
-                        circleAnimation(timetableType(timetable.type,1))
-                    } else if(props.tab === 'subway'){
-                        circleAnimation(timetableType(timetable.type,2))
-                    } else if(props.tab === 'yesulin'){
-                        circleAnimation(timetableType(timetable.type,3))
-                    } else if(props.tab === 'jungang'){
-                        circleAnimation({ref: refjun, index: 3, chipColor: 'bg-chip-purple'})
-                    } else if(props.tab === 'shuttlecoke_i'){
-                        if(timetable.type === 'NA'){
-                            return
-                        }
-                        circleAnimation({ref: refdir, index: 3, chipColor: 'bg-chip-blue'})
-                        circleAnimation({ref: refjun, index: 4, chipColor: 'bg-chip-purple'})
-                        circleAnimation({ref: refcyc, index: 4, chipColor: 'bg-chip-red'})
-                        circleAnimation({ref: refyes, index: 4, chipColor: 'bg-chip-green'})
-                    } else {
-                        circleAnimation(timetableType(timetable.type,0))
-                    }
-                }
+    const updateHighlight = () => {
+        console.log(timetable)
+        if(timetable?.time !== ''){
+            switch(props.tab){
+                case 'shuttlecoke_o':
+                    circleAnimation(timetableType(timetable.type,1))
+                    break
+                case 'subway':
+                    circleAnimation(timetableType(timetable.type,2))
+                    break
+                case 'yesulin':
+                    circleAnimation(timetableType(timetable.type,3))
+                    break
+                case 'jungang':
+                    circleAnimation({ref: dotJun, index: 3, chipColor: 'bg-chip-purple'})
+                    break
+                case 'shuttlecoke_i':
+                    if(timetable.type === 'NA') return
+                    circleAnimation({ref: dotDir, index: 3, chipColor: 'bg-chip-blue'})
+                    circleAnimation({ref: dotJun, index: 4, chipColor: 'bg-chip-purple'})
+                    circleAnimation({ref: dotCyc, index: 4, chipColor: 'bg-chip-red'})
+                    circleAnimation({ref: dotYes, index: 4, chipColor: 'bg-chip-green'})
+                    break
+                default:
+                    circleAnimation(timetableType(timetable.type,0))
+                    break
             }
         }
-        updateLines()
+    }
+
+    circleAnimationRemoveAll()
+
+    useEffect(() => {
         updateHighlight()
-    },[direct, cycle, yesulin, jungang, dirLine, cycLine, yesLine, junLine, props.tab, timetable, updateLines])
+    })
 
     return (
         <MainContainer status={props.status}>
-            <RouteRowsContainer>
+            <RouteRowsContainer ref={mainRef}>
                 <RouteColsContainer>
                     <RouteTextContainer lang={i18n.language} className='col-start-2'>{t('dorm')}</RouteTextContainer>
                     <RouteTextContainer lang={i18n.language}>{t('dest_shuttle_o')}</RouteTextContainer>
@@ -338,43 +490,29 @@ export const RouteMap = (props: {
                     <RouteTextContainer lang={i18n.language}>{t('dest_shuttle_o')}</RouteTextContainer>
                     <RouteTextContainer lang={i18n.language}>{t('dorm')}</RouteTextContainer>
                 </RouteColsContainer>
-                <RouteColsContainer className='grid grid-cols-6'>
-                <RouteMethod className='bg-chip-blue'>{t('direct')}</RouteMethod>
-                    {direct.map((item) => {
-                        return item
-                    })}
-                    {dirLine.map((item) => {
-                        return item
-                    })}
+                <RouteColsContainer>
+                    <RouteMethod className='bg-chip-blue'>{t('direct')}</RouteMethod>
+                    <DotRoute rootStatus='direct' isPrevStop={isPrevStop}/>
+                    <LineRoute rootStatus='direct' isPrevStop={isPrevStop}/>
                 </RouteColsContainer>
                 <RouteColsContainer>
-                <RouteMethod className='bg-chip-red'>{t('cycle')}</RouteMethod>
-                    {cycle.map((item) => {
-                        return item
-                    })}
-                    {cycLine.map((item) => {
-                        return item
-                    })}
+                    <RouteMethod className='bg-chip-red'>{t('cycle')}</RouteMethod>
+                    <DotRoute rootStatus='cycle' isPrevStop={isPrevStop}/>
+                    <LineRoute rootStatus='cycle' isPrevStop={isPrevStop}/>
                 </RouteColsContainer>
                 <RouteColsContainer>
-                <RouteMethod className='bg-chip-green'>{t('yesul')}</RouteMethod>
-                    {yesulin.map((item) => {
-                        return item
-                    })}
-                    {yesLine.map((item) => {
-                        return item
-                    })}
+                    <RouteMethod className='bg-chip-green'>{t('yesul')}</RouteMethod>
+                    <DotRoute rootStatus='yesulin' isPrevStop={isPrevStop}/>
+                    <LineRoute rootStatus='yesulin' isPrevStop={isPrevStop}/>
                 </RouteColsContainer>
                 <RouteColsContainer>
-                <RouteMethod className='bg-chip-purple'>{t('jung')}</RouteMethod>
-                    {jungang.map((item) => {
-                        return item
-                    })}
-                    {junLine.map((item) => {
-                        return item
-                    })}
+                    <RouteMethod className='bg-chip-purple'>{t('jung')}</RouteMethod>
+                    <DotRoute rootStatus='jungang' isPrevStop={isPrevStop}/>
+                    <LineRoute rootStatus='jungang' isPrevStop={isPrevStop}/>
                 </RouteColsContainer>
             </RouteRowsContainer>
         </MainContainer>
     )
 }
+
+export default RouteMap
