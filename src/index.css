@@ -3,110 +3,110 @@
 @tailwind utilities;
 
 @layer base {
-    body {
-        -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -webkit-user-drag: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -user-drag: none;
-    }
+  body {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -user-drag: none;
+  }
 
-    /* Light */
-    .light {
-        --color-theme-main: #FFFFFF;
-        --color-theme-card: #FFFFFF;
-        --color-theme-text: #000000;
-        --color-theme-border: none;
-        --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.2);
-        --color-control-main: theme('colors.gray.200');
-        --color-control-active: theme('colors.blue.400');
-        --color-button-active: theme('colors.blue.300');
-        --color-fab-color: #7099C1;
-        --color-ontouch-bg: theme('colors.slate.200');
-        --color-ptr-color: theme('colors.gray.700');
-        --color-load-color: #AFBDCE;
-        --color-arrow-color: #ababab;
+  /* Light */
+  .light {
+    --color-theme-main: #ffffff;
+    --color-theme-card: #ffffff;
+    --color-theme-text: #000000;
+    --color-theme-border: none;
+    --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.2);
+    --color-control-main: theme('colors.gray.200');
+    --color-control-active: theme('colors.blue.400');
+    --color-button-active: theme('colors.blue.300');
+    --color-fab-color: #7099c1;
+    --color-ontouch-bg: theme('colors.slate.200');
+    --color-ptr-color: theme('colors.gray.700');
+    --color-load-color: #afbdce;
+    --color-arrow-color: #ababab;
 
-        --color-ft-element: #E1E2EC;
-        --color-ft-active: #DBE2F9;
-        --color-ft-active-text: #141B2C;
-        --color-ft-text: #44464E;
-        --color-ft-border: #75777F;
-        --color-ft-selected: #000000;
-    }
+    --color-ft-element: #e1e2ec;
+    --color-ft-active: #dbe2f9;
+    --color-ft-active-text: #141b2c;
+    --color-ft-text: #44464e;
+    --color-ft-border: #75777f;
+    --color-ft-selected: #000000;
+  }
 
-    /* Dark */
-    .dark {
-        --color-theme-main: theme('colors.zinc.800');
-        --color-theme-card: theme('colors.gray.700');
-        --color-theme-text: #FFFFFF;
-        --color-theme-border: none;
-        --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.8);
-        --color-control-main: theme('colors.gray.800');
-        --color-control-active: theme('colors.blue.400');
-        --color-button-active: theme('colors.blue.300');
-        --color-fab-color: #7099C1;
-        --color-ontouch-bg: theme('colors.slate.500');
-        --color-ptr-color: #FFFFFF;
-        --color-load-color: #AFBDCE;
-        --color-arrow-color: #dbdbdb;
+  /* Dark */
+  .dark {
+    --color-theme-main: theme('colors.zinc.800');
+    --color-theme-card: theme('colors.gray.700');
+    --color-theme-text: #ffffff;
+    --color-theme-border: none;
+    --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.8);
+    --color-control-main: theme('colors.gray.800');
+    --color-control-active: theme('colors.blue.400');
+    --color-button-active: theme('colors.blue.300');
+    --color-fab-color: #7099c1;
+    --color-ontouch-bg: theme('colors.slate.500');
+    --color-ptr-color: #ffffff;
+    --color-load-color: #afbdce;
+    --color-arrow-color: #dbdbdb;
 
-        --color-ft-element: #44464E;
-        --color-ft-active: #3F4759;
-        --color-ft-active-text: #DBE2F9;
-        --color-ft-text: #C5C6D0;
-        --color-ft-border: #8E9099;
-        --color-ft-selected: #ffffff;
-    }
-    
-    /* Christmas */
-    .christmas {
-        --color-theme-main: #b23e3e;
-        --color-theme-card: #3e5f4b;
-        --color-theme-text: #FFFFFF;
-        --color-theme-border: none;
-        --color-theme-shadow: 0 0.175rem 0.5rem rgba(23, 23, 23, 0.8);
-        --color-control-main: #1d3c33;
-        --color-control-active: #6ba768;
-        --color-button-active: #9be1c6;
-        --color-fab-color: #7099C1;
-        --color-ontouch-bg: theme('colors.slate.500');
-        --color-ptr-color: #FFFFFF;
-        --color-load-color: #AFBDCE;
-        --color-arrow-color: #000000;
+    --color-ft-element: #44464e;
+    --color-ft-active: #3f4759;
+    --color-ft-active-text: #dbe2f9;
+    --color-ft-text: #c5c6d0;
+    --color-ft-border: #8e9099;
+    --color-ft-selected: #ffffff;
+  }
 
-        --color-ft-element: #813333;
-        --color-ft-active: #397152;
-        --color-ft-active-text: #ffffff;
-        --color-ft-text: #ffffff;
-        --color-ft-border: #ffffff;
-        --color-ft-selected: #ffffff;
-    }
+  /* Christmas */
+  .christmas {
+    --color-theme-main: #b23e3e;
+    --color-theme-card: #3e5f4b;
+    --color-theme-text: #ffffff;
+    --color-theme-border: none;
+    --color-theme-shadow: 0 0.175rem 0.5rem rgba(23, 23, 23, 0.8);
+    --color-control-main: #1d3c33;
+    --color-control-active: #6ba768;
+    --color-button-active: #9be1c6;
+    --color-fab-color: #7099c1;
+    --color-ontouch-bg: theme('colors.slate.500');
+    --color-ptr-color: #ffffff;
+    --color-load-color: #afbdce;
+    --color-arrow-color: #000000;
 
-    /* Spring */
-    .spring {
-        --color-theme-main: #fff4f4;
-        --color-theme-card: #fffafa;
-        --color-theme-text: #c9255e;
-        --color-theme-border: none;
-        --color-theme-shadow: 0 0.175rem 0.5rem rgba(241, 139, 178, 0.6);
-        --color-control-main: #ffd3e6;
-        --color-control-active: #f16da4;
-        --color-button-active: #fec1dc;
-        --color-fab-color: #db659e;
-        --color-ontouch-bg: #ffd8ea;
-        --color-ptr-color: #c9255e;
-        --color-load-color: #c9255e;
-        --color-arrow-color: #bf6081;
+    --color-ft-element: #813333;
+    --color-ft-active: #397152;
+    --color-ft-active-text: #ffffff;
+    --color-ft-text: #ffffff;
+    --color-ft-border: #ffffff;
+    --color-ft-selected: #ffffff;
+  }
 
-        --color-ft-element: #ffe4ea;
-        --color-ft-active: #f16da4;
-        --color-ft-active-text: #ffffff;
-        --color-ft-text: #c9255e;
-        --color-ft-border: #c9255e;
-        --color-ft-selected: #ffffff;
-    }
+  /* Spring */
+  .spring {
+    --color-theme-main: #fff4f4;
+    --color-theme-card: #fffafa;
+    --color-theme-text: #c9255e;
+    --color-theme-border: none;
+    --color-theme-shadow: 0 0.175rem 0.5rem rgba(241, 139, 178, 0.6);
+    --color-control-main: #ffd3e6;
+    --color-control-active: #f16da4;
+    --color-button-active: #fec1dc;
+    --color-fab-color: #db659e;
+    --color-ontouch-bg: #ffd8ea;
+    --color-ptr-color: #c9255e;
+    --color-load-color: #c9255e;
+    --color-arrow-color: #bf6081;
+
+    --color-ft-element: #ffe4ea;
+    --color-ft-active: #f16da4;
+    --color-ft-active-text: #ffffff;
+    --color-ft-text: #c9255e;
+    --color-ft-border: #c9255e;
+    --color-ft-selected: #ffffff;
+  }
 }

@@ -338,7 +338,6 @@ const ColoredChip = ({ chipType }: ChipType) => {
     return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'R' || chipType == 'NA') {
     return <Chip className="bg-chip-orange">{busTypeToText(chipType)}</Chip>
-
   }
 
   return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
@@ -422,9 +421,11 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   }, [season, week])
 
   useEffect(() => {
-    if(timetable.data !== undefined){
+    if (timetable.data !== undefined) {
       const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
-      filtered[0] === undefined ? setTimetable({time : "", type : "NA"}) : setTimetable(filtered[0])
+      filtered[0] === undefined
+        ? setTimetable({ time: '', type: 'NA' })
+        : setTimetable(filtered[0])
     }
   }, [timetable.data, setTimetable])
 
@@ -561,7 +562,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
         >
           <MapIcon
             aria-label="map icon"
-            fill='var(--color-theme-text)'
+            fill="var(--color-theme-text)"
             onContextMenu={handleContextMenu}
             //draggable="false"
           />
@@ -577,7 +578,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           {timetable.isPending ? (
             <NoTimetable>
               <SyncLoader
-                color='var(--color-load-color)'
+                color="var(--color-load-color)"
                 margin={4}
                 size={8}
                 loading={timetable.isPending}

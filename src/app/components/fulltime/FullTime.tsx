@@ -144,7 +144,7 @@ const ComboBox = (props: {
           <SelectedIcon
             //src="../image/selected.svg"
             //alt="check"
-            fill='var(--color-ft-selected)'
+            fill="var(--color-ft-selected)"
             onContextMenu={handleContextMenu}
           />
         ) : null}
@@ -177,18 +177,21 @@ const TimeBox = (props: OrganizedTimetables) => {
             <MinuteContainer>{props.directY.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
           <TimeBoxBodyGrid $itemCount={props.direct.length}>
-            <Chip className={props.isShuttleI?"bg-chip-orange":"bg-chip-blue"}>{t('direct')}</Chip>
+            <Chip
+              className={props.isShuttleI ? 'bg-chip-orange' : 'bg-chip-blue'}
+            >
+              {t('direct')}
+            </Chip>
             <DirectMinuteContainer>
               {props.direct.map((time, idx) => {
                 let isExist = false
                 props.directY.map((ytime) => {
                   time === ytime ? (isExist = true) : null
                 })
-                return(
-                  isExist ? null :
-                <React.Fragment key={idx}>
-                  <span>{time} </span>
-                </React.Fragment>
+                return isExist ? null : (
+                  <React.Fragment key={idx}>
+                    <span>{time} </span>
+                  </React.Fragment>
                 )
               })}
             </DirectMinuteContainer>
@@ -270,8 +273,8 @@ const FullTime = () => {
           single.circle.push(schedule.time.split(':')[1])
         } else if (schedule.type === 'DHJ') {
           single.jungang.push(schedule.time.split(':')[1])
-        } 
-        if (schedule.type === 'R'){
+        }
+        if (schedule.type === 'R') {
           single.isShuttleI = true
         }
       })
@@ -309,7 +312,9 @@ const FullTime = () => {
           // if schedule.direct.length === 0
           return (
             <React.Fragment key={schedule.time}>
-              {schedule.direct.length + schedule.circle.length === 0 && (schedule.directY.length === 0 && schedule.jungang.length === 0) ? null : (
+              {schedule.direct.length + schedule.circle.length === 0 &&
+              schedule.directY.length === 0 &&
+              schedule.jungang.length === 0 ? null : (
                 <TimeBox
                   time={schedule.time}
                   direct={schedule.direct}
@@ -386,7 +391,7 @@ const FullTime = () => {
             <GoBackIcon
               //src="../image/arrow_back_black_36dp.svg"
               //alt="back page"
-              fill='var(--color-theme-text)'
+              fill="var(--color-theme-text)"
               onClick={() => goToHomeScreen()}
               onContextMenu={handleContextMenu}
             />

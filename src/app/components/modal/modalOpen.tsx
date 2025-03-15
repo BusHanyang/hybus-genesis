@@ -45,7 +45,7 @@ const ModalOpen = (props: {
     window.localStorage.setItem('theme', 'spring')
     window.location.reload()
   }
-  
+
   return (
     <React.Fragment>
       <Modal
@@ -60,8 +60,8 @@ const ModalOpen = (props: {
         >
           <ContentArea>
             <ChangelogDiv>
-              {props.mTarget === 'Fabs' && (
-                changelogs.data?.map(
+              {props.mTarget === 'Fabs' &&
+                (changelogs.data?.map(
                   (datum: { date: string; details: Array<string> }) => {
                     const arr: string[] = datum.details
                     return (
@@ -73,8 +73,7 @@ const ModalOpen = (props: {
                       </ChangelogMargin>
                     )
                   },
-                ) ?? <></>
-              )}
+                ) ?? <></>)}
               {props.mTarget === 'Info' && (
                 <iframe
                   title="information-iframe"
@@ -85,11 +84,9 @@ const ModalOpen = (props: {
               )}
               {props.mTarget === 'Christmas' && (
                 <>
-                  <Trans
-                    i18nKey='christmas_txt'
-                  />
-                  <br/>
-                
+                  <Trans i18nKey="christmas_txt" />
+                  <br />
+
                   <ModalFooterButton onClick={toggleTheme}>
                     {t('christmas_btn')}
                   </ModalFooterButton>
@@ -97,11 +94,9 @@ const ModalOpen = (props: {
               )}
               {props.mTarget === 'Spring' && (
                 <>
-                  <Trans
-                    i18nKey='spring_txt'
-                  />
-                  <br/>
-                
+                  <Trans i18nKey="spring_txt" />
+                  <br />
+
                   <ModalFooterButton onClick={toggleTheme}>
                     {t('spring_btn')}
                   </ModalFooterButton>
