@@ -1,7 +1,4 @@
-import React from 'react'
-
 export type CircleAnimate = {
-  ref: React.MutableRefObject<NodeListOf<HTMLDivElement> | undefined>
+  dotType: string
   index: number
-  chipColor: string
 }

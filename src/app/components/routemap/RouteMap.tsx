@@ -1,20 +1,15 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import Animation from '@/components/routemap/Animation'
-import Responsive from '@/components/routemap/Responsive'
-import { DotRoute, LineRoute } from '@/components/routemap/RouteVisual'
-import { useTimeTableContext } from '@/context/TimeTableContext'
-import { SingleShuttleSchedule } from '@/data'
-
+import RouteVisual from '@/components/routemap/RouteVisual'
 const RouteRowsContainer = styled.div`
   ${tw`grid grid-rows-5 gap-2`}
 `
 
 const RouteColsContainer = styled.div`
-  ${tw`grid grid-cols-6 place-items-center`}
+  ${tw`relative grid grid-cols-6 place-items-center`}
 `
 
 const RouteTextContainer = styled.div<{ lang: string }>`
@@ -38,74 +33,11 @@ const MainContainer = styled.div<{ status: string }>`
 `
 
 const RouteMap = (props: { status: string; tab: string }) => {
-  const timetable = useTimeTableContext().timetable
-  const timeCheck = useRef<SingleShuttleSchedule>({ time: '', type: 'NA' })
-
   const { t, i18n } = useTranslation()
-  // main ref
-  const mainRef = useRef<HTMLDivElement>(null)
-  // dot nodes
-  const dotDir = useRef<NodeListOf<HTMLDivElement>>()
-  const dotCyc = useRef<NodeListOf<HTMLDivElement>>()
-  const dotYes = useRef<NodeListOf<HTMLDivElement>>()
-  const dotJun = useRef<NodeListOf<HTMLDivElement>>()
-  // line nodes
-  const lineDir = useRef<NodeListOf<HTMLDivElement>>()
-  const lineCyc = useRef<NodeListOf<HTMLDivElement>>()
-  const lineYes = useRef<NodeListOf<HTMLDivElement>>()
-  const lineJun = useRef<NodeListOf<HTMLDivElement>>()
-
-  const isPrevStop = (line: string, index: number) => {
-    switch (props.tab) {
-      case 'shuttlecoke_o':
-        return index !== 0
-      case 'shuttlecoke_i':
-        if (line === 'direct') return index >= 3
-        return index >= 4
-      case 'subway':
-        if (line === 'yesulin') return false
-        return index >= 2
-      case 'yesulin':
-        if (line === 'direct' || line === 'jungang') return false
-        return index >= 3
-      case 'jungang':
-        if (line === 'jungang') return index >= 3
-        return false
-      default:
-        return true
-    }
-  }
-
-  useEffect(() => {
-    // dot
-    dotDir.current = mainRef.current?.querySelectorAll('#dirdot')
-    dotCyc.current = mainRef.current?.querySelectorAll('#cycdot')
-    dotYes.current = mainRef.current?.querySelectorAll('#yesdot')
-    dotJun.current = mainRef.current?.querySelectorAll('#jundot')
-    // line
-    lineDir.current = mainRef.current?.querySelectorAll('#dirline')
-    lineCyc.current = mainRef.current?.querySelectorAll('#cycline')
-    lineYes.current = mainRef.current?.querySelectorAll('#yesline')
-    lineJun.current = mainRef.current?.querySelectorAll('#junline')
-
-    Responsive(
-      [dotDir, dotCyc, dotYes, dotJun],
-      [lineDir, lineCyc, lineYes, lineJun],
-    )
-  }, [])
-
-  useEffect(() => {
-    Animation(
-      { dotDir: dotDir, dotCyc: dotCyc, dotJun: dotJun, dotYes: dotYes },
-      props.tab,
-      timeCheck,
-      timetable,
-    )
-  }, [timetable, props.tab])
 
   return (
     <MainContainer status={props.status}>
-      <RouteRowsContainer ref={mainRef}>
+      <RouteRowsContainer>
         <RouteColsContainer>
           <RouteTextContainer lang={i18n.language} className="col-start-2">
             {t('dorm')}
@@ -125,23 +57,19 @@ const RouteMap = (props: { status: string; tab: string }) => {
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-blue">{t('direct')}</RouteMethod>
-          <DotRoute rootStatus="direct" isPrevStop={isPrevStop} />
-          <LineRoute rootStatus="direct" isPrevStop={isPrevStop} />
+          <RouteVisual rootStatus="direct" tab={props.tab} />
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-red">{t('cycle')}</RouteMethod>
-          <DotRoute rootStatus="cycle" isPrevStop={isPrevStop} />
-          <LineRoute rootStatus="cycle" isPrevStop={isPrevStop} />
+          <RouteVisual rootStatus="cycle" tab={props.tab} />
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-green">{t('yesul')}</RouteMethod>
-          <DotRoute rootStatus="yesulin" isPrevStop={isPrevStop} />
-          <LineRoute rootStatus="yesulin" isPrevStop={isPrevStop} />
+          <RouteVisual rootStatus="yesulin" tab={props.tab} />
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-purple">{t('jung')}</RouteMethod>
-          <DotRoute rootStatus="jungang" isPrevStop={isPrevStop} />
-          <LineRoute rootStatus="jungang" isPrevStop={isPrevStop} />
+          <RouteVisual rootStatus="jungang" tab={props.tab} />
         </RouteColsContainer>
       </RouteRowsContainer>
     </MainContainer>
