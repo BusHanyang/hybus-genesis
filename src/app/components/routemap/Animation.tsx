@@ -27,19 +27,24 @@ export const circleAnimation = (
     jungang: boolean[]
   },
 ) => {
-  const tableArray = tabArray
+  const newTableArray = {
+    direct: [...tabArray.direct],
+    cycle: [...tabArray.cycle],
+    yesulin: [...tabArray.yesulin],
+    jungang: [...tabArray.jungang],
+  }
   for (let i = type.index; i <= type.index + 1; i++) {
     if (type.dotType === 'direct') {
-      tableArray.direct[i] = true
+      newTableArray.direct[i] = true
     } else if (type.dotType === 'cycle') {
-      tableArray.cycle[i] = true
+      newTableArray.cycle[i] = true
     } else if (type.dotType === 'yesulin') {
-      tableArray.yesulin[i] = true
+      newTableArray.yesulin[i] = true
     } else if (type.dotType === 'jungang') {
-      tableArray.jungang[i] = true
+      newTableArray.jungang[i] = true
     }
   }
-  setTableArray(tableArray)
+  setTableArray(newTableArray)
 }
 
 const timetableType = (type: string, index: number) => {
@@ -111,6 +116,10 @@ export const useAnimation = (tab: string) => {
   const timetables = useTimeTableContext().timetable
   const checkTable = React.useRef<SingleShuttleSchedule>()
 
+  React.useEffect(() => {
+    checkTable.current = undefined
+  }, [])
+
   useEffect(() => {
     const tableArray = {
       direct: [false, false, false, false, false],
@@ -119,11 +128,11 @@ export const useAnimation = (tab: string) => {
       jungang: [false, false, false, false, false, false],
     }
 
+    setTimetable(tableArray)
+
     if (checkTable.current === timetables) return
 
     checkTable.current = timetables
-
-    setTimetable(tableArray)
 
     const animateType = CircleAnimateType(tab, timetables)
 

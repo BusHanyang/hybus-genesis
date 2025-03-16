@@ -22,8 +22,11 @@ export const TimeTableContextProvider = ({
     time: '',
     type: 'NA',
   })
+
+  const value = React.useMemo(() => ({ timetable, setTimetable }), [timetable])
+
   return (
-    <TimeTableContext.Provider value={{ timetable, setTimetable }}>
+    <TimeTableContext.Provider value={value}>
       {children}
     </TimeTableContext.Provider>
   )

@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 
 import Animation, { useAnimation } from '@/components/routemap/Animation'
-import Responsive from '@/components/routemap/Responsive'
+import useResponsive from '@/components/routemap/Responsive'
 
 const RouteLine = styled.div`
   ${tw`absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-[13.125rem]`}
@@ -35,7 +35,7 @@ const LineRoute = (props: {
   isPrevStop: (line: string, index: number) => boolean
   index: number
 }) => {
-  const screenWidth = Responsive()
+  const screenWidth = useResponsive()
 
   if (props.rootStatus === 'direct' && props.index === 4) return
   else if (props.index === 5) return
