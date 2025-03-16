@@ -1,18 +1,13 @@
-import React, { useEffect, useRef } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
-import Animation, {
-  CircleAnimateType,
-  circleAnimation,
-} from '@/components/routemap/Animation'
+import Animation, { useAnimation } from '@/components/routemap/Animation'
 import Responsive from '@/components/routemap/Responsive'
-import { useTimeTableContext } from '@/context/TimeTableContext'
-import { SingleShuttleSchedule } from '@/data'
 
 const RouteLine = styled.div`
-  ${tw`absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-2 max-w-[13.125rem]`}
+  ${tw`absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-[13.125rem]`}
 `
 
 const Circle = styled.span`
@@ -40,7 +35,7 @@ const LineRoute = (props: {
   isPrevStop: (line: string, index: number) => boolean
   index: number
 }) => {
-  const screenWidth = Responsive().screenWidth
+  const screenWidth = Responsive()
 
   if (props.rootStatus === 'direct' && props.index === 4) return
   else if (props.index === 5) return
@@ -153,17 +148,7 @@ const LineRoute = (props: {
 
 const RouteVisual = (props: { rootStatus: string; tab: string }) => {
   const { t, i18n } = useTranslation()
-  const timetables = useTimeTableContext().timetable
-  const tableCheck = useRef<SingleShuttleSchedule>({
-    time: '',
-    type: 'NA',
-  })
-  const [timetable, setTimetable] = React.useState({
-    direct: [false, false, false, false, false],
-    cycle: [false, false, false, false, false, false],
-    yesulin: [false, false, false, false, false],
-    jungang: [false, false, false, false, false, false],
-  })
+  const timetable = useAnimation(props.tab)
 
   const isPrevStop = (line: string, index: number) => {
     switch (props.tab) {
@@ -185,22 +170,6 @@ const RouteVisual = (props: { rootStatus: string; tab: string }) => {
         return true
     }
   }
-
-  useEffect(() => {
-    const animateType = CircleAnimateType(props.tab, timetables)
-    const tableArray = {
-      direct: [false, false, false, false, false],
-      cycle: [false, false, false, false, false, false],
-      yesulin: [false, false, false, false, false],
-      jungang: [false, false, false, false, false, false],
-    }
-    setTimetable(tableArray)
-
-    animateType.forEach((item) => {
-      circleAnimation(item, setTimetable, tableArray)
-    })
-    tableCheck.current = timetables
-  }, [timetables, props.tab])
 
   const directDot = () => {
     const arrDir = []

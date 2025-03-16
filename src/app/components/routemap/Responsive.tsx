@@ -12,7 +12,8 @@ const Responsive = () => {
       )
     }
   }, [])
-  return { screenWidth }
+
+  return screenWidth
 }
 
 export default Responsive

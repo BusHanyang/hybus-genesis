@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import tw from 'twin.macro'
 
 import RouteVisual from '@/components/routemap/RouteVisual'
+
 const RouteRowsContainer = styled.div`
   ${tw`grid grid-rows-5 gap-2`}
 `

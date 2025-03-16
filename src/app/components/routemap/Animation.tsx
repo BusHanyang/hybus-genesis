@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import tw from 'twin.macro'
 
+import { useTimeTableContext } from '@/context/TimeTableContext'
 import { CircleAnimate, SingleShuttleSchedule } from '@/data'
 
 const PingCircle = styled.div<{ $on: boolean }>`
@@ -38,7 +39,6 @@ export const circleAnimation = (
       tableArray.jungang[i] = true
     }
   }
-  console.log(tableArray)
   setTableArray(tableArray)
 }
 
@@ -94,6 +94,45 @@ export const CircleAnimateType = (
     }
   }
   return []
+}
+
+export const useAnimation = (tab: string) => {
+  const [timetable, setTimetable] = React.useState<{
+    direct: Array<boolean>
+    cycle: Array<boolean>
+    yesulin: Array<boolean>
+    jungang: Array<boolean>
+  }>({
+    direct: [false, false, false, false, false],
+    cycle: [false, false, false, false, false, false],
+    yesulin: [false, false, false, false, false],
+    jungang: [false, false, false, false, false, false],
+  })
+  const timetables = useTimeTableContext().timetable
+  const checkTable = React.useRef<SingleShuttleSchedule>()
+
+  useEffect(() => {
+    const tableArray = {
+      direct: [false, false, false, false, false],
+      cycle: [false, false, false, false, false, false],
+      yesulin: [false, false, false, false, false],
+      jungang: [false, false, false, false, false, false],
+    }
+
+    if (checkTable.current === timetables) return
+
+    checkTable.current = timetables
+
+    setTimetable(tableArray)
+
+    const animateType = CircleAnimateType(tab, timetables)
+
+    animateType.forEach((item) => {
+      circleAnimation(item, setTimetable, tableArray)
+    })
+  }, [timetables, tab])
+
+  return timetable
 }
 
 const Animation = (props: {
