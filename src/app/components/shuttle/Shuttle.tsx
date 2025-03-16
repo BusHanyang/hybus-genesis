@@ -422,12 +422,10 @@ export const Shuttle = ({ location }: ShuttleStop) => {
 
   useEffect(() => {
     if (timetable.data !== undefined) {
-      setTimeout(() => {
-        const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
-        filtered[0] === undefined
-          ? setTimetable({ time: '', type: 'NA' })
-          : setTimetable(filtered[0])
-      }, 3000)
+      const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+      filtered[0] === undefined
+        ? setTimetable({ time: '', type: 'NA' })
+        : setTimetable(filtered[0])
     }
   }, [timetable.data, setTimetable])
 
