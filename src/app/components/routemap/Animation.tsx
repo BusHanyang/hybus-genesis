@@ -7,7 +7,7 @@ import { CircleAnimate, SingleShuttleSchedule } from '@/data'
 
 const PingCircle = styled.div<{ $on: boolean }>`
   ${tw`animate-ping absolute rounded-full inline-flex h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-[0] mx-2`}
-  ${(props) => (props.$on ? tw`` : tw`hidden`)}
+  ${(props) => (props.$on ? tw`visible` : tw`invisible`)}
 `
 
 export const circleAnimation = (
