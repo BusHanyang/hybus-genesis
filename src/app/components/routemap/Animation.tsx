@@ -7,19 +7,11 @@ import { CircleAnimate, SingleShuttleSchedule } from '@/data'
 
 const PingCircle = styled.div<{ $on: boolean }>`
   ${tw`animate-ping absolute rounded-full inline-flex h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-[0] mx-2`}
-  ${(props) => (props.$on ? tw`` : tw`!opacity-0 !scale-0`)}
+  ${(props) => (props.$on ? tw`` : tw`hidden`)}
 `
 
 export const circleAnimation = (
   type: CircleAnimate,
-  setTableArray: React.Dispatch<
-    React.SetStateAction<{
-      direct: boolean[]
-      cycle: boolean[]
-      yesulin: boolean[]
-      jungang: boolean[]
-    }>
-  >,
   tabArray: {
     direct: boolean[]
     cycle: boolean[]
@@ -44,7 +36,7 @@ export const circleAnimation = (
       newTableArray.jungang[i] = true
     }
   }
-  setTableArray(newTableArray)
+  return newTableArray
 }
 
 const timetableType = (type: string, index: number) => {
@@ -121,7 +113,7 @@ export const useAnimation = (tab: string) => {
   }, [])
 
   useEffect(() => {
-    const tableArray = {
+    let tableArray = {
       direct: [false, false, false, false, false],
       cycle: [false, false, false, false, false, false],
       yesulin: [false, false, false, false, false],
@@ -129,7 +121,6 @@ export const useAnimation = (tab: string) => {
     }
 
     setTimetable(tableArray)
-
     if (checkTable.current === timetables) return
 
     checkTable.current = timetables
@@ -137,8 +128,10 @@ export const useAnimation = (tab: string) => {
     const animateType = CircleAnimateType(tab, timetables)
 
     animateType.forEach((item) => {
-      circleAnimation(item, setTimetable, tableArray)
+      tableArray = circleAnimation(item, tableArray)
     })
+
+    setTimetable(tableArray)
   }, [timetables, tab])
 
   return timetable

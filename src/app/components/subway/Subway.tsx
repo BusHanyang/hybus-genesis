@@ -291,7 +291,7 @@ const Subway = ({ station }: SubwayStop) => {
   const openApiMonitor = () => {
     window.open(
       'https://monitor.hybus.app/status/bushanyang',
-      '_black',
+      '_blank',
       'noopener noreferrer',
     )
   }

@@ -391,15 +391,19 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   useEffect(() => {
     const filtered = timetable.data?.filter((val) => isAfterCurrentTime(val))
     if (
-      timetable.data?.length === 0 ||
+      timetable.data === undefined ||
+      timetable.data.length === 0 ||
       timetable.status !== 'success' ||
-      filtered?.length === 0
+      filtered === undefined ||
+      filtered.length === 0
     ) {
+      setTimetable({ time: '', type: 'NA' })
       setTimetableAlive(false)
     } else {
+      setTimetable(filtered[0])
       setTimetableAlive(true)
     }
-  }, [timetable.data, timetable.status])
+  }, [timetable.data, timetable.status, setTimetable])
 
   // Set week and season to localStorage
   useEffect(() => {
@@ -419,15 +423,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       window.localStorage.setItem('week', weekKeys.WEEK)
     }
   }, [season, week])
-
-  useEffect(() => {
-    if (timetable.data !== undefined) {
-      const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
-      filtered[0] === undefined
-        ? setTimetable({ time: '', type: 'NA' })
-        : setTimetable(filtered[0])
-    }
-  }, [timetable.data, setTimetable])
 
   const handleActionStart = () => {
     setTouched(true)

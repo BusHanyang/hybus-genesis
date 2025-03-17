@@ -230,81 +230,80 @@ const RouteVisual = (props: { rootStatus: string; tab: string }) => {
     const arrCyc = []
 
     for (let i = 0; i < 6; i++) {
-      if (i >= 2 && i <= 4) {
-        if (i === 2) {
-          arrCyc.push(
-            <div
-              key={i}
-              className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
-            >
-              <RouteStations id="cycdot" key={i}>
-                <Circle
+      if (i === 2) {
+        arrCyc.push(
+          <div
+            key={i}
+            className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
+          >
+            <RouteStations id="cycdot" key={i}>
+              <Circle
+                className={
+                  isPrevStop('cycle', i)
+                    ? 'bg-chip-red'
+                    : 'bg-zinc-200 dark:bg-slate-500'
+                }
+              />
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i}
+              />
+              <Animation
+                isOn={timetable.cycle[i]}
+                index={i}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+            <RouteStations id="cycdot" key={i + 1}>
+              <Circle
+                className={`${isPrevStop('cycle', i + 1) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}
+              >
+                <SpecialStopsText
+                  key={0}
+                  lang={i18n.language}
                   className={
-                    isPrevStop('cycle', i)
-                      ? 'bg-chip-red'
-                      : 'bg-zinc-200 dark:bg-slate-500'
+                    isPrevStop('cycle', 3)
+                      ? 'text-chip-red'
+                      : 'text-zinc-200 dark:text-slate-500'
                   }
-                />
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i}
-                />
-                <Animation
-                  isOn={timetable.cycle[i]}
-                  index={i}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-              <RouteStations id="cycdot" key={i + 1}>
-                <Circle
-                  className={`${isPrevStop('cycle', i + 1) ? 'bg-chip-red' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}
                 >
-                  <SpecialStopsText
-                    key={0}
-                    lang={i18n.language}
-                    className={
-                      isPrevStop('cycle', 3)
-                        ? 'text-chip-red'
-                        : 'text-zinc-200 dark:text-slate-500'
-                    }
-                  >
-                    {t('yesul')}
-                  </SpecialStopsText>
-                </Circle>
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i + 1}
-                />
-                <Animation
-                  isOn={timetable.cycle[i + 1]}
-                  index={i + 1}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-              <RouteStations id="cycdot" key={i + 2}>
-                <Circle
-                  className={
-                    isPrevStop('cycle', i + 2)
-                      ? 'bg-chip-red'
-                      : 'bg-zinc-200 dark:bg-slate-500'
-                  }
-                />
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i + 2}
-                />
-                <Animation
-                  isOn={timetable.cycle[i + 2]}
-                  index={i + 2}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-            </div>,
-          )
-        }
+                  {t('yesul')}
+                </SpecialStopsText>
+              </Circle>
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i + 1}
+              />
+              <Animation
+                isOn={timetable.cycle[i + 1]}
+                index={i + 1}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+            <RouteStations id="cycdot" key={i + 2}>
+              <Circle
+                className={
+                  isPrevStop('cycle', i + 2)
+                    ? 'bg-chip-red'
+                    : 'bg-zinc-200 dark:bg-slate-500'
+                }
+              />
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i + 2}
+              />
+              <Animation
+                isOn={timetable.cycle[i + 2]}
+                index={i + 2}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+          </div>,
+        )
+        i += 2
         continue
       }
       if (i === 5) {
@@ -362,70 +361,69 @@ const RouteVisual = (props: { rootStatus: string; tab: string }) => {
     const arrYes = []
 
     for (let i = 0; i < 6; i++) {
-      if (i >= 2 && i <= 4) {
-        if (i === 2) {
-          arrYes.push(
-            <div
-              key={i}
-              className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
-            >
-              <RouteStations id="yesdot" key={i} title="skip">
-                <Circle className="opacity-0" />
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i}
-                />
-              </RouteStations>
-              <RouteStations id="yesdot" key={i + 1}>
-                <Circle
-                  className={`${isPrevStop('yesulin', i + 1) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}
-                >
-                  <SpecialStopsText
-                    key={1}
-                    lang={i18n.language}
-                    className={
-                      isPrevStop('yesulin', 3)
-                        ? 'text-chip-green'
-                        : 'text-zinc-200 dark:text-slate-500'
-                    }
-                  >
-                    {t('yesul')}
-                  </SpecialStopsText>
-                </Circle>
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i + 1}
-                />
-                <Animation
-                  isOn={timetable.yesulin[i]}
-                  index={i}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-              <RouteStations id="yesdot" key={i + 2}>
-                <Circle
+      if (i === 2) {
+        arrYes.push(
+          <div
+            key={i}
+            className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
+          >
+            <RouteStations id="yesdot" key={i} title="skip">
+              <Circle className="opacity-0" />
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i}
+              />
+            </RouteStations>
+            <RouteStations id="yesdot" key={i + 1}>
+              <Circle
+                className={`${isPrevStop('yesulin', i + 1) ? 'bg-chip-green' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}
+              >
+                <SpecialStopsText
+                  key={1}
+                  lang={i18n.language}
                   className={
-                    isPrevStop('yesulin', i + 2)
-                      ? 'bg-chip-green'
-                      : 'bg-zinc-200 dark:bg-slate-500'
+                    isPrevStop('yesulin', 3)
+                      ? 'text-chip-green'
+                      : 'text-zinc-200 dark:text-slate-500'
                   }
-                />
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i + 2}
-                />
-                <Animation
-                  isOn={timetable.yesulin[i + 1]}
-                  index={i + 1}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-            </div>,
-          )
-        }
+                >
+                  {t('yesul')}
+                </SpecialStopsText>
+              </Circle>
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i + 1}
+              />
+              <Animation
+                isOn={timetable.yesulin[i]}
+                index={i}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+            <RouteStations id="yesdot" key={i + 2}>
+              <Circle
+                className={
+                  isPrevStop('yesulin', i + 2)
+                    ? 'bg-chip-green'
+                    : 'bg-zinc-200 dark:bg-slate-500'
+                }
+              />
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i + 2}
+              />
+              <Animation
+                isOn={timetable.yesulin[i + 1]}
+                index={i + 1}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+          </div>,
+        )
+        i += 2
         continue
       }
       if (i === 5) {
@@ -483,81 +481,80 @@ const RouteVisual = (props: { rootStatus: string; tab: string }) => {
     const arrJun = []
 
     for (let i = 0; i < 6; i++) {
-      if (i >= 2 && i <= 4) {
-        if (i === 2) {
-          arrJun.push(
-            <div
-              key={i}
-              className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
-            >
-              <RouteStations id="jundot" key={i}>
-                <Circle
+      if (i === 2) {
+        arrJun.push(
+          <div
+            key={i}
+            className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
+          >
+            <RouteStations id="jundot" key={i}>
+              <Circle
+                className={
+                  isPrevStop('jungang', i)
+                    ? 'bg-chip-purple'
+                    : 'bg-zinc-200 dark:bg-slate-500'
+                }
+              />
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i}
+              />
+              <Animation
+                isOn={timetable.jungang[i]}
+                index={i}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+            <RouteStations id="jundot" key={i + 1}>
+              <Circle
+                className={`${isPrevStop('jungang', i + 1) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}
+              >
+                <SpecialStopsText
+                  key={2}
+                  lang={i18n.language}
                   className={
-                    isPrevStop('jungang', i)
-                      ? 'bg-chip-purple'
-                      : 'bg-zinc-200 dark:bg-slate-500'
+                    isPrevStop('jungang', i + 1)
+                      ? 'text-chip-purple'
+                      : 'text-zinc-200 dark:text-slate-500'
                   }
-                />
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i}
-                />
-                <Animation
-                  isOn={timetable.jungang[i]}
-                  index={i}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-              <RouteStations id="jundot" key={i + 1}>
-                <Circle
-                  className={`${isPrevStop('jungang', i + 1) ? 'bg-chip-purple' : 'bg-zinc-200 dark:bg-slate-500'} grid grid-rows-2 relative`}
                 >
-                  <SpecialStopsText
-                    key={2}
-                    lang={i18n.language}
-                    className={
-                      isPrevStop('jungang', i + 1)
-                        ? 'text-chip-purple'
-                        : 'text-zinc-200 dark:text-slate-500'
-                    }
-                  >
-                    {t('jung')}
-                  </SpecialStopsText>
-                </Circle>
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i + 1}
-                />
-                <Animation
-                  isOn={timetable.jungang[i + 1]}
-                  index={i + 1}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-              <RouteStations id="jundot" key={i + 2}>
-                <Circle
-                  className={
-                    isPrevStop('jungang', i + 2)
-                      ? 'bg-chip-purple'
-                      : 'bg-zinc-200 dark:bg-slate-500'
-                  }
-                />
-                <LineRoute
-                  rootStatus={props.rootStatus}
-                  isPrevStop={isPrevStop}
-                  index={i + 2}
-                />
-                <Animation
-                  isOn={timetable.jungang[i + 2]}
-                  index={i + 2}
-                  rootStatus={props.rootStatus}
-                />
-              </RouteStations>
-            </div>,
-          )
-        }
+                  {t('jung')}
+                </SpecialStopsText>
+              </Circle>
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i + 1}
+              />
+              <Animation
+                isOn={timetable.jungang[i + 1]}
+                index={i + 1}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+            <RouteStations id="jundot" key={i + 2}>
+              <Circle
+                className={
+                  isPrevStop('jungang', i + 2)
+                    ? 'bg-chip-purple'
+                    : 'bg-zinc-200 dark:bg-slate-500'
+                }
+              />
+              <LineRoute
+                rootStatus={props.rootStatus}
+                isPrevStop={isPrevStop}
+                index={i + 2}
+              />
+              <Animation
+                isOn={timetable.jungang[i + 2]}
+                index={i + 2}
+                rootStatus={props.rootStatus}
+              />
+            </RouteStations>
+          </div>,
+        )
+        i += 2
         continue
       }
       if (i === 5) {

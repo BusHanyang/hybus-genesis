@@ -184,10 +184,7 @@ const TimeBox = (props: OrganizedTimetables) => {
             </Chip>
             <DirectMinuteContainer>
               {props.direct.map((time, idx) => {
-                let isExist = false
-                props.directY.map((ytime) => {
-                  time === ytime ? (isExist = true) : null
-                })
+                const isExist = props.directY.some((ytime) => time === ytime)
                 return isExist ? null : (
                   <React.Fragment key={idx}>
                     <span>{time} </span>
@@ -309,22 +306,19 @@ const FullTime = () => {
     return (
       <div className="grid grid-flow-row gap-2">
         {filteredByType.map((schedule) => {
-          // if schedule.direct.length === 0
-          return (
+          return schedule.direct.length + schedule.circle.length === 0 &&
+            schedule.directY.length === 0 &&
+            schedule.jungang.length === 0 ? null : (
             <React.Fragment key={schedule.time}>
-              {schedule.direct.length + schedule.circle.length === 0 &&
-              schedule.directY.length === 0 &&
-              schedule.jungang.length === 0 ? null : (
-                <TimeBox
-                  time={schedule.time}
-                  direct={schedule.direct}
-                  directY={schedule.directY}
-                  circle={schedule.circle}
-                  jungang={schedule.jungang}
-                  isShuttleI={schedule.isShuttleI}
-                  count={countChip}
-                />
-              )}
+              <TimeBox
+                time={schedule.time}
+                direct={schedule.direct}
+                directY={schedule.directY}
+                circle={schedule.circle}
+                jungang={schedule.jungang}
+                isShuttleI={schedule.isShuttleI}
+                count={countChip}
+              />
             </React.Fragment>
           )
         })}
