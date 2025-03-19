@@ -391,8 +391,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   useEffect(() => {
     const filtered = timetable.data?.filter((val) => isAfterCurrentTime(val))
     if (
-      timetable.data === undefined ||
-      timetable.data.length === 0 ||
+      timetable.data?.length === 0 ||
       timetable.status !== 'success' ||
       filtered === undefined ||
       filtered.length === 0
@@ -403,7 +402,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       setTimetable(filtered[0])
       setTimetableAlive(true)
     }
-  }, [timetable.data, timetable.status, setTimetable])
+  }, [timetable.data, timetable.status, setTimetable, currentTime])
 
   // Set week and season to localStorage
   useEffect(() => {

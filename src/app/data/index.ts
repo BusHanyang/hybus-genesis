@@ -2,7 +2,10 @@ export type { StopLocation } from './common/stopLocation'
 export type { Changelog } from './modal/changelog'
 export type { NoticeInfo } from './notice/noticeInfo'
 export type { NoticeType } from './notice/noticeType'
-export type { CircleAnimate } from './routemap/circleAnimate'
+export type {
+  DotAnimationConfig,
+  RouteAnimationFlag,
+} from './routemap/dotAnimate'
 export type { ChipType } from './shuttle/chipType'
 export type { OrganizedTimetables } from './shuttle/organizedTimetables'
 export type { Period } from './shuttle/period'
