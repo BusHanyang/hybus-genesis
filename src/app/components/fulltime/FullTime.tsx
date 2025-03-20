@@ -67,10 +67,6 @@ const MinuteContainer = styled.div`
   ${tw`self-center text-left ml-3 col-span-4`}
 `
 
-const DirectMinuteContainer = styled(MinuteContainer)`
-  ${tw`hm:leading-none`}
-`
-
 const FullTimeDocument = styled.div`
   ${tw`px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl`}
 `
@@ -182,16 +178,7 @@ const TimeBox = (props: OrganizedTimetables) => {
             >
               {t('direct')}
             </Chip>
-            <DirectMinuteContainer>
-              {props.direct.map((time, idx) => {
-                const isExist = props.directY.some((ytime) => time === ytime)
-                return isExist ? null : (
-                  <React.Fragment key={idx}>
-                    <span>{time} </span>
-                  </React.Fragment>
-                )
-              })}
-            </DirectMinuteContainer>
+            <MinuteContainer>{props.direct.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
         </TimeBoxBody>
       </TimeBoxInner>

@@ -8,9 +8,9 @@ import DotAnimation, {
 } from '@/components/routemap/DotAnimation'
 import { RouteAnimationFlag } from '@/data'
 
-const RouteLine = styled.div<{ isHalfWidth: boolean }>`
+const RouteLine = styled.div<{ $ishalfwidth: boolean }>`
   ${tw`absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-[13.125rem]`}
-  ${(props) => (props.isHalfWidth ? tw`w-[7.8vw]` : tw`w-[15.6vw]`)}
+  ${(props) => (props.$ishalfwidth ? tw`w-[7.8vw]` : tw`w-[15.6vw]`)}
 `
 
 const Dot = styled.span`
@@ -86,7 +86,7 @@ const AddLines = (props: {
   const index = lineIndex[props.rootStatus][props.index]
   return (
     <RouteLine
-      isHalfWidth={
+      $ishalfwidth={
         props.rootStatus !== 'direct' && (index === 2 || index === 3)
       }
       className={

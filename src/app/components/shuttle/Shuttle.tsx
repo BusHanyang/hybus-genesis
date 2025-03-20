@@ -350,7 +350,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     staleTime: 5 * 60 * 1000,
   })
 
-  const { setTimetable } = useTimeTableContext()
+  const { currTimetable, setCurrTimetable } = useTimeTableContext()
 
   const [season, week] =
     setting.data !== undefined ? getSeason(setting.data) : [null, null]
@@ -393,16 +393,13 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     if (
       timetable.data?.length === 0 ||
       timetable.status !== 'success' ||
-      filtered === undefined ||
-      filtered.length === 0
+      filtered?.length === 0
     ) {
-      setTimetable({ time: '', type: 'NA' })
       setTimetableAlive(false)
     } else {
-      setTimetable(filtered[0])
       setTimetableAlive(true)
     }
-  }, [timetable.data, timetable.status, setTimetable, currentTime])
+  }, [timetable.data, timetable.status])
 
   // Set week and season to localStorage
   useEffect(() => {
@@ -485,6 +482,13 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+
+    if (filtered[0] !== currTimetable[0]) {
+      if (filtered.length >= 2 && filtered[0].time === filtered[1].time)
+        setCurrTimetable([filtered[0], filtered[1]])
+      else setCurrTimetable([filtered[0]])
+    }
+
     const reverted = filtered.map((val) => convertUnixToTime(val))
     if (filtered.length === 0) {
       // Buses are done for today. User should refresh after midnight.

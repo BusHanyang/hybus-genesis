@@ -3,8 +3,10 @@ import React, { useState } from 'react'
 import { SingleShuttleSchedule } from '@/data'
 
 interface TimeTableContextProps {
-  timetable: SingleShuttleSchedule
-  setTimetable: React.Dispatch<React.SetStateAction<SingleShuttleSchedule>>
+  currTimetable: Array<SingleShuttleSchedule>
+  setCurrTimetable: React.Dispatch<
+    React.SetStateAction<Array<SingleShuttleSchedule>>
+  >
 }
 
 const TimeTableContext = React.createContext<TimeTableContextProps | null>(null)
@@ -18,12 +20,14 @@ export const useTimeTableContext = () => {
 export const TimeTableContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
-  const [timetable, setTimetable] = useState<SingleShuttleSchedule>({
-    time: '',
-    type: 'NA',
-  })
+  const [currTimetable, setCurrTimetable] = useState<
+    Array<SingleShuttleSchedule>
+  >([])
 
-  const value = React.useMemo(() => ({ timetable, setTimetable }), [timetable])
+  const value = React.useMemo(
+    () => ({ currTimetable, setCurrTimetable }),
+    [currTimetable],
+  )
 
   return (
     <TimeTableContext.Provider value={value}>
