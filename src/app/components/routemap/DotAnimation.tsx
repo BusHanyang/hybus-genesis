@@ -158,9 +158,9 @@ const DotAnimation = (props: {
   isOn: boolean
   index: number
   color: string
-  rootStatus: string
+  routeStatus: string
 }) => {
-  if (props.rootStatus === 'yesulin' && props.index === 2) return
+  if (props.routeStatus === 'yesulin' && props.index === 2) return
 
   return <PingDot className={props.color} $on={props.isOn} />
 }

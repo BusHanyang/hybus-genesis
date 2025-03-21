@@ -58,19 +58,19 @@ const RouteMap = (props: { status: string; tab: string }) => {
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-blue">{t('direct')}</RouteMethod>
-          <RouteVisual rootStatus="direct" tab={props.tab} />
+          <RouteVisual routeStatus="direct" tab={props.tab} />
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-red">{t('cycle')}</RouteMethod>
-          <RouteVisual rootStatus="cycle" tab={props.tab} />
+          <RouteVisual routeStatus="cycle" tab={props.tab} />
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-green">{t('yesul')}</RouteMethod>
-          <RouteVisual rootStatus="yesulin" tab={props.tab} />
+          <RouteVisual routeStatus="yesulin" tab={props.tab} />
         </RouteColsContainer>
         <RouteColsContainer>
           <RouteMethod className="bg-chip-purple">{t('jung')}</RouteMethod>
-          <RouteVisual rootStatus="jungang" tab={props.tab} />
+          <RouteVisual routeStatus="jungang" tab={props.tab} />
         </RouteColsContainer>
       </RouteRowsContainer>
     </MainContainer>

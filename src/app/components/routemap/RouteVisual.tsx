@@ -43,6 +43,10 @@ const routeColorTable: { [key: string]: string } = {
   jungangText: 'text-chip-purple',
 }
 
+// The numbers in lineIndex and dotIndex represent the index numbers for each route.
+// The 'direct' route does not have an index 3 because,
+// while the other routes include an extra stop(station) at that position (such as yesulin or jungang),
+// the 'direct' route does not have an additional stop(station) there.
 const lineIndex: { [key: string]: Array<number> } = {
   direct: [0, 1, 2, 4],
   cycle: [0, 1, 2, 3, 4],
@@ -77,116 +81,149 @@ const isPrevStop = (line: string, index: number, tab: string) => {
   }
 }
 
-const AddLines = (props: {
-  rootStatus: string
+const RouteLines = (props: {
+  routeStatus: string
   index: number
   tab: string
 }) => {
   if (props.index === -1) return
-  const index = lineIndex[props.rootStatus][props.index]
+  const index = lineIndex[props.routeStatus][props.index]
   return (
     <RouteLine
       $ishalfwidth={
-        props.rootStatus !== 'direct' && (index === 2 || index === 3)
+        props.routeStatus !== 'direct' && (index === 2 || index === 3)
       }
       className={
-        isPrevStop(props.rootStatus, index, props.tab)
+        isPrevStop(props.routeStatus, index, props.tab)
           ? index === 4
             ? 'bg-chip-orange'
-            : routeColorTable[props.rootStatus]
+            : routeColorTable[props.routeStatus]
           : 'bg-zinc-200 dark:bg-slate-500'
       }
     />
   )
 }
 
-const AddElements = (props: {
-  rootStatus: string
+const RouteElement = (props: {
+  routeStatus: string
+  tab: string
+  animationFlagTable: { [key: string]: Array<boolean> }
+  item: number
+}) => {
+  const { t, i18n } = useTranslation()
+
+  return (
+    <RouteStations>
+      <Dot
+        className={
+          (isPrevStop(props.routeStatus, props.item, props.tab)
+            ? props.item >= 5
+              ? 'bg-chip-orange'
+              : routeColorTable[props.routeStatus]
+            : 'bg-zinc-200 dark:bg-slate-500') +
+          (props.item === 2 && props.routeStatus === 'yesulin'
+            ? ' opacity-0'
+            : '')
+        }
+      >
+        {props.item === 3 ? (
+          <SpecialStopsText
+            key={0}
+            lang={i18n.language}
+            className={
+              isPrevStop(props.routeStatus, props.item, props.tab)
+                ? routeColorTable[props.routeStatus + 'Text']
+                : 'text-zinc-200 dark:text-slate-500'
+            }
+          >
+            {props.routeStatus === 'jungang' ? t('jung') : t('yesul')}
+          </SpecialStopsText>
+        ) : (
+          <></>
+        )}
+      </Dot>
+      <RouteLines
+        routeStatus={props.routeStatus}
+        index={lineIndex[props.routeStatus].indexOf(props.item)}
+        tab={props.tab}
+      />
+      <DotAnimation
+        isOn={props.animationFlagTable[props.routeStatus][props.item]}
+        index={props.item}
+        color={
+          props.item >= 5
+            ? 'bg-chip-orange'
+            : routeColorTable[props.routeStatus]
+        }
+        routeStatus={props.routeStatus}
+      />
+    </RouteStations>
+  )
+}
+
+const RouteElementGroup = (props: {
+  routeStatus: string
   tab: string
   animationFlagTable: { [key: string]: Array<boolean> }
 }) => {
-  const { t, i18n } = useTranslation()
-  const arrDots: Array<React.JSX.Element> = []
-  const arrChild: Array<React.JSX.Element> = []
-
-  dotIndex[props.rootStatus].forEach((item) => {
-    arrDots.push(
-      <RouteStations key={item}>
-        <Dot
-          className={
-            (isPrevStop(props.rootStatus, item, props.tab)
-              ? item >= 5
-                ? 'bg-chip-orange'
-                : routeColorTable[props.rootStatus]
-              : 'bg-zinc-200 dark:bg-slate-500') +
-            (item === 2 && props.rootStatus === 'yesulin' ? ' opacity-0' : '')
-          }
-        >
-          {item === 3 ? (
-            <SpecialStopsText
-              key={0}
-              lang={i18n.language}
-              className={
-                isPrevStop(props.rootStatus, item, props.tab)
-                  ? routeColorTable[props.rootStatus + 'Text']
-                  : 'text-zinc-200 dark:text-slate-500'
-              }
-            >
-              {props.rootStatus === 'jungang' ? t('jung') : t('yesul')}
-            </SpecialStopsText>
-          ) : (
-            <></>
-          )}
-        </Dot>
-        <AddLines
-          rootStatus={props.rootStatus}
-          index={lineIndex[props.rootStatus].indexOf(item)}
-          tab={props.tab}
-        />
-        <DotAnimation
-          isOn={props.animationFlagTable[props.rootStatus][item]}
-          index={item}
-          color={
-            item >= 5 ? 'bg-chip-orange' : routeColorTable[props.rootStatus]
-          }
-          rootStatus={props.rootStatus}
-        />
-      </RouteStations>,
-    )
-  })
-
   return (
     <>
-      {arrDots.map((element: React.JSX.Element, index) => {
-        if (index >= 2 && index <= 4 && props.rootStatus !== 'direct') {
-          arrChild.push(element)
-          if (index === 4) {
+      {dotIndex[props.routeStatus]
+        .filter(
+          (item) => !(props.routeStatus !== 'direct' && item > 2 && item <= 4),
+        )
+        .map((item) => {
+          if (item === 2 && props.routeStatus !== 'direct')
             return (
               <div
-                key={index}
-                className="col-span-2 grid grid-cols-3 w-[75%] place-items-center"
+                key={item}
+                className={
+                  'col-span-2 grid grid-cols-3 w-[75%] place-items-center'
+                }
               >
-                {arrChild.map((element) => {
-                  return element
-                })}
+                <RouteElement
+                  routeStatus={props.routeStatus}
+                  tab={props.tab}
+                  animationFlagTable={props.animationFlagTable}
+                  item={item}
+                />
+                <RouteElement
+                  routeStatus={props.routeStatus}
+                  tab={props.tab}
+                  animationFlagTable={props.animationFlagTable}
+                  item={item + 1}
+                />
+                <RouteElement
+                  routeStatus={props.routeStatus}
+                  tab={props.tab}
+                  animationFlagTable={props.animationFlagTable}
+                  item={item + 2}
+                />
               </div>
             )
-          }
-        } else return element
-      })}
+          return (
+            <RouteElement
+              key={item}
+              routeStatus={props.routeStatus}
+              tab={props.tab}
+              animationFlagTable={props.animationFlagTable}
+              item={item}
+            />
+          )
+        })}
     </>
   )
 }
 
 const RouteVisual = (props: {
-  rootStatus: keyof RouteAnimationFlag
+  routeStatus: keyof RouteAnimationFlag
   tab: string
 }) => {
   const animationFlagTable = useDotAnimation(props.tab)
 
   return (
-    <AddElements
-      rootStatus={props.rootStatus}
+    <RouteElementGroup
+      routeStatus={props.routeStatus}
       tab={props.tab}
       animationFlagTable={animationFlagTable}
     />

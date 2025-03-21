@@ -483,6 +483,8 @@ export const Shuttle = ({ location }: ShuttleStop) => {
 
     const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
 
+    // Send filtered[0](or also include filtered[1] when bus arrive simultaneously) Array to RouteVisual
+    // when filtered has been updated.
     if (filtered[0] !== currTimetable[0]) {
       if (filtered.length >= 2 && filtered[0].time === filtered[1].time)
         setCurrTimetable([filtered[0], filtered[1]])
