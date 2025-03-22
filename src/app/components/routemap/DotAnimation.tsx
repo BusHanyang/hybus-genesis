@@ -70,7 +70,7 @@ export const getDotAnimationConfig = (
   tab: string,
   currTimetable: SingleShuttleSchedule,
 ) => {
-  if (currTimetable !== undefined) {
+  if (currTimetable.time !== '') {
     switch (tab) {
       case 'shuttlecoke_o':
         return [getDotAniTimetableConfig(currTimetable.type, 1)]

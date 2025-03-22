@@ -22,7 +22,7 @@ export const TimeTableContextProvider = ({
 }: React.PropsWithChildren) => {
   const [currTimetable, setCurrTimetable] = useState<
     Array<SingleShuttleSchedule>
-  >([])
+  >([{ type: 'NA', time: '' }])
 
   const value = React.useMemo(
     () => ({ currTimetable, setCurrTimetable }),
