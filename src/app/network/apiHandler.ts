@@ -10,9 +10,9 @@ import { apiClient } from '@/network/apiClient'
 export const apiHandler = async <
   T extends
     | Array<SingleShuttleSchedule | Changelog | NoticeInfo | SingleTrainInfo>
-    | Settings
+    | Settings,
 >(
-  urlPath: string
+  urlPath: string,
 ): Promise<T> => {
   return apiClient.get(urlPath).then((response) => {
     return response.data as T

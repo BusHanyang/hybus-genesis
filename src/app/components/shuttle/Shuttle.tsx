@@ -10,6 +10,7 @@ import tw from 'twin.macro'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
 import { openNaverMapApp } from '@/components/shuttle/map'
+import { useTimeTableContext } from '@/context/TimeTableContext'
 import {
   ChipType,
   Season,
@@ -114,7 +115,6 @@ const isWeekend = (): boolean => {
 
 const getSeason = (setting: Settings | null): [Season, Week] => {
   const today = dayjs()
-
   if (setting === null) {
     // Error fetching settings
     return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
@@ -336,6 +336,8 @@ const ColoredChip = ({ chipType }: ChipType) => {
     return <Chip className="bg-chip-purple">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'DY') {
     return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
+  } else if (chipType == 'R' || chipType == 'NA') {
+    return <Chip className="bg-chip-orange">{busTypeToText(chipType)}</Chip>
   }
 
   return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
@@ -347,6 +349,9 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     queryFn: settingAPI,
     staleTime: 5 * 60 * 1000,
   })
+
+  const { currTimetable, setCurrTimetable } = useTimeTableContext()
+
   const [season, week] =
     setting.data !== undefined ? getSeason(setting.data) : [null, null]
 
@@ -441,6 +446,8 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     const { t } = useTranslation()
 
     if (timetable.data === undefined) {
+      if (currTimetable[0].time !== '')
+        setCurrTimetable([{ type: 'NA', time: '' }])
       return <></>
     }
 
@@ -449,6 +456,8 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     if (timetable.status === 'error') {
+      if (currTimetable[0].time !== '')
+        setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable API error
       return (
         <>
@@ -466,6 +475,8 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     if (timetable.data.length === 0) {
+      if (currTimetable[0].time !== '')
+        setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable doesn't exist
       return (
         <>
@@ -480,6 +491,8 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     const reverted = filtered.map((val) => convertUnixToTime(val))
 
     if (filtered.length === 0) {
+      if (currTimetable[0].time !== '')
+        setCurrTimetable([{ type: 'NA', time: '' }])
       // Buses are done for today. User should refresh after midnight.
       return (
         <>
@@ -488,6 +501,14 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           </NoTimetable>
         </>
       )
+    }
+
+    // Send filtered[0](or also include filtered[1] when bus arrive simultaneously) Array to RouteVisual
+    // when filtered has been updated.
+    if (filtered[0] !== currTimetable[0]) {
+      if (filtered.length >= 2 && filtered[0].time === filtered[1].time)
+        setCurrTimetable([filtered[0], filtered[1]])
+      else setCurrTimetable([filtered[0]])
     }
 
     // Otherwise - normal case
@@ -549,7 +570,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
         >
           <MapIcon
             aria-label="map icon"
-            fill='var(--color-theme-text)'
+            fill="var(--color-theme-text)"
             onContextMenu={handleContextMenu}
             //draggable="false"
           />
@@ -565,7 +586,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           {timetable.isPending ? (
             <NoTimetable>
               <SyncLoader
-                color='var(--color-load-color)'
+                color="var(--color-load-color)"
                 margin={4}
                 size={8}
                 loading={timetable.isPending}

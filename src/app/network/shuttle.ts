@@ -10,10 +10,10 @@ import { apiHandler } from '@/network/apiHandler'
 export const shuttleAPI = async (
   season: Season,
   week: Week,
-  location: StopLocation
+  location: StopLocation,
 ): Promise<Array<SingleShuttleSchedule>> => {
   return apiHandler<Array<SingleShuttleSchedule>>(
-    `/timetable/${season}/${week}/${location}`
+    `/v2/timetable/${season}/${week}/${location}`,
   )
 }
 
