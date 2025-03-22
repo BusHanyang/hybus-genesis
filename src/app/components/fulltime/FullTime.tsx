@@ -67,10 +67,6 @@ const MinuteContainer = styled.div`
   ${tw`self-center text-left ml-3 col-span-4`}
 `
 
-const DirectMinuteContainer = styled(MinuteContainer)`
-  ${tw`hm:leading-none`}
-`
-
 const FullTimeDocument = styled.div`
   ${tw`px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl`}
 `
@@ -123,11 +119,6 @@ const TimetableContainer = styled.div`
   ${tw`pb-6`}
 `
 
-// const YesulinMinuteWrapper = styled.span<{ $itemCount: number }>`
-//   ${tw`inline-block text-green-500`}
-//   ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
-// `
-
 const ComboBox = (props: {
   type: string
   value: StopLocation | Season | Week
@@ -149,7 +140,7 @@ const ComboBox = (props: {
           <SelectedIcon
             //src="../image/selected.svg"
             //alt="check"
-            fill='var(--color-ft-selected)'
+            fill="var(--color-ft-selected)"
             onContextMenu={handleContextMenu}
           />
         ) : null}
@@ -182,21 +173,12 @@ const TimeBox = (props: OrganizedTimetables) => {
             <MinuteContainer>{props.directY.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
           <TimeBoxBodyGrid $itemCount={props.direct.length}>
-            <Chip className={props.isShuttleI?"bg-chip-orange":"bg-chip-blue"}>{t('direct')}</Chip>
-            <DirectMinuteContainer>
-              {props.direct.map((time, idx) => {
-                let isExist = false
-                props.directY.map((ytime) => {
-                  time === ytime ? (isExist = true) : null
-                })
-                return(
-                  isExist ? null :
-                <React.Fragment key={idx}>
-                  <span>{time} </span>
-                </React.Fragment>
-                )
-              })}
-            </DirectMinuteContainer>
+            <Chip
+              className={props.isShuttleI ? 'bg-chip-orange' : 'bg-chip-blue'}
+            >
+              {t('direct')}
+            </Chip>
+            <MinuteContainer>{props.direct.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
         </TimeBoxBody>
       </TimeBoxInner>
@@ -275,8 +257,8 @@ const FullTime = () => {
           single.circle.push(schedule.time.split(':')[1])
         } else if (schedule.type === 'DHJ') {
           single.jungang.push(schedule.time.split(':')[1])
-        } 
-        if (schedule.type === 'R'){
+        }
+        if (schedule.type === 'R') {
           single.isShuttleI = true
         }
       })
@@ -298,7 +280,7 @@ const FullTime = () => {
       return <></>
       // [{ time: '08', direct: ["08:00", "08:10", ...], circle: [], directY: ["08:20", "08:50"] }, { time: '09', direct: [], circle: [], directY: [] }, ...]
     })
-  
+
     const maxCount = filteredByType.reduce(
       (prev, curr) => (prev.count > curr.count ? prev : curr),
       { count: 0 },
@@ -307,24 +289,23 @@ const FullTime = () => {
     if (maxCount > countChip) {
       setCountChip(maxCount)
     }
-    
+
     return (
       <div className="grid grid-flow-row gap-2">
         {filteredByType.map((schedule) => {
-          // if schedule.direct.length === 0
-          return (
+          return schedule.direct.length + schedule.circle.length === 0 &&
+            schedule.directY.length === 0 &&
+            schedule.jungang.length === 0 ? null : (
             <React.Fragment key={schedule.time}>
-              {schedule.direct.length + schedule.circle.length === 0 && (schedule.directY.length === 0 && schedule.jungang.length === 0) ? null : (
-                <TimeBox
-                  time={schedule.time}
-                  direct={schedule.direct}
-                  directY={schedule.directY}
-                  circle={schedule.circle}
-                  jungang={schedule.jungang}
-                  isShuttleI={schedule.isShuttleI}
-                  count={countChip}
-                />
-              )}
+              <TimeBox
+                time={schedule.time}
+                direct={schedule.direct}
+                directY={schedule.directY}
+                circle={schedule.circle}
+                jungang={schedule.jungang}
+                isShuttleI={schedule.isShuttleI}
+                count={countChip}
+              />
             </React.Fragment>
           )
         })}
@@ -391,7 +372,7 @@ const FullTime = () => {
             <GoBackIcon
               //src="../image/arrow_back_black_36dp.svg"
               //alt="back page"
-              fill='var(--color-theme-text)'
+              fill="var(--color-theme-text)"
               onClick={() => goToHomeScreen()}
               onContextMenu={handleContextMenu}
             />
