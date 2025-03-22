@@ -128,19 +128,18 @@ export const useDotAnimation = (tab: string) => {
   }, [])
 
   useEffect(() => {
+    if (checkCurrTimetable.current === currTimetableArray[0]) return
+
+    checkCurrTimetable.current = currTimetableArray[0]
+
     let tempFlagTable = {
       direct: [false, false, false, false, false, false],
       cycle: [false, false, false, false, false, false],
       yesulin: [false, false, false, false, false, false],
       jungang: [false, false, false, false, false, false],
     }
-    setFlagTable(tempFlagTable)
 
-    if (checkCurrTimetable.current === currTimetableArray[0]) return
-
-    checkCurrTimetable.current = currTimetableArray[0]
-
-    currTimetableArray.map((currTimetable: SingleShuttleSchedule) => {
+    currTimetableArray.forEach((currTimetable: SingleShuttleSchedule) => {
       const dotAnimationConfig = getDotAnimationConfig(tab, currTimetable)
 
       dotAnimationConfig.forEach((config) => {
