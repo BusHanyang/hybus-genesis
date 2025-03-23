@@ -1,7 +1,7 @@
 import 'react-tiny-fab/dist/styles.css'
 import './fab.scss'
 
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 import styled from 'styled-components'
@@ -26,11 +26,43 @@ const Icons = styled.div<{ theme: string }>`
     return theme !== 'light' ? tw`invert` : null
   }}
 `
+
 const FabBackground = styled.div<{ open: boolean }>`
   ${tw`select-none font-Ptd`}
   ${({ open }) => {
-    return open ? tw`fixed inset-0 z-10` : null
+    return open ? tw`fixed inset-0 z-[2]` : null
   }}
+`
+/** This function is decide sideFabs' position and delay according to the index,
+ * So the sideFabs can appear one by one.
+ * @param index - The index of the sideFab.
+ * @returns The translate, opacity and delay of the sideFab according to the index.
+ * */
+const sideFabIndexStyle = (index: number) => {
+  switch (index) {
+    case 1:
+      return tw`translate-x-[-3.5rem] opacity-100`
+    case 2:
+      return tw`translate-x-[-7rem] delay-[75ms] opacity-100`
+    case 3:
+      return tw`translate-x-[-10.5rem] delay-[150ms] opacity-100`
+    default:
+      return tw``
+  }
+}
+
+const SideFabContainer = styled.div<{ $hover: boolean }>`
+  ${tw`absolute h-[3rem] right-[0.2rem] flex flex-row-reverse`}
+  ${(props) => (props.$hover ? tw`w-[14rem]` : tw``)}
+`
+
+const SideFab = styled.div<{ $hover: boolean; $index: number }>`
+  ${tw`absolute h-[3rem] w-[3rem] p-[0.5rem] rounded-full cursor-default justify-center shadow-[0_0_4px_rgba(0,0,0,.14)] shadow-[0_4px_8px_rgba(0,0,0,.28)] transform duration-150`}
+  ${(props) => (props.$hover ? sideFabIndexStyle(props.$index) : tw`opacity-0`)}
+`
+
+const SideFabSpan = styled.span`
+  ${tw`absolute top-[-1.2rem] font-Ptd bg-black/75 text-[13px] py-[0.125rem] px-[0.25rem] shadow-xl font-normal`}
 `
 
 const Fabs = (props: {
@@ -48,8 +80,22 @@ const Fabs = (props: {
     dataTheme: 'light',
     imgIcon: DarkImg,
   }) // white theme is default
+  // When the user hover or click over the language change button, the sideFab appears.
+  const [interactLang, setInteractLang] = useState(false)
+  // SideFab can click only when the sideFabLoading is true (300ms delay after interactLang is true).
+  const [sideFabLoading, setSideFabLoading] = useState(false)
+
+  // Make the sideFabLoading true after 300ms delay when the interactLang is true.
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (interactLang) timer = setTimeout(() => setSideFabLoading(true), 300)
+    else setSideFabLoading(false)
+
+    return () => clearTimeout(timer)
+  }, [interactLang])
 
   const fabMainStyle: React.CSSProperties = {
+    position: 'relative',
     backgroundColor: metadata.changeColor,
     color: metadata.iconColor,
     userSelect: 'none',
@@ -57,6 +103,7 @@ const Fabs = (props: {
     MozUserSelect: 'none',
     WebkitUserSelect: 'none',
     WebkitTouchCallout: 'none',
+    zIndex: 5,
   }
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
@@ -66,6 +113,7 @@ const Fabs = (props: {
   const isOpenClass = document.getElementsByClassName('rtf')
 
   const fabBackgroundRef = useRef<HTMLDivElement>(null)
+
   const handleClickFabBackground = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === fabBackgroundRef.current) {
       handleClose()
@@ -113,14 +161,12 @@ const Fabs = (props: {
       toggleTheme()
     })
   }
-  const handleLangOnClick = (): Promise<React.FC> => {
+  const handleLangOnClick = (type: string): Promise<React.FC> => {
     return new Promise(() => {
-      if (i18n.language === 'en') {
-        i18n.changeLanguage('ko')
-        window.localStorage.setItem('language', 'ko')
-      } else {
-        i18n.changeLanguage('en')
-        window.localStorage.setItem('language', 'en')
+      if (!sideFabLoading) return
+      if (i18n.language !== type) {
+        i18n.changeLanguage(type)
+        window.localStorage.setItem('language', type)
       }
     })
   }
@@ -220,9 +266,11 @@ const Fabs = (props: {
           </Icons>
         </Action>
         <Action
-          text={t('changeLang')}
+          onMouseEnter={() => setInteractLang(true)}
+          onMouseLeave={() => setInteractLang(false)}
+          text={interactLang ? '' : t('changeLang')}
           style={fabMainStyle}
-          onClick={handleLangOnClick}
+          onClick={() => setInteractLang(!interactLang)}
           onContextMenu={handleContextMenu}
         >
           <Icons theme={metadata.dataTheme}>
@@ -235,6 +283,38 @@ const Fabs = (props: {
               onContextMenu={(e) => e.preventDefault()}
             />
           </Icons>
+          <SideFabContainer $hover={interactLang}>
+            <SideFab
+              onClick={() => {
+                handleLangOnClick('ko')
+              }}
+              $index={1}
+              $hover={interactLang}
+              style={{ backgroundColor: metadata.changeColor }}
+            >
+              <SideFabSpan className='right-[0.2rem]'>한국어</SideFabSpan>
+            </SideFab>
+            <SideFab
+              onClick={() => {
+                handleLangOnClick('en')
+              }}
+              $index={2}
+              $hover={interactLang}
+              style={{ backgroundColor: metadata.changeColor }}
+            >
+              <SideFabSpan className='right-[0rem]'>English</SideFabSpan>
+            </SideFab>
+            <SideFab
+              onClick={() => {
+                handleLangOnClick('cn')
+              }}
+              $index={3}
+              $hover={interactLang}
+              style={{ backgroundColor: metadata.changeColor }}
+            >
+              <SideFabSpan className='right-[0.2rem]'>中国人</SideFabSpan>
+            </SideFab>
+          </SideFabContainer>
         </Action>
         <Action
           text={t('changelog')}

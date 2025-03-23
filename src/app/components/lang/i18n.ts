@@ -5,6 +5,7 @@ import { initReactI18next } from 'react-i18next'
 
 import langEN from './lang.en.json'
 import langKO from './lang.ko.json'
+import langCN from './lang.cn.json'
 
 const resources = {
   ko: {
@@ -12,6 +13,9 @@ const resources = {
   },
   en: {
     translation: langEN,
+  },
+  cn: {
+    translation: langCN,
   },
 }
 
