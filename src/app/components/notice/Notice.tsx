@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 
 import { noticeType } from '@/data/notice/noticeType'
@@ -26,36 +27,58 @@ const Box = (props: {
 }
 
 const Notice = () => {
-  const notices = useQuery({
+  const {
+    data: notices = [],
+    isError,
+  } = useQuery({
     queryKey: ['notice'],
     queryFn: noticeAPI,
     staleTime: 5 * 60 * 1000,
+    retry: 1,
   })
 
   const [num, changeNum] = useState<number>(0)
 
+  const getToday = () => {
+    const d = new Date() // Asia/Seoul 기준 브라우저 로컬 타임
+    const mm = String(d.getMonth() + 1).padStart(2, '0') // 01~12
+    const dd = String(d.getDate()).padStart(2, '0') // 01~31
+    return `${mm}/${dd}`
+  }
+
   useEffect(() => {
     setTimeout(() => {
-      changeNum((num + 1) % (notices.data?.length ?? 1))
+      if (notices?.length === 0) return
+      changeNum((num + 1) % (notices?.length ?? 1))
     }, 7000)
-  }, [notices.data?.length, num])
+  }, [notices?.length, num])
 
   return (
     <div className="relative w-full">
-      {notices.data?.map((item, idx) => {
-        return (
-          <React.Fragment key={idx}>
-            <div key={idx} className={idx === num ? '' : 'hidden'}>
-              <Box
-                label={item.label === noticeType.GENERAL ? '공지' : '소식'}
-                title={item.title}
-                date={item.date}
-                url={item.url}
-              />
-            </div>
-          </React.Fragment>
-        )
-      })}
+      {!isError ? (
+        notices?.map((item, idx) => {
+          return (
+            <React.Fragment key={idx}>
+              <div key={idx} className={idx === num ? '' : 'hidden'}>
+                <Box
+                  label={item.label === noticeType.GENERAL ? '공지' : '소식'}
+                  title={item.title}
+                  date={item.date}
+                  url={item.url}
+                />
+              </div>
+            </React.Fragment>
+          )
+        })) : (
+          <div>
+            <Box
+              label={'오류'}
+              title={t('api_error')}
+              date={getToday()} // 오늘 날짜
+              url={'https://monitor.hybus.app/status/bushanyang'}
+            />
+          </div>
+        )}
     </div>
   )
 }
