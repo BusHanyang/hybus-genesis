@@ -344,18 +344,28 @@ const ColoredChip = ({ chipType }: ChipType) => {
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
-  const setting = useQuery({
+  const {
+    data: settingData = null,
+    isPending: isSettingPending,
+    isError: isSettingError,
+  } = useQuery({
     queryKey: ['settings'],
     queryFn: settingAPI,
     staleTime: 5 * 60 * 1000,
+    retry: 1,
   })
 
   const { currTimetable, setCurrTimetable } = useTimeTableContext()
 
   const [season, week] =
-    setting.data !== undefined ? getSeason(setting.data) : [null, null]
+    settingData !== undefined ? getSeason(settingData) : [null, null]
 
-  const timetable = useQuery({
+  const {
+    data: timetable,
+    isPending: isTimetablePending,
+    isError: isTimetableError,
+    status: timetableStatus,
+  } = useQuery({
     queryKey: ['shuttle', season, week, location],
     queryFn: () => {
       if (
@@ -370,7 +380,9 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     },
     staleTime: 30 * 1000,
     enabled: !!season && !!week && !!location,
+    retry: 1,
   })
+
   const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
   const [touched, setTouched] = useState<boolean>(false)
   const [infoClosed, setInfoClosed] = useState<boolean>(
@@ -385,21 +397,22 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [timetable.data, currentTime])
+  }, [timetable, currentTime])
 
   // For info card to not show when error or no shuttle available
   useEffect(() => {
-    const filtered = timetable.data?.filter((val) => isAfterCurrentTime(val))
+    const filtered = timetable?.filter((val) => isAfterCurrentTime(val))
     if (
-      timetable.data?.length === 0 ||
-      timetable.status !== 'success' ||
-      filtered?.length === 0
+      timetable?.length === 0 ||
+      timetableStatus !== 'success' ||
+      filtered?.length === 0 ||
+      isTimetableError
     ) {
       setTimetableAlive(false)
     } else {
       setTimetableAlive(true)
     }
-  }, [timetable.data, timetable.status])
+  }, [isTimetableError, timetable, timetableStatus])
 
   // Set week and season to localStorage
   useEffect(() => {
@@ -445,17 +458,11 @@ export const Shuttle = ({ location }: ShuttleStop) => {
   const RenderTimetable = (showActualTime: boolean): JSX.Element => {
     const { t } = useTranslation()
 
-    if (timetable.data === undefined) {
-      if (currTimetable[0].time !== '')
-        setCurrTimetable([{ type: 'NA', time: '' }])
+    if (isTimetablePending || isSettingPending) {
       return <></>
     }
 
-    if (timetable.isPending) {
-      return <></>
-    }
-
-    if (timetable.status === 'error') {
+    if (isSettingError || isTimetableError || timetableStatus === 'error') {
       if (currTimetable[0].time !== '')
         setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable API error
@@ -474,7 +481,13 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       )
     }
 
-    if (timetable.data.length === 0) {
+    if (timetable === undefined) {
+      if (currTimetable[0].time !== '')
+        setCurrTimetable([{ type: 'NA', time: '' }])
+      return <></>
+    }
+
+    if (timetable.length === 0) {
       if (currTimetable[0].time !== '')
         setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable doesn't exist
@@ -487,7 +500,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       )
     }
 
-    const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+    const filtered = timetable.filter((val) => isAfterCurrentTime(val))
     const reverted = filtered.map((val) => convertUnixToTime(val))
 
     if (filtered.length === 0) {
@@ -583,13 +596,13 @@ export const Shuttle = ({ location }: ShuttleStop) => {
         onMouseUp={handleActionEnd}
       >
         <MainTimetable>
-          {timetable.isPending ? (
+          {isTimetablePending || isSettingPending ? (
             <NoTimetable>
               <SyncLoader
                 color="var(--color-load-color)"
                 margin={4}
                 size={8}
-                loading={timetable.isPending}
+                loading={isTimetablePending || isSettingPending}
                 cssOverride={tw`table-cell align-middle`}
               />
             </NoTimetable>
@@ -601,7 +614,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       </MainTimeTableWrapper>
       <OnTouchAvailableWrapper
         className={
-          timetable.isPending || infoClosed || !timetableAlive ? 'hidden' : ''
+          isTimetablePending || infoClosed || !timetableAlive ? 'hidden' : ''
         }
       >
         {touched ? (
