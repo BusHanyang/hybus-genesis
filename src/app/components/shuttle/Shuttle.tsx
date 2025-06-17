@@ -462,7 +462,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       return <></>
     }
 
-    if (isSettingError || isTimetableError || timetableStatus === 'error') {
+    if (timetableStatus === 'error' || isSettingError || isTimetableError) {
       if (currTimetable[0].time !== '')
         setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable API error
