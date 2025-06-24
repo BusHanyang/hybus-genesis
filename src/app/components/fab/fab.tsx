@@ -11,7 +11,7 @@ import tw from 'twin.macro'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Arrow from '/image/expand_less_white_48dp.svg'
-import SpringImg from '/image/flower.svg'
+//import SpringImg from '/image/flower.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
@@ -128,15 +128,15 @@ const Fabs = (props: {
   React.useLayoutEffect(() => {
     if (theme === 'dark') {
       setMetadata({
-        // changeText: t('light'),
+         changeText: t('light'),
         // changeText: t('christmas'),
-        changeText: t('spring'),
+        // changeText: t('spring'),
         changeColor: '#374151',
         iconColor: 'white',
         dataTheme: 'dark',
-        // imgIcon: LightImg,
+         imgIcon: LightImg,
         // imgIcon: ChristmasImg,
-        imgIcon: SpringImg,
+        // imgIcon: SpringImg,
       })
     } else if (theme === 'christmas') {
       setMetadata({

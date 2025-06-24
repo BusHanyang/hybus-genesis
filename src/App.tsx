@@ -201,12 +201,14 @@ function App() {
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
+  {/** 테마 Alert state
   const [themeAlert, setThemeAlert] = useState<boolean>(
     //window.localStorage.getItem('xmas_alert') === null,
     window.localStorage.getItem('spring_2025') === null,
-  )
-  const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
+  )*/}
 
+  const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
+  
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
@@ -311,17 +313,20 @@ function App() {
         document.body.classList.remove('christmas')
         document.body.classList.remove('spring')
         document.body.classList.add('dark')
-      } else if (localTheme === 'christmas') {
-        document.body.classList.add('light') // 강제 light 적용
+      } else if (localTheme === 'christmas' || localTheme === 'spring') {
+        // 강제 light 적용
+        document.body.classList.add('light')
         document.body.classList.remove('spring')
         document.body.classList.remove('christmas')
         document.body.classList.remove('dark')
         toggleTheme()
+      {/** 봄 테마 사용 시
       } else if (localTheme === 'spring') {
-        document.body.classList.remove('light')
-        document.body.classList.remove('dark')
-        document.body.classList.remove('christmas')
-        document.body.classList.add('spring')
+          document.body.classList.remove('light')
+          document.body.classList.remove('dark')
+          document.body.classList.remove('christmas')
+          document.body.classList.add('spring')
+      */}
       } else {
         document.body.classList.remove('dark')
         document.body.classList.remove('christmas')
@@ -336,6 +341,7 @@ function App() {
     setTouchPrompt(status)
   }, [])
 
+  {/** 테마 사용시 최초 Alert
   useEffect(() => {
     const status = window.localStorage.getItem('spring_2025') === null
     setThemeAlert(status)
@@ -348,6 +354,7 @@ function App() {
       window.localStorage.setItem('spring_2025', 'false')
     }
   }, [themeAlert])
+  */}
 
   return (
     <>

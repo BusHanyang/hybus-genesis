@@ -36,6 +36,7 @@ export const useDarkMode = () => {
       document.body.style.backgroundColor = '#fff4f4'
       if (BAR_STYLE) setBarStyle('#fff4f4')
     } else {
+      // THEME.LIGHT
       document.body.style.backgroundColor = '#FFFFFF'
       if (BAR_STYLE) setBarStyle('#FFFFFF')
     }
@@ -54,16 +55,26 @@ export const useDarkMode = () => {
       window.localStorage.setItem('theme', THEME.DARK)
       setCookie('_theme', THEME.DARK, 180)
       setTheme(THEME.DARK)
+    {/** Another Theme
     } else if (theme === THEME.DARK) {
-      //if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#b23e3e')
-      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#fff4f4')
-      document.body.style.backgroundColor = '#fff4f4'
-      //document.body.classList.add('christmas')
-      document.body.classList.add('spring')
+      {/** Christmas
+        if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#b23e3e')
+        document.body.classList.add('christmas')
+
+        window.localStorage.setItem('theme', THEME.CHRISTMAS)
+        setCookie('_theme', THEME.CHRISTMAS, 180)
+        setTheme(THEME.CHRISTMAS)
+      */}
+      {/** Spring
+        if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#fff4f4')
+        document.body.style.backgroundColor = '#fff4f4'
+        document.body.classList.add('spring')
+
+        window.localStorage.setItem('theme', THEME.SPRING)
+        setCookie('_theme', THEME.SPRING, 180)
+        setTheme(THEME.SPRING)
+      */}
       //document.body.classList.add('dark')
-      window.localStorage.setItem('theme', THEME.SPRING)
-      setCookie('_theme', THEME.SPRING, 180)
-      setTheme(THEME.SPRING)
     } else {
       // Change to Light Mode (Default)
       if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#FFFFFF')
