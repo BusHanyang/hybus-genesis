@@ -2,10 +2,12 @@ import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
+import { Transition } from 'react-transition-group'
 import styled, { css } from 'styled-components'
 import { Reset } from 'styled-reset'
 import tw from 'twin.macro'
 
+import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
@@ -13,12 +15,13 @@ import { useDarkMode } from '@/components/useDarkMode'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
-import Refreshing from './app/components/ptr/refreshing-content'  
+import Refreshing from './app/components/ptr/refreshing-content'
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
 const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
 const ModalOpen = lazy(() => import('@/components/modal/modalOpen'))
 const Subway = lazy(() => import('@/components/subway/Subway'))
+const RouteMap = lazy(() => import('@/components/routemap/RouteMap'))
 
 const Apps = styled.div`
   ${tw`
@@ -33,17 +36,22 @@ const Circle = styled.span<{ theme: string }>`
     h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1
   `}
 
-  ${({ theme }) => theme === 'spring' &&
-  css`
-    /* For Heart Shape */
-    ${tw`rotate-45 scale-75 rounded-none`}
+  ${({ theme }) =>
+    theme === 'spring' &&
+    css`
+      /* For Heart Shape */
+      ${tw`rotate-45 scale-75 rounded-none`}
 
-    &::before,&::after {
-      ${tw`absolute w-full h-full rounded-full bg-inherit content-['']`}
-    }
-    &::before { left: -50%; }
-    &::after { top: -50%; }
-  `}
+      &::before,&::after {
+        ${tw`absolute w-full h-full rounded-full bg-inherit content-['']`}
+      }
+      &::before {
+        left: -50%;
+      }
+      &::after {
+        top: -50%;
+      }
+    `}
 `
 
 const CopyRightText = styled.p`
@@ -92,6 +100,7 @@ const Button = styled(CardView)`
     flex will-change-transform overflow-hidden cursor-default 
     border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text 
   `}
+
   &.active {
     ${tw`
       bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
@@ -115,14 +124,27 @@ const HelpIcon = styled(HelpImg)`
   ${tw`bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
 `
 
-const RouteIndexCardView = styled(CardView)`
-  ${tw`p-4 h-12 hm:p-2 flex`}
+const RouteIndexCardView = styled(CardView)<{ status: string }>`
+  ${tw`relative p-4 h-12 hsm:h-20 hm:p-2 transition-[height] ease-in-out duration-150`}
+  ${(props) =>
+    props.status === 'entered'
+      ? tw`h-[13.7rem] hm:h-[11.7rem]`
+      : tw`h-14 hsm:h-16`}
 `
 
 const RouteIndexWrapper = styled.div`
   ${tw`flex flex-wrap place-content-center items-center`}
 `
 
+const RouteIndexContainer = styled.div<{ status: string }>`
+  ${tw`absolute top-0 inset-0 flex place-content-center items-center transition ease-in-out duration-300`}
+  ${(props) => (props.status === 'exited' ? tw`opacity-100` : tw`opacity-0`)}
+  ${(props) => (props.status === 'entered' ? tw`hidden` : tw``)}
+`
+const RouteToggleImage = styled(Arrow)<{ status: string }>`
+  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto h-[1.2rem] w-[1.2rem] opacity-80 transition ease-in-out duration-150`}
+  ${(props) => (props.status === 'entered' ? tw`rotate-0` : tw`rotate-180`)}
+`
 const SegmentedControl = styled.div`
   ${tw`
     relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform
@@ -146,7 +168,7 @@ const SegmentedControlWrapper = styled.div<{
 `
 
 const OptionWrapper = styled.div`
-  ${tw`relative z-10 flex items-center items-center justify-center`}
+  ${tw`relative z-10 flex items-center justify-center`}
 `
 
 const ActiveIndicator = styled.div<{ $activeIndex: number }>`
@@ -185,6 +207,8 @@ function App() {
     window.localStorage.getItem('spring_2025') === null,
   )*/}
 
+  const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
+  
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
@@ -324,7 +348,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if(themeAlert){
+    if (themeAlert) {
       setModalTarget('Spring')
       openModal()
       window.localStorage.setItem('spring_2025', 'false')
@@ -346,9 +370,7 @@ function App() {
                   onRefresh={handleRefresh}
                   //backgroundColor={}
                   pullingContent=""
-                  refreshingContent={
-                    <Refreshing mode={theme} />
-                  }
+                  refreshingContent={<Refreshing mode={theme} />}
                   resistance={3}
                   //className="transition-colors"
                 >
@@ -366,9 +388,8 @@ function App() {
                               onClick={handleModalTarget}
                               onContextMenu={handleContextMenu}
                               //draggable="false"
-                              fill='var(--color-theme-text)'
-                            >
-                            </HelpIcon>
+                              fill="var(--color-theme-text)"
+                            ></HelpIcon>
                           </Title>
                         </HeadlineWrapper>
                         <NoticeWrapper>
@@ -407,7 +428,9 @@ function App() {
                           $tab={tab}
                         >
                           <SegmentedControl>
-                            <ActiveIndicator $activeIndex={realtimeMode ? 117 : 5} />
+                            <ActiveIndicator
+                              $activeIndex={realtimeMode ? 117 : 5}
+                            />
                             <OptionWrapper>
                               <input
                                 type="radio"
@@ -437,26 +460,42 @@ function App() {
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
-
-                      <RouteIndexCardView>
-                        <RouteIndexWrapper>
-                          <CycleCircle theme={theme} />
-                          <RouteText>{t('cycle_index')}</RouteText>
-                        </RouteIndexWrapper>
-                        <RouteIndexWrapper>
-                          <DirectCircle theme={theme} />
-                          <RouteText>{t('direct_index')}</RouteText>
-                        </RouteIndexWrapper>
-                        <RouteIndexWrapper>
-                          <YesulinCircle theme={theme} />
-                          <RouteText>{t('yesulin_index')}</RouteText>
-                        </RouteIndexWrapper>
-                        <RouteIndexWrapper>
-                          <JungangCircle theme={theme} />
-                          <RouteText>{t('jungang_index')}</RouteText>
-                        </RouteIndexWrapper>
-                      </RouteIndexCardView>
-
+                      <Transition in={routeCardClick} timeout={150}>
+                        {(state) => (
+                          <>
+                            <RouteIndexCardView
+                              status={state}
+                              onClick={() => {
+                                setRouteCardClick(!routeCardClick)
+                              }}
+                            >
+                              <RouteIndexContainer status={state}>
+                                <RouteIndexWrapper>
+                                  <CycleCircle theme={theme} />
+                                  <RouteText>{t('cycle_index')}</RouteText>
+                                </RouteIndexWrapper>
+                                <RouteIndexWrapper>
+                                  <DirectCircle theme={theme} />
+                                  <RouteText>{t('direct_index')}</RouteText>
+                                </RouteIndexWrapper>
+                                <RouteIndexWrapper>
+                                  <YesulinCircle theme={theme} />
+                                  <RouteText>{t('yesulin_index')}</RouteText>
+                                </RouteIndexWrapper>
+                                <RouteIndexWrapper>
+                                  <JungangCircle theme={theme} />
+                                  <RouteText>{t('jungang_index')}</RouteText>
+                                </RouteIndexWrapper>
+                              </RouteIndexContainer>
+                              <RouteMap status={state} tab={tab} />
+                              <RouteToggleImage
+                                fill="var(--color-arrow-color)"
+                                status={state}
+                              />
+                            </RouteIndexCardView>
+                          </>
+                        )}
+                      </Transition>
                       <StationButtonWrapper>
                         <Button
                           id="shuttlecoke_o"

@@ -9,7 +9,7 @@ export const useDarkMode = () => {
   const setCookie = (
     cookieName: string,
     cookieValue: string,
-    validDay: number
+    validDay: number,
   ) => {
     const d = new Date()
     d.setTime(d.getTime() + validDay * (24 * 60 * 60 * 1000))
@@ -22,7 +22,7 @@ export const useDarkMode = () => {
     (color: string) => {
       BAR_STYLE?.setAttribute('content', color)
     },
-    [BAR_STYLE]
+    [BAR_STYLE],
   )
 
   const setBackground = useCallback(() => {
@@ -43,7 +43,6 @@ export const useDarkMode = () => {
     //theme === THEME.DARK ? setBarStyle('#27272A') : setBarStyle('#FFFFFF')
     //document.body.style.backgroundColor = 'var(--color-theme-main)'
   }, [BAR_STYLE, setBarStyle, theme])
-
 
   const toggleTheme = useCallback(() => {
     document.body.classList.add('transition-colors')

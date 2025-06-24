@@ -291,7 +291,7 @@ const Subway = ({ station }: SubwayStop) => {
   const openApiMonitor = () => {
     window.open(
       'https://monitor.hybus.app/status/bushanyang',
-      '_black',
+      '_blank',
       'noopener noreferrer',
     )
   }
@@ -422,7 +422,7 @@ const Subway = ({ station }: SubwayStop) => {
           <TimetableLoadingContainer>
             <NoTimetable>
               <SyncLoader
-                color='var(--color-load-color)'
+                color="var(--color-load-color)"
                 margin={4}
                 size={8}
                 loading={timetable.isPending}

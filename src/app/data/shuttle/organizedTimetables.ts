@@ -4,5 +4,6 @@ export type OrganizedTimetables = {
   circle: Array<string>
   directY: Array<string>
   jungang: Array<string>
+  isShuttleI: boolean
   count: number
 }

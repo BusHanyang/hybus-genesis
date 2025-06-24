@@ -26,15 +26,15 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    lng: "ko", // 강제기본값
+    lng: 'ko', // 강제기본값
     fallbackLng: 'ko',
     returnNull: false,
     debug: false,
     resources,
     //ns: ['translation'],
-    detection: { 
+    detection: {
       order: ['querystring', 'cookie', 'localStorage', 'navigator'],
-      caches: ['cookie', 'localStorage']
+      caches: ['cookie', 'localStorage'],
     },
     interpolation: {
       escapeValue: false, // not needed for react as it escapes by default

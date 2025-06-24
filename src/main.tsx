@@ -9,6 +9,7 @@ import ReactDOM from 'react-dom/client'
 import { RecoilRoot } from 'recoil'
 
 import { DarkmodeContextProvider } from '@/context/ThemeContext'
+import { TimeTableContextProvider } from '@/context/TimeTableContext'
 
 import App from './App'
 // import { Ptr } from './app/components/ptr/Ptr'
@@ -34,20 +35,23 @@ ReactDOM.createRoot(root).render(
         <Partytown debug={false} forward={['dataLayer.push']} />
         <DarkmodeContextProvider>
           {/* Effect 
-          <Snowfall
-            //color={'#B4CCCF'}
-            images={flakes}
-            snowflakeCount={28}
-            wind={[-0.5, 0.5]}
-            radius={[14.0, 16.0]}
-            style={{
-              zIndex: 1,
-              position: 'fixed',
-              height: '100vh',
-              pointerEvents: 'none',
-            }}
-          /> */}
-          <App />
+            <Snowfall
+              //color={'#B4CCCF'}
+              images={flakes}
+              snowflakeCount={28}
+              wind={[-0.5, 0.5]}
+              radius={[14.0, 16.0]}
+              style={{
+                zIndex: 2,
+                position: 'fixed',
+                height: '100vh',
+                pointerEvents: 'none',
+              }}
+            /> 
+          */}
+          <TimeTableContextProvider>
+            <App />
+          </TimeTableContextProvider>
         </DarkmodeContextProvider>
       </RecoilRoot>
     </QueryClientProvider>

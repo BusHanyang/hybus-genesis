@@ -183,9 +183,12 @@ const Fabs = (props: {
             onContextMenu={handleContextMenu}
           />
         }
-        mainButtonStyles={{ 
-          backgroundColor: metadata.dataTheme === 'light' ? '#7099C1' : 'var(--color-fab-color)', 
-          fontSize: '10px'
+        mainButtonStyles={{
+          backgroundColor:
+            metadata.dataTheme === 'light'
+              ? '#7099C1'
+              : 'var(--color-fab-color)',
+          fontSize: '10px',
         }}
         style={{
           position: 'absolute',
