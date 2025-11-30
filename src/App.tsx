@@ -197,6 +197,8 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
+  const [noticeContent, setNoticeContent] = useState<string>('')
+  const [noticeTitle, setNoticeTitle] = useState<string>('')
   const { toggleTheme } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
@@ -221,6 +223,13 @@ function App() {
   const handleModalTarget = () => {
     openModal()
     setModalTarget('Info')
+  }
+
+  const handleNoticeModalOpen = (content: string, title: string) => {
+    setNoticeContent(content)
+    setNoticeTitle(title)
+    setModalTarget('Notice')
+    openModal()
   }
 
   const closeModal = () => {
@@ -403,7 +412,7 @@ function App() {
                         </HeadlineWrapper>
                         <NoticeWrapper>
                           <Suspense fallback={<div />}>
-                            <Notice />
+                            <Notice onModalOpen={handleNoticeModalOpen} />
                           </Suspense>
                         </NoticeWrapper>
                       </header>
@@ -585,6 +594,8 @@ function App() {
                     openModal={openModal}
                     closeModal={closeModal}
                     mTarget={modalTarget}
+                    noticeContent={noticeContent}
+                    noticeTitle={noticeTitle}
                   />
                 </Suspense>
               </>

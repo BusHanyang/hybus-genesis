@@ -5,4 +5,5 @@ export type NoticeInfo = {
   title: string
   date: string
   url: string
+  content: string
 }
