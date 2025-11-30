@@ -34,6 +34,8 @@ const ModalOpen = (props: {
   openModal: () => void
   closeModal: () => void
   mTarget: string
+  noticeContent?: string
+  noticeTitle?: string
 }) => {
   const changelogs = useQuery({
     queryKey: ['changelog'],
@@ -100,6 +102,21 @@ const ModalOpen = (props: {
                   <ModalFooterButton onClick={toggleTheme}>
                     {t('spring_btn')}
                   </ModalFooterButton>
+                </>
+              )}
+              {props.mTarget === 'Notice' && (
+                <>
+                  {props.noticeTitle && (
+                    <h3 className="font-bold text-lg mb-3">
+                      {props.noticeTitle}
+                    </h3>
+                  )}
+                  <div
+                    className="whitespace-pre-wrap"
+                    dangerouslySetInnerHTML={{
+                      __html: props.noticeContent || '',
+                    }}
+                  />
                 </>
               )}
             </ChangelogDiv>
