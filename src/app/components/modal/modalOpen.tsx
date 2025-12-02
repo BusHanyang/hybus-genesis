@@ -34,6 +34,8 @@ const ModalOpen = (props: {
   openModal: () => void
   closeModal: () => void
   mTarget: string
+  noticeContent?: string
+  noticeTitle?: string
 }) => {
   const changelogs = useQuery({
     queryKey: ['changelog'],
@@ -56,7 +58,7 @@ const ModalOpen = (props: {
       >
         <div
           className="font-Ptd"
-          style={{ overflow: 'auto', maxHeight: '450px' }}
+          style={{ overflow: 'auto', maxHeight: '450px', }}
         >
           <ContentArea>
             <ChangelogDiv>
@@ -100,6 +102,18 @@ const ModalOpen = (props: {
                   <ModalFooterButton onClick={() => toggleTheme('spring')}>
                     {t('spring_btn')}
                   </ModalFooterButton>
+                </>
+              )}
+              {props.mTarget === 'Notice' && (
+                <>
+                  {props.noticeTitle && (
+                    <h3 className="font-bold text-lg mb-3">
+                      {props.noticeTitle}
+                    </h3>
+                  )}
+                  <div className="whitespace-pre-wrap leading-relaxed">
+                    {props.noticeContent || ''}
+                  </div>
                 </>
               )}
               {props.mTarget === 'Frozen' && (

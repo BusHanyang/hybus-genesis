@@ -9,10 +9,19 @@ const Box = (props: {
   label: string
   title: string
   date: string
+  content: string
+  onModalOpen: (content: string, title: string) => void
 }) => {
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (props.content.trim() !== '' || props.url.trim() === '') {
+      e.preventDefault()
+      props.onModalOpen(props.content, props.title)
+    }
+  }
+
   return (
     <div className="animate-carousel">
-      <a className="cursor-default " href={props.url}>
+      <a className="cursor-default " href={props.url} onClick={handleClick}>
         <div className="grid grid-flow-col  grid-cols-5 gap-2">
           <p className="col-span-1 font-bold text-base text-chip-red">
             {props.label}
@@ -25,7 +34,9 @@ const Box = (props: {
   )
 }
 
-const Notice = () => {
+const Notice = (props: {
+  onModalOpen: (content: string, title: string) => void
+}) => {
   const notices = useQuery({
     queryKey: ['notice'],
     queryFn: noticeAPI,
@@ -51,6 +62,8 @@ const Notice = () => {
                 title={item.title}
                 date={item.date}
                 url={item.url}
+                content={item.content}
+                onModalOpen={props.onModalOpen}
               />
             </div>
           </React.Fragment>
