@@ -25,6 +25,7 @@
     --color-control-active: theme('colors.blue.400');
     --color-button-active: theme('colors.blue.300');
     --color-fab-color: #7099c1;
+    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
     --color-ontouch-bg: theme('colors.slate.200');
     --color-ptr-color: theme('colors.gray.700');
     --color-load-color: #afbdce;
@@ -49,6 +50,7 @@
     --color-control-active: theme('colors.blue.400');
     --color-button-active: theme('colors.blue.300');
     --color-fab-color: #7099c1;
+    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
     --color-ontouch-bg: theme('colors.slate.500');
     --color-ptr-color: #ffffff;
     --color-load-color: #afbdce;
@@ -73,6 +75,7 @@
     --color-control-active: #6ba768;
     --color-button-active: #9be1c6;
     --color-fab-color: #7099c1;
+    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
     --color-ontouch-bg: theme('colors.slate.500');
     --color-ptr-color: #ffffff;
     --color-load-color: #afbdce;
@@ -86,6 +89,30 @@
     --color-ft-selected: #ffffff;
   }
 
+  .frozen {
+    --color-theme-main: #eff8ff;
+    --color-theme-card: #fcffff;
+    --color-theme-text: #0D2C61;
+    --color-theme-border: none;
+    --color-theme-shadow: 0 0.175rem 0.5rem rgba(155, 175, 240, 0.53);
+    --color-control-main: #e2e8f0;
+    --color-control-active: #83a4ff;
+    --color-button-active: #C4D2FF;
+    --color-fab-color: #7d94d3;
+    --color-fab-shadow: 0 0 4px rgba(92, 119, 191, .34), 0 4px 8px rgba(92, 119, 191, .48);
+    --color-ontouch-bg: #c1d1ff;
+    --color-ptr-color: #697fb9;
+    --color-load-color: #bae6fd;
+    --color-arrow-color: #94a3b8;
+
+    --color-ft-element: #d8e3f1;
+    --color-ft-active: #c1d1ff;
+    --color-ft-active-text: #283963;
+    --color-ft-text: #5a687c;
+    --color-ft-border: #b0bac7;
+    --color-ft-selected: #283963;
+  }
+
   /* Spring */
   .spring {
     --color-theme-main: #fff4f4;
@@ -97,6 +124,7 @@
     --color-control-active: #f16da4;
     --color-button-active: #fec1dc;
     --color-fab-color: #db659e;
+    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
     --color-ontouch-bg: #ffd8ea;
     --color-ptr-color: #c9255e;
     --color-load-color: #c9255e;
