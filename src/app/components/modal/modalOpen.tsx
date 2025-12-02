@@ -41,8 +41,8 @@ const ModalOpen = (props: {
     staleTime: 5 * 60 * 1000,
   })
 
-  const toggleTheme = () => {
-    window.localStorage.setItem('theme', 'frozen')
+  const toggleTheme = (themeName: string) => {
+    window.localStorage.setItem('theme', themeName)
     window.location.reload()
   }
 
@@ -87,7 +87,7 @@ const ModalOpen = (props: {
                   <Trans i18nKey="christmas_txt" />
                   <br />
 
-                  <ModalFooterButton onClick={toggleTheme}>
+                  <ModalFooterButton onClick={() => toggleTheme('christmas')}>
                     {t('christmas_btn')}
                   </ModalFooterButton>
                 </>
@@ -97,7 +97,7 @@ const ModalOpen = (props: {
                   <Trans i18nKey="spring_txt" />
                   <br />
 
-                  <ModalFooterButton onClick={toggleTheme}>
+                  <ModalFooterButton onClick={() => toggleTheme('spring')}>
                     {t('spring_btn')}
                   </ModalFooterButton>
                 </>
@@ -107,7 +107,7 @@ const ModalOpen = (props: {
                   <Trans i18nKey="frozen_txt" />
                   <br />
 
-                  <ModalFooterButton onClick={toggleTheme}>
+                  <ModalFooterButton onClick={() => toggleTheme('frozen')}>
                     {t('frozen_btn')}
                   </ModalFooterButton>
                 </>
