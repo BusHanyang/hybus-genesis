@@ -58,11 +58,7 @@ const ModalOpen = (props: {
       >
         <div
           className="font-Ptd"
-          style={
-            props.mTarget === 'Notice'
-              ? { overflow: 'hidden' }
-              : { overflow: 'auto', maxHeight: '450px' }
-          }
+          style={{ overflow: 'auto', maxHeight: '450px', }}
         >
           <ContentArea>
             <ChangelogDiv>
@@ -115,7 +111,7 @@ const ModalOpen = (props: {
                       {props.noticeTitle}
                     </h3>
                   )}
-                  <div className="whitespace-pre-wrap">
+                  <div className="whitespace-pre-wrap leading-relaxed">
                     {props.noticeContent || ''}
                   </div>
                 </>
