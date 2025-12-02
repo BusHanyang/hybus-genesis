@@ -25,7 +25,7 @@ const ModalButton = styled.button`
   ${tw`outline-none cursor-pointer border-0`}
 `
 const ModalFooterButton = styled(ModalButton)`
-  ${tw`mt-6 py-6 w-full text-white bg-rose-400 font-Ptd font-bold text-lg rounded-md`}
+  ${tw`mt-6 py-6 w-full text-white bg-indigo-400 font-Ptd font-bold text-lg rounded-md`}
 `
 
 const ModalOpen = (props: {
@@ -41,8 +41,8 @@ const ModalOpen = (props: {
     staleTime: 5 * 60 * 1000,
   })
 
-  const toggleTheme = () => {
-    window.localStorage.setItem('theme', 'spring')
+  const toggleTheme = (themeName: string) => {
+    window.localStorage.setItem('theme', themeName)
     window.location.reload()
   }
 
@@ -87,7 +87,7 @@ const ModalOpen = (props: {
                   <Trans i18nKey="christmas_txt" />
                   <br />
 
-                  <ModalFooterButton onClick={toggleTheme}>
+                  <ModalFooterButton onClick={() => toggleTheme('christmas')}>
                     {t('christmas_btn')}
                   </ModalFooterButton>
                 </>
@@ -97,8 +97,18 @@ const ModalOpen = (props: {
                   <Trans i18nKey="spring_txt" />
                   <br />
 
-                  <ModalFooterButton onClick={toggleTheme}>
+                  <ModalFooterButton onClick={() => toggleTheme('spring')}>
                     {t('spring_btn')}
+                  </ModalFooterButton>
+                </>
+              )}
+              {props.mTarget === 'Frozen' && (
+                <>
+                  <Trans i18nKey="frozen_txt" />
+                  <br />
+
+                  <ModalFooterButton onClick={() => toggleTheme('frozen')}>
+                    {t('frozen_btn')}
                   </ModalFooterButton>
                 </>
               )}

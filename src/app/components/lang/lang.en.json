@@ -122,5 +122,9 @@
 
   "spring": "Happy Spring!",
   "spring_txt": "Discover the new spring theme now🌸 <br/>  You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
-  "spring_btn": "Coloring with flowers 🌸"
+  "spring_btn": "Coloring with flowers 🌸",
+
+  "frozen": "Frozen Theme",
+  "frozen_txt": "Discover the new frozen theme now❄️ <br/> You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
+  "frozen_btn": "Switch Now ❄️"
 }

@@ -16,6 +16,7 @@ import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
+import SnowflakeImg from '/image/snowflake.svg'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
@@ -128,15 +129,17 @@ const Fabs = (props: {
   React.useLayoutEffect(() => {
     if (theme === 'dark') {
       setMetadata({
-         changeText: t('light'),
-        // changeText: t('christmas'),
-        // changeText: t('spring'),
         changeColor: '#374151',
+        //changeText: t('light'),
+        //imgIcon: LightImg,
         iconColor: 'white',
         dataTheme: 'dark',
-         imgIcon: LightImg,
+        // changeText: t('christmas'),
         // imgIcon: ChristmasImg,
+        // changeText: t('spring'),
         // imgIcon: SpringImg,
+        changeText: t('frozen'),
+        imgIcon: SnowflakeImg,
       })
     } else if (theme === 'christmas') {
       setMetadata({
@@ -152,6 +155,14 @@ const Fabs = (props: {
         changeColor: '#e37da6',
         iconColor: 'white',
         dataTheme: 'spring',
+        imgIcon: LightImg,
+      })
+    } else if (theme === 'frozen') {
+      setMetadata({
+        changeText: t('light'),
+        changeColor: '#647ab3',
+        iconColor: 'white',
+        dataTheme: 'frozen',
         imgIcon: LightImg,
       })
     } else {
