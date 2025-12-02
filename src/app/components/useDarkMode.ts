@@ -80,12 +80,12 @@ export const useDarkMode = () => {
       //document.body.classList.add('dark')
     } else if (theme === THEME.DARK) {
       if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#eff8ff')
-        document.body.style.backgroundColor = '#eff8ff'
-        document.body.classList.add('frozen')
+      document.body.style.backgroundColor = '#eff8ff'
+      document.body.classList.add('frozen')
 
-        window.localStorage.setItem('theme', THEME.FROZEN)
-        setCookie('_theme', THEME.FROZEN, 180)
-        setTheme(THEME.FROZEN)
+      window.localStorage.setItem('theme', THEME.FROZEN)
+      setCookie('_theme', THEME.FROZEN, 180)
+      setTheme(THEME.FROZEN)
     } else {
       // Change to Light Mode (Default)
       if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#FFFFFF')
