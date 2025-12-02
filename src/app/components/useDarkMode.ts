@@ -35,6 +35,9 @@ export const useDarkMode = () => {
     } else if (theme === THEME.SPRING) {
       document.body.style.backgroundColor = '#fff4f4'
       if (BAR_STYLE) setBarStyle('#fff4f4')
+    } else if (theme === THEME.FROZEN) {
+      document.body.style.backgroundColor = '#eff8ff'
+      if (BAR_STYLE) setBarStyle('#7dade3')
     } else {
       // THEME.LIGHT
       document.body.style.backgroundColor = '#FFFFFF'
@@ -75,6 +78,14 @@ export const useDarkMode = () => {
         setTheme(THEME.SPRING)
       */}
       //document.body.classList.add('dark')
+    } else if (theme === THEME.DARK) {
+      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#7dade3')
+        document.body.style.backgroundColor = '#7dade3'
+        document.body.classList.add('frozen')
+
+        window.localStorage.setItem('theme', THEME.FROZEN)
+        setCookie('_theme', THEME.FROZEN, 180)
+        setTheme(THEME.FROZEN)
     } else {
       // Change to Light Mode (Default)
       if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#FFFFFF')

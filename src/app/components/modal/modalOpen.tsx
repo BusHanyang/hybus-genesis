@@ -25,7 +25,7 @@ const ModalButton = styled.button`
   ${tw`outline-none cursor-pointer border-0`}
 `
 const ModalFooterButton = styled(ModalButton)`
-  ${tw`mt-6 py-6 w-full text-white bg-rose-400 font-Ptd font-bold text-lg rounded-md`}
+  ${tw`mt-6 py-6 w-full text-white bg-indigo-400 font-Ptd font-bold text-lg rounded-md`}
 `
 
 const ModalOpen = (props: {
@@ -42,7 +42,7 @@ const ModalOpen = (props: {
   })
 
   const toggleTheme = () => {
-    window.localStorage.setItem('theme', 'spring')
+    window.localStorage.setItem('theme', 'frozen')
     window.location.reload()
   }
 
@@ -99,6 +99,16 @@ const ModalOpen = (props: {
 
                   <ModalFooterButton onClick={toggleTheme}>
                     {t('spring_btn')}
+                  </ModalFooterButton>
+                </>
+              )}
+              {props.mTarget === 'Frozen' && (
+                <>
+                  <Trans i18nKey="frozen_txt" />
+                  <br />
+
+                  <ModalFooterButton onClick={toggleTheme}>
+                    {t('frozen_btn')}
                   </ModalFooterButton>
                 </>
               )}

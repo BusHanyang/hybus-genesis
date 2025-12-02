@@ -2,7 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+.rtf--ab {
+  transition-property: color, background-color, box-shadow, border;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-in-out;
+  box-shadow: var(--color-fab-shadow) !important;
+}
+
 .rtf {
+  .rtf--mb {
+    box-shadow: var(--color-fab-shadow) !important;
+  }
   &.open {
     .rtf--mb {
       > * {

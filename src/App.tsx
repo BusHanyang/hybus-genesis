@@ -201,11 +201,12 @@ function App() {
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
-  {/** 테마 Alert state
+  {/** 테마 Alert state */}
   const [themeAlert, setThemeAlert] = useState<boolean>(
-    //window.localStorage.getItem('xmas_alert') === null,
-    window.localStorage.getItem('spring_2025') === null,
-  )*/}
+    // window.localStorage.getItem('xmas_alert') === null,
+    // window.localStorage.getItem('spring_2025') === null,
+    window.localStorage.getItem('frozen_2025') === null,
+  )
 
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
   
@@ -312,6 +313,7 @@ function App() {
         document.body.classList.remove('light')
         document.body.classList.remove('christmas')
         document.body.classList.remove('spring')
+        document.body.classList.remove('frozen')
         document.body.classList.add('dark')
       } else if (localTheme === 'christmas' || localTheme === 'spring') {
         // 강제 light 적용
@@ -325,12 +327,20 @@ function App() {
           document.body.classList.remove('light')
           document.body.classList.remove('dark')
           document.body.classList.remove('christmas')
+          document.body.classList.remove('frozen')
           document.body.classList.add('spring')
       */}
+      } else if (localTheme === 'frozen') {
+          document.body.classList.remove('light')
+          document.body.classList.remove('dark')
+          document.body.classList.remove('christmas')
+          document.body.classList.remove('spring')
+          document.body.classList.add('frozen')
       } else {
         document.body.classList.remove('dark')
         document.body.classList.remove('christmas')
         document.body.classList.remove('spring')
+        document.body.classList.remove('frozen')
         document.body.classList.add('light')
       }
     }
@@ -341,20 +351,19 @@ function App() {
     setTouchPrompt(status)
   }, [])
 
-  {/** 테마 사용시 최초 Alert
+  {/** 테마 사용시 최초 Alert */}
   useEffect(() => {
-    const status = window.localStorage.getItem('spring_2025') === null
+    const status = window.localStorage.getItem('frozen_2025') === null
     setThemeAlert(status)
   }, [])
 
   useEffect(() => {
     if (themeAlert) {
-      setModalTarget('Spring')
+      setModalTarget('Frozen')
       openModal()
-      window.localStorage.setItem('spring_2025', 'false')
+      window.localStorage.setItem('frozen_2025', 'false')
     }
   }, [themeAlert])
-  */}
 
   return (
     <>
