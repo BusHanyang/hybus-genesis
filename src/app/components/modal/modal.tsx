@@ -107,7 +107,7 @@ export const Modal = (props: {
               <ModalHeader theme={theme}>{t('spring')}</ModalHeader>
             )}
             {props.mTarget === 'Notice' && (
-              <ModalHeader theme={theme}>공지사항</ModalHeader>
+              <ModalHeader theme={theme}>{t('notice')}</ModalHeader>
             )}
 
             <ModalSubMain theme={theme}>{props.children}</ModalSubMain>
