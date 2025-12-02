@@ -79,8 +79,8 @@ export const useDarkMode = () => {
       */}
       //document.body.classList.add('dark')
     } else if (theme === THEME.DARK) {
-      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#7dade3')
-        document.body.style.backgroundColor = '#7dade3'
+      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#eff8ff')
+        document.body.style.backgroundColor = '#eff8ff'
         document.body.classList.add('frozen')
 
         window.localStorage.setItem('theme', THEME.FROZEN)
@@ -92,6 +92,7 @@ export const useDarkMode = () => {
       document.body.classList.remove('dark')
       document.body.classList.remove('christmas')
       document.body.classList.remove('spring')
+      document.body.classList.remove('frozen')
       //document.body.style.backgroundColor = '#FFFFFF'
       window.localStorage.setItem('theme', THEME.LIGHT)
       setCookie('_theme', THEME.LIGHT, 180)
