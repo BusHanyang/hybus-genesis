@@ -125,12 +125,9 @@ const ModalOpen = (props: {
                       {props.noticeTitle}
                     </h3>
                   )}
-                  <div
-                    className="whitespace-pre-wrap"
-                    dangerouslySetInnerHTML={{
-                      __html: props.noticeContent || '',
-                    }}
-                  />
+                  <div className="whitespace-pre-wrap">
+                    {props.noticeContent || ''}
+                  </div>
                 </>
               )}
             </ChangelogDiv>
