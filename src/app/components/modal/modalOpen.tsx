@@ -58,7 +58,11 @@ const ModalOpen = (props: {
       >
         <div
           className="font-Ptd"
-          style={{ overflow: 'auto', maxHeight: '450px' }}
+          style={
+            props.mTarget === 'Notice'
+              ? { overflow: 'hidden' }
+              : { overflow: 'auto', maxHeight: '450px' }
+          }
         >
           <ContentArea>
             <ChangelogDiv>
