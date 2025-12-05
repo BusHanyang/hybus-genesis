@@ -37,7 +37,7 @@ export const useDarkMode = () => {
       if (BAR_STYLE) setBarStyle('#fff4f4')
     } else if (theme === THEME.FROZEN) {
       document.body.style.backgroundColor = '#eff8ff'
-      if (BAR_STYLE) setBarStyle('#7dade3')
+      if (BAR_STYLE) setBarStyle('#eff8ff')
     } else {
       // THEME.LIGHT
       document.body.style.backgroundColor = '#FFFFFF'
