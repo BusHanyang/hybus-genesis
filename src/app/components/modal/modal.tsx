@@ -28,10 +28,13 @@ const ModalButton = styled.button`
   ${tw`outline-none cursor-pointer border-0`}
 `
 
-const ModalSection = styled.section<{ $isani: boolean }>`
-  ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white overflow-auto animate-modalShow`}
+const ModalSection = styled.section<{ $isani: boolean; $mTarget?: string }>`
+  ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white animate-modalShow`}
   ${({ $isani }) => {
     return $isani ? tw`animate-modalClose` : null
+  }}
+  ${({ $mTarget }) => {
+    return $mTarget === 'Notice' ? tw`overflow-hidden` : tw`overflow-auto`
   }}
 `
 
@@ -90,7 +93,7 @@ export const Modal = (props: {
         ref={modalBackgroundRef}
       >
         {props.open ? (
-          <ModalSection $isani={props.ani}>
+          <ModalSection $isani={props.ani} $mTarget={props.mTarget}>
             {props.mTarget === 'Fabs' && (
               <ModalHeader theme={theme}>{t('changelog')}</ModalHeader>
             )}
@@ -102,6 +105,9 @@ export const Modal = (props: {
             )}
             {props.mTarget === 'Spring' && (
               <ModalHeader theme={theme}>{t('spring')}</ModalHeader>
+            )}
+            {props.mTarget === 'Notice' && (
+              <ModalHeader theme={theme}>{t('notice')}</ModalHeader>
             )}
             {props.mTarget === 'Frozen' && (
               <ModalHeader theme={theme}>{t('frozen')}</ModalHeader>
