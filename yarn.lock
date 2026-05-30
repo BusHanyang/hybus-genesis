@@ -1739,15 +1739,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@builder.io/partytown@npm:^0.10.2":
-  version: 0.10.2
-  resolution: "@builder.io/partytown@npm:0.10.2"
-  bin:
-    partytown: bin/partytown.cjs
-  checksum: 10/d7484265fc6734a8b85f38744aac4e8f72a796ccaae8a9d4a4bec166b60af65d320b196f3984eaf46a9e0577342356491bce863cde9757c77150f32881d4c992
-  languageName: node
-  linkType: hard
-
 "@emotion/is-prop-valid@npm:1.2.1":
   version: 1.2.1
   resolution: "@emotion/is-prop-valid@npm:1.2.1"
@@ -2146,6 +2137,17 @@ __metadata:
   version: 0.11.0
   resolution: "@pkgjs/parseargs@npm:0.11.0"
   checksum: 10/115e8ceeec6bc69dff2048b35c0ab4f8bbee12d8bb6c1f4af758604586d802b6e669dcb02dda61d078de42c2b4ddce41b3d9e726d7daa6b4b850f4adbf7333ff
+  languageName: node
+  linkType: hard
+
+"@qwik.dev/partytown@npm:^0.14.0":
+  version: 0.14.0
+  resolution: "@qwik.dev/partytown@npm:0.14.0"
+  dependencies:
+    dotenv: "npm:^16.4.7"
+  bin:
+    partytown: bin/partytown.cjs
+  checksum: 10/d9de937ad5798f1be651b65268b598383444870995ebdb2c9ca4cb6e7a5f45ef4056b1b8d5117f09333c774822863255b4ad7f637607996ecce76ac9570d671b
   languageName: node
   linkType: hard
 
@@ -4018,6 +4020,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"dotenv@npm:^16.4.7":
+  version: 16.6.1
+  resolution: "dotenv@npm:16.6.1"
+  checksum: 10/1d1897144344447ffe62aa1a6d664f4cd2e0784e0aff787eeeec1940ded32f8e4b5b506d665134fc87157baa086fce07ec6383970a2b6d2e7985beaed6a4cc14
+  languageName: node
+  linkType: hard
+
 "eastasianwidth@npm:^0.2.0":
   version: 0.2.0
   resolution: "eastasianwidth@npm:0.2.0"
@@ -5313,7 +5322,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "hybus-genesis@workspace:."
   dependencies:
-    "@builder.io/partytown": "npm:^0.10.2"
+    "@qwik.dev/partytown": "npm:^0.14.0"
     "@tanstack/react-query": "npm:^5.32.1"
     "@types/node": "npm:^20.11.1"
     "@types/react": "npm:18.3.1"

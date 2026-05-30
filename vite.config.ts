@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { partytownVite } from '@builder.io/partytown/utils'
+import { partytownVite } from '@qwik.dev/partytown/utils'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { defineConfig } from 'vite'
