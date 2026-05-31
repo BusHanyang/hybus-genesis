@@ -121,7 +121,8 @@ export const useDotAnimation = (tab: string) => {
     jungang: [false, false, false, false, false, false],
   })
   const currTimetableArray = useTimeTableContext().currTimetable
-  const checkCurrTimetable = React.useRef<SingleShuttleSchedule>()
+  const checkCurrTimetable =
+    React.useRef<SingleShuttleSchedule | undefined>(undefined)
 
   React.useEffect(() => {
     checkCurrTimetable.current = undefined

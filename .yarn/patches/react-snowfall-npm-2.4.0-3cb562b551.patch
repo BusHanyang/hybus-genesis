@@ -1,0 +1,24 @@
+diff --git a/lib/Snowfall.d.ts b/lib/Snowfall.d.ts
+index 347831d1d6e267cdc1772227f9897e4721545892..b5418b6af9378486a0c9fee97bc6d670679754b5 100644
+--- a/lib/Snowfall.d.ts
++++ b/lib/Snowfall.d.ts
+@@ -6,5 +6,5 @@ export interface SnowfallProps extends Partial<SnowfallCanvasConfig> {
+      */
+     style?: React.CSSProperties;
+ }
+-export declare const Snowfall: ({ color, changeFrequency, radius, speed, wind, rotationSpeed, opacity, snowflakeCount, images, enable3DRotation, style, }?: SnowfallProps) => JSX.Element;
++export declare const Snowfall: ({ color, changeFrequency, radius, speed, wind, rotationSpeed, opacity, snowflakeCount, images, enable3DRotation, style, }?: SnowfallProps) => React.JSX.Element;
+ export default Snowfall;
+diff --git a/src/Snowfall.tsx b/src/Snowfall.tsx
+index 08c70d1a03bf85a7ebd5fc0e09fc8ddcc6f0b719..e3ee2ca2927e845682e918fe9085a435d6d3d613 100644
+--- a/src/Snowfall.tsx
++++ b/src/Snowfall.tsx
+@@ -22,7 +22,7 @@ export const Snowfall = ({
+   images,
+   enable3DRotation = defaultConfig.enable3DRotation,
+   style,
+-}: SnowfallProps = {}): JSX.Element => {
++}: SnowfallProps = {}): React.JSX.Element => {
+   const mergedStyle = useSnowfallStyle(style)
+ 
+   const canvasRef = useRef<HTMLCanvasElement>(null)

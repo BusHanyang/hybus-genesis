@@ -219,7 +219,7 @@ const getRapidOrLastElement = (isLast: boolean, isExpress: boolean) => {
   }
 }
 
-const getLineMarkElement = (line: string): JSX.Element => {
+const getLineMarkElement = (line: string): React.JSX.Element => {
   if (line === '4') {
     return (
       <TrainLineIcon
@@ -283,10 +283,12 @@ const Subway = ({ station }: SubwayStop) => {
   const { t, i18n } = useTranslation()
 
   useEffect(() => {
-    setTimeout(() => {
-      isBlink ? setBlink(false) : setBlink(true)
+    const timeout = window.setTimeout(() => {
+      setBlink((prev) => !prev)
     }, 3000)
-  }, [isBlink, setBlink])
+
+    return () => window.clearTimeout(timeout)
+  }, [isBlink])
 
   const openApiMonitor = () => {
     window.open(

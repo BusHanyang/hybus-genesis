@@ -1,0 +1,17 @@
+diff --git a/build/components/pull-to-refresh.d.ts b/build/components/pull-to-refresh.d.ts
+index 68e2ee097c70e9e5cf5135c17b4b38a5facc3ae9..9475c64f9f68c669b418a8f3e8613529ad993b11 100644
+--- a/build/components/pull-to-refresh.d.ts
++++ b/build/components/pull-to-refresh.d.ts
+@@ -5,9 +5,9 @@ interface PullToRefreshProps {
+     canFetchMore?: boolean;
+     onRefresh: () => Promise<any>;
+     onFetchMore?: () => Promise<any>;
+-    refreshingContent?: JSX.Element | string;
+-    pullingContent?: JSX.Element | string;
+-    children: JSX.Element;
++    refreshingContent?: React.JSX.Element | string;
++    pullingContent?: React.JSX.Element | string;
++    children: React.JSX.Element;
+     pullDownThreshold?: number;
+     fetchMoreThreshold?: number;
+     maxPullDownDistance?: number;

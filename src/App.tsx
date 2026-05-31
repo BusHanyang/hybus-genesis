@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
@@ -124,10 +124,10 @@ const HelpIcon = styled(HelpImg)`
   ${tw`bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
 `
 
-const RouteIndexCardView = styled(CardView)<{ status: string }>`
+const RouteIndexCardView = styled(CardView)<{ $status: string }>`
   ${tw`relative p-4 h-12 hsm:h-20 hm:p-2 transition-[height] ease-in-out duration-150`}
   ${(props) =>
-    props.status === 'entered'
+    props.$status === 'entered'
       ? tw`h-[13.7rem] hm:h-[11.7rem]`
       : tw`h-14 hsm:h-16`}
 `
@@ -136,14 +136,14 @@ const RouteIndexWrapper = styled.div`
   ${tw`flex flex-wrap place-content-center items-center`}
 `
 
-const RouteIndexContainer = styled.div<{ status: string }>`
+const RouteIndexContainer = styled.div<{ $status: string }>`
   ${tw`absolute top-0 inset-0 flex place-content-center items-center transition ease-in-out duration-300`}
-  ${(props) => (props.status === 'exited' ? tw`opacity-100` : tw`opacity-0`)}
-  ${(props) => (props.status === 'entered' ? tw`hidden` : tw``)}
+  ${(props) => (props.$status === 'exited' ? tw`opacity-100` : tw`opacity-0`)}
+  ${(props) => (props.$status === 'entered' ? tw`hidden` : tw``)}
 `
-const RouteToggleImage = styled(Arrow)<{ status: string }>`
+const RouteToggleImage = styled(Arrow)<{ $status: string }>`
   ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto h-[1.2rem] w-[1.2rem] opacity-80 transition ease-in-out duration-150`}
-  ${(props) => (props.status === 'entered' ? tw`rotate-0` : tw`rotate-180`)}
+  ${(props) => (props.$status === 'entered' ? tw`rotate-0` : tw`rotate-180`)}
 `
 const SegmentedControl = styled.div`
   ${tw`
@@ -211,7 +211,8 @@ function App() {
   )
 
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
-  
+  const routeCardRef = useRef<HTMLDivElement>(null)
+
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
@@ -316,7 +317,7 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const localTheme = window.localStorage.getItem('theme')
+    const localTheme = window.localStorage.getItem('theme') || 'light'
     if (localTheme) {
       if (localTheme === 'dark') {
         document.body.classList.remove('light')
@@ -478,16 +479,21 @@ function App() {
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
-                      <Transition in={routeCardClick} timeout={150}>
+                      <Transition
+                        in={routeCardClick}
+                        nodeRef={routeCardRef}
+                        timeout={150}
+                      >
                         {(state) => (
                           <>
                             <RouteIndexCardView
-                              status={state}
+                              ref={routeCardRef}
+                              $status={state}
                               onClick={() => {
                                 setRouteCardClick(!routeCardClick)
                               }}
                             >
-                              <RouteIndexContainer status={state}>
+                              <RouteIndexContainer $status={state}>
                                 <RouteIndexWrapper>
                                   <CycleCircle theme={theme} />
                                   <RouteText>{t('cycle_index')}</RouteText>
@@ -508,7 +514,7 @@ function App() {
                               <RouteMap status={state} tab={tab} />
                               <RouteToggleImage
                                 fill="var(--color-arrow-color)"
-                                status={state}
+                                $status={state}
                               />
                             </RouteIndexCardView>
                           </>

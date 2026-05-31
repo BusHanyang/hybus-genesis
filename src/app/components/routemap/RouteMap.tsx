@@ -25,10 +25,10 @@ const RouteMethod = styled.div`
   ${tw`text-center rounded-full py-1 w-16 text-sm hm:w-12 hm:text-xs self-center text-black tracking-tight font-semibold`}
 `
 
-const MainContainer = styled.div<{ status: string }>`
+const MainContainer = styled.div<{ $status: string }>`
   ${tw`transition duration-150 ease-in-out mx-auto h-[14rem]`}
   ${(props) =>
-    props.status === 'entered' || props.status === 'exit'
+    props.$status === 'entered' || props.$status === 'exit'
       ? tw`opacity-100`
       : tw`opacity-0`}
 `
@@ -37,7 +37,7 @@ const RouteMap = (props: { status: string; tab: string }) => {
   const { t, i18n } = useTranslation()
 
   return (
-    <MainContainer status={props.status}>
+    <MainContainer $status={props.status}>
       <RouteRowsContainer>
         <RouteColsContainer>
           <RouteTextContainer lang={i18n.language} className="col-start-2">

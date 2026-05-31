@@ -442,7 +442,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     )
   }
 
-  const RenderTimetable = (showActualTime: boolean): JSX.Element => {
+  const RenderTimetable = (showActualTime: boolean): React.JSX.Element => {
     const { t } = useTranslation()
 
     if (timetable.data === undefined) {
