@@ -1,32 +1,23 @@
 import { useQuery } from '@tanstack/react-query'
+import { classed } from '@tw-classed/react'
 import { t } from 'i18next'
 import React from 'react'
 import { Trans } from 'react-i18next'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import { changelogAPI } from '@/network/changelog'
 
 import { Modal } from './modal'
 
-const P = styled.p`
-  ${tw`my-[0.2em]`}
-`
-const ChangelogMargin = styled.div`
-  ${tw`mb-[1em]`}
-`
-const ContentArea = styled.div`
-  ${tw`m-auto justify-between`}
-`
-const ChangelogDiv = styled(ContentArea)`
-  ${tw`text-left`}
-`
-const ModalButton = styled.button`
-  ${tw`outline-none cursor-pointer border-0`}
-`
-const ModalFooterButton = styled(ModalButton)`
-  ${tw`mt-6 py-6 w-full text-white bg-indigo-400 font-Ptd font-bold text-lg rounded-md`}
-`
+const P = classed('p', 'my-[0.2em]')
+const ChangelogMargin = classed('div', 'mb-[1em]')
+const ContentArea = classed('div', 'm-auto justify-between')
+const ChangelogDiv = classed(ContentArea, 'text-left')
+const ModalButton = classed('button', 'outline-none cursor-pointer border-0')
+const ModalFooterButton = classed(
+  ModalButton,
+  'mt-6 py-6 w-full text-white bg-indigo-400 font-Ptd font-bold text-lg rounded-md',
+)
+const ModalScrollArea = classed('div', 'font-Ptd overflow-auto max-h-[450px]')
 
 const ModalOpen = (props: {
   isOpen: boolean
@@ -56,10 +47,7 @@ const ModalOpen = (props: {
         close={props.closeModal}
         mTarget={props.mTarget}
       >
-        <div
-          className="font-Ptd"
-          style={{ overflow: 'auto', maxHeight: '450px', }}
-        >
+        <ModalScrollArea>
           <ContentArea>
             <ChangelogDiv>
               {props.mTarget === 'Fabs' &&
@@ -128,7 +116,7 @@ const ModalOpen = (props: {
               )}
             </ChangelogDiv>
           </ContentArea>
-        </div>
+        </ModalScrollArea>
       </Modal>
     </React.Fragment>
   )

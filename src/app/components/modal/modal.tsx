@@ -1,71 +1,113 @@
+import { classed } from '@tw-classed/react'
 import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import { useDarkmodeContext } from '@/context/ThemeContext'
 
-const ModalBackground = styled.div<{ $isopen: boolean }>`
-  ${tw`hidden fixed inset-0 z-99 bg-black/60 select-none`}
-  ${({ $isopen }) => {
-    return $isopen ? tw`flex items-center` : null
-  }}
-`
+const ModalBackground = classed(
+  'div',
+  'fixed inset-0 z-99 bg-black/60 select-none',
+  {
+    variants: {
+      'data-state': {
+        open: 'flex items-center',
+        closed: 'hidden',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'closed',
+    },
+  },
+)
 
-const ModalMain = styled(ModalBackground)<{
-  $isopen: boolean
-  $isani: boolean
-}>`
-  ${({ $isopen }) => {
-    return $isopen ? tw`flex items-center animate-modalBgShow` : null
-  }}
-  ${({ $isani }) => {
-    return $isani ? tw`animate-modalBgClose` : null
-  }}
-`
+const ModalMain = classed(
+  'div',
+  'fixed inset-0 z-99 bg-black/60 select-none',
+  {
+    variants: {
+      'data-state': {
+        open: 'flex items-center animate-modalBgShow',
+        closed: 'hidden',
+      },
+      'data-ani': {
+        closing: 'animate-modalBgClose',
+        idle: '',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'closed',
+      'data-ani': 'idle',
+    },
+  },
+)
 
-const ModalButton = styled.button`
-  ${tw`outline-none cursor-pointer border-0`}
-`
+const ModalButton = classed('button', 'outline-none cursor-pointer border-0')
 
-const ModalSection = styled.section<{ $isani: boolean; $mTarget?: string }>`
-  ${tw`w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white animate-modalShow`}
-  ${({ $isani }) => {
-    return $isani ? tw`animate-modalClose` : null
-  }}
-  ${({ $mTarget }) => {
-    return $mTarget === 'Notice' ? tw`overflow-hidden` : tw`overflow-auto`
-  }}
-`
+const ModalSection = classed(
+  'section',
+  'w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white animate-modalShow',
+  {
+    variants: {
+      'data-ani': {
+        closing: 'animate-modalClose',
+        idle: '',
+      },
+      'data-content': {
+        notice: 'overflow-hidden',
+        default: 'overflow-auto',
+      },
+    },
+    defaultVariants: {
+      'data-ani': 'idle',
+      'data-content': 'default',
+    },
+  },
+)
 
-const ModalHeader = styled.header<{ theme: string }>`
-  ${tw`relative pt-4 pr-16 pb-4 pl-4 font-bold font-Ptd`}
-  ${({ theme }) => {
-    return theme === 'dark' ? tw`bg-zinc-800 text-white` : tw`bg-white`
-  }}
-`
+const ModalHeader = classed(
+  'header',
+  'relative pt-4 pr-16 pb-4 pl-4 font-bold font-Ptd',
+  {
+    variants: {
+      'data-theme': {
+        dark: 'bg-zinc-800 text-white',
+        light: 'bg-white',
+      },
+    },
+    defaultVariants: {
+      'data-theme': 'light',
+    },
+  },
+)
 
-const ModalFooterButton = styled(ModalButton)`
-  ${tw`py-2 px-4 text-white bg-gray-500 font-Ptd rounded-md text-xs`}
-`
+const ModalFooterButton = classed(
+  ModalButton,
+  'py-2 px-4 text-white bg-gray-500 font-Ptd rounded-md text-xs',
+)
 
-const ModalSubMain = styled.main<{ theme: string }>`
-  ${tw`p-4 border-y border-solid`}
-  ${({ theme }) => {
-    return theme === 'dark'
-      ? tw`border-zinc-800 bg-gray-700 text-white`
-      : tw`border-sky-50`
-  }}
-`
+const ModalSubMain = classed('main', 'p-4 border-y border-solid', {
+  variants: {
+    'data-theme': {
+      dark: 'border-zinc-800 bg-gray-700 text-white',
+      light: 'border-sky-50',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'light',
+  },
+})
 
-const ModalFooter = styled.footer<{ theme: string }>`
-  ${tw`py-3 px-4 text-right`}
-  ${({ theme }) => {
-    if (theme === 'dark') {
-      return tw`text-white bg-gray-700`
-    }
-  }}
-`
+const ModalFooter = classed('footer', 'py-3 px-4 text-right', {
+  variants: {
+    'data-theme': {
+      dark: 'text-white bg-gray-700',
+      light: '',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'light',
+  },
+})
 
 export const Modal = (props: {
   ani: boolean
@@ -86,35 +128,55 @@ export const Modal = (props: {
   const { t } = useTranslation()
 
   return (
-    <ModalBackground $isopen={props.open} onClick={handleClickModalBackground}>
+    <ModalBackground
+      data-state={props.open ? 'open' : 'closed'}
+      onClick={handleClickModalBackground}
+    >
       <ModalMain
-        $isopen={props.open}
-        $isani={props.ani}
+        data-state={props.open ? 'open' : 'closed'}
+        data-ani={props.ani ? 'closing' : 'idle'}
         ref={modalBackgroundRef}
       >
         {props.open ? (
-          <ModalSection $isani={props.ani} $mTarget={props.mTarget}>
+          <ModalSection
+            data-ani={props.ani ? 'closing' : 'idle'}
+            data-content={props.mTarget === 'Notice' ? 'notice' : 'default'}
+          >
             {props.mTarget === 'Fabs' && (
-              <ModalHeader theme={theme}>{t('changelog')}</ModalHeader>
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('changelog')}
+              </ModalHeader>
             )}
             {props.mTarget === 'Info' && (
-              <ModalHeader theme={theme}>{t('info')}</ModalHeader>
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('info')}
+              </ModalHeader>
             )}
             {props.mTarget === 'Christmas' && (
-              <ModalHeader theme={theme}>{t('christmas')}</ModalHeader>
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('christmas')}
+              </ModalHeader>
             )}
             {props.mTarget === 'Spring' && (
-              <ModalHeader theme={theme}>{t('spring')}</ModalHeader>
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('spring')}
+              </ModalHeader>
             )}
             {props.mTarget === 'Frozen' && (
-              <ModalHeader theme={theme}>{t('frozen')}</ModalHeader>
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('frozen')}
+              </ModalHeader>
             )}
             {props.mTarget === 'Notice' && (
-              <ModalHeader theme={theme}>{t('notice')}</ModalHeader>
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('notice')}
+              </ModalHeader>
             )}
 
-            <ModalSubMain theme={theme}>{props.children}</ModalSubMain>
-            <ModalFooter theme={theme}>
+            <ModalSubMain data-theme={theme === 'dark' ? 'dark' : 'light'}>
+              {props.children}
+            </ModalSubMain>
+            <ModalFooter data-theme={theme === 'dark' ? 'dark' : 'light'}>
               <ModalFooterButton className="close" onClick={props.close}>
                 {t('close')}
               </ModalFooterButton>

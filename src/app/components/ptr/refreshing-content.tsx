@@ -1,44 +1,36 @@
+import { classed } from '@tw-classed/react'
 import React from 'react'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 // Source: https://loading.io/css/
 
-const LdsEllipsis = styled.div`
-  ${tw`inline-block relative w-16 h-16`}
-`
+const LdsEllipsis = classed('div', 'inline-block relative w-16 h-16')
 
-const LdsEllipsisDiv = styled.div<{ theme: string }>`
-  ${tw`absolute top-7 w-3 h-3 rounded-full bg-ptr-color ease-ptrTran`}
-
-  &:nth-child(1) {
-    ${tw`left-1.5 animate-ldsEllipsis1`}
-  }
-
-  &:nth-child(2) {
-    ${tw`left-1.5 animate-ldsEllipsis2`}
-  }
-
-  &:nth-child(3) {
-    ${tw`left-7 animate-ldsEllipsis2`}
-  }
-
-  &:nth-child(4) {
-    ${tw`left-11 animate-ldsEllipsis3`}
-  }
-`
+const LdsEllipsisDiv = classed(
+  'div',
+  'absolute top-7 w-3 h-3 rounded-full bg-ptr-color ease-ptrTran',
+  {
+    variants: {
+      position: {
+        first: 'left-1.5 animate-ldsEllipsis1',
+        second: 'left-1.5 animate-ldsEllipsis2',
+        third: 'left-7 animate-ldsEllipsis2',
+        fourth: 'left-11 animate-ldsEllipsis3',
+      },
+    },
+  },
+)
 
 interface RefreshingContentProps {
   mode: string
 }
 
-const RefreshingContent: React.FC<RefreshingContentProps> = ({ mode = '' }) => {
+const RefreshingContent: React.FC<RefreshingContentProps> = () => {
   return (
     <LdsEllipsis>
-      <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
-      <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
-      <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
-      <LdsEllipsisDiv theme={mode}></LdsEllipsisDiv>
+      <LdsEllipsisDiv position="first"></LdsEllipsisDiv>
+      <LdsEllipsisDiv position="second"></LdsEllipsisDiv>
+      <LdsEllipsisDiv position="third"></LdsEllipsisDiv>
+      <LdsEllipsisDiv position="fourth"></LdsEllipsisDiv>
     </LdsEllipsis>
   )
 }

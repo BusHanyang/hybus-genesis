@@ -1,6 +1,5 @@
+import { classed } from '@tw-classed/react'
 import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import { useTimeTableContext } from '@/context/TimeTableContext'
 import {
@@ -9,10 +8,30 @@ import {
   SingleShuttleSchedule,
 } from '@/data'
 
-const PingDot = styled.div<{ $on: boolean }>`
-  ${tw`animate-ping absolute rounded-full inline-flex h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-[0] mx-2`}
-  ${(props) => (props.$on ? tw`visible` : tw`invisible`)}
-`
+export type DotColor = 'direct' | 'cycle' | 'yesulin' | 'jungang' | 'orange'
+
+const PingDot = classed(
+  'div',
+  'animate-ping absolute rounded-full inline-flex h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-[0] mx-2',
+  {
+    variants: {
+      'data-state': {
+        on: 'visible',
+        off: 'invisible',
+      },
+      'data-tone': {
+        direct: 'bg-chip-blue',
+        cycle: 'bg-chip-red',
+        yesulin: 'bg-chip-green',
+        jungang: 'bg-chip-purple',
+        orange: 'bg-chip-orange',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'off',
+    },
+  },
+)
 
 /**
  * This function applies the animation flag to the flagArray based on the config.
@@ -157,12 +176,17 @@ export const useDotAnimation = (tab: string) => {
 const DotAnimation = (props: {
   isOn: boolean
   index: number
-  color: string
+  color: DotColor
   routeStatus: string
 }) => {
   if (props.routeStatus === 'yesulin' && props.index === 2) return
 
-  return <PingDot className={props.color} $on={props.isOn} />
+  return (
+    <PingDot
+      data-state={props.isOn ? 'on' : 'off'}
+      data-tone={props.color}
+    />
+  )
 }
 
 export default DotAnimation
