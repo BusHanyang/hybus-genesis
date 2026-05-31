@@ -1,110 +1,118 @@
 import { useQuery } from '@tanstack/react-query'
+import { classed } from '@tw-classed/react'
 import { t, TFunction } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import { SingleTrainInfo, SubwayStop } from '@/data'
 import { subwayAPI } from '@/network/subway'
 
-const TimetableWrapper = styled.div`
-  ${tw`h-[14.8rem] hm:h-[15.3rem]`}
-`
-
-const HeadlineWrapper = styled.div`
-  ${tw`flex justify-center hsm:mb-0`}
-`
-
-const Headline = styled.h2`
-  ${tw`font-bold text-2xl mb-3 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2`}
-`
-
-const StnListWrapper = styled.div<{
-  $prevDeparted: boolean
-  $prevArrived: boolean
-}>`
-  ${tw`flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center hover:brightness-90 hover:bg-slate-50 dark:hover:text-black p-[0.3rem] my-[0.3rem]`}
-  ${({ $prevDeparted }) => {
-    if ($prevDeparted) {
-      return tw`text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center`
-    }
-  }}
-    ${({ $prevArrived }) => {
-    if ($prevArrived) {
-      return tw`text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center`
-    }
-  }}
-`
-
-const Chip = styled.img`
-  ${tw`my-auto inline-block`}
-`
-
-const DestStnLeftContainer = styled.div<{ $isEnglish: boolean }>`
-  ${tw`flex justify-end items-center font-Ptd tabular-nums text-right w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]`}
-  ${({ $isEnglish }) => ($isEnglish ? tw`tracking-tighter` : undefined)}
-`
-
-const DestStnLeftWrapper = styled.div<{ $isTooLong: boolean }>`
-  ${({ $isTooLong }) =>
-    $isTooLong ? tw`tracking-[-0.09em] text-sm hsm:text-xs` : undefined}
-`
-
-const ArrivalStnStatusWrapper = styled.span<{ $isEnglish: boolean }>`
-  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1 pr-2`}
-  ${({ $isEnglish }) => ($isEnglish ? tw`tracking-tighter` : undefined)}
-`
-
-const SingleDirTimetableWrapper = styled.div`
-  ${tw`h-[5rem]`}
-`
-
-const StatusWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block px-1 w-[5rem] text-right hm:text-[0.9rem] hm:w-[4rem] hm:px-0 hsm:text-sm hsm:w-[4rem]`}
-`
-
-const SubwayDivider = styled.hr<{ $isLoading: boolean }>`
-  ${tw`py-1 hsm:mb-4`}
-  ${({ $isLoading }) => ($isLoading ? tw`hidden` : undefined)}
-`
-
-const TimetableLoadingContainer = styled.div`
-  ${tw`h-[12rem]`}
-`
-
-const TitleLine4Icon = styled(Chip)`
-  ${tw`w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]`}
-`
-
-const TitleLineSUIcon = styled(Chip)`
-  ${tw`w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-1.5`}
-`
-
-const TrainLineIcon = styled(Chip)`
-  ${tw`mx-0.5 w-[1.25rem]`}
-`
-
-const TrainTypeIcon = styled.img`
-  ${tw`h-4 ml-[0.15rem]`}
-`
-
-const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-full`}
-`
-
-const NoTimetable = styled.div`
-  ${tw`h-full flex items-center justify-center`}
-`
-
-const NoTimetableInner = styled.span`
-  ${tw`text-center hsm:text-sm table-cell align-middle`}
-`
-
-const ApiStatusButton = styled.button`
-  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
-`
+const TimetableWrapper = classed('div', 'h-[14.8rem] hm:h-[15.3rem]')
+const HeadlineWrapper = classed('div', 'flex justify-center hsm:mb-0')
+const Headline = classed(
+  'h2',
+  'font-bold text-2xl mb-3 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2',
+)
+const StnListWrapper = classed(
+  'div',
+  'flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center hover:brightness-90 hover:bg-slate-50 dark:hover:text-black p-[0.3rem] my-[0.3rem]',
+  {
+    variants: {
+      'data-state': {
+        departed:
+          'text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center',
+        arrived:
+          'text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center',
+        default: '',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'default',
+    },
+  },
+)
+const Chip = classed('img', 'my-auto inline-block')
+const DestStnLeftContainer = classed(
+  'div',
+  'flex justify-end items-center font-Ptd tabular-nums text-right w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]',
+  {
+    variants: {
+      'data-lang': {
+        en: 'tracking-tighter',
+        default: '',
+      },
+    },
+    defaultVariants: {
+      'data-lang': 'default',
+    },
+  },
+)
+const DestStnLeftWrapper = classed('div', {
+  variants: {
+    'data-length': {
+      long: 'tracking-[-0.09em] text-sm hsm:text-xs',
+      default: '',
+    },
+  },
+  defaultVariants: {
+    'data-length': 'default',
+  },
+})
+const ArrivalStnStatusWrapper = classed(
+  'span',
+  'text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1 pr-2',
+  {
+    variants: {
+      'data-lang': {
+        en: 'tracking-tighter',
+        default: '',
+      },
+    },
+    defaultVariants: {
+      'data-lang': 'default',
+    },
+  },
+)
+const SingleDirTimetableWrapper = classed('div', 'h-[5rem]')
+const StatusWrapper = classed(
+  'span',
+  'font-Ptd tabular-nums inline-block px-1 w-[5rem] text-right hm:text-[0.9rem] hm:w-[4rem] hm:px-0 hsm:text-sm hsm:w-[4rem]',
+)
+const SubwayDivider = classed('hr', 'py-1 hsm:mb-4', {
+  variants: {
+    'data-state': {
+      loading: 'hidden',
+      idle: '',
+    },
+  },
+  defaultVariants: {
+    'data-state': 'idle',
+  },
+})
+const TimetableLoadingContainer = classed('div', 'h-[12rem]')
+const TitleLine4Icon = classed(
+  Chip,
+  'w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]',
+)
+const TitleLineSUIcon = classed(
+  Chip,
+  'w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-1.5',
+)
+const TrainLineIcon = classed(Chip, 'mx-0.5 w-[1.25rem]')
+const TrainTypeIcon = classed('img', 'h-4 ml-[0.15rem]')
+const MainTimetable = classed('div', 'inline-block select-none h-full')
+const NoTimetable = classed('div', 'h-full flex items-center justify-center')
+const NoTimetableInner = classed(
+  'span',
+  'text-center hsm:text-sm table-cell align-middle',
+)
+const ApiErrorInner = classed(NoTimetableInner, 'mb-[4rem]')
+const LoaderCell = classed('div', 'table-cell align-middle')
+const ApiStatusButton = classed(
+  'button',
+  'rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2',
+)
 
 const arrivalUntil = (stnUntilArrival: number): string => {
   if (stnUntilArrival === 1) {
@@ -314,6 +322,15 @@ const Subway = ({ station }: SubwayStop) => {
     return 0
   }
 
+  const getStationRowState = (
+    prevDeparted: boolean,
+    prevArrived: boolean,
+  ) => {
+    if (prevArrived) return 'arrived'
+    if (prevDeparted) return 'departed'
+    return 'default'
+  }
+
   const renderTimetable = (
     direction: number,
     t: TFunction<['translation', ...string[]], undefined>,
@@ -366,17 +383,19 @@ const Subway = ({ station }: SubwayStop) => {
           return (
             <React.Fragment key={idx}>
               <StnListWrapper
-                $prevDeparted={
+                data-state={getStationRowState(
                   val.destination === station.trim() ||
-                  val.stnUntilArrival === 0
-                }
-                $prevArrived={val.stnUntilArrival === 1}
+                    val.stnUntilArrival === 0,
+                  val.stnUntilArrival === 1,
+                )}
                 onClick={() => openRailblue(val.trainCode)}
               >
                 {getLineMarkElement(val.line)}
-                <DestStnLeftContainer $isEnglish={i18n.language === 'en'}>
+                <DestStnLeftContainer
+                  data-lang={i18n.language === 'en' ? 'en' : 'default'}
+                >
                   <DestStnLeftWrapper
-                    $isTooLong={
+                    data-length={
                       val.destination.includes('한성대') ||
                       (i18n.language === 'en' &&
                         val.destination.includes('청량리')) ||
@@ -386,6 +405,8 @@ const Subway = ({ station }: SubwayStop) => {
                         (val.destination.includes('왕십리') ||
                           val.destination.includes('불암산') ||
                           val.destination.includes('금정')))
+                        ? 'long'
+                        : 'default'
                     }
                   >
                     {getDestination(val.destination, val.isLast, val.isExpress)}
@@ -397,7 +418,9 @@ const Subway = ({ station }: SubwayStop) => {
                     ? stationName(val.currentStation)
                     : arrivalUntil(val.stnUntilArrival)}
                 </StatusWrapper>
-                <ArrivalStnStatusWrapper $isEnglish={i18n.language == 'en'}>
+                <ArrivalStnStatusWrapper
+                  data-lang={i18n.language === 'en' ? 'en' : 'default'}
+                >
                   {arrivalStnStatus(
                     val.status,
                     val.orgStation,
@@ -423,13 +446,14 @@ const Subway = ({ station }: SubwayStop) => {
         {timetable.isPending ? (
           <TimetableLoadingContainer>
             <NoTimetable>
-              <SyncLoader
-                color="var(--color-load-color)"
-                margin={4}
-                size={8}
-                loading={timetable.isPending}
-                cssOverride={tw`table-cell align-middle`}
-              />
+              <LoaderCell>
+                <SyncLoader
+                  color="var(--color-load-color)"
+                  margin={4}
+                  size={8}
+                  loading={timetable.isPending}
+                />
+              </LoaderCell>
             </NoTimetable>
           </TimetableLoadingContainer>
         ) : (
@@ -438,13 +462,13 @@ const Subway = ({ station }: SubwayStop) => {
         {timetable.isError ? (
           <>
             <NoTimetable>
-              <NoTimetableInner className="mb-[4rem]">
+              <ApiErrorInner>
                 {t('api_error')}
                 <br />
                 <ApiStatusButton onClick={openApiMonitor}>
                   {t('status_check')}
                 </ApiStatusButton>
-              </NoTimetableInner>
+              </ApiErrorInner>
             </NoTimetable>
           </>
         ) : (
@@ -452,7 +476,9 @@ const Subway = ({ station }: SubwayStop) => {
             <SingleDirTimetableWrapper>
               {renderTimetable(1, t)}
             </SingleDirTimetableWrapper>
-            <SubwayDivider $isLoading={timetable.isPending} />
+            <SubwayDivider
+              data-state={timetable.isPending ? 'loading' : 'idle'}
+            />
             <SingleDirTimetableWrapper>
               {renderTimetable(2, t)}
             </SingleDirTimetableWrapper>

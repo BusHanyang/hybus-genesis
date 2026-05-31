@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 import { partytownVite } from '@qwik.dev/partytown/utils'
-import babel from '@rolldown/plugin-babel'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { fileURLToPath } from 'url'
@@ -15,9 +14,6 @@ const configDir = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   plugins: [
     react(),
-    babel({
-      plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
-    }),
     svgr(),
     viteCompression({ algorithm: 'brotliCompress' }),
     VitePWA({

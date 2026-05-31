@@ -27,6 +27,22 @@ const timeBoxHeightTable: Record<number, 'one' | 'two' | 'three' | 'four'> = {
   4: 'four',
 }
 
+const themeRootVariants = {
+  variants: {
+    'data-theme': {
+      light: 'light',
+      dark: 'dark',
+      christmas: 'christmas',
+      spring: 'spring',
+      frozen: 'frozen',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'light',
+  },
+} as const
+
+const ThemeRoot = classed('div', '', themeRootVariants)
 const Chip = classed(
   'div',
   'self-center h-fit text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter',
@@ -360,7 +376,7 @@ const FullTime = () => {
 
   return (
     <>
-      <div className={`${theme}`}>
+      <ThemeRoot data-theme={theme}>
         <FullTimeDocument>
           <FullTimeToolbar>
             <GoBackIcon
@@ -430,7 +446,7 @@ const FullTime = () => {
           </ControlBox>
           <TimetableContainer>{renderTimeBox()}</TimetableContainer>
         </FullTimeDocument>
-      </div>
+      </ThemeRoot>
     </>
   )
 }

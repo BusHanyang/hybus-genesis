@@ -1,11 +1,9 @@
+import { classed } from '@tw-classed/react'
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 import { Transition } from 'react-transition-group'
-import styled, { css } from 'styled-components'
-import { Reset } from 'styled-reset'
-import tw from 'twin.macro'
 
 import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
@@ -23,175 +21,202 @@ const ModalOpen = lazy(() => import('@/components/modal/modalOpen'))
 const Subway = lazy(() => import('@/components/subway/Subway'))
 const RouteMap = lazy(() => import('@/components/routemap/RouteMap'))
 
-const Apps = styled.div`
-  ${tw`
-    h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative
-    bg-theme-main text-theme-text transition-colors
-  `}
-`
+type RouteCardStatus = 'entering' | 'entered' | 'exiting' | 'exited' | 'exit'
+type MainCardHeight =
+  | 'defaultNoPrompt'
+  | 'stationNoPrompt'
+  | 'stationPromptBus'
+  | 'stationPromptRealtime'
+  | 'defaultPrompt'
 
-const Circle = styled.span<{ theme: string }>`
-  ${tw`
-    flex rounded-full inline-block transition-transform
-    h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1
-  `}
+const cardBase =
+  'mb-3 justify-center items-center font-medium rounded-lg transition-colors bg-theme-card text-theme-text border-theme-border shadow-theme-shadow'
+const buttonBase =
+  'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text'
+const circleBase =
+  "flex rounded-full inline-block transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
+const circleThemeVariants = {
+  variants: {
+    'data-theme': {
+      spring:
+        "rotate-45 scale-75 rounded-none before:absolute before:w-full before:h-full before:rounded-full before:bg-inherit before:content-[''] before:left-[-50%] after:absolute after:w-full after:h-full after:rounded-full after:bg-inherit after:content-[''] after:top-[-50%]",
+      default: '',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'default',
+  },
+} as const
 
-  ${({ theme }) =>
-    theme === 'spring' &&
-    css`
-      /* For Heart Shape */
-      ${tw`rotate-45 scale-75 rounded-none`}
+const themeRootVariants = {
+  variants: {
+    'data-theme': {
+      light: 'light',
+      dark: 'dark',
+      christmas: 'christmas',
+      spring: 'spring',
+      frozen: 'frozen',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'light',
+  },
+} as const
 
-      &::before,&::after {
-        ${tw`absolute w-full h-full rounded-full bg-inherit content-['']`}
-      }
-      &::before {
-        left: -50%;
-      }
-      &::after {
-        top: -50%;
-      }
-    `}
-`
-
-const CopyRightText = styled.p`
-  ${tw`text-theme-text pt-3 hsm:text-sm hsm:leading-4`}
-`
-
-const CycleCircle = styled(Circle)`
-  ${tw`bg-chip-red mr-2 hsm:mx-2`}
-`
-
-const DirectCircle = styled(Circle)`
-  ${tw`bg-chip-blue mx-2`}
-`
-
-const YesulinCircle = styled(Circle)`
-  ${tw`bg-chip-green mx-2`}
-`
-
-const JungangCircle = styled(Circle)`
-  ${tw`bg-chip-purple mx-2`}
-`
-
-const RouteText = styled.div`
-  ${tw`
-    inline-block rt1:text-sm rt2:text-xs hsm:mx-1
-  `}
-`
-
-const CardView = styled.div`
-  ${tw`
-    mb-3 justify-center items-center font-medium rounded-lg transition-colors
-    bg-theme-card text-theme-text border-theme-border shadow-theme-shadow 
-  `}
-`
-
-const MainCardView = styled(CardView)`
-  ${tw`p-6 hm:p-4 transition-all`}
-`
-
-const NoticeWrapper = styled(CardView)`
-  ${tw`p-3 h-[3rem] w-full`}
-`
-
-const Button = styled(CardView)`
-  ${tw`
-    flex will-change-transform overflow-hidden cursor-default 
-    border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text 
-  `}
-
-  &.active {
-    ${tw`
-      bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700
-    `}
-  }
-
-  &#shuttlecoke_i {
-    ${tw`shuttlei:flex-col shuttlei:gap-x-0 gap-x-1 items-center justify-center`}
-  }
-`
-
-const FulltimeButton = styled(Button)`
-  ${tw`w-full cursor-default`}
-`
-
-const HeadlineWrapper = styled.div`
-  ${tw`relative`} drag-save-n
-`
-
-const HelpIcon = styled(HelpImg)`
-  ${tw`bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default`} drag-save-n
-`
-
-const RouteIndexCardView = styled(CardView)<{ $status: string }>`
-  ${tw`relative p-4 h-12 hsm:h-20 hm:p-2 transition-[height] ease-in-out duration-150`}
-  ${(props) =>
-    props.$status === 'entered'
-      ? tw`h-[13.7rem] hm:h-[11.7rem]`
-      : tw`h-14 hsm:h-16`}
-`
-
-const RouteIndexWrapper = styled.div`
-  ${tw`flex flex-wrap place-content-center items-center`}
-`
-
-const RouteIndexContainer = styled.div<{ $status: string }>`
-  ${tw`absolute top-0 inset-0 flex place-content-center items-center transition ease-in-out duration-300`}
-  ${(props) => (props.$status === 'exited' ? tw`opacity-100` : tw`opacity-0`)}
-  ${(props) => (props.$status === 'entered' ? tw`hidden` : tw``)}
-`
-const RouteToggleImage = styled(Arrow)<{ $status: string }>`
-  ${tw`absolute bottom-0 inset-x-0 rotate-180 m-auto h-[1.2rem] w-[1.2rem] opacity-80 transition ease-in-out duration-150`}
-  ${(props) => (props.$status === 'entered' ? tw`rotate-0` : tw`rotate-180`)}
-`
-const SegmentedControl = styled.div`
-  ${tw`
-    relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform
-  `}
-`
-
-const SegmentedControlWrapper = styled.div<{
-  $realtimeMode: boolean
-  $touchPrompt: boolean
-  $tab: string
-}>`
-  ${tw`flex justify-center transition-[opacity,margin]`}
-  ${({ $realtimeMode, $touchPrompt }) =>
-    !$realtimeMode && $touchPrompt
-      ? tw`mt-7 hm:mt-[2.1rem] hsm:mt-7`
-      : undefined}
-  ${({ $tab }) =>
-    $tab === 'subway' || $tab === 'jungang'
-      ? tw`opacity-100 pointer-events-auto`
-      : tw`opacity-0 pointer-events-none`}
-`
-
-const OptionWrapper = styled.div`
-  ${tw`relative z-10 flex items-center justify-center`}
-`
-
-const ActiveIndicator = styled.div<{ $activeIndex: number }>`
-  ${tw`
-    fixed w-[45%] h-[75%] bg-control-active transition-transform rounded-2xl duration-300 ease-in-out
-  `}
-  transform: translateX(${({ $activeIndex }) => $activeIndex}%);
-`
-
-const StationButtonWrapper = styled.div`
-  ${tw`grid grid-cols-3 gap-4`}
-`
-
-const RadioLabel = styled.label`
-  ${tw`
-    w-full h-full block cursor-pointer select-none rounded-xl p-1 text-center
-    peer-checked:font-bold peer-checked:text-white transition-colors duration-300
-  `}
-`
-
-const Title = styled.h1`
-  ${tw`font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3`}
-`
+const ThemeRoot = classed('div', 'h-full', themeRootVariants)
+const Apps = classed(
+  'div',
+  'h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors',
+)
+const CopyRightText = classed('p', 'text-theme-text pt-3 hsm:text-sm hsm:leading-4')
+const CycleCircle = classed('span', `${circleBase} bg-chip-red mr-2 hsm:mx-2`, circleThemeVariants)
+const DirectCircle = classed('span', `${circleBase} bg-chip-blue mx-2`, circleThemeVariants)
+const YesulinCircle = classed('span', `${circleBase} bg-chip-green mx-2`, circleThemeVariants)
+const JungangCircle = classed('span', `${circleBase} bg-chip-purple mx-2`, circleThemeVariants)
+const RouteText = classed('div', 'inline-block rt1:text-sm rt2:text-xs hsm:mx-1')
+const MainCardView = classed(
+  'div',
+  `${cardBase} p-6 hm:p-4 transition-all`,
+  {
+    variants: {
+      'data-height': {
+        defaultNoPrompt: 'h-[17rem]',
+        stationNoPrompt: 'h-[19.6rem]',
+        stationPromptBus: 'h-[21rem] hm:h-[21.5rem] hsm:h-[20.7rem]',
+        stationPromptRealtime: 'h-[19.6rem]',
+        defaultPrompt: 'h-[18.5rem] hm:h-[19rem] hsm:h-[18.5rem]',
+      },
+    },
+    defaultVariants: {
+      'data-height': 'defaultNoPrompt',
+    },
+  },
+)
+const NoticeWrapper = classed('div', `${cardBase} p-3 h-[3rem] w-full`)
+const Button = classed('div', `${cardBase} ${buttonBase}`, {
+  variants: {
+    'data-state': {
+      active:
+        'bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700',
+      idle: '',
+    },
+    'data-location': {
+      'shuttlecoke_i': 'shuttlei:flex-col shuttlei:gap-x-0 gap-x-1',
+      default: '',
+    },
+  },
+  defaultVariants: {
+    'data-state': 'idle',
+    'data-location': 'default',
+  },
+})
+const FulltimeButton = classed('div', `${cardBase} ${buttonBase} w-full cursor-default`)
+const HeadlineWrapper = classed('div', 'relative drag-save-n')
+const HelpIcon = classed(
+  HelpImg,
+  'bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default drag-save-n',
+)
+const RouteIndexCardView = classed(
+  'div',
+  `${cardBase} relative p-4 hm:p-2 transition-[height] ease-in-out duration-150`,
+  {
+    variants: {
+      'data-status': {
+        entered: 'h-[13.7rem] hm:h-[11.7rem]',
+        entering: 'h-14 hsm:h-16',
+        exiting: 'h-14 hsm:h-16',
+        exited: 'h-14 hsm:h-16',
+        exit: 'h-14 hsm:h-16',
+      },
+    },
+    defaultVariants: {
+      'data-status': 'exited',
+    },
+  },
+)
+const RouteIndexWrapper = classed('div', 'flex flex-wrap place-content-center items-center')
+const RouteIndexContainer = classed(
+  'div',
+  'absolute top-0 inset-0 flex place-content-center items-center transition ease-in-out duration-300',
+  {
+    variants: {
+      'data-status': {
+        entered: 'opacity-0 hidden',
+        exited: 'opacity-100',
+        entering: 'opacity-0',
+        exiting: 'opacity-0',
+        exit: 'opacity-0',
+      },
+    },
+    defaultVariants: {
+      'data-status': 'exited',
+    },
+  },
+)
+const RouteToggleImage = classed(
+  Arrow,
+  'absolute bottom-0 inset-x-0 m-auto h-[1.2rem] w-[1.2rem] opacity-80 transition ease-in-out duration-150',
+  {
+    variants: {
+      'data-status': {
+        entered: 'rotate-0',
+        entering: 'rotate-180',
+        exiting: 'rotate-180',
+        exited: 'rotate-180',
+        exit: 'rotate-180',
+      },
+    },
+    defaultVariants: {
+      'data-status': 'exited',
+    },
+  },
+)
+const SegmentedControl = classed(
+  'div',
+  'relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform',
+)
+const SegmentedControlWrapper = classed(
+  'div',
+  'flex justify-center transition-[opacity,margin]',
+  {
+    variants: {
+      'data-offset': {
+        prompt: 'mt-7 hm:mt-[2.1rem] hsm:mt-7',
+        default: '',
+      },
+      'data-visibility': {
+        visible: 'opacity-100 pointer-events-auto',
+        hidden: 'opacity-0 pointer-events-none',
+      },
+    },
+    defaultVariants: {
+      'data-offset': 'default',
+      'data-visibility': 'hidden',
+    },
+  },
+)
+const OptionWrapper = classed('div', 'relative z-10 flex items-center justify-center')
+const ActiveIndicator = classed(
+  'div',
+  'fixed w-[45%] h-[75%] bg-control-active transition-transform rounded-2xl duration-300 ease-in-out',
+  {
+    variants: {
+      'data-index': {
+        bus: 'translate-x-[5%]',
+        subway: 'translate-x-[117%]',
+      },
+    },
+    defaultVariants: {
+      'data-index': 'bus',
+    },
+  },
+)
+const StationButtonWrapper = classed('div', 'grid grid-cols-3 gap-4')
+const RadioLabel = classed(
+  'label',
+  'w-full h-full block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:font-bold peer-checked:text-white transition-colors duration-300',
+)
+const Title = classed('h1', 'font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3')
 
 function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
@@ -263,27 +288,27 @@ function App() {
     setRealtimeMode(isOk === 'sub')
   }
 
-  const getCardHeight = (): string => {
+  const getCardHeight = (): MainCardHeight => {
     if (!touchPrompt) {
       if (tab === 'subway' || tab === 'jungang') {
         // No prompt at Stations
-        return 'h-[19.6rem]'
+        return 'stationNoPrompt'
       } else {
         // default (No prompt)
-        return 'h-[17rem]'
+        return 'defaultNoPrompt'
       }
     } else {
       if (tab === 'subway' || tab === 'jungang') {
         if (!realtimeMode) {
           // Shuttle Bus Info at Stations with prompt
-          return 'h-[21rem] hm:h-[21.5rem] hsm:h-[20.7rem]'
+          return 'stationPromptBus'
         } else {
           // Subway info at Stations with prompt
-          return 'h-[19.6rem]'
+          return 'stationPromptRealtime'
         }
       } else {
         // default with prompt
-        return 'h-[18.5rem] hm:h-[19rem] hsm:h-[18.5rem]'
+        return 'defaultPrompt'
       }
     }
   }
@@ -377,7 +402,6 @@ function App() {
 
   return (
     <>
-      <Reset />
       <BrowserRouter>
         <Routes>
           <Route
@@ -393,8 +417,8 @@ function App() {
                   resistance={3}
                   //className="transition-colors"
                 >
-                  <div
-                    className={`${theme} h-full`}
+                  <ThemeRoot
+                    data-theme={theme}
                     onContextMenu={(e) => e.preventDefault()}
                   >
                     <Apps>
@@ -418,7 +442,7 @@ function App() {
                         </NoticeWrapper>
                       </header>
 
-                      <MainCardView className={getCardHeight()}>
+                      <MainCardView data-height={getCardHeight()}>
                         {realtimeMode &&
                         (tab === 'subway' || tab === 'jungang') ? (
                           <>
@@ -442,13 +466,18 @@ function App() {
                           </>
                         )}
                         <SegmentedControlWrapper
-                          $realtimeMode={realtimeMode}
-                          $touchPrompt={touchPrompt}
-                          $tab={tab}
+                          data-offset={
+                            !realtimeMode && touchPrompt ? 'prompt' : 'default'
+                          }
+                          data-visibility={
+                            tab === 'subway' || tab === 'jungang'
+                              ? 'visible'
+                              : 'hidden'
+                          }
                         >
                           <SegmentedControl>
                             <ActiveIndicator
-                              $activeIndex={realtimeMode ? 117 : 5}
+                              data-index={realtimeMode ? 'subway' : 'bus'}
                             />
                             <OptionWrapper>
                               <input
@@ -488,33 +517,51 @@ function App() {
                           <>
                             <RouteIndexCardView
                               ref={routeCardRef}
-                              $status={state}
+                              data-status={state as RouteCardStatus}
                               onClick={() => {
                                 setRouteCardClick(!routeCardClick)
                               }}
                             >
-                              <RouteIndexContainer $status={state}>
+                              <RouteIndexContainer
+                                data-status={state as RouteCardStatus}
+                              >
                                 <RouteIndexWrapper>
-                                  <CycleCircle theme={theme} />
+                                  <CycleCircle
+                                    data-theme={
+                                      theme === 'spring' ? 'spring' : 'default'
+                                    }
+                                  />
                                   <RouteText>{t('cycle_index')}</RouteText>
                                 </RouteIndexWrapper>
                                 <RouteIndexWrapper>
-                                  <DirectCircle theme={theme} />
+                                  <DirectCircle
+                                    data-theme={
+                                      theme === 'spring' ? 'spring' : 'default'
+                                    }
+                                  />
                                   <RouteText>{t('direct_index')}</RouteText>
                                 </RouteIndexWrapper>
                                 <RouteIndexWrapper>
-                                  <YesulinCircle theme={theme} />
+                                  <YesulinCircle
+                                    data-theme={
+                                      theme === 'spring' ? 'spring' : 'default'
+                                    }
+                                  />
                                   <RouteText>{t('yesulin_index')}</RouteText>
                                 </RouteIndexWrapper>
                                 <RouteIndexWrapper>
-                                  <JungangCircle theme={theme} />
+                                  <JungangCircle
+                                    data-theme={
+                                      theme === 'spring' ? 'spring' : 'default'
+                                    }
+                                  />
                                   <RouteText>{t('jungang_index')}</RouteText>
                                 </RouteIndexWrapper>
                               </RouteIndexContainer>
                               <RouteMap status={state} tab={tab} />
                               <RouteToggleImage
                                 fill="var(--color-arrow-color)"
-                                $status={state}
+                                data-status={state as RouteCardStatus}
                               />
                             </RouteIndexCardView>
                           </>
@@ -523,21 +570,23 @@ function App() {
                       <StationButtonWrapper>
                         <Button
                           id="shuttlecoke_o"
-                          className={tab === 'shuttlecoke_o' ? 'active' : ''}
+                          data-state={
+                            tab === 'shuttlecoke_o' ? 'active' : 'idle'
+                          }
                           onClick={() => saveClicked('shuttlecoke_o')}
                         >
                           {t('shuttlecoke_o_btn')}
                         </Button>
                         <Button
                           id="subway"
-                          className={tab === 'subway' ? 'active' : ''}
+                          data-state={tab === 'subway' ? 'active' : 'idle'}
                           onClick={() => saveClicked('subway')}
                         >
                           {t('subway_btn')}
                         </Button>
                         <Button
                           id="yesulin"
-                          className={tab === 'yesulin' ? 'active' : ''}
+                          data-state={tab === 'yesulin' ? 'active' : 'idle'}
                           onClick={() => saveClicked('yesulin')}
                         >
                           {t('yesulin_btn')}
@@ -546,14 +595,17 @@ function App() {
                       <StationButtonWrapper>
                         <Button
                           id="jungang"
-                          className={tab === 'jungang' ? 'active' : ''}
+                          data-state={tab === 'jungang' ? 'active' : 'idle'}
                           onClick={() => saveClicked('jungang')}
                         >
                           {t('jungang_btn')}
                         </Button>
                         <Button
                           id="shuttlecoke_i"
-                          className={tab === 'shuttlecoke_i' ? 'active' : ''}
+                          data-location="shuttlecoke_i"
+                          data-state={
+                            tab === 'shuttlecoke_i' ? 'active' : 'idle'
+                          }
                           onClick={() => saveClicked('shuttlecoke_i')}
                         >
                           {t('shuttlecoke_i_btn')
@@ -568,7 +620,7 @@ function App() {
                         </Button>
                         <Button
                           id="residence"
-                          className={tab === 'residence' ? 'active' : ''}
+                          data-state={tab === 'residence' ? 'active' : 'idle'}
                           onClick={() => saveClicked('residence')}
                         >
                           {t('residence_btn')}
@@ -591,7 +643,7 @@ function App() {
                         . All rights reserved
                       </CopyRightText>
                     </Apps>
-                  </div>
+                  </ThemeRoot>
                 </PullToRefresh>
                 <Suspense fallback={<div />}>
                   <ModalOpen
