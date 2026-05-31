@@ -86,7 +86,7 @@ const ControlBoxRow = classed('div', 'grid grid-flow-row gap-2')
 const ControlBoxRowTitle = classed('span', 'text-left font-bold text-lg hm:text-base')
 const NoTimetable = classed(
   'div',
-  'h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]',
+  'h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-32 hm:leading-24',
 )
 const MinuteContainer = classed('div', 'self-center text-left ml-3 col-span-4')
 const FullTimeDocument = classed(
@@ -119,11 +119,11 @@ const TimeBoxBody = classed(
   'div',
   'font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px',
 )
-const TimeBoxBodyGrid = classed('div', 'inline-grid grid-cols-5', {
+const TimeBoxBodyGrid = classed('div', 'grid-cols-5', {
   variants: {
     'data-state': {
       empty: 'hidden',
-      filled: '',
+      filled: 'inline-grid',
     },
   },
   defaultVariants: {

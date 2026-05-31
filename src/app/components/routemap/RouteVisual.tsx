@@ -21,7 +21,7 @@ const routeToneTable: Record<RouteStatus, DotColor> = {
 
 const RouteLine = classed(
   'div',
-  'absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-[13.125rem]',
+  'absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-52.5',
   {
     variants: {
       'data-width': {

@@ -12,7 +12,7 @@ export type DotColor = 'direct' | 'cycle' | 'yesulin' | 'jungang' | 'orange'
 
 const PingDot = classed(
   'div',
-  'animate-ping absolute rounded-full inline-flex h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-[0] mx-2',
+  'animate-ping absolute rounded-full inline-flex h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-0 mx-2',
   {
     variants: {
       'data-state': {

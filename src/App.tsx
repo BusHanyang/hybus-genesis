@@ -29,8 +29,11 @@ type MainCardHeight =
   | 'stationPromptRealtime'
   | 'defaultPrompt'
 
-const cardBase =
-  'mb-3 justify-center items-center font-medium rounded-lg transition-colors bg-theme-card text-theme-text border-theme-border shadow-theme-shadow'
+const cardShellBase =
+  'mb-3 justify-center items-center font-medium rounded-lg transition-colors text-theme-text border-theme-border shadow-theme-shadow'
+const cardBase = `${cardShellBase} bg-theme-card`
+const heightTransitionCardBase =
+  'mb-3 justify-center items-center font-medium rounded-lg text-theme-text border-theme-border shadow-theme-shadow bg-theme-card'
 const buttonBase =
   'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text'
 const circleBase =
@@ -76,15 +79,15 @@ const JungangCircle = classed('span', `${circleBase} bg-chip-purple mx-2`, circl
 const RouteText = classed('div', 'inline-block rt1:text-sm rt2:text-xs hsm:mx-1')
 const MainCardView = classed(
   'div',
-  `${cardBase} p-6 hm:p-4 transition-all`,
+  `${heightTransitionCardBase} p-6 hm:p-4 transition-all`,
   {
     variants: {
       'data-height': {
-        defaultNoPrompt: 'h-[17rem]',
+        defaultNoPrompt: 'h-68',
         stationNoPrompt: 'h-[19.6rem]',
-        stationPromptBus: 'h-[21rem] hm:h-[21.5rem] hsm:h-[20.7rem]',
+        stationPromptBus: 'h-84 hm:h-86 hsm:h-[20.7rem]',
         stationPromptRealtime: 'h-[19.6rem]',
-        defaultPrompt: 'h-[18.5rem] hm:h-[19rem] hsm:h-[18.5rem]',
+        defaultPrompt: 'h-74 hm:h-76 hsm:h-74',
       },
     },
     defaultVariants: {
@@ -92,13 +95,13 @@ const MainCardView = classed(
     },
   },
 )
-const NoticeWrapper = classed('div', `${cardBase} p-3 h-[3rem] w-full`)
-const Button = classed('div', `${cardBase} ${buttonBase}`, {
+const NoticeWrapper = classed('div', `${cardBase} p-3 h-12 w-full`)
+const Button = classed('div', `${cardShellBase} ${buttonBase}`, {
   variants: {
     'data-state': {
       active:
         'bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700',
-      idle: '',
+      idle: 'bg-theme-card',
     },
     'data-location': {
       'shuttlecoke_i': 'shuttlei:flex-col shuttlei:gap-x-0 gap-x-1',
@@ -118,7 +121,7 @@ const HelpIcon = classed(
 )
 const RouteIndexCardView = classed(
   'div',
-  `${cardBase} relative p-4 hm:p-2 transition-[height] ease-in-out duration-150`,
+  `${heightTransitionCardBase} relative p-4 hm:p-2 transition-[height] ease-in-out duration-150`,
   {
     variants: {
       'data-status': {
@@ -173,7 +176,7 @@ const RouteToggleImage = classed(
 )
 const SegmentedControl = classed(
   'div',
-  'relative p-1 w-[16rem] hsm:w-[14rem] text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform',
+  'relative p-1 w-[16rem] hsm:w-56 text-sm hsm:text-xs items-center grid grid-cols-2 gap-3 rounded-3xl bg-control-main will-change-transform',
 )
 const SegmentedControlWrapper = classed(
   'div',

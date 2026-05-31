@@ -33,7 +33,7 @@ const Headline = classed(
 )
 const MainTimeTableWrapper = classed(
   'div',
-  'w-full h-[11.25rem] inline-block touch-none',
+  'w-full h-45 inline-block touch-none',
 )
 const MainTimetable = classed('div', 'inline-block select-none h-full')
 const Chip = classed(
@@ -54,7 +54,7 @@ const Chip = classed(
 const SingleTimetable = classed('div', 'text-left mx-auto py-1.5')
 const OnTouchAvailableWrapper = classed(
   'div',
-  'bg-ontouch-bg rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden',
+  'bg-ontouch-bg rounded-md text-center h-8 w-70 hm:w-65 hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden',
   {
     variants: {
       'data-state': {
@@ -69,11 +69,11 @@ const OnTouchAvailableWrapper = classed(
 )
 const OnTouchCloseWrapper = classed(
   'div',
-  'w-[fit-content] float-right ml-1 h-full flex hsm:ml-0',
+  'w-fit float-right ml-1 h-full flex hsm:ml-0',
 )
 const TimeLeftWrapper = classed(
   'span',
-  'font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6',
+  'font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-26 hm:text-[0.9rem] hm:w-28 hm:px-0 hm:leading-6',
   {
     variants: {
       'data-state': {

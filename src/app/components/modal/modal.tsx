@@ -41,11 +41,11 @@ const ModalMain = classed(
   },
 )
 
-const ModalButton = classed('button', 'outline-none cursor-pointer border-0')
+const ModalButton = classed('button', 'outline-hidden cursor-pointer border-0')
 
 const ModalSection = classed(
   'section',
-  'w-11/12 max-w-screen-sm mx-auto rounded-lg bg-white animate-modalShow',
+  'w-11/12 max-w-(--breakpoint-sm) mx-auto rounded-lg bg-white animate-modalShow',
   {
     variants: {
       'data-ani': {

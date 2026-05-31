@@ -1,5 +1,5 @@
 import 'react-tiny-fab/dist/styles.css'
-import './fab.scss'
+import './fab.css'
 
 import { classed } from '@tw-classed/react'
 import React, { useRef, useState } from 'react'

@@ -35,7 +35,7 @@ const StnListWrapper = classed(
 const Chip = classed('img', 'my-auto inline-block')
 const DestStnLeftContainer = classed(
   'div',
-  'flex justify-end items-center font-Ptd tabular-nums text-right w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-[4rem]',
+  'flex justify-end items-center font-Ptd tabular-nums text-right w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-16',
   {
     variants: {
       'data-lang': {
@@ -74,10 +74,10 @@ const ArrivalStnStatusWrapper = classed(
     },
   },
 )
-const SingleDirTimetableWrapper = classed('div', 'h-[5rem]')
+const SingleDirTimetableWrapper = classed('div', 'h-20')
 const StatusWrapper = classed(
   'span',
-  'font-Ptd tabular-nums inline-block px-1 w-[5rem] text-right hm:text-[0.9rem] hm:w-[4rem] hm:px-0 hsm:text-sm hsm:w-[4rem]',
+  'font-Ptd tabular-nums inline-block px-1 w-20 text-right hm:text-[0.9rem] hm:w-16 hm:px-0 hsm:text-sm hsm:w-16',
 )
 const SubwayDivider = classed('hr', 'py-1 hsm:mb-4', {
   variants: {
@@ -90,16 +90,16 @@ const SubwayDivider = classed('hr', 'py-1 hsm:mb-4', {
     'data-state': 'idle',
   },
 })
-const TimetableLoadingContainer = classed('div', 'h-[12rem]')
+const TimetableLoadingContainer = classed('div', 'h-48')
 const TitleLine4Icon = classed(
   Chip,
-  'w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]',
+  'w-6 pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]',
 )
 const TitleLineSUIcon = classed(
   Chip,
-  'w-[1.5rem] pb-2 hm:pb-0 hsm:pb-2 mr-1.5',
+  'w-6 pb-2 hm:pb-0 hsm:pb-2 mr-1.5',
 )
-const TrainLineIcon = classed(Chip, 'mx-0.5 w-[1.25rem]')
+const TrainLineIcon = classed(Chip, 'mx-0.5 w-5')
 const TrainTypeIcon = classed('img', 'h-4 ml-[0.15rem]')
 const MainTimetable = classed('div', 'inline-block select-none h-full')
 const NoTimetable = classed('div', 'h-full flex items-center justify-center')
@@ -107,7 +107,7 @@ const NoTimetableInner = classed(
   'span',
   'text-center hsm:text-sm table-cell align-middle',
 )
-const ApiErrorInner = classed(NoTimetableInner, 'mb-[4rem]')
+const ApiErrorInner = classed(NoTimetableInner, 'mb-16')
 const LoaderCell = classed('div', 'table-cell align-middle')
 const ApiStatusButton = classed(
   'button',

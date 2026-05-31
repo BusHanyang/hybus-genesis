@@ -12,7 +12,7 @@ const P = classed('p', 'my-[0.2em]')
 const ChangelogMargin = classed('div', 'mb-[1em]')
 const ContentArea = classed('div', 'm-auto justify-between')
 const ChangelogDiv = classed(ContentArea, 'text-left')
-const ModalButton = classed('button', 'outline-none cursor-pointer border-0')
+const ModalButton = classed('button', 'outline-hidden cursor-pointer border-0')
 const ModalFooterButton = classed(
   ModalButton,
   'mt-6 py-6 w-full text-white bg-indigo-400 font-Ptd font-bold text-lg rounded-md',

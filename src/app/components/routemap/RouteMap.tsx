@@ -44,7 +44,7 @@ const RouteMethod = classed(
 )
 const MainContainer = classed(
   'div',
-  'transition duration-150 ease-in-out mx-auto h-[14rem]',
+  'transition duration-150 ease-in-out mx-auto h-56',
   {
     variants: {
       status: {
