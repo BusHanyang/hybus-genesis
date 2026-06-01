@@ -26,10 +26,11 @@ const ModalMain = classed(
   {
     variants: {
       'data-state': {
-        open: 'flex items-center animate-modalBgShow',
+        open: 'flex items-center',
         closed: 'hidden',
       },
       'data-ani': {
+        opening: 'animate-modalBgShow',
         closing: 'animate-modalBgClose',
         idle: '',
       },
@@ -45,10 +46,11 @@ const ModalButton = classed('button', 'outline-hidden cursor-pointer border-0')
 
 const ModalSection = classed(
   'section',
-  'w-11/12 max-w-(--breakpoint-sm) mx-auto rounded-lg bg-white animate-modalShow',
+  'w-11/12 max-w-(--breakpoint-sm) mx-auto rounded-lg bg-white',
   {
     variants: {
       'data-ani': {
+        opening: 'animate-modalShow',
         closing: 'animate-modalClose',
         idle: '',
       },
@@ -126,6 +128,11 @@ export const Modal = (props: {
   const { theme } = useDarkmodeContext()
 
   const { t } = useTranslation()
+  const modalAnimationState = props.ani
+    ? 'closing'
+    : props.open
+      ? 'opening'
+      : 'idle'
 
   return (
     <ModalBackground
@@ -134,12 +141,12 @@ export const Modal = (props: {
     >
       <ModalMain
         data-state={props.open ? 'open' : 'closed'}
-        data-ani={props.ani ? 'closing' : 'idle'}
+        data-ani={modalAnimationState}
         ref={modalBackgroundRef}
       >
         {props.open ? (
           <ModalSection
-            data-ani={props.ani ? 'closing' : 'idle'}
+            data-ani={modalAnimationState}
             data-content={props.mTarget === 'Notice' ? 'notice' : 'default'}
           >
             {props.mTarget === 'Fabs' && (

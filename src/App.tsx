@@ -31,11 +31,13 @@ type MainCardHeight =
 
 const cardShellBase =
   'mb-3 justify-center items-center font-medium rounded-lg transition-colors text-theme-text border-theme-border shadow-theme-shadow'
+const buttonShellBase =
+  'mb-3 justify-center items-center font-medium rounded-lg transition-colors border-theme-border shadow-theme-shadow'
 const cardBase = `${cardShellBase} bg-theme-card`
 const heightTransitionCardBase =
   'mb-3 justify-center items-center font-medium rounded-lg text-theme-text border-theme-border shadow-theme-shadow bg-theme-card'
 const buttonBase =
-  'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4 text-theme-text'
+  'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4'
 const circleBase =
   "flex rounded-full inline-block transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
 const circleThemeVariants = {
@@ -96,12 +98,13 @@ const MainCardView = classed(
   },
 )
 const NoticeWrapper = classed('div', `${cardBase} p-3 h-12 w-full`)
-const Button = classed('div', `${cardShellBase} ${buttonBase}`, {
+const SubwayFallback = classed('div', 'h-[14.8rem] hm:h-[15.3rem]')
+const Button = classed('div', `${buttonShellBase} ${buttonBase}`, {
   variants: {
     'data-state': {
       active:
         'bg-button-active text-black drop-shadow-none shadow-inner transition-all ease-out duration-700',
-      idle: 'bg-theme-card',
+      idle: 'bg-theme-card text-theme-text',
     },
     'data-location': {
       'shuttlecoke_i': 'shuttlei:flex-col shuttlei:gap-x-0 gap-x-1',
@@ -449,7 +452,7 @@ function App() {
                         {realtimeMode &&
                         (tab === 'subway' || tab === 'jungang') ? (
                           <>
-                            <Suspense fallback={<div />}>
+                            <Suspense fallback={<SubwayFallback />}>
                               <Subway
                                 station={(tab === 'subway'
                                   ? '한대앞'
