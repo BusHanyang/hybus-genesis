@@ -54,6 +54,14 @@
   "changelog": "변경로그",
   "dark": "다크모드",
   "light": "라이트모드",
+  "theme_on": "테마 켜기",
+  "theme_off": "테마 끄기",
+  "theme_auto": "계절 자동",
+  "theme_spring": "봄",
+  "theme_summer": "여름",
+  "theme_autumn": "가을",
+  "theme_winter": "겨울",
+  "theme_christmas": "크리스마스",
   "info": "정보",
   "close": "닫기",
 
@@ -124,6 +132,9 @@
   "spring_txt": "벚꽃 테마가 출시되었습니다🌸 <br/> 플로팅 메뉴에서 언제든 다시 바꿀 수 있어요 :) <br/><br/> (이 알림창은 최초 한번만 보여집니다.)",
   "spring_btn": "지금 적용하기 🌸",
 
+  "summer": "여름 테마",
+  "autumn": "가을 테마",
+  "winter": "겨울 테마",
   "frozen": "겨울 테마",
   "frozen_txt": "겨울 한정 테마가 출시되었습니다❄️ <br/> 플로팅 메뉴에서 언제든 다시 바꿀 수 있어요 :) <br/><br/> (이 알림창은 최초 한번만 보여집니다.)",
   "frozen_btn": "지금 적용하기 ❄️"

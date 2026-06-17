@@ -171,7 +171,7 @@ export const Modal = (props: {
             )}
             {props.mTarget === 'Frozen' && (
               <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('frozen')}
+                {t('winter')}
               </ModalHeader>
             )}
             {props.mTarget === 'Notice' && (

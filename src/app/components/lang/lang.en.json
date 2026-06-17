@@ -54,6 +54,14 @@
   "changelog": "ChangeLog",
   "dark": "Dark",
   "light": "Light",
+  "theme_on": "Theme On",
+  "theme_off": "Theme Off",
+  "theme_auto": "Auto Season",
+  "theme_spring": "Spring",
+  "theme_summer": "Summer",
+  "theme_autumn": "Autumn",
+  "theme_winter": "Winter",
+  "theme_christmas": "Christmas",
   "info": "Information",
   "close": "Close",
 
@@ -124,6 +132,9 @@
   "spring_txt": "Discover the new spring theme now🌸 <br/>  You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
   "spring_btn": "Coloring with flowers 🌸",
 
+  "summer": "Summer Theme",
+  "autumn": "Autumn Theme",
+  "winter": "Winter Theme",
   "frozen": "Frozen Theme",
   "frozen_txt": "Discover the new frozen theme now❄️ <br/> You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
   "frozen_btn": "Switch Now ❄️"

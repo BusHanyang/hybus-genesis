@@ -4,6 +4,7 @@ import { t } from 'i18next'
 import React from 'react'
 import { Trans } from 'react-i18next'
 
+import { SEASONAL_THEME_ENABLED_STORAGE_KEY } from '@/context/ThemeContext'
 import { changelogAPI } from '@/network/changelog'
 
 import { Modal } from './modal'
@@ -35,6 +36,7 @@ const ModalOpen = (props: {
   })
 
   const toggleTheme = (themeName: string) => {
+    window.localStorage.setItem(SEASONAL_THEME_ENABLED_STORAGE_KEY, 'true')
     window.localStorage.setItem('theme', themeName)
     window.location.reload()
   }
@@ -97,7 +99,7 @@ const ModalOpen = (props: {
                   <Trans i18nKey="frozen_txt" />
                   <br />
 
-                  <ModalFooterButton onClick={() => toggleTheme('frozen')}>
+                  <ModalFooterButton onClick={() => toggleTheme('winter')}>
                     {t('frozen_btn')}
                   </ModalFooterButton>
                 </>

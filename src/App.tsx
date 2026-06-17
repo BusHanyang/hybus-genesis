@@ -10,7 +10,7 @@ import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
-import { useDarkmodeContext } from '@/context/ThemeContext'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
 import Refreshing from './app/components/ptr/refreshing-content'
@@ -39,12 +39,12 @@ const heightTransitionCardBase =
 const buttonBase =
   'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4'
 const circleBase =
-  "flex rounded-full inline-block transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
+  "relative flex rounded-full inline-block shrink-0 transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
 const circleThemeVariants = {
   variants: {
     'data-theme': {
       spring:
-        "rotate-45 scale-75 rounded-none before:absolute before:w-full before:h-full before:rounded-full before:bg-inherit before:content-[''] before:left-[-50%] after:absolute after:w-full after:h-full after:rounded-full after:bg-inherit after:content-[''] after:top-[-50%]",
+        "rotate-45 scale-75 rounded-none before:absolute before:left-[-50%] before:top-0 before:w-full before:h-full before:rounded-full before:bg-inherit before:content-[''] after:absolute after:left-0 after:top-[-50%] after:w-full after:h-full after:rounded-full after:bg-inherit after:content-['']",
       default: '',
     },
   },
@@ -60,7 +60,9 @@ const themeRootVariants = {
       dark: 'dark',
       christmas: 'christmas',
       spring: 'spring',
-      frozen: 'frozen',
+      summer: 'summer',
+      autumn: 'autumn',
+      winter: 'winter',
     },
   },
   defaultVariants: {
@@ -230,16 +232,13 @@ function App() {
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [noticeContent, setNoticeContent] = useState<string>('')
   const [noticeTitle, setNoticeTitle] = useState<string>('')
-  const { toggleTheme } = useDarkMode()
+  const { theme } = useDarkmodeContext()
+  const { setBackground } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
   {/** 테마 Alert state */}
-  const [themeAlert, setThemeAlert] = useState<boolean>(
-    // window.localStorage.getItem('xmas_alert') === null,
-    // window.localStorage.getItem('spring_2025') === null,
-    window.localStorage.getItem('frozen_2025') === null,
-  )
+  const [themeAlert, setThemeAlert] = useState<boolean>(false)
 
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
   const routeCardRef = useRef<HTMLDivElement>(null)
@@ -280,7 +279,6 @@ function App() {
 
   const { t, i18n } = useTranslation()
 
-  const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
   const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
 
@@ -348,44 +346,8 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const localTheme = window.localStorage.getItem('theme') || 'light'
-    if (localTheme) {
-      if (localTheme === 'dark') {
-        document.body.classList.remove('light')
-        document.body.classList.remove('christmas')
-        document.body.classList.remove('spring')
-        document.body.classList.remove('frozen')
-        document.body.classList.add('dark')
-      } else if (localTheme === 'christmas' || localTheme === 'spring') {
-        // 강제 light 적용
-        document.body.classList.add('light')
-        document.body.classList.remove('spring')
-        document.body.classList.remove('christmas')
-        document.body.classList.remove('dark')
-        toggleTheme()
-      {/** 봄 테마 사용 시
-      } else if (localTheme === 'spring') {
-          document.body.classList.remove('light')
-          document.body.classList.remove('dark')
-          document.body.classList.remove('christmas')
-          document.body.classList.remove('frozen')
-          document.body.classList.add('spring')
-      */}
-      } else if (localTheme === 'frozen') {
-          document.body.classList.remove('light')
-          document.body.classList.remove('dark')
-          document.body.classList.remove('christmas')
-          document.body.classList.remove('spring')
-          document.body.classList.add('frozen')
-      } else {
-        document.body.classList.remove('dark')
-        document.body.classList.remove('christmas')
-        document.body.classList.remove('spring')
-        document.body.classList.remove('frozen')
-        document.body.classList.add('light')
-      }
-    }
-  }, [theme, toggleTheme])
+    setBackground()
+  }, [setBackground, theme])
 
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
@@ -394,15 +356,18 @@ function App() {
 
   {/** 테마 사용시 최초 Alert */}
   useEffect(() => {
-    const status = window.localStorage.getItem('frozen_2025') === null
+    const status =
+      theme === THEME.WINTER &&
+      window.localStorage.getItem('theme') === null &&
+      window.localStorage.getItem('winter_2026') === null
     setThemeAlert(status)
-  }, [])
+  }, [theme])
 
   useEffect(() => {
     if (themeAlert) {
       setModalTarget('Frozen')
       openModal()
-      window.localStorage.setItem('frozen_2025', 'false')
+      window.localStorage.setItem('winter_2026', 'false')
     }
   }, [themeAlert])
 

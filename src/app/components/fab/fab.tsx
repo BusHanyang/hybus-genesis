@@ -10,13 +10,13 @@ import { Action, Fab } from 'react-tiny-fab'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Arrow from '/image/expand_less_white_48dp.svg'
+import ThemeImg from '/image/flower.svg'
 //import SpringImg from '/image/flower.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
-import SnowflakeImg from '/image/snowflake.svg'
-import { useDarkmodeContext } from '@/context/ThemeContext'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
 
@@ -42,12 +42,30 @@ const FabBackground = classed('div', 'select-none font-Ptd', {
     'data-state': 'closed',
   },
 })
+const ThemeSwatch = classed(
+  'span',
+  'block h-4 w-4 shrink-0 rounded-full border border-solid border-gray-300',
+)
+const ThemeDebugPanel = classed(
+  'div',
+  'fixed right-24 bottom-6 z-20 grid w-44 grid-cols-2 gap-2 rounded-lg bg-theme-card p-2 text-theme-text shadow-theme-shadow',
+)
+const ThemeDebugButton = classed(
+  'button',
+  'flex h-8 items-center justify-center gap-1 rounded-md border border-solid border-gray-200 bg-theme-main px-2 text-xs font-medium text-theme-text',
+)
 
 const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  const { toggleTheme } = useDarkMode()
+  const {
+    toggleTheme,
+    setThemeMode,
+    setAutomaticTheme,
+    seasonalThemeEnabled,
+    toggleSeasonalTheme,
+  } = useDarkMode()
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const { theme } = useDarkmodeContext()
@@ -123,6 +141,19 @@ const Fabs = (props: {
       toggleTheme()
     })
   }
+  const handleSeasonalThemeOnClick = (): Promise<React.FC> => {
+    return new Promise(() => {
+      toggleSeasonalTheme()
+    })
+  }
+  const handleThemeOnClick = (themeName: THEME): void => {
+    setThemeMode(themeName)
+    handleClose()
+  }
+  const handleAutoThemeOnClick = (): void => {
+    setAutomaticTheme()
+    handleClose()
+  }
   const handleLangOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
       if (i18n.language === 'en') {
@@ -139,40 +170,54 @@ const Fabs = (props: {
     if (theme === 'dark') {
       setMetadata({
         changeColor: '#374151',
-        //changeText: t('light'),
-        //imgIcon: LightImg,
+        changeText: t('light'),
+        imgIcon: LightImg,
         iconColor: 'white',
         dataTheme: 'dark',
         // changeText: t('christmas'),
         // imgIcon: ChristmasImg,
         // changeText: t('spring'),
         // imgIcon: SpringImg,
-        changeText: t('frozen'),
-        imgIcon: SnowflakeImg,
       })
     } else if (theme === 'christmas') {
       setMetadata({
-        changeText: t('light'),
+        changeText: t('dark'),
         changeColor: 'var(--color-theme-main)',
         iconColor: 'white',
         dataTheme: 'christmas',
-        imgIcon: LightImg,
+        imgIcon: DarkImg,
       })
     } else if (theme === 'spring') {
       setMetadata({
-        changeText: t('light'),
+        changeText: t('dark'),
         changeColor: '#e37da6',
         iconColor: 'white',
         dataTheme: 'spring',
-        imgIcon: LightImg,
+        imgIcon: DarkImg,
       })
-    } else if (theme === 'frozen') {
+    } else if (theme === 'summer') {
       setMetadata({
-        changeText: t('light'),
+        changeText: t('dark'),
+        changeColor: '#2ca6a4',
+        iconColor: 'white',
+        dataTheme: 'summer',
+        imgIcon: DarkImg,
+      })
+    } else if (theme === 'autumn') {
+      setMetadata({
+        changeText: t('dark'),
+        changeColor: '#b45309',
+        iconColor: 'white',
+        dataTheme: 'autumn',
+        imgIcon: DarkImg,
+      })
+    } else if (theme === 'winter') {
+      setMetadata({
+        changeText: t('dark'),
         changeColor: '#647ab3',
         iconColor: 'white',
-        dataTheme: 'frozen',
-        imgIcon: LightImg,
+        dataTheme: 'winter',
+        imgIcon: DarkImg,
       })
     } else {
       setMetadata({
@@ -185,6 +230,49 @@ const Fabs = (props: {
     }
   }, [t, theme])
 
+  const themeActions: Array<{
+    theme: THEME
+    text: string
+    swatch: string
+  }> = [
+    {
+      theme: THEME.LIGHT,
+      text: t('light'),
+      swatch: '#ffffff',
+    },
+    {
+      theme: THEME.DARK,
+      text: t('dark'),
+      swatch: '#374151',
+    },
+    {
+      theme: THEME.SPRING,
+      text: t('theme_spring'),
+      swatch: '#e37da6',
+    },
+    {
+      theme: THEME.SUMMER,
+      text: t('theme_summer'),
+      swatch: '#2ca6a4',
+    },
+    {
+      theme: THEME.AUTUMN,
+      text: t('theme_autumn'),
+      swatch: '#b45309',
+    },
+    {
+      theme: THEME.WINTER,
+      text: t('theme_winter'),
+      swatch: '#647ab3',
+    },
+    {
+      theme: THEME.CHRISTMAS,
+      text: t('theme_christmas'),
+      swatch:
+        'linear-gradient(135deg, #b23e3e 0%, #b23e3e 50%, #3e5f4b 50%, #3e5f4b 100%)',
+    },
+  ]
+
   return (
     <>
       <FabBackground
@@ -192,6 +280,35 @@ const Fabs = (props: {
         onClick={handleClickFabBackground}
         ref={fabBackgroundRef}
       />
+      {isOpen && (
+        <ThemeDebugPanel>
+          <ThemeDebugButton
+            className="col-span-2"
+            type="button"
+            onClick={handleAutoThemeOnClick}
+            onContextMenu={handleContextMenu}
+          >
+            <ThemeSwatch
+              style={{
+                background:
+                  'linear-gradient(135deg, #e37da6 0%, #2ca6a4 33%, #b45309 66%, #647ab3 100%)',
+              }}
+            />
+            {t('theme_auto')}
+          </ThemeDebugButton>
+          {themeActions.map((themeAction) => (
+            <ThemeDebugButton
+              key={themeAction.theme}
+              type="button"
+              onClick={() => handleThemeOnClick(themeAction.theme)}
+              onContextMenu={handleContextMenu}
+            >
+              <ThemeSwatch style={{ background: themeAction.swatch }} />
+              {themeAction.text}
+            </ThemeDebugButton>
+          ))}
+        </ThemeDebugPanel>
+      )}
       <Fab
         icon={
           <img
@@ -228,7 +345,9 @@ const Fabs = (props: {
           onClick={handleDarkOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={metadata.imgIcon}
@@ -240,12 +359,33 @@ const Fabs = (props: {
           </Icons>
         </Action>
         <Action
+          text={seasonalThemeEnabled ? t('theme_off') : t('theme_on')}
+          style={fabMainStyle}
+          onClick={handleSeasonalThemeOnClick}
+          onContextMenu={handleContextMenu}
+        >
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
+            <img
+              className="cursor-default mx-auto drag-save-n"
+              src={ThemeImg}
+              style={{ padding: 8 }}
+              alt="seasonal theme icon"
+              draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
+            />
+          </Icons>
+        </Action>
+        <Action
           text={t('changeLang')}
           style={fabMainStyle}
           onClick={handleLangOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={LangImg}
@@ -262,7 +402,9 @@ const Fabs = (props: {
           onClick={handleModalOpen}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Info}
@@ -278,7 +420,9 @@ const Fabs = (props: {
           onClick={handleDonateOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Donate}
@@ -294,7 +438,9 @@ const Fabs = (props: {
           onClick={handleEmailOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Email}

@@ -5,12 +5,89 @@ export enum THEME {
   DARK = 'dark',
   CHRISTMAS = 'christmas',
   SPRING = 'spring',
-  FROZEN = 'frozen',
+  SUMMER = 'summer',
+  AUTUMN = 'autumn',
+  WINTER = 'winter',
+}
+
+export const themeValues = Object.values(THEME)
+export const seasonalThemeValues = [
+  THEME.CHRISTMAS,
+  THEME.SPRING,
+  THEME.SUMMER,
+  THEME.AUTUMN,
+  THEME.WINTER,
+]
+export const SEASONAL_THEME_ENABLED_STORAGE_KEY = 'seasonalThemeEnabled'
+
+const getKoreaMonthDay = (date: Date): number => {
+  const formatter = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'Asia/Seoul',
+    month: 'numeric',
+    day: 'numeric',
+  })
+  const parts = formatter.formatToParts(date)
+  const month = Number(parts.find((part) => part.type === 'month')?.value)
+  const day = Number(parts.find((part) => part.type === 'day')?.value)
+
+  return month * 100 + day
+}
+
+export const getAutomaticSeasonTheme = (date = new Date()): THEME => {
+  const monthDay = getKoreaMonthDay(date)
+
+  if (monthDay >= 1215 && monthDay <= 1226) return THEME.CHRISTMAS
+  if (monthDay >= 1107 || monthDay < 204) return THEME.WINTER
+  if (monthDay >= 807) return THEME.AUTUMN
+  if (monthDay >= 505) return THEME.SUMMER
+
+  return THEME.SPRING
+}
+
+export const normalizeTheme = (themeName: string | null): THEME | null => {
+  if (themeName === 'frozen') return THEME.WINTER
+  if (themeValues.includes(themeName as THEME)) return themeName as THEME
+
+  return null
+}
+
+export const isSeasonalTheme = (themeName: THEME | null): boolean =>
+  themeName !== null && seasonalThemeValues.includes(themeName)
+
+export const getStoredSeasonalThemeEnabled = (
+  storedTheme: THEME | null,
+): boolean => {
+  const storedValue = window.localStorage.getItem(
+    SEASONAL_THEME_ENABLED_STORAGE_KEY,
+  )
+
+  if (storedValue === 'true') return true
+  if (storedValue === 'false') return false
+
+  return isSeasonalTheme(storedTheme)
+}
+
+export const getResolvedTheme = (
+  storedTheme: THEME | null,
+  seasonalThemeEnabled: boolean,
+): THEME => {
+  if (storedTheme === THEME.DARK) return THEME.DARK
+  if (seasonalThemeEnabled) {
+    if (storedTheme !== null && isSeasonalTheme(storedTheme)) {
+      return storedTheme
+    }
+
+    return getAutomaticSeasonTheme()
+  }
+
+  return THEME.LIGHT
 }
 
 interface ThemeContextProps {
   theme: THEME
   setTheme: React.Dispatch<React.SetStateAction<THEME>>
+  seasonalThemeEnabled: boolean
+  setSeasonalThemeEnabled: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ThemeContext = React.createContext<ThemeContextProps | null>(null)
@@ -24,15 +101,18 @@ export const useDarkmodeContext = () => {
 export const DarkmodeContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
-  const themeName = Object.values(THEME).includes(
-    window.localStorage.getItem('theme') as THEME,
-  )
-    ? (window.localStorage.getItem('theme') as THEME)
-    : THEME.LIGHT
+  const storedTheme = normalizeTheme(window.localStorage.getItem('theme'))
+  const storedSeasonalThemeEnabled =
+    getStoredSeasonalThemeEnabled(storedTheme)
+  const themeName = getResolvedTheme(storedTheme, storedSeasonalThemeEnabled)
   const [theme, setTheme] = React.useState<THEME>(themeName)
+  const [seasonalThemeEnabled, setSeasonalThemeEnabled] =
+    React.useState<boolean>(storedSeasonalThemeEnabled)
 
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <ThemeContext.Provider
+      value={{ theme, setTheme, seasonalThemeEnabled, setSeasonalThemeEnabled }}
+    >
       {children}
     </ThemeContext.Provider>
   )

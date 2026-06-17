@@ -34,7 +34,9 @@ const themeRootVariants = {
       dark: 'dark',
       christmas: 'christmas',
       spring: 'spring',
-      frozen: 'frozen',
+      summer: 'summer',
+      autumn: 'autumn',
+      winter: 'winter',
     },
   },
   defaultVariants: {
