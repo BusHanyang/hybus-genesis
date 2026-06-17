@@ -349,41 +349,39 @@ function App() {
 
   useEffect(() => {
     const localTheme = window.localStorage.getItem('theme') || 'light'
-    if (localTheme) {
-      if (localTheme === 'dark') {
+    if (localTheme === 'dark') {
+      document.body.classList.remove('light')
+      document.body.classList.remove('christmas')
+      document.body.classList.remove('spring')
+      document.body.classList.remove('frozen')
+      document.body.classList.add('dark')
+    } else if (localTheme === 'christmas' || localTheme === 'spring') {
+      // 강제 light 적용
+      document.body.classList.add('light')
+      document.body.classList.remove('spring')
+      document.body.classList.remove('christmas')
+      document.body.classList.remove('dark')
+      toggleTheme()
+    {/** 봄 테마 사용 시
+    } else if (localTheme === 'spring') {
         document.body.classList.remove('light')
-        document.body.classList.remove('christmas')
-        document.body.classList.remove('spring')
-        document.body.classList.remove('frozen')
-        document.body.classList.add('dark')
-      } else if (localTheme === 'christmas' || localTheme === 'spring') {
-        // 강제 light 적용
-        document.body.classList.add('light')
-        document.body.classList.remove('spring')
-        document.body.classList.remove('christmas')
         document.body.classList.remove('dark')
-        toggleTheme()
-      {/** 봄 테마 사용 시
-      } else if (localTheme === 'spring') {
-          document.body.classList.remove('light')
-          document.body.classList.remove('dark')
-          document.body.classList.remove('christmas')
-          document.body.classList.remove('frozen')
-          document.body.classList.add('spring')
-      */}
-      } else if (localTheme === 'frozen') {
-          document.body.classList.remove('light')
-          document.body.classList.remove('dark')
-          document.body.classList.remove('christmas')
-          document.body.classList.remove('spring')
-          document.body.classList.add('frozen')
-      } else {
+        document.body.classList.remove('christmas')
+        document.body.classList.remove('frozen')
+        document.body.classList.add('spring')
+    */}
+    } else if (localTheme === 'frozen') {
+        document.body.classList.remove('light')
         document.body.classList.remove('dark')
         document.body.classList.remove('christmas')
         document.body.classList.remove('spring')
-        document.body.classList.remove('frozen')
-        document.body.classList.add('light')
-      }
+        document.body.classList.add('frozen')
+    } else {
+      document.body.classList.remove('dark')
+      document.body.classList.remove('christmas')
+      document.body.classList.remove('spring')
+      document.body.classList.remove('frozen')
+      document.body.classList.add('light')
     }
   }, [theme, toggleTheme])
 
