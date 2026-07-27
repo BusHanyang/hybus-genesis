@@ -88,6 +88,8 @@ interface ThemeContextProps {
   setTheme: React.Dispatch<React.SetStateAction<THEME>>
   seasonalThemeEnabled: boolean
   setSeasonalThemeEnabled: React.Dispatch<React.SetStateAction<boolean>>
+  seasonalThemePreview: boolean
+  setSeasonalThemePreview: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ThemeContext = React.createContext<ThemeContextProps | null>(null)
@@ -102,16 +104,24 @@ export const DarkmodeContextProvider = ({
   children,
 }: React.PropsWithChildren) => {
   const storedTheme = normalizeTheme(window.localStorage.getItem('theme'))
-  const storedSeasonalThemeEnabled =
-    getStoredSeasonalThemeEnabled(storedTheme)
+  const storedSeasonalThemeEnabled = getStoredSeasonalThemeEnabled(storedTheme)
   const themeName = getResolvedTheme(storedTheme, storedSeasonalThemeEnabled)
   const [theme, setTheme] = React.useState<THEME>(themeName)
   const [seasonalThemeEnabled, setSeasonalThemeEnabled] =
     React.useState<boolean>(storedSeasonalThemeEnabled)
+  const [seasonalThemePreview, setSeasonalThemePreview] =
+    React.useState<boolean>(false)
 
   return (
     <ThemeContext.Provider
-      value={{ theme, setTheme, seasonalThemeEnabled, setSeasonalThemeEnabled }}
+      value={{
+        theme,
+        setTheme,
+        seasonalThemeEnabled,
+        setSeasonalThemeEnabled,
+        seasonalThemePreview,
+        setSeasonalThemePreview,
+      }}
     >
       {children}
     </ThemeContext.Provider>

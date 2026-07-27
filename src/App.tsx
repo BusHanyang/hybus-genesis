@@ -11,7 +11,12 @@ import { Shuttle } from '@/components'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import {
+  isSeasonalTheme,
+  normalizeTheme,
+  SEASONAL_THEME_ENABLED_STORAGE_KEY,
+  useDarkmodeContext,
+} from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
 import Refreshing from './app/components/ptr/refreshing-content'
@@ -235,15 +240,19 @@ function App() {
   const [noticeContent, setNoticeContent] = useState<string>('')
   const [noticeTitle, setNoticeTitle] = useState<string>('')
   const { theme } = useDarkmodeContext()
-  const { setAutomaticTheme, setBackground, setThemeMode } = useDarkMode()
+  const {
+    setAutomaticTheme,
+    setBackground,
+    setSeasonalThemeEnabledMode,
+    setThemeMode,
+  } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
-  {/** 테마 Alert state */}
-  const [themeAlert, setThemeAlert] = useState<boolean>(false)
 
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
   const routeCardRef = useRef<HTMLDivElement>(null)
+  const seasonalChoiceHandledRef = useRef(false)
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
@@ -265,12 +274,28 @@ function App() {
     openModal()
   }
 
-  const closeModal = () => {
+  const dismissModal = () => {
     setModalAni(true)
     setTimeout(() => {
       setModalAni(false)
       setModalOpen(false)
     }, 300)
+  }
+
+  const closeModal = () => {
+    if (modalTarget === 'Seasonal') {
+      if (seasonalChoiceHandledRef.current) return
+      seasonalChoiceHandledRef.current = true
+      setSeasonalThemeEnabledMode(false)
+    }
+    dismissModal()
+  }
+
+  const handleEnableSeasonalTheme = () => {
+    if (seasonalChoiceHandledRef.current) return
+    seasonalChoiceHandledRef.current = true
+    setAutomaticTheme()
+    dismissModal()
   }
 
   const handleRefresh = (): Promise<React.FC> => {
@@ -356,22 +381,22 @@ function App() {
     setTouchPrompt(status)
   }, [])
 
-  {/** 테마 사용시 최초 Alert */}
+  {/** 계절 테마를 아직 선택하지 않은 사용자의 최초 선택 */}
   useEffect(() => {
-    const status =
-      theme === THEME.WINTER &&
-      window.localStorage.getItem('theme') === null &&
-      window.localStorage.getItem('winter_2026') === null
-    setThemeAlert(status)
-  }, [theme])
+    const storedTheme = normalizeTheme(window.localStorage.getItem('theme'))
+    const storedSeasonalPreference = window.localStorage.getItem(
+      SEASONAL_THEME_ENABLED_STORAGE_KEY,
+    )
+    const hasStoredSeasonalPreference =
+      storedSeasonalPreference === 'true' ||
+      storedSeasonalPreference === 'false'
 
-  useEffect(() => {
-    if (themeAlert) {
-      setModalTarget('Frozen')
-      openModal()
-      window.localStorage.setItem('winter_2026', 'false')
+    if (!hasStoredSeasonalPreference && !isSeasonalTheme(storedTheme)) {
+      seasonalChoiceHandledRef.current = false
+      setModalTarget('Seasonal')
+      setModalOpen(true)
     }
-  }, [themeAlert])
+  }, [])
 
   return (
     <>
@@ -630,11 +655,11 @@ function App() {
                   <ModalOpen
                     isModalAni={modalAni}
                     isOpen={modalOpen}
-                    openModal={openModal}
                     closeModal={closeModal}
                     mTarget={modalTarget}
                     noticeContent={noticeContent}
                     noticeTitle={noticeTitle}
+                    onEnableSeasonalTheme={handleEnableSeasonalTheme}
                   />
                 </Suspense>
               </>

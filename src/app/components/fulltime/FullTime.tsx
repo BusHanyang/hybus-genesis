@@ -152,8 +152,6 @@ const ComboBox = (props: {
       >
         {props.type === props.value ? (
           <SelectedIcon
-            //src="../image/selected.svg"
-            //alt="check"
             fill="var(--color-ft-selected)"
             onContextMenu={handleContextMenu}
           />

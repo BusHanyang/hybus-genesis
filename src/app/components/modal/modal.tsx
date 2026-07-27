@@ -1,5 +1,5 @@
 import { classed } from '@tw-classed/react'
-import React, { useRef } from 'react'
+import React, { useLayoutEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useDarkmodeContext } from '@/context/ThemeContext'
@@ -20,51 +20,44 @@ const ModalBackground = classed(
   },
 )
 
-const ModalMain = classed(
-  'div',
-  'fixed inset-0 z-99 bg-black/60 select-none',
-  {
-    variants: {
-      'data-state': {
-        open: 'flex items-center',
-        closed: 'hidden',
-      },
-      'data-ani': {
-        opening: 'animate-modalBgShow',
-        closing: 'animate-modalBgClose',
-        idle: '',
-      },
+const ModalMain = classed('div', 'fixed inset-0 z-99 bg-black/60 select-none', {
+  variants: {
+    'data-state': {
+      open: 'flex items-center',
+      closed: 'hidden',
     },
-    defaultVariants: {
-      'data-state': 'closed',
-      'data-ani': 'idle',
+    'data-ani': {
+      opening: 'animate-modalBgShow',
+      closing: 'animate-modalBgClose',
+      idle: '',
     },
   },
-)
+  defaultVariants: {
+    'data-state': 'closed',
+    'data-ani': 'idle',
+  },
+})
 
 const ModalButton = classed('button', 'outline-hidden cursor-pointer border-0')
 
-const ModalSection = classed(
-  'section',
-  'w-11/12 max-w-(--breakpoint-sm) mx-auto rounded-lg bg-white',
-  {
-    variants: {
-      'data-ani': {
-        opening: 'animate-modalShow',
-        closing: 'animate-modalClose',
-        idle: '',
-      },
-      'data-content': {
-        notice: 'overflow-hidden',
-        default: 'overflow-auto',
-      },
+const ModalSection = classed('section', 'w-11/12 mx-auto rounded-lg bg-white', {
+  variants: {
+    'data-ani': {
+      opening: 'animate-modalShow',
+      closing: 'animate-modalClose',
+      idle: '',
     },
-    defaultVariants: {
-      'data-ani': 'idle',
-      'data-content': 'default',
+    'data-content': {
+      notice: 'max-w-(--breakpoint-sm) overflow-hidden',
+      seasonal: 'max-w-(--breakpoint-sm) overflow-hidden',
+      default: 'max-w-(--breakpoint-sm) overflow-auto',
     },
   },
-)
+  defaultVariants: {
+    'data-ani': 'idle',
+    'data-content': 'default',
+  },
+})
 
 const ModalHeader = classed(
   'header',
@@ -117,6 +110,7 @@ export const Modal = (props: {
   close: () => void
   children: React.ReactNode
   mTarget: string
+  seasonalFooter?: React.ReactNode
 }) => {
   const modalBackgroundRef = useRef<HTMLDivElement>(null)
   const handleClickModalBackground = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -125,7 +119,7 @@ export const Modal = (props: {
     }
   }
 
-  const { theme } = useDarkmodeContext()
+  const { theme, setSeasonalThemePreview } = useDarkmodeContext()
 
   const { t } = useTranslation()
   const modalAnimationState = props.ani
@@ -133,6 +127,17 @@ export const Modal = (props: {
     : props.open
       ? 'opening'
       : 'idle'
+
+  useLayoutEffect(() => {
+    const shouldPreviewSeasonalTheme =
+      props.open && props.mTarget === 'Seasonal'
+
+    setSeasonalThemePreview(shouldPreviewSeasonalTheme)
+
+    return () => {
+      setSeasonalThemePreview(false)
+    }
+  }, [props.mTarget, props.open, setSeasonalThemePreview])
 
   return (
     <ModalBackground
@@ -147,7 +152,13 @@ export const Modal = (props: {
         {props.open ? (
           <ModalSection
             data-ani={modalAnimationState}
-            data-content={props.mTarget === 'Notice' ? 'notice' : 'default'}
+            data-content={
+              props.mTarget === 'Notice'
+                ? 'notice'
+                : props.mTarget === 'Seasonal'
+                  ? 'seasonal'
+                  : 'default'
+            }
           >
             {props.mTarget === 'Fabs' && (
               <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
@@ -159,19 +170,9 @@ export const Modal = (props: {
                 {t('info')}
               </ModalHeader>
             )}
-            {props.mTarget === 'Christmas' && (
+            {props.mTarget === 'Seasonal' && (
               <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('christmas')}
-              </ModalHeader>
-            )}
-            {props.mTarget === 'Spring' && (
-              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('spring')}
-              </ModalHeader>
-            )}
-            {props.mTarget === 'Frozen' && (
-              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('winter')}
+                {t('seasonal_prompt_title')}
               </ModalHeader>
             )}
             {props.mTarget === 'Notice' && (
@@ -184,9 +185,13 @@ export const Modal = (props: {
               {props.children}
             </ModalSubMain>
             <ModalFooter data-theme={theme === 'dark' ? 'dark' : 'light'}>
-              <ModalFooterButton className="close" onClick={props.close}>
-                {t('close')}
-              </ModalFooterButton>
+              {props.mTarget === 'Seasonal' ? (
+                props.seasonalFooter
+              ) : (
+                <ModalFooterButton className="close" onClick={props.close}>
+                  {t('close')}
+                </ModalFooterButton>
+              )}
             </ModalFooter>
           </ModalSection>
         ) : null}

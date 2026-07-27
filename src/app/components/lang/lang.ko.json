@@ -1,11 +1,8 @@
 {
-  "lang": "ko",
   "changeLang": "English",
   "title": "버스하냥",
 
   "notice": "공지",
-  "news": "소식",
-
   "cycle": "순환",
   "direct": "직행",
   "cycle_ja": "중앙역",
@@ -42,7 +39,6 @@
   "yesulin_btn": "예술인",
   "jungang_btn": "중앙역",
   "all_btn": "전체 시간표",
-  "to_yesulin": "예술인행",
 
   "no_today": "오늘 운행하는 셔틀이 없습니다.",
   "end_today": "오늘 셔틀 운행이 종료되었습니다.",
@@ -124,18 +120,9 @@
   "last_train_img": "/image/last_train_kr.svg",
   "rapid_train_img": "/image/rapid_train_kr.svg",
 
-  "christmas": "메리 크리스마스!",
-  "christmas_txt": "지금 크리스마스 테마를 만나보세요🎄 <br/> 플로팅 메뉴에서 언제든 다시 바꿀 수 있어요 :) <br/><br/> (이 알림창은 최초 한번만 보여집니다.)",
-  "christmas_btn": "지금 적용하기 🎁",
-
-  "spring": "봄이 왔어요!",
-  "spring_txt": "벚꽃 테마가 출시되었습니다🌸 <br/> 플로팅 메뉴에서 언제든 다시 바꿀 수 있어요 :) <br/><br/> (이 알림창은 최초 한번만 보여집니다.)",
-  "spring_btn": "지금 적용하기 🌸",
-
-  "summer": "여름 테마",
-  "autumn": "가을 테마",
-  "winter": "겨울 테마",
-  "frozen": "겨울 테마",
-  "frozen_txt": "겨울 한정 테마가 출시되었습니다❄️ <br/> 플로팅 메뉴에서 언제든 다시 바꿀 수 있어요 :) <br/><br/> (이 알림창은 최초 한번만 보여집니다.)",
-  "frozen_btn": "지금 적용하기 ❄️"
+  "seasonal_prompt_title": "계절 테마를 사용해 볼까요?",
+  "seasonal_prompt_text": "계절에 맞춰 화면 색상과 비·눈 같은 효과가 함께 바뀝니다. 오른쪽 아래 메뉴에서 언제든 켜거나 끌 수 있어요.",
+  "seasonal_prompt_once": "(이 안내는 처음 한 번만 표시됩니다.)",
+  "seasonal_prompt_enable": "계절 테마 켜기",
+  "seasonal_prompt_keep": "계절 테마 사용 안 함"
 }

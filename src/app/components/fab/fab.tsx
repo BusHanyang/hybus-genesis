@@ -6,12 +6,10 @@ import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 
-//import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Arrow from '/image/expand_less_white_48dp.svg'
 import ThemeImg from '/image/flower.svg'
-//import SpringImg from '/image/flower.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
@@ -151,10 +149,6 @@ const Fabs = (props: {
         imgIcon: LightImg,
         iconColor: 'white',
         dataTheme: 'dark',
-        // changeText: t('christmas'),
-        // imgIcon: ChristmasImg,
-        // changeText: t('spring'),
-        // imgIcon: SpringImg,
       })
     } else if (theme === 'christmas') {
       setMetadata({

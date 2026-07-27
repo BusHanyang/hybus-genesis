@@ -5,7 +5,6 @@ import { Partytown } from '@qwik.dev/partytown/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import { RecoilRoot } from 'recoil'
 
 import SeasonalEffect from '@/components/seasonal/SeasonalEffect'
 import { DarkmodeContextProvider } from '@/context/ThemeContext'
@@ -25,15 +24,13 @@ root.classList.add('h-full')
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RecoilRoot>
-        <Partytown debug={false} forward={['dataLayer.push']} />
-        <DarkmodeContextProvider>
-          <SeasonalEffect />
-          <TimeTableContextProvider>
-            <App />
-          </TimeTableContextProvider>
-        </DarkmodeContextProvider>
-      </RecoilRoot>
+      <Partytown debug={false} forward={['dataLayer.push']} />
+      <DarkmodeContextProvider>
+        <SeasonalEffect />
+        <TimeTableContextProvider>
+          <App />
+        </TimeTableContextProvider>
+      </DarkmodeContextProvider>
     </QueryClientProvider>
   </React.StrictMode>,
 )

@@ -67,8 +67,10 @@ const SummerRainEffect = ({ visible }: { visible: boolean }) => (
 )
 
 const SeasonalEffect = () => {
-  const { theme, seasonalThemeEnabled } = useDarkmodeContext()
+  const { theme, seasonalThemeEnabled, seasonalThemePreview } =
+    useDarkmodeContext()
   const effectTheme = getEffectTheme(theme)
+  const effectVisible = seasonalThemeEnabled || seasonalThemePreview
   const springImages = React.useMemo(
     () => [
       createImage('/image/flower_pink.png'),
@@ -84,7 +86,7 @@ const SeasonalEffect = () => {
     [],
   )
 
-  const style = getEffectStyle(seasonalThemeEnabled)
+  const style = getEffectStyle(effectVisible)
 
   if (effectTheme === THEME.SPRING) {
     return (
@@ -100,7 +102,7 @@ const SeasonalEffect = () => {
   }
 
   if (effectTheme === THEME.SUMMER) {
-    return <SummerRainEffect visible={seasonalThemeEnabled} />
+    return <SummerRainEffect visible={effectVisible} />
   }
 
   if (effectTheme === THEME.AUTUMN) {

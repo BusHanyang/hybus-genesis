@@ -61,12 +61,7 @@ export default [
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'react-hooks/rules-of-hooks': 'error',
-      'react-hooks/exhaustive-deps': [
-        'warn',
-        {
-          additionalHooks: 'useRecoilCallback',
-        },
-      ],
+      'react-hooks/exhaustive-deps': 'warn',
     },
   },
 ]
