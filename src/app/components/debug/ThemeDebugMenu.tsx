@@ -2,7 +2,7 @@ import { classed } from '@tw-classed/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { THEME } from '@/context/ThemeContext'
+import { isSeasonalTheme, THEME } from '@/context/ThemeContext'
 
 const ThemeDebugRoot = classed(
   'div',
@@ -45,14 +45,22 @@ const SelectedMark = classed('span', 'ml-auto text-xs font-bold')
 
 interface ThemeDebugMenuProps {
   theme: THEME
+  manualSeasonalTheme: THEME | null
+  seasonalThemeEnabled: boolean
   onSelectTheme: (theme: THEME) => void
+  onSelectManualTheme: (theme: THEME) => void
   onSelectAutomaticTheme: () => void
+  onToggleTheme: () => void
 }
 
 const ThemeDebugMenu = ({
   theme,
+  manualSeasonalTheme,
+  seasonalThemeEnabled,
   onSelectTheme,
+  onSelectManualTheme,
   onSelectAutomaticTheme,
+  onToggleTheme,
 }: ThemeDebugMenuProps) => {
   const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
@@ -80,7 +88,15 @@ const ThemeDebugMenu = ({
   }, [isOpen])
 
   const handleThemeSelect = (themeName: THEME) => {
-    onSelectTheme(themeName)
+    if (themeName === THEME.DARK) {
+      if (theme !== THEME.DARK) onToggleTheme()
+    } else if (themeName === THEME.LIGHT && theme === THEME.DARK) {
+      onToggleTheme()
+    } else if (isSeasonalTheme(themeName)) {
+      onSelectManualTheme(themeName)
+    } else {
+      onSelectTheme(themeName)
+    }
     setIsOpen(false)
   }
   const handleAutomaticThemeSelect = () => {
@@ -106,6 +122,8 @@ const ThemeDebugMenu = ({
         'linear-gradient(135deg, #b23e3e 0%, #b23e3e 50%, #3e5f4b 50%, #3e5f4b 100%)',
     },
   ]
+  const automaticThemeSelected =
+    seasonalThemeEnabled && manualSeasonalTheme === null
 
   return (
     <ThemeDebugRoot ref={rootRef}>
@@ -139,6 +157,7 @@ const ThemeDebugMenu = ({
             <ThemeDebugOption
               className="col-span-2 justify-center"
               type="button"
+              aria-pressed={automaticThemeSelected}
               onClick={handleAutomaticThemeSelect}
             >
               <ThemeSwatch
@@ -148,9 +167,15 @@ const ThemeDebugMenu = ({
                 }}
               />
               {t('theme_auto')}
+              {automaticThemeSelected && (
+                <SelectedMark aria-hidden="true">✓</SelectedMark>
+              )}
             </ThemeDebugOption>
             {themeActions.map((themeAction) => {
-              const isSelected = theme === themeAction.theme
+              const isSelected = isSeasonalTheme(themeAction.theme)
+                ? seasonalThemeEnabled &&
+                  manualSeasonalTheme === themeAction.theme
+                : theme === themeAction.theme
 
               return (
                 <ThemeDebugOption

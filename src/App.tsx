@@ -239,12 +239,15 @@ function App() {
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [noticeContent, setNoticeContent] = useState<string>('')
   const [noticeTitle, setNoticeTitle] = useState<string>('')
-  const { theme } = useDarkmodeContext()
+  const { theme, manualSeasonalTheme, seasonalThemeEnabled } =
+    useDarkmodeContext()
   const {
     setAutomaticTheme,
     setBackground,
+    setManualSeasonalThemeMode,
     setSeasonalThemeEnabledMode,
     setThemeMode,
+    toggleTheme,
   } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
@@ -428,8 +431,12 @@ function App() {
                             {import.meta.env.DEV && (
                               <ThemeDebugMenu
                                 theme={theme}
+                                manualSeasonalTheme={manualSeasonalTheme}
+                                seasonalThemeEnabled={seasonalThemeEnabled}
                                 onSelectTheme={setThemeMode}
+                                onSelectManualTheme={setManualSeasonalThemeMode}
                                 onSelectAutomaticTheme={setAutomaticTheme}
+                                onToggleTheme={toggleTheme}
                               />
                             )}
                           </TitleRow>

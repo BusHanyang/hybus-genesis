@@ -19,6 +19,7 @@ export const seasonalThemeValues = [
   THEME.WINTER,
 ]
 export const SEASONAL_THEME_ENABLED_STORAGE_KEY = 'seasonalThemeEnabled'
+export const MANUAL_SEASONAL_THEME_STORAGE_KEY = 'manualSeasonalTheme'
 
 const getKoreaMonthDay = (date: Date): number => {
   const formatter = new Intl.DateTimeFormat('en-US', {
@@ -67,14 +68,31 @@ export const getStoredSeasonalThemeEnabled = (
   return isSeasonalTheme(storedTheme)
 }
 
+export const getStoredManualSeasonalTheme = (
+  storedTheme: THEME | null,
+  seasonalThemeEnabled: boolean,
+): THEME | null => {
+  if (!import.meta.env.DEV || !seasonalThemeEnabled) return null
+
+  const storedManualTheme = normalizeTheme(
+    window.localStorage.getItem(MANUAL_SEASONAL_THEME_STORAGE_KEY),
+  )
+
+  if (isSeasonalTheme(storedManualTheme)) return storedManualTheme
+  if (isSeasonalTheme(storedTheme)) return storedTheme
+
+  return null
+}
+
 export const getResolvedTheme = (
   storedTheme: THEME | null,
   seasonalThemeEnabled: boolean,
+  manualSeasonalTheme: THEME | null = null,
 ): THEME => {
   if (storedTheme === THEME.DARK) return THEME.DARK
   if (seasonalThemeEnabled) {
-    if (storedTheme !== null && isSeasonalTheme(storedTheme)) {
-      return storedTheme
+    if (manualSeasonalTheme !== null && isSeasonalTheme(manualSeasonalTheme)) {
+      return manualSeasonalTheme
     }
 
     return getAutomaticSeasonTheme()
@@ -88,6 +106,8 @@ interface ThemeContextProps {
   setTheme: React.Dispatch<React.SetStateAction<THEME>>
   seasonalThemeEnabled: boolean
   setSeasonalThemeEnabled: React.Dispatch<React.SetStateAction<boolean>>
+  manualSeasonalTheme: THEME | null
+  setManualSeasonalTheme: React.Dispatch<React.SetStateAction<THEME | null>>
   seasonalThemePreview: boolean
   setSeasonalThemePreview: React.Dispatch<React.SetStateAction<boolean>>
 }
@@ -105,10 +125,20 @@ export const DarkmodeContextProvider = ({
 }: React.PropsWithChildren) => {
   const storedTheme = normalizeTheme(window.localStorage.getItem('theme'))
   const storedSeasonalThemeEnabled = getStoredSeasonalThemeEnabled(storedTheme)
-  const themeName = getResolvedTheme(storedTheme, storedSeasonalThemeEnabled)
+  const storedManualSeasonalTheme = getStoredManualSeasonalTheme(
+    storedTheme,
+    storedSeasonalThemeEnabled,
+  )
+  const themeName = getResolvedTheme(
+    storedTheme,
+    storedSeasonalThemeEnabled,
+    storedManualSeasonalTheme,
+  )
   const [theme, setTheme] = React.useState<THEME>(themeName)
   const [seasonalThemeEnabled, setSeasonalThemeEnabled] =
     React.useState<boolean>(storedSeasonalThemeEnabled)
+  const [manualSeasonalTheme, setManualSeasonalTheme] =
+    React.useState<THEME | null>(storedManualSeasonalTheme)
   const [seasonalThemePreview, setSeasonalThemePreview] =
     React.useState<boolean>(false)
 
@@ -119,6 +149,8 @@ export const DarkmodeContextProvider = ({
         setTheme,
         seasonalThemeEnabled,
         setSeasonalThemeEnabled,
+        manualSeasonalTheme,
+        setManualSeasonalTheme,
         seasonalThemePreview,
         setSeasonalThemePreview,
       }}

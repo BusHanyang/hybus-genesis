@@ -3,8 +3,10 @@ import { useCallback, useLayoutEffect } from 'react'
 import {
   getAutomaticSeasonTheme,
   getResolvedTheme,
+  getStoredManualSeasonalTheme,
   getStoredSeasonalThemeEnabled,
   isSeasonalTheme,
+  MANUAL_SEASONAL_THEME_STORAGE_KEY,
   normalizeTheme,
   SEASONAL_THEME_ENABLED_STORAGE_KEY,
   THEME,
@@ -23,8 +25,14 @@ const themeBackgrounds: Record<THEME, string> = {
 }
 
 export const useDarkMode = () => {
-  const { setTheme, theme, seasonalThemeEnabled, setSeasonalThemeEnabled } =
-    useDarkmodeContext()
+  const {
+    setTheme,
+    theme,
+    seasonalThemeEnabled,
+    setSeasonalThemeEnabled,
+    manualSeasonalTheme,
+    setManualSeasonalTheme,
+  } = useDarkmodeContext()
   const BAR_STYLE = document.querySelector('meta[name=theme-color]')
 
   const setCookie = useCallback(
@@ -56,37 +64,101 @@ export const useDarkMode = () => {
     [setBarStyle],
   )
 
+  const persistManualSeasonalTheme = useCallback(
+    (nextTheme: THEME | null) => {
+      const nextManualTheme =
+        import.meta.env.DEV && isSeasonalTheme(nextTheme) ? nextTheme : null
+
+      if (nextManualTheme === null) {
+        window.localStorage.removeItem(MANUAL_SEASONAL_THEME_STORAGE_KEY)
+      } else {
+        window.localStorage.setItem(
+          MANUAL_SEASONAL_THEME_STORAGE_KEY,
+          nextManualTheme,
+        )
+      }
+
+      setManualSeasonalTheme(nextManualTheme)
+    },
+    [setManualSeasonalTheme],
+  )
+
   const setThemeMode = useCallback(
     (
       nextTheme: THEME,
-      options?: { seasonalThemeEnabled?: boolean; storeTheme?: boolean },
+      options?: {
+        seasonalThemeEnabled?: boolean
+        storeTheme?: boolean
+        manualSeasonalTheme?: THEME | null
+      },
     ) => {
       const nextSeasonalThemeEnabled =
         options?.seasonalThemeEnabled ?? isSeasonalTheme(nextTheme)
+      const forceAutomaticSeason =
+        !import.meta.env.DEV &&
+        nextSeasonalThemeEnabled &&
+        isSeasonalTheme(nextTheme)
+      const appliedTheme = forceAutomaticSeason
+        ? getAutomaticSeasonTheme()
+        : nextTheme
+      const nextManualSeasonalTheme = nextSeasonalThemeEnabled
+        ? options?.manualSeasonalTheme === undefined
+          ? manualSeasonalTheme
+          : options.manualSeasonalTheme
+        : null
+
+      persistManualSeasonalTheme(nextManualSeasonalTheme)
 
       window.localStorage.setItem(
         SEASONAL_THEME_ENABLED_STORAGE_KEY,
         nextSeasonalThemeEnabled ? 'true' : 'false',
       )
 
-      if (options?.storeTheme === false) {
+      if (options?.storeTheme === false || forceAutomaticSeason) {
         window.localStorage.removeItem('theme')
       } else {
-        window.localStorage.setItem('theme', nextTheme)
+        window.localStorage.setItem('theme', appliedTheme)
       }
 
       setSeasonalThemeEnabled(nextSeasonalThemeEnabled)
-      setCookie('_theme', nextTheme, 180)
-      setTheme(nextTheme)
-      applyTheme(nextTheme)
+      setCookie('_theme', appliedTheme, 180)
+      setTheme(appliedTheme)
+      applyTheme(appliedTheme)
     },
-    [applyTheme, setCookie, setSeasonalThemeEnabled, setTheme],
+    [
+      applyTheme,
+      manualSeasonalTheme,
+      persistManualSeasonalTheme,
+      setCookie,
+      setSeasonalThemeEnabled,
+      setTheme,
+    ],
   )
 
   const setAutomaticTheme = useCallback(() => {
     const nextTheme = getAutomaticSeasonTheme()
-    setThemeMode(nextTheme, { seasonalThemeEnabled: true, storeTheme: false })
+    setThemeMode(nextTheme, {
+      seasonalThemeEnabled: true,
+      storeTheme: false,
+      manualSeasonalTheme: null,
+    })
   }, [setThemeMode])
+
+  const setManualSeasonalThemeMode = useCallback(
+    (nextTheme: THEME) => {
+      if (!isSeasonalTheme(nextTheme)) return
+      if (!import.meta.env.DEV) {
+        setAutomaticTheme()
+        return
+      }
+
+      setThemeMode(nextTheme, {
+        seasonalThemeEnabled: true,
+        manualSeasonalTheme: nextTheme,
+      })
+    },
+    [setAutomaticTheme, setThemeMode],
+  )
 
   const setSeasonalThemeEnabledMode = useCallback(
     (enabled: boolean) => {
@@ -100,6 +172,7 @@ export const useDarkMode = () => {
       setThemeMode(nextTheme, {
         seasonalThemeEnabled: enabled,
         storeTheme: theme === THEME.DARK || !enabled,
+        manualSeasonalTheme: null,
       })
     },
     [setThemeMode, theme],
@@ -113,7 +186,7 @@ export const useDarkMode = () => {
     const nextTheme =
       theme === THEME.DARK
         ? seasonalThemeEnabled
-          ? getAutomaticSeasonTheme()
+          ? (manualSeasonalTheme ?? getAutomaticSeasonTheme())
           : THEME.LIGHT
         : THEME.DARK
 
@@ -121,7 +194,7 @@ export const useDarkMode = () => {
       seasonalThemeEnabled,
       storeTheme: !seasonalThemeEnabled || nextTheme === THEME.DARK,
     })
-  }, [seasonalThemeEnabled, setThemeMode, theme])
+  }, [manualSeasonalTheme, seasonalThemeEnabled, setThemeMode, theme])
 
   const setBackground = useCallback(() => {
     applyTheme(theme)
@@ -132,25 +205,51 @@ export const useDarkMode = () => {
     const normalizedTheme = normalizeTheme(localTheme)
     const nextSeasonalThemeEnabled =
       getStoredSeasonalThemeEnabled(normalizedTheme)
-    const nextTheme = getResolvedTheme(
+    const nextManualSeasonalTheme = getStoredManualSeasonalTheme(
       normalizedTheme,
       nextSeasonalThemeEnabled,
     )
+    const nextTheme = getResolvedTheme(
+      normalizedTheme,
+      nextSeasonalThemeEnabled,
+      nextManualSeasonalTheme,
+    )
 
-    if (localTheme === 'frozen') {
+    const storedSeasonalPreference = window.localStorage.getItem(
+      SEASONAL_THEME_ENABLED_STORAGE_KEY,
+    )
+    const hasStoredSeasonalPreference =
+      storedSeasonalPreference === 'true' ||
+      storedSeasonalPreference === 'false'
+
+    if (!hasStoredSeasonalPreference && isSeasonalTheme(normalizedTheme)) {
+      window.localStorage.setItem(SEASONAL_THEME_ENABLED_STORAGE_KEY, 'true')
+    }
+
+    if (!import.meta.env.DEV && isSeasonalTheme(normalizedTheme)) {
+      window.localStorage.removeItem('theme')
+    } else if (localTheme === 'frozen') {
       window.localStorage.setItem('theme', nextTheme)
     }
+    persistManualSeasonalTheme(nextManualSeasonalTheme)
     setSeasonalThemeEnabled(nextSeasonalThemeEnabled)
     setTheme(nextTheme)
     applyTheme(nextTheme)
     setCookie('_theme', nextTheme, 180)
-  }, [applyTheme, setCookie, setSeasonalThemeEnabled, setTheme])
+  }, [
+    applyTheme,
+    persistManualSeasonalTheme,
+    setCookie,
+    setSeasonalThemeEnabled,
+    setTheme,
+  ])
 
   return {
     toggleTheme,
     setBackground,
     setThemeMode,
     setAutomaticTheme,
+    setManualSeasonalThemeMode,
     seasonalThemeEnabled,
     toggleSeasonalTheme,
     setSeasonalThemeEnabledMode,

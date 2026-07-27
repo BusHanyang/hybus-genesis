@@ -30,9 +30,12 @@ const createImage = (src: string): HTMLImageElement => {
   return image
 }
 
-const getEffectTheme = (theme: THEME): THEME => {
+const getEffectTheme = (
+  theme: THEME,
+  manualSeasonalTheme: THEME | null,
+): THEME => {
   if (theme === THEME.LIGHT || theme === THEME.DARK) {
-    return getAutomaticSeasonTheme()
+    return manualSeasonalTheme ?? getAutomaticSeasonTheme()
   }
 
   return theme
@@ -67,9 +70,13 @@ const SummerRainEffect = ({ visible }: { visible: boolean }) => (
 )
 
 const SeasonalEffect = () => {
-  const { theme, seasonalThemeEnabled, seasonalThemePreview } =
-    useDarkmodeContext()
-  const effectTheme = getEffectTheme(theme)
+  const {
+    theme,
+    seasonalThemeEnabled,
+    manualSeasonalTheme,
+    seasonalThemePreview,
+  } = useDarkmodeContext()
+  const effectTheme = getEffectTheme(theme, manualSeasonalTheme)
   const effectVisible = seasonalThemeEnabled || seasonalThemePreview
   const springImages = React.useMemo(
     () => [
