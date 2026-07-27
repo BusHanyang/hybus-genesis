@@ -1,20 +1,21 @@
 /* eslint-disable camelcase */
 import { partytownVite } from '@qwik.dev/partytown/utils'
+import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import { fileURLToPath } from 'url'
 import { defineConfig } from 'vite'
 import viteCompression from 'vite-plugin-compression'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 
 // https://vitejs.dev/config/
+const configDir = path.dirname(fileURLToPath(import.meta.url))
+
 export default defineConfig({
   plugins: [
-    react({
-      babel: {
-        plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
-      },
-    }),
+    tailwindcss(),
+    react(),
     svgr(),
     viteCompression({ algorithm: 'brotliCompress' }),
     VitePWA({
@@ -121,13 +122,13 @@ export default defineConfig({
       },
     }),
     partytownVite({
-      dest: path.join(__dirname, 'dist', '~partytown'),
+      dest: path.join(configDir, 'dist', '~partytown'),
     }),
   ],
   publicDir: './public',
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src/app/'),
+      '@': path.resolve(configDir, './src/app/'),
     },
   },
 })

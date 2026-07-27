@@ -1,11 +1,10 @@
 import 'react-tiny-fab/dist/styles.css'
-import './fab.scss'
+import './fab.css'
 
+import { classed } from '@tw-classed/react'
 import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 //import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
@@ -21,18 +20,28 @@ import { useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
 
-const Icons = styled.div<{ theme: string }>`
-  ${tw`transition duration-300`}
-  ${({ theme }) => {
-    return theme !== 'light' ? tw`invert` : null
-  }}
-`
-const FabBackground = styled.div<{ open: boolean }>`
-  ${tw`select-none font-Ptd`}
-  ${({ open }) => {
-    return open ? tw`fixed inset-0 z-10` : null
-  }}
-`
+const Icons = classed('div', 'transition duration-300', {
+  variants: {
+    'data-theme': {
+      light: '',
+      inverted: 'invert',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'light',
+  },
+})
+const FabBackground = classed('div', 'select-none font-Ptd', {
+  variants: {
+    'data-state': {
+      open: 'fixed inset-0 z-10',
+      closed: '',
+    },
+  },
+  defaultVariants: {
+    'data-state': 'closed',
+  },
+})
 
 const Fabs = (props: {
   openModal: () => void
@@ -179,7 +188,7 @@ const Fabs = (props: {
   return (
     <>
       <FabBackground
-        open={isOpen}
+        data-state={isOpen ? 'open' : 'closed'}
         onClick={handleClickFabBackground}
         ref={fabBackgroundRef}
       />
@@ -219,7 +228,7 @@ const Fabs = (props: {
           onClick={handleDarkOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons theme={metadata.dataTheme}>
+          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
             <img
               className="cursor-default mx-auto drag-save-n"
               src={metadata.imgIcon}
@@ -236,7 +245,7 @@ const Fabs = (props: {
           onClick={handleLangOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons theme={metadata.dataTheme}>
+          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
             <img
               className="cursor-default mx-auto drag-save-n"
               src={LangImg}
@@ -253,7 +262,7 @@ const Fabs = (props: {
           onClick={handleModalOpen}
           onContextMenu={handleContextMenu}
         >
-          <Icons theme={metadata.dataTheme}>
+          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Info}
@@ -269,7 +278,7 @@ const Fabs = (props: {
           onClick={handleDonateOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons theme={metadata.dataTheme}>
+          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Donate}
@@ -285,7 +294,7 @@ const Fabs = (props: {
           onClick={handleEmailOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons theme={metadata.dataTheme}>
+          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Email}

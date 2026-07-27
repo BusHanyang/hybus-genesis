@@ -1,0 +1,32 @@
+.rtf--ab {
+  transition-property: color, background-color, box-shadow, border;
+  transition-duration: 0.1s;
+  transition-timing-function: ease-in-out;
+  box-shadow: var(--color-fab-shadow) !important;
+}
+
+.rtf .rtf--mb {
+  box-shadow: var(--color-fab-shadow) !important;
+}
+
+.rtf.open .rtf--mb > * {
+  transform-origin: center center;
+  transform: rotate(180deg) !important;
+  transition: ease-in-out transform 0.2s !important;
+}
+
+.rtf--mb__c {
+  padding: 15px !important;
+  margin: -15px !important;
+}
+
+.rtf--ab__c > span {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -user-drag: none;
+}

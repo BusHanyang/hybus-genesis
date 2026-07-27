@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
+import { classed } from '@tw-classed/react'
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import ArrowImg from '/public/image/arrow_back_black_36dp.svg?react'
 import CheckImg from '/public/image/selected2.svg?react'
@@ -21,103 +20,117 @@ import { shuttleAPI } from '@/network'
 
 import { useDarkMode } from '../useDarkMode'
 
-const Chip = styled.div`
-  ${tw`self-center h-fit text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter`}
-`
+const timeBoxHeightTable: Record<number, 'one' | 'two' | 'three' | 'four'> = {
+  1: 'one',
+  2: 'two',
+  3: 'three',
+  4: 'four',
+}
 
-const ComboBoxContainer = styled.div`
-  ${tw`flex gap-2 flex-wrap`}
-`
+const themeRootVariants = {
+  variants: {
+    'data-theme': {
+      light: 'light',
+      dark: 'dark',
+      christmas: 'christmas',
+      spring: 'spring',
+      frozen: 'frozen',
+    },
+  },
+  defaultVariants: {
+    'data-theme': 'light',
+  },
+} as const
 
-const ComboBoxInner = styled.div<{
-  $comboType: string
-  $comboValue: StopLocation | Season | Week
-}>`
-  ${tw`flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg`}
-  ${({ $comboType, $comboValue }) => {
-    if ($comboType === $comboValue) {
-      return tw`pl-2 text-ft-active-text bg-ft-active border-ft-active hm:pl-1.5` // Selected
-    } else {
-      return tw`text-ft-text border-ft-border` // Not Selected
-    }
-  }}
-`
+const ThemeRoot = classed('div', '', themeRootVariants)
+const Chip = classed(
+  'div',
+  'self-center h-fit text-black py-1 w-12 rounded-full inline-block text-center hm:w-10 hm:py-0.5 tracking-tighter',
+  {
+    variants: {
+      tone: {
+        cycle: 'bg-chip-red',
+        jungang: 'bg-chip-purple',
+        yesulin: 'bg-chip-green',
+        direct: 'bg-chip-blue',
+        orange: 'bg-chip-orange',
+      },
+    },
+  },
+)
 
-const ControlBox = styled.div`
-  ${tw`h-full scroll-smooth`}
-`
+const ComboBoxContainer = classed('div', 'flex gap-2 flex-wrap')
 
-const ControlBoxDivider = styled.hr`
-  ${tw`w-full h-px mb-3 border-ft-border bg-center justify-center`}
-`
+const ComboBoxInner = classed(
+  'div',
+  'flex cursor-default font-medium text-sm items-center py-2 px-4 rounded-xl border border-solid hm:text-xs hm:py-1.5 hm:px-3 hm:rounded-lg',
+  {
+    variants: {
+      'data-state': {
+        selected: 'pl-2 text-ft-active-text bg-ft-active border-ft-active hm:pl-1.5',
+        idle: 'text-ft-text border-ft-border',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'idle',
+    },
+  },
+)
 
-const ControlBoxRow = styled.div`
-  ${tw`grid grid-flow-row gap-2`}
-`
-
-const ControlBoxRowTitle = styled.span`
-  ${tw`text-left font-bold text-lg hm:text-base`}
-`
-
-const NoTimetable = styled.div`
-  ${tw`h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-[8rem] hm:leading-[6rem]`}
-`
-
-const MinuteContainer = styled.div`
-  ${tw`self-center text-left ml-3 col-span-4`}
-`
-
-const FullTimeDocument = styled.div`
-  ${tw`px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl`}
-`
-
-const FullTimeToolbar = styled.div`
-  ${tw`flex self-center py-5 hm:py-3`}
-`
-
-const FullTimeTitle = styled.span`
-  ${tw`text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5`}
-`
-
-const GoBackIcon = styled(ArrowImg)`
-  ${tw`cursor-default w-6 mr-2 hm:w-4`}
-`
-
-const SelectedIcon = styled(CheckImg)`
-  ${tw`mr-1 w-5 h-2.5 hm:w-4`}
-`
-
-const TimeBoxInner = styled.div<{ $maxChips: number }>`
-  ${tw`bg-ft-element rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm`}
-  ${({ $maxChips }) => {
-    if ($maxChips === 1) {
-      return tw`h-24 hm:h-20`
-    } else if ($maxChips === 2) {
-      return tw`h-28 hm:h-24`
-    } else if ($maxChips === 3) {
-      return tw`h-32 hm:h-28`
-    } else if ($maxChips === 4) {
-      return tw`h-40 hm:h-32`
-    }
-  }}
-`
-
-const TimeBoxHeader = styled.div`
-  ${tw`font-bold self-center`}
-`
-
-const TimeBoxBody = styled.div`
-  ${tw`font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px`}
-`
-
-const TimeBoxBodyGrid = styled.div<{ $itemCount: number }>`
-  ${tw`inline-grid grid-cols-5`}
-  ${({ $itemCount }) => ($itemCount === 0 ? tw`hidden` : undefined)}
-`
-
-const TimetableContainer = styled.div`
-  ${tw`pb-6`}
-`
+const ControlBox = classed('div', 'h-full scroll-smooth')
+const ControlBoxDivider = classed(
+  'hr',
+  'w-full h-px mb-3 border-ft-border bg-center justify-center',
+)
+const ControlBoxRow = classed('div', 'grid grid-flow-row gap-2')
+const ControlBoxRowTitle = classed('span', 'text-left font-bold text-lg hm:text-base')
+const NoTimetable = classed(
+  'div',
+  'h-32 hm:h-24 bg-ft-element rounded-2xl text-lg leading-32 hm:leading-24',
+)
+const MinuteContainer = classed('div', 'self-center text-left ml-3 col-span-4')
+const FullTimeDocument = classed(
+  'div',
+  'px-5 font-Ptd text-center mx-auto select-none bg-theme-main text-theme-text max-w-7xl',
+)
+const FullTimeToolbar = classed('div', 'flex self-center py-5 hm:py-3')
+const FullTimeTitle = classed(
+  'span',
+  'text-left font-bold text-2xl px-1 hm:text-xl hm:px-0.5',
+)
+const GoBackIcon = classed(ArrowImg, 'cursor-default w-6 mr-2 hm:w-4')
+const SelectedIcon = classed(CheckImg, 'mr-1 w-5 h-2.5 hm:w-4')
+const TimeBoxInner = classed(
+  'div',
+  'bg-ft-element rounded-2xl grid grid-cols-6 p-5 hm:p-2.5 hm:text-sm',
+  {
+    variants: {
+      'data-count': {
+        one: 'h-24 hm:h-20',
+        two: 'h-28 hm:h-24',
+        three: 'h-32 hm:h-28',
+        four: 'h-40 hm:h-32',
+      },
+    },
+  },
+)
+const TimeBoxHeader = classed('div', 'font-bold self-center')
+const TimeBoxBody = classed(
+  'div',
+  'font-medium inline-grid grid-flow-row gap-2 col-span-5 hm:gap-px',
+)
+const TimeBoxBodyGrid = classed('div', 'grid-cols-5', {
+  variants: {
+    'data-state': {
+      empty: 'hidden',
+      filled: 'inline-grid',
+    },
+  },
+  defaultVariants: {
+    'data-state': 'filled',
+  },
+})
+const TimetableContainer = classed('div', 'pb-6')
 
 const ComboBox = (props: {
   type: string
@@ -132,8 +145,7 @@ const ComboBox = (props: {
   return (
     <>
       <ComboBoxInner
-        $comboType={props.type}
-        $comboValue={props.value}
+        data-state={props.type === props.value ? 'selected' : 'idle'}
         onClick={() => props.func(props.value)}
       >
         {props.type === props.value ? (
@@ -154,28 +166,26 @@ const TimeBox = (props: OrganizedTimetables) => {
   const { t } = useTranslation()
   return (
     <>
-      <TimeBoxInner $maxChips={props.count}>
+      <TimeBoxInner data-count={timeBoxHeightTable[props.count]}>
         <TimeBoxHeader>
           {props.time}
           {t('o_clock')}
         </TimeBoxHeader>
         <TimeBoxBody>
-          <TimeBoxBodyGrid $itemCount={props.circle.length}>
-            <Chip className="bg-chip-red">{t('cycle')}</Chip>
+          <TimeBoxBodyGrid data-state={props.circle.length === 0 ? 'empty' : 'filled'}>
+            <Chip tone="cycle">{t('cycle')}</Chip>
             <MinuteContainer>{props.circle.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
-          <TimeBoxBodyGrid $itemCount={props.jungang.length}>
-            <Chip className="bg-chip-purple">{t('cycle_ja')}</Chip>
+          <TimeBoxBodyGrid data-state={props.jungang.length === 0 ? 'empty' : 'filled'}>
+            <Chip tone="jungang">{t('cycle_ja')}</Chip>
             <MinuteContainer>{props.jungang.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
-          <TimeBoxBodyGrid $itemCount={props.directY.length}>
-            <Chip className="bg-chip-green">{t('yesul')}</Chip>
+          <TimeBoxBodyGrid data-state={props.directY.length === 0 ? 'empty' : 'filled'}>
+            <Chip tone="yesulin">{t('yesul')}</Chip>
             <MinuteContainer>{props.directY.join(' ')}</MinuteContainer>
           </TimeBoxBodyGrid>
-          <TimeBoxBodyGrid $itemCount={props.direct.length}>
-            <Chip
-              className={props.isShuttleI ? 'bg-chip-orange' : 'bg-chip-blue'}
-            >
+          <TimeBoxBodyGrid data-state={props.direct.length === 0 ? 'empty' : 'filled'}>
+            <Chip tone={props.isShuttleI ? 'orange' : 'direct'}>
               {t('direct')}
             </Chip>
             <MinuteContainer>{props.direct.join(' ')}</MinuteContainer>
@@ -366,7 +376,7 @@ const FullTime = () => {
 
   return (
     <>
-      <div className={`${theme}`}>
+      <ThemeRoot data-theme={theme}>
         <FullTimeDocument>
           <FullTimeToolbar>
             <GoBackIcon
@@ -436,7 +446,7 @@ const FullTime = () => {
           </ControlBox>
           <TimetableContainer>{renderTimeBox()}</TimetableContainer>
         </FullTimeDocument>
-      </div>
+      </ThemeRoot>
     </>
   )
 }

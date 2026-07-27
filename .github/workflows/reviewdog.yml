@@ -13,12 +13,13 @@ jobs:
       - name: setup node
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      - run: yarn install
+          node-version-file: .node-version
+      - run: YARN_NODE_LINKER=node-modules yarn install --immutable
       - uses: reviewdog/action-eslint@v1
         with:
           reporter: github-pr-review # Change reporter.
-          fail_on_error: true
+          fail_level: any
+          eslint_flags: "src/**/*.{ts,tsx}"
   misspell:
     name: runner / misspell
     runs-on: ubuntu-latest

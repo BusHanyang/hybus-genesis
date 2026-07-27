@@ -1,67 +1,120 @@
+import { classed } from '@tw-classed/react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import DotAnimation, {
+  DotColor,
   useDotAnimation,
 } from '@/components/routemap/DotAnimation'
 import { RouteAnimationFlag } from '@/data'
 
-const RouteLine = styled.div<{ $ishalfwidth: boolean }>`
-  ${tw`absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-[13.125rem]`}
-  ${(props) => (props.$ishalfwidth ? tw`w-[7.8vw]` : tw`w-[15.6vw]`)}
-`
+type RouteStatus = keyof RouteAnimationFlag
+type RouteTone = DotColor | 'inactive'
+type SpecialStopTone = 'cycle' | 'yesulin' | 'jungang' | 'inactive'
 
-const Dot = styled.span`
-  ${tw`
-        flex rounded-full inline-block
-        h-3 w-3 rt1:h-2.5 rt1:w-2.5
-        z-1 mx-2
-    `}
-`
-
-const RouteStations = styled.div`
-  ${tw`transition duration-150 ease-in-out flex relative`}
-`
-
-const SpecialStopsText = styled.p<{ key: number; lang: string }>`
-  ${tw`absolute text-xs top-[-17px] left-[-6.5px] text-center w-10 font-bold`}
-  ${(props) =>
-    props.lang === 'ko'
-      ? tw`tracking-tight`
-      : tw`tracking-tighter text-[0.7rem]`}
-`
-
-const routeColorTable: { [key: string]: string } = {
-  direct: 'bg-chip-blue',
-  cycle: 'bg-chip-red',
-  yesulin: 'bg-chip-green',
-  jungang: 'bg-chip-purple',
-  cycleText: 'text-chip-red',
-  yesulinText: 'text-chip-green',
-  jungangText: 'text-chip-purple',
+const routeToneTable: Record<RouteStatus, DotColor> = {
+  direct: 'direct',
+  cycle: 'cycle',
+  yesulin: 'yesulin',
+  jungang: 'jungang',
 }
+
+const RouteLine = classed(
+  'div',
+  'absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-52.5',
+  {
+    variants: {
+      'data-width': {
+        half: 'w-[7.8vw]',
+        full: 'w-[15.6vw]',
+      },
+      tone: {
+        direct: 'bg-chip-blue',
+        cycle: 'bg-chip-red',
+        yesulin: 'bg-chip-green',
+        jungang: 'bg-chip-purple',
+        orange: 'bg-chip-orange',
+        inactive: 'bg-zinc-200 dark:bg-slate-500',
+      },
+    },
+    defaultVariants: {
+      'data-width': 'full',
+    },
+  },
+)
+
+const Dot = classed(
+  'span',
+  'flex rounded-full inline-block h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-1 mx-2',
+  {
+    variants: {
+      tone: {
+        direct: 'bg-chip-blue',
+        cycle: 'bg-chip-red',
+        yesulin: 'bg-chip-green',
+        jungang: 'bg-chip-purple',
+        orange: 'bg-chip-orange',
+        inactive: 'bg-zinc-200 dark:bg-slate-500',
+      },
+      'data-state': {
+        hidden: 'opacity-0',
+        visible: '',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'visible',
+    },
+  },
+)
+
+const RouteStations = classed(
+  'div',
+  'transition duration-150 ease-in-out flex relative',
+)
+
+const SpecialStopsText = classed(
+  'p',
+  'absolute text-xs top-[-17px] left-[-6.5px] text-center w-10 font-bold',
+  {
+    variants: {
+      lang: {
+        ko: 'tracking-tight',
+        other: 'tracking-tighter text-[0.7rem]',
+      },
+      tone: {
+        cycle: 'text-chip-red',
+        yesulin: 'text-chip-green',
+        jungang: 'text-chip-purple',
+        inactive: 'text-zinc-200 dark:text-slate-500',
+      },
+    },
+  },
+)
+
+const BranchRouteElementGroup = classed(
+  'div',
+  'col-span-2 grid grid-cols-3 w-[75%] place-items-center',
+)
 
 // The numbers in lineIndex and dotIndex represent the index numbers for each route.
 // The 'direct' route does not have an index 3 because,
 // while the other routes include an extra stop(station) at that position (such as yesulin or jungang),
 // the 'direct' route does not have an additional stop(station) there.
-const lineIndex: { [key: string]: Array<number> } = {
+const lineIndex: Record<RouteStatus, Array<number>> = {
   direct: [0, 1, 2, 4],
   cycle: [0, 1, 2, 3, 4],
   yesulin: [0, 1, 2, 3, 4],
   jungang: [0, 1, 2, 3, 4],
 }
 
-const dotIndex: { [key: string]: Array<number> } = {
+const dotIndex: Record<RouteStatus, Array<number>> = {
   direct: [0, 1, 2, 4, 5],
   cycle: [0, 1, 2, 3, 4, 5],
   yesulin: [0, 1, 2, 3, 4, 5],
   jungang: [0, 1, 2, 3, 4, 5],
 }
 
-const isPrevStop = (line: string, index: number, tab: string) => {
+const isPrevStop = (line: RouteStatus, index: number, tab: string) => {
   switch (tab) {
     case 'shuttlecoke_o':
       return index !== 0
@@ -81,8 +134,35 @@ const isPrevStop = (line: string, index: number, tab: string) => {
   }
 }
 
+const getLineTone = (
+  routeStatus: RouteStatus,
+  index: number,
+  tab: string,
+): RouteTone => {
+  if (!isPrevStop(routeStatus, index, tab)) return 'inactive'
+  return index === 4 ? 'orange' : routeToneTable[routeStatus]
+}
+
+const getDotTone = (
+  routeStatus: RouteStatus,
+  item: number,
+  tab: string,
+): RouteTone => {
+  if (!isPrevStop(routeStatus, item, tab)) return 'inactive'
+  return item >= 5 ? 'orange' : routeToneTable[routeStatus]
+}
+
+const getSpecialStopTone = (
+  routeStatus: RouteStatus,
+  item: number,
+  tab: string,
+): SpecialStopTone => {
+  if (!isPrevStop(routeStatus, item, tab)) return 'inactive'
+  return routeStatus === 'direct' ? 'inactive' : routeStatus
+}
+
 const RouteLines = (props: {
-  routeStatus: string
+  routeStatus: RouteStatus
   index: number
   tab: string
 }) => {
@@ -90,22 +170,18 @@ const RouteLines = (props: {
   const index = lineIndex[props.routeStatus][props.index]
   return (
     <RouteLine
-      $ishalfwidth={
+      data-width={
         props.routeStatus !== 'direct' && (index === 2 || index === 3)
+          ? 'half'
+          : 'full'
       }
-      className={
-        isPrevStop(props.routeStatus, index, props.tab)
-          ? index === 4
-            ? 'bg-chip-orange'
-            : routeColorTable[props.routeStatus]
-          : 'bg-zinc-200 dark:bg-slate-500'
-      }
+      tone={getLineTone(props.routeStatus, index, props.tab)}
     />
   )
 }
 
 const RouteElement = (props: {
-  routeStatus: string
+  routeStatus: RouteStatus
   tab: string
   animationFlagTable: { [key: string]: Array<boolean> }
   item: number
@@ -115,26 +191,18 @@ const RouteElement = (props: {
   return (
     <RouteStations>
       <Dot
-        className={
-          (isPrevStop(props.routeStatus, props.item, props.tab)
-            ? props.item >= 5
-              ? 'bg-chip-orange'
-              : routeColorTable[props.routeStatus]
-            : 'bg-zinc-200 dark:bg-slate-500') +
-          (props.item === 2 && props.routeStatus === 'yesulin'
-            ? ' opacity-0'
-            : '')
+        tone={getDotTone(props.routeStatus, props.item, props.tab)}
+        data-state={
+          props.item === 2 && props.routeStatus === 'yesulin'
+            ? 'hidden'
+            : 'visible'
         }
       >
         {props.item === 3 ? (
           <SpecialStopsText
             key={0}
-            lang={i18n.language}
-            className={
-              isPrevStop(props.routeStatus, props.item, props.tab)
-                ? routeColorTable[props.routeStatus + 'Text']
-                : 'text-zinc-200 dark:text-slate-500'
-            }
+            lang={i18n.language === 'ko' ? 'ko' : 'other'}
+            tone={getSpecialStopTone(props.routeStatus, props.item, props.tab)}
           >
             {props.routeStatus === 'jungang' ? t('jung') : t('yesul')}
           </SpecialStopsText>
@@ -150,11 +218,7 @@ const RouteElement = (props: {
       <DotAnimation
         isOn={props.animationFlagTable[props.routeStatus][props.item]}
         index={props.item}
-        color={
-          props.item >= 5
-            ? 'bg-chip-orange'
-            : routeColorTable[props.routeStatus]
-        }
+        color={props.item >= 5 ? 'orange' : routeToneTable[props.routeStatus]}
         routeStatus={props.routeStatus}
       />
     </RouteStations>
@@ -162,7 +226,7 @@ const RouteElement = (props: {
 }
 
 const RouteElementGroup = (props: {
-  routeStatus: string
+  routeStatus: RouteStatus
   tab: string
   animationFlagTable: { [key: string]: Array<boolean> }
 }) => {
@@ -175,12 +239,7 @@ const RouteElementGroup = (props: {
         .map((item) => {
           if (item === 2 && props.routeStatus !== 'direct')
             return (
-              <div
-                key={item}
-                className={
-                  'col-span-2 grid grid-cols-3 w-[75%] place-items-center'
-                }
-              >
+              <BranchRouteElementGroup key={item}>
                 <RouteElement
                   routeStatus={props.routeStatus}
                   tab={props.tab}
@@ -199,7 +258,7 @@ const RouteElementGroup = (props: {
                   animationFlagTable={props.animationFlagTable}
                   item={item + 2}
                 />
-              </div>
+              </BranchRouteElementGroup>
             )
           return (
             <RouteElement

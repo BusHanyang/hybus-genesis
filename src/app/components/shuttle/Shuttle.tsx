@@ -1,12 +1,11 @@
 import { useQuery } from '@tanstack/react-query'
+import { classed } from '@tw-classed/react'
 import dayjs from 'dayjs'
 import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
-import styled from 'styled-components'
-import tw from 'twin.macro'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
 import { openNaverMapApp } from '@/components/shuttle/map'
@@ -26,88 +25,93 @@ import { settingAPI, shuttleAPI } from '@/network'
 
 dayjs.extend(customParse)
 
-const TimetableWrapper = styled.div`
-  ${tw`h-[14.8rem]`}
-`
-
-const HeadlineWrapper = styled.div`
-  ${tw`relative`} drag-save-n
-`
-
-const Headline = styled.h2`
-  ${tw`font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2`}
-`
-
-const MainTimeTableWrapper = styled.div`
-  ${tw`w-full h-[11.25rem] inline-block touch-none`}
-`
-
-const MainTimetable = styled.div`
-  ${tw`inline-block select-none h-full`}
-`
-
-const Chip = styled.div`
-  ${tw`text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem] tracking-tighter`}
-`
-
-const SingleTimetable = styled.div`
-  ${tw`text-left mx-auto py-1.5`}
-`
-
-const OnTouchAvailableWrapper = styled.div`
-  ${tw`bg-ontouch-bg rounded-md text-center h-8 w-[17.5rem] hm:w-[16.25rem] hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden`}
-`
-
-const OnTouchCloseWrapper = styled.div`
-  ${tw`w-[fit-content] float-right ml-1 h-full flex hsm:ml-0`}
-`
-
-const TimeLeftWrapper = styled.span`
-  ${tw`font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-[6.5rem] hm:text-[0.9rem] hm:w-[7rem] hm:px-0 hm:leading-6`}
-  &.touched {
-    ${tw`font-bold text-[#ff673d] dark:text-[#ff996a]`}
-  }
-`
-
-const ArrowWrapper = styled.div`
-  ${tw`text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6`}
-`
-
-const DestinationWrapper = styled.span`
-  ${tw`text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6`}
-`
-
-const NoTimetable = styled.div`
-  ${tw`h-full table`}
-`
-
-const NoTimetableInner = styled.span`
-  ${tw`table-cell align-middle leading-6`}
-`
-
-const TimeClickableConversionText = styled.span`
-  ${tw`transition duration-300`}
-`
-
-const TimeClickableNotifyText = styled.div`
-  ${tw`transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]`}
-`
-
-const ApiStatusButton = styled.button`
-  ${tw`rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2`}
-`
-
-const MapButton = styled.button`
-  ${tw`absolute top-0 right-0 h-full`} drag-save-n
-`
-
-const MapIcon = styled(MapImg)`
-  ${tw`cursor-default h-8 w-8 hsm:h-7 hsm:w-7`} drag-save-n
-`
-
-const CloseIcon = styled.img`
-  ${tw`cursor-default dark:invert h-4 w-4 my-auto`}
-`
+const TimetableWrapper = classed('div', 'h-[14.8rem]')
+const HeadlineWrapper = classed('div', 'relative drag-save-n')
+const Headline = classed(
+  'h2',
+  'font-bold text-2xl mb-2 hsm:text-lg hsm:mb-4 hsm:mt-2 hm:text-[1.375rem] hm:mb-4 hm:mt-2',
+)
+const MainTimeTableWrapper = classed(
+  'div',
+  'w-full h-45 inline-block touch-none',
+)
+const MainTimetable = classed('div', 'inline-block select-none h-full')
+const Chip = classed(
+  'div',
+  'text-black py-1 w-12 rounded-full inline-block text-center hsm:text-sm hsm:leading-4 hsm:w-10 hm:w-10 hm:text-[0.9rem] tracking-tighter',
+  {
+    variants: {
+      'data-tone': {
+        cycle: 'bg-chip-red',
+        jungang: 'bg-chip-purple',
+        yesulin: 'bg-chip-green',
+        orange: 'bg-chip-orange',
+        direct: 'bg-chip-blue',
+      },
+    },
+  },
+)
+const SingleTimetable = classed('div', 'text-left mx-auto py-1.5')
+const OnTouchAvailableWrapper = classed(
+  'div',
+  'bg-ontouch-bg rounded-md text-center h-8 w-70 hm:w-65 hsm:w-[14.85rem] mt-1 mx-auto p-1.5 leading-5 overflow-hidden',
+  {
+    variants: {
+      'data-state': {
+        hidden: 'hidden',
+        visible: '',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'visible',
+    },
+  },
+)
+const OnTouchCloseWrapper = classed(
+  'div',
+  'w-fit float-right ml-1 h-full flex hsm:ml-0',
+)
+const TimeLeftWrapper = classed(
+  'span',
+  'font-Ptd tabular-nums inline-block px-1 w-32 text-right hsm:text-sm hsm:w-26 hm:text-[0.9rem] hm:w-28 hm:px-0 hm:leading-6',
+  {
+    variants: {
+      'data-state': {
+        touched: 'font-bold text-[#ff673d] dark:text-[#ff996a]',
+        default: '',
+      },
+    },
+    defaultVariants: {
+      'data-state': 'default',
+    },
+  },
+)
+const ArrowWrapper = classed(
+  'div',
+  'text-center inline-block w-6 mx-1.5 hsm:w-4 hsm:text-sm hsm:mx-[0.040rem] hm:mx-0.5 hm:text-[0.9rem] hm:w-6 hm:leading-6',
+)
+const DestinationWrapper = classed(
+  'span',
+  'text-left inline-block hsm:text-sm hm:text-[0.9rem] hm:leading-6',
+)
+const NoTimetable = classed('div', 'h-full table')
+const NoTimetableInner = classed('span', 'table-cell align-middle leading-6')
+const LoaderCell = classed('div', 'table-cell align-middle')
+const TimeClickableConversionText = classed('span', 'transition duration-300')
+const TimeClickableNotifyText = classed(
+  'div',
+  'transition-transform float-left my-auto hsm:text-[0.8rem] hm:text-[0.875rem]',
+)
+const ApiStatusButton = classed(
+  'button',
+  'rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2',
+)
+const MapButton = classed('button', 'absolute top-0 right-0 h-full drag-save-n')
+const MapIcon = classed(
+  MapImg,
+  'cursor-default h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n',
+)
+const CloseIcon = classed('img', 'cursor-default dark:invert h-4 w-4 my-auto')
 
 const isWeekend = (): boolean => {
   return dayjs().day() == 0 || dayjs().day() == 6
@@ -331,16 +335,16 @@ const titleText = (location: string): string => {
 
 const ColoredChip = ({ chipType }: ChipType) => {
   if (chipType == 'C') {
-    return <Chip className="bg-chip-red">{busTypeToText(chipType)}</Chip>
+    return <Chip data-tone="cycle">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'DHJ') {
-    return <Chip className="bg-chip-purple">{busTypeToText(chipType)}</Chip>
+    return <Chip data-tone="jungang">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'DY') {
-    return <Chip className="bg-chip-green">{busTypeToText(chipType)}</Chip>
+    return <Chip data-tone="yesulin">{busTypeToText(chipType)}</Chip>
   } else if (chipType == 'R' || chipType == 'NA') {
-    return <Chip className="bg-chip-orange">{busTypeToText(chipType)}</Chip>
+    return <Chip data-tone="orange">{busTypeToText(chipType)}</Chip>
   }
 
-  return <Chip className="bg-chip-blue">{busTypeToText(chipType)}</Chip>
+  return <Chip data-tone="direct">{busTypeToText(chipType)}</Chip>
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
@@ -442,7 +446,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     )
   }
 
-  const RenderTimetable = (showActualTime: boolean): JSX.Element => {
+  const RenderTimetable = (showActualTime: boolean): React.JSX.Element => {
     const { t } = useTranslation()
 
     if (timetable.data === undefined) {
@@ -521,7 +525,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
                 <SingleTimetable>
                   <ColoredChip chipType={val.type} />
                   <TimeLeftWrapper
-                    className={`${showActualTime ? 'touched' : ''}`}
+                    data-state={showActualTime ? 'touched' : 'default'}
                   >
                     {showActualTime ? (
                       <TimeClickableConversionText>
@@ -585,13 +589,14 @@ export const Shuttle = ({ location }: ShuttleStop) => {
         <MainTimetable>
           {timetable.isPending ? (
             <NoTimetable>
-              <SyncLoader
-                color="var(--color-load-color)"
-                margin={4}
-                size={8}
-                loading={timetable.isPending}
-                cssOverride={tw`table-cell align-middle`}
-              />
+              <LoaderCell>
+                <SyncLoader
+                  color="var(--color-load-color)"
+                  margin={4}
+                  size={8}
+                  loading={timetable.isPending}
+                />
+              </LoaderCell>
             </NoTimetable>
           ) : (
             <></>
@@ -600,8 +605,10 @@ export const Shuttle = ({ location }: ShuttleStop) => {
         </MainTimetable>
       </MainTimeTableWrapper>
       <OnTouchAvailableWrapper
-        className={
-          timetable.isPending || infoClosed || !timetableAlive ? 'hidden' : ''
+        data-state={
+          timetable.isPending || infoClosed || !timetableAlive
+            ? 'hidden'
+            : 'visible'
         }
       >
         {touched ? (

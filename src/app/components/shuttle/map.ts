@@ -19,17 +19,17 @@ const getMapURLScheme = (loc: string): string => {
 }
 const getMapURL = (loc: string): string => {
   if (loc == 'shuttlecoke_o') {
-    return 'https://map.naver.com/v5/?lng=126.8379922&lat=37.2987258&type=0&title=셔틀콕'
+    return 'https://map.naver.com/?lng=126.8379922&lat=37.2987258&type=0&title=셔틀콕'
   } else if (loc == 'subway') {
-    return 'https://map.naver.com/v5/?lng=126.852051&lat=37.309738&type=0&title=한대앞역 셔틀버스 정류장'
+    return 'https://map.naver.com/?lng=126.852051&lat=37.309738&type=0&title=한대앞역 셔틀버스 정류장'
   } else if (loc == 'yesulin') {
-    return 'https://map.naver.com/v5/?lng=126.84564&lat=37.31951&type=0&title=예술인 셔틀버스 정류장'
+    return 'https://map.naver.com/?lng=126.84564&lat=37.31951&type=0&title=예술인 셔틀버스 정류장'
   } else if (loc == 'jungang') {
-    return 'https://map.naver.com/v5/?lng=126.83961&lat=37.31489&type=0&title=중앙역 셔틀버스 정류장'
+    return 'https://map.naver.com/?lng=126.83961&lat=37.31489&type=0&title=중앙역 셔틀버스 정류장'
   } else if (loc == 'shuttlecoke_i') {
-    return 'https://map.naver.com/v5/?lng=126.83737&lat=37.29923&type=0&title=셔틀콕 건너편 정류장'
+    return 'https://map.naver.com/?lng=126.83737&lat=37.29923&type=0&title=셔틀콕 건너편 정류장'
   } else if (loc == 'residence') {
-    return 'https://map.naver.com/v5/?lng=126.83644&lat=37.29349&type=0&title=기숙사 셔틀버스 정류장'
+    return 'https://map.naver.com/?lng=126.83644&lat=37.29349&type=0&title=기숙사 셔틀버스 정류장'
   } else {
     return 'https://map.naver.com'
   }

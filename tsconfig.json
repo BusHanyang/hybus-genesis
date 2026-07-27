@@ -9,13 +9,11 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "types": ["vite-plugin-pwa/react"],
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/app/*"],
     }
