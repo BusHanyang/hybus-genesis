@@ -16,7 +16,7 @@ import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import { useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
 
@@ -42,27 +42,12 @@ const FabBackground = classed('div', 'select-none font-Ptd', {
     'data-state': 'closed',
   },
 })
-const ThemeSwatch = classed(
-  'span',
-  'block h-4 w-4 shrink-0 rounded-full border border-solid border-gray-300',
-)
-const ThemeDebugPanel = classed(
-  'div',
-  'fixed right-24 bottom-6 z-20 grid w-44 grid-cols-2 gap-2 rounded-lg bg-theme-card p-2 text-theme-text shadow-theme-shadow',
-)
-const ThemeDebugButton = classed(
-  'button',
-  'flex h-8 items-center justify-center gap-1 rounded-md border border-solid border-gray-200 bg-theme-main px-2 text-xs font-medium text-theme-text',
-)
-
 const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
   const {
     toggleTheme,
-    setThemeMode,
-    setAutomaticTheme,
     seasonalThemeEnabled,
     toggleSeasonalTheme,
   } = useDarkMode()
@@ -146,14 +131,6 @@ const Fabs = (props: {
       toggleSeasonalTheme()
     })
   }
-  const handleThemeOnClick = (themeName: THEME): void => {
-    setThemeMode(themeName)
-    handleClose()
-  }
-  const handleAutoThemeOnClick = (): void => {
-    setAutomaticTheme()
-    handleClose()
-  }
   const handleLangOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
       if (i18n.language === 'en') {
@@ -230,49 +207,6 @@ const Fabs = (props: {
     }
   }, [t, theme])
 
-  const themeActions: Array<{
-    theme: THEME
-    text: string
-    swatch: string
-  }> = [
-    {
-      theme: THEME.LIGHT,
-      text: t('light'),
-      swatch: '#ffffff',
-    },
-    {
-      theme: THEME.DARK,
-      text: t('dark'),
-      swatch: '#374151',
-    },
-    {
-      theme: THEME.SPRING,
-      text: t('theme_spring'),
-      swatch: '#e37da6',
-    },
-    {
-      theme: THEME.SUMMER,
-      text: t('theme_summer'),
-      swatch: '#2ca6a4',
-    },
-    {
-      theme: THEME.AUTUMN,
-      text: t('theme_autumn'),
-      swatch: '#b45309',
-    },
-    {
-      theme: THEME.WINTER,
-      text: t('theme_winter'),
-      swatch: '#647ab3',
-    },
-    {
-      theme: THEME.CHRISTMAS,
-      text: t('theme_christmas'),
-      swatch:
-        'linear-gradient(135deg, #b23e3e 0%, #b23e3e 50%, #3e5f4b 50%, #3e5f4b 100%)',
-    },
-  ]
-
   return (
     <>
       <FabBackground
@@ -280,35 +214,6 @@ const Fabs = (props: {
         onClick={handleClickFabBackground}
         ref={fabBackgroundRef}
       />
-      {isOpen && (
-        <ThemeDebugPanel>
-          <ThemeDebugButton
-            className="col-span-2"
-            type="button"
-            onClick={handleAutoThemeOnClick}
-            onContextMenu={handleContextMenu}
-          >
-            <ThemeSwatch
-              style={{
-                background:
-                  'linear-gradient(135deg, #e37da6 0%, #2ca6a4 33%, #b45309 66%, #647ab3 100%)',
-              }}
-            />
-            {t('theme_auto')}
-          </ThemeDebugButton>
-          {themeActions.map((themeAction) => (
-            <ThemeDebugButton
-              key={themeAction.theme}
-              type="button"
-              onClick={() => handleThemeOnClick(themeAction.theme)}
-              onContextMenu={handleContextMenu}
-            >
-              <ThemeSwatch style={{ background: themeAction.swatch }} />
-              {themeAction.text}
-            </ThemeDebugButton>
-          ))}
-        </ThemeDebugPanel>
-      )}
       <Fab
         icon={
           <img

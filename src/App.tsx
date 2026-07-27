@@ -8,6 +8,7 @@ import { Transition } from 'react-transition-group'
 import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
+import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
@@ -120,6 +121,7 @@ const Button = classed('div', `${buttonShellBase} ${buttonBase}`, {
 })
 const FulltimeButton = classed('div', `${cardBase} ${buttonBase} w-full cursor-default`)
 const HeadlineWrapper = classed('div', 'relative drag-save-n')
+const TitleRow = classed('div', 'grid grid-cols-[1fr_auto_1fr] items-center')
 const HelpIcon = classed(
   HelpImg,
   'bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default drag-save-n',
@@ -233,7 +235,7 @@ function App() {
   const [noticeContent, setNoticeContent] = useState<string>('')
   const [noticeTitle, setNoticeTitle] = useState<string>('')
   const { theme } = useDarkmodeContext()
-  const { setBackground } = useDarkMode()
+  const { setAutomaticTheme, setBackground, setThemeMode } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
@@ -395,16 +397,24 @@ function App() {
                     <Apps>
                       <header>
                         <HeadlineWrapper>
-                          <Title>
-                            {t('title')}
-                            <HelpIcon
-                              aria-label="information icon"
-                              onClick={handleModalTarget}
-                              onContextMenu={handleContextMenu}
-                              //draggable="false"
-                              fill="var(--color-theme-text)"
-                            ></HelpIcon>
-                          </Title>
+                          <TitleRow>
+                            <span aria-hidden="true" />
+                            <Title>{t('title')}</Title>
+                            {import.meta.env.DEV && (
+                              <ThemeDebugMenu
+                                theme={theme}
+                                onSelectTheme={setThemeMode}
+                                onSelectAutomaticTheme={setAutomaticTheme}
+                              />
+                            )}
+                          </TitleRow>
+                          <HelpIcon
+                            aria-label="information icon"
+                            onClick={handleModalTarget}
+                            onContextMenu={handleContextMenu}
+                            //draggable="false"
+                            fill="var(--color-theme-text)"
+                          ></HelpIcon>
                         </HeadlineWrapper>
                         <NoticeWrapper>
                           <Suspense fallback={<div />}>
