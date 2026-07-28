@@ -261,12 +261,18 @@ function App() {
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
   const routeCardRef = useRef<HTMLDivElement>(null)
   const seasonalChoiceHandledRef = useRef(false)
+  const modalDismissTimeoutRef = useRef<number | null>(null)
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
 
   const openModal = () => {
+    if (modalDismissTimeoutRef.current !== null) {
+      window.clearTimeout(modalDismissTimeoutRef.current)
+      modalDismissTimeoutRef.current = null
+    }
+    setModalAni(false)
     setModalOpen(true)
   }
 
@@ -283,8 +289,10 @@ function App() {
   }
 
   const dismissModal = () => {
+    if (modalDismissTimeoutRef.current !== null) return
     setModalAni(true)
-    setTimeout(() => {
+    modalDismissTimeoutRef.current = window.setTimeout(() => {
+      modalDismissTimeoutRef.current = null
       setModalAni(false)
       setModalOpen(false)
     }, 300)
@@ -378,6 +386,15 @@ function App() {
     document.body.classList.add('h-full')
     document.documentElement.classList.add('h-full')
     document.documentElement.classList.add('h-dfull')
+  }, [])
+
+  useEffect(() => {
+    return () => {
+      if (modalDismissTimeoutRef.current !== null) {
+        window.clearTimeout(modalDismissTimeoutRef.current)
+        modalDismissTimeoutRef.current = null
+      }
+    }
   }, [])
 
   useEffect(() => {
