@@ -2,11 +2,7 @@ import { classed } from '@tw-classed/react'
 import React from 'react'
 import { Snowfall } from 'react-snowfall'
 
-import {
-  getAutomaticSeasonTheme,
-  THEME,
-  useDarkmodeContext,
-} from '@/context/ThemeContext'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
 const effectStyle: React.CSSProperties = {
   zIndex: 2,
@@ -33,9 +29,10 @@ const createImage = (src: string): HTMLImageElement => {
 const getEffectTheme = (
   theme: THEME,
   manualSeasonalTheme: THEME | null,
+  automaticSeasonTheme: THEME,
 ): THEME => {
   if (theme === THEME.LIGHT || theme === THEME.DARK) {
-    return manualSeasonalTheme ?? getAutomaticSeasonTheme()
+    return manualSeasonalTheme ?? automaticSeasonTheme
   }
 
   return theme
@@ -72,11 +69,16 @@ const SummerRainEffect = ({ visible }: { visible: boolean }) => (
 const SeasonalEffect = () => {
   const {
     theme,
+    automaticSeasonTheme,
     seasonalThemeEnabled,
     manualSeasonalTheme,
     seasonalThemePreview,
   } = useDarkmodeContext()
-  const effectTheme = getEffectTheme(theme, manualSeasonalTheme)
+  const effectTheme = getEffectTheme(
+    theme,
+    manualSeasonalTheme,
+    automaticSeasonTheme,
+  )
   const effectVisible = seasonalThemeEnabled || seasonalThemePreview
   const springImages = React.useMemo(
     () => [

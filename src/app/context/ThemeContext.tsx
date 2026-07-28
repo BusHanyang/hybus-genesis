@@ -21,6 +21,18 @@ export const seasonalThemeValues = [
 export const SEASONAL_THEME_ENABLED_STORAGE_KEY = 'seasonalThemeEnabled'
 export const MANUAL_SEASONAL_THEME_STORAGE_KEY = 'manualSeasonalTheme'
 
+const DAY_IN_MILLISECONDS = 24 * 60 * 60 * 1000
+const KOREA_UTC_OFFSET_IN_MILLISECONDS = 9 * 60 * 60 * 1000
+const SEASON_REFRESH_GRACE_PERIOD_IN_MILLISECONDS = 100
+
+const getMillisecondsUntilNextKoreaMidnight = (now = Date.now()): number => {
+  const koreaNow = now + KOREA_UTC_OFFSET_IN_MILLISECONDS
+  const nextKoreaDay =
+    (Math.floor(koreaNow / DAY_IN_MILLISECONDS) + 1) * DAY_IN_MILLISECONDS
+
+  return nextKoreaDay - koreaNow + SEASON_REFRESH_GRACE_PERIOD_IN_MILLISECONDS
+}
+
 const getKoreaMonthDay = (date: Date): number => {
   const formatter = new Intl.DateTimeFormat('en-US', {
     timeZone: 'Asia/Seoul',
@@ -104,6 +116,7 @@ export const getResolvedTheme = (
 interface ThemeContextProps {
   theme: THEME
   setTheme: React.Dispatch<React.SetStateAction<THEME>>
+  automaticSeasonTheme: THEME
   seasonalThemeEnabled: boolean
   setSeasonalThemeEnabled: React.Dispatch<React.SetStateAction<boolean>>
   manualSeasonalTheme: THEME | null
@@ -135,6 +148,9 @@ export const DarkmodeContextProvider = ({
     storedManualSeasonalTheme,
   )
   const [theme, setTheme] = React.useState<THEME>(themeName)
+  const [automaticSeasonTheme, setAutomaticSeasonTheme] = React.useState<THEME>(
+    () => getAutomaticSeasonTheme(),
+  )
   const [seasonalThemeEnabled, setSeasonalThemeEnabled] =
     React.useState<boolean>(storedSeasonalThemeEnabled)
   const [manualSeasonalTheme, setManualSeasonalTheme] =
@@ -142,11 +158,53 @@ export const DarkmodeContextProvider = ({
   const [seasonalThemePreview, setSeasonalThemePreview] =
     React.useState<boolean>(false)
 
+  React.useEffect(() => {
+    let refreshTimer: number | null = null
+
+    const clearRefreshTimer = () => {
+      if (refreshTimer === null) return
+      window.clearTimeout(refreshTimer)
+      refreshTimer = null
+    }
+
+    const refreshAutomaticSeason = () => {
+      setAutomaticSeasonTheme(getAutomaticSeasonTheme())
+    }
+
+    const scheduleNextRefresh = () => {
+      clearRefreshTimer()
+      refreshTimer = window.setTimeout(() => {
+        refreshAutomaticSeason()
+        scheduleNextRefresh()
+      }, getMillisecondsUntilNextKoreaMidnight())
+    }
+
+    const refreshAfterResume = () => {
+      refreshAutomaticSeason()
+      scheduleNextRefresh()
+    }
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') refreshAfterResume()
+    }
+
+    scheduleNextRefresh()
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('pageshow', refreshAfterResume)
+
+    return () => {
+      clearRefreshTimer()
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('pageshow', refreshAfterResume)
+    }
+  }, [])
+
   return (
     <ThemeContext.Provider
       value={{
         theme,
         setTheme,
+        automaticSeasonTheme,
         seasonalThemeEnabled,
         setSeasonalThemeEnabled,
         manualSeasonalTheme,

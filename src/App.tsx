@@ -15,6 +15,7 @@ import {
   isSeasonalTheme,
   normalizeTheme,
   SEASONAL_THEME_ENABLED_STORAGE_KEY,
+  THEME,
   useDarkmodeContext,
 } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
@@ -239,8 +240,12 @@ function App() {
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [noticeContent, setNoticeContent] = useState<string>('')
   const [noticeTitle, setNoticeTitle] = useState<string>('')
-  const { theme, manualSeasonalTheme, seasonalThemeEnabled } =
-    useDarkmodeContext()
+  const {
+    theme,
+    automaticSeasonTheme,
+    manualSeasonalTheme,
+    seasonalThemeEnabled,
+  } = useDarkmodeContext()
   const {
     setAutomaticTheme,
     setBackground,
@@ -378,6 +383,23 @@ function App() {
   useEffect(() => {
     setBackground()
   }, [setBackground, theme])
+
+  useEffect(() => {
+    const automaticThemeIsVisible =
+      seasonalThemeEnabled &&
+      manualSeasonalTheme === null &&
+      theme !== THEME.DARK
+
+    if (automaticThemeIsVisible && theme !== automaticSeasonTheme) {
+      setAutomaticTheme()
+    }
+  }, [
+    automaticSeasonTheme,
+    manualSeasonalTheme,
+    seasonalThemeEnabled,
+    setAutomaticTheme,
+    theme,
+  ])
 
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
