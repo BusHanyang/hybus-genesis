@@ -21,6 +21,11 @@
 }
 
 @layer base {
+  :root {
+    --color-route-inactive: var(--color-zinc-200);
+    --color-route-inactive-text: var(--color-zinc-200);
+  }
+
   body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -74,6 +79,8 @@
     --color-ptr-color: #ffffff;
     --color-load-color: #afbdce;
     --color-arrow-color: #dbdbdb;
+    --color-route-inactive: var(--color-slate-500);
+    --color-route-inactive-text: var(--color-slate-500);
 
     --color-ft-element: #44464e;
     --color-ft-active: #3f4759;
@@ -109,8 +116,8 @@
   }
 
   .summer {
-    --color-theme-main: #eefbff;
-    --color-theme-card: #ffffff;
+    --color-theme-main: #8ed4ea;
+    --color-theme-card: #c6e6ed;
     --color-theme-text: #12343b;
     --color-theme-border: none;
     --color-theme-shadow: 0 0.175rem 0.5rem rgba(45, 153, 161, 0.35);
@@ -124,6 +131,8 @@
     --color-ptr-color: #0f766e;
     --color-load-color: #67e8f9;
     --color-arrow-color: #469391;
+    --color-route-inactive: #7ea2aa;
+    --color-route-inactive-text: #3f6670;
 
     --color-ft-element: #dff7f4;
     --color-ft-active: #5eead4;

@@ -19,7 +19,7 @@ const themeBackgrounds: Record<THEME, string> = {
   [THEME.DARK]: '#27272A',
   [THEME.CHRISTMAS]: '#b23e3e',
   [THEME.SPRING]: '#fff4f4',
-  [THEME.SUMMER]: '#eefbff',
+  [THEME.SUMMER]: '#8ed4ea',
   [THEME.AUTUMN]: '#fff8ef',
   [THEME.WINTER]: '#eff8ff',
 }

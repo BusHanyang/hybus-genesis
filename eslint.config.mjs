@@ -54,14 +54,22 @@ export default [
       'react/jsx-uses-react': 'off',
       'react/jsx-uses-vars': 'error',
       'react/prop-types': 0,
-      camelcase: [
-        'error',
-        { properties: 'always', ignoreDestructuring: true },
-      ],
+      camelcase: ['error', { properties: 'always', ignoreDestructuring: true }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'react-hooks/rules-of-hooks': 'error',
       'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+  {
+    files: ['src/app/components/seasonal/SummerLensFlareEffect.tsx'],
+    rules: {
+      'react/no-unknown-property': [
+        'error',
+        {
+          ignore: ['dispose', 'object'],
+        },
+      ],
     },
   },
 ]

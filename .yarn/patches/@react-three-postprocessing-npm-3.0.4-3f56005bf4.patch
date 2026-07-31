@@ -1,0 +1,12 @@
+diff --git a/dist/effects/N8AO.d.ts b/dist/effects/N8AO.d.ts
+index 6aabe5fd93f547ee359b0b9ac87976e6fd66ef62..605896b1a1ee873a4a1c7abf4a2b9cf30e0f1255 100644
+--- a/dist/effects/N8AO.d.ts
++++ b/dist/effects/N8AO.d.ts
+@@ -1,5 +1,7 @@
+ /// <reference types="react" />
+ import { ReactThreeFiber } from '@react-three/fiber';
++import { Pass } from 'postprocessing';
++type N8AOPostPass = Pass;
+ export type N8AOProps = {
+     aoRadius?: number;
+     distanceFalloff?: number;

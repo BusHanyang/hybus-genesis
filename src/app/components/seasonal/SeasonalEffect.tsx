@@ -1,4 +1,3 @@
-import { classed } from '@tw-classed/react'
 import React from 'react'
 import { Snowfall } from 'react-snowfall'
 
@@ -12,12 +11,14 @@ const effectStyle: React.CSSProperties = {
   pointerEvents: 'none',
 }
 
+const SummerLensFlareEffect = React.lazy(
+  () => import('./SummerLensFlareEffect'),
+)
+
 const getEffectStyle = (visible: boolean): React.CSSProperties => ({
   ...effectStyle,
   opacity: visible ? 1 : 0,
 })
-
-const SUMMER_RAIN_DROP_COUNT = 14
 
 const createImage = (src: string): HTMLImageElement => {
   const image = document.createElement('img')
@@ -37,34 +38,6 @@ const getEffectTheme = (
 
   return theme
 }
-
-const SummerRainLayer = classed(
-  'div',
-  'pointer-events-none fixed inset-0 z-[2] overflow-hidden transition-opacity duration-300',
-  {
-    variants: {
-      'data-state': {
-        visible: 'opacity-100',
-        hidden: 'opacity-0',
-      },
-    },
-    defaultVariants: {
-      'data-state': 'hidden',
-    },
-  },
-)
-const SummerRainDrop = classed(
-  'span',
-  'summer-rain-drop absolute -top-20 h-16 w-px rounded-full bg-sky-400/35 shadow-[0_0_5px_rgba(56,189,248,0.16)]',
-)
-
-const SummerRainEffect = ({ visible }: { visible: boolean }) => (
-  <SummerRainLayer data-state={visible ? 'visible' : 'hidden'}>
-    {Array.from({ length: SUMMER_RAIN_DROP_COUNT }, (_, index) => (
-      <SummerRainDrop key={index} />
-    ))}
-  </SummerRainLayer>
-)
 
 const SeasonalEffect = () => {
   const {
@@ -111,7 +84,13 @@ const SeasonalEffect = () => {
   }
 
   if (effectTheme === THEME.SUMMER) {
-    return <SummerRainEffect visible={effectVisible} />
+    if (!effectVisible) return null
+
+    return (
+      <React.Suspense fallback={null}>
+        <SummerLensFlareEffect />
+      </React.Suspense>
+    )
   }
 
   if (effectTheme === THEME.AUTUMN) {

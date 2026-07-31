@@ -34,7 +34,7 @@ const RouteLine = classed(
         yesulin: 'bg-chip-green',
         jungang: 'bg-chip-purple',
         orange: 'bg-chip-orange',
-        inactive: 'bg-zinc-200 dark:bg-slate-500',
+        inactive: 'bg-[var(--color-route-inactive)] dark:bg-slate-500',
       },
     },
     defaultVariants: {
@@ -54,7 +54,7 @@ const Dot = classed(
         yesulin: 'bg-chip-green',
         jungang: 'bg-chip-purple',
         orange: 'bg-chip-orange',
-        inactive: 'bg-zinc-200 dark:bg-slate-500',
+        inactive: 'bg-[var(--color-route-inactive)] dark:bg-slate-500',
       },
       'data-state': {
         hidden: 'opacity-0',
@@ -85,7 +85,8 @@ const SpecialStopsText = classed(
         cycle: 'text-chip-red',
         yesulin: 'text-chip-green',
         jungang: 'text-chip-purple',
-        inactive: 'text-zinc-200 dark:text-slate-500',
+        inactive:
+          'text-[var(--color-route-inactive-text)] dark:text-slate-500',
       },
     },
   },
