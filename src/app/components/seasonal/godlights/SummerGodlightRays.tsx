@@ -38,12 +38,20 @@ const MAXIMUM_RENDER_PIXELS_PER_LAYER = 600_000
 const EDGE_ALPHA_TARGET = 0.05
 const ORIGIN_X = 0
 const ORIGIN_Y = -1.5
+const SOURCE_HALO_ORIGIN_Y = 0
+const SOURCE_LAYER_OPACITY = 0.9
+const SOURCE_HALO_INTENSITY = 0.9
+const SOURCE_HALO_SIZE = 0.07
+const SOURCE_CORE_HALO_INTENSITY = 1
+const SOURCE_CORE_HALO_SIZE = 0.03
 const BREATHING_TIMES = [0, 0.22, 0.34, 0.4, 0.54, 1]
+
+const toGodlightsDirection = (screenAngle: number): number => screenAngle + 90
 
 const raySpecs: readonly RaySpec[] = [
   {
     id: 'far-right-thread',
-    direction: 139,
+    direction: toGodlightsDirection(25),
     rayWidth: 7,
     divergence: 4.2,
     fadeEndY: 0.6,
@@ -56,7 +64,7 @@ const raySpecs: readonly RaySpec[] = [
   },
   {
     id: 'right-whisper-thread',
-    direction: 146,
+    direction: toGodlightsDirection(35),
     rayWidth: 10,
     divergence: 3.8,
     fadeEndY: 0.63,
@@ -69,7 +77,7 @@ const raySpecs: readonly RaySpec[] = [
   },
   {
     id: 'inner-right-thread',
-    direction: 152.5,
+    direction: toGodlightsDirection(45),
     rayWidth: 6.5,
     divergence: 4.8,
     fadeEndY: 0.52,
@@ -82,7 +90,7 @@ const raySpecs: readonly RaySpec[] = [
   },
   {
     id: 'center-anchor-thread',
-    direction: 159,
+    direction: toGodlightsDirection(55),
     rayWidth: 9,
     divergence: 4.1,
     fadeEndY: 0.53,
@@ -95,7 +103,7 @@ const raySpecs: readonly RaySpec[] = [
   },
   {
     id: 'reference-anchor-thread',
-    direction: 165,
+    direction: toGodlightsDirection(75),
     rayWidth: 8,
     divergence: 4.4,
     fadeEndY: 0.67,
@@ -108,7 +116,7 @@ const raySpecs: readonly RaySpec[] = [
   },
   {
     id: 'inner-left-thread',
-    direction: 168.5,
+    direction: toGodlightsDirection(65),
     rayWidth: 6.5,
     divergence: 5,
     fadeEndY: 0.6,
@@ -121,29 +129,29 @@ const raySpecs: readonly RaySpec[] = [
   },
   {
     id: 'left-whisper-thread',
-    direction: 173.5,
+    direction: toGodlightsDirection(82),
     rayWidth: 9,
     divergence: 4,
-    fadeEndY: 0.63,
+    fadeEndY: 0.46,
     blur: 6,
-    baseOpacity: 0.022,
-    peakOpacity: 0.26,
+    baseOpacity: 0.012,
+    peakOpacity: 0.16,
     duration: 71,
     phase: 0.34,
-    reducedOpacity: 0.022,
+    reducedOpacity: 0.012,
   },
   {
     id: 'outer-right-whisper-thread',
-    direction: 134.5,
+    direction: toGodlightsDirection(18),
     rayWidth: 7,
     divergence: 4.6,
-    fadeEndY: 0.55,
+    fadeEndY: 0.48,
     blur: 5,
-    baseOpacity: 0.018,
-    peakOpacity: 0.22,
+    baseOpacity: 0.012,
+    peakOpacity: 0.16,
     duration: 89,
     phase: 0.74,
-    reducedOpacity: 0.018,
+    reducedOpacity: 0.012,
   },
 ]
 
@@ -208,6 +216,40 @@ const getRayLength = (
 
   return rayDistance / Math.hypot(width, height)
 }
+
+const createSourceScene = (renderMetrics: RenderMetrics): SceneConfig => ({
+  width: renderMetrics.width,
+  height: renderMetrics.height,
+  noise: 0,
+  grainSize: 1,
+  layers: [
+    {
+      type: 'background',
+      bgType: 'solid',
+      bgColor: 'rgba(0, 0, 0, 0)',
+      bgColor2: 'rgba(0, 0, 0, 0)',
+      bgGradientAngle: 0,
+    },
+    {
+      type: 'halo',
+      originX: ORIGIN_X,
+      originY: SOURCE_HALO_ORIGIN_Y,
+      intensity: SOURCE_HALO_INTENSITY,
+      size: SOURCE_HALO_SIZE,
+      color: '#f7fcff',
+      blendMode: 'source-over',
+    },
+    {
+      type: 'halo',
+      originX: ORIGIN_X,
+      originY: SOURCE_HALO_ORIGIN_Y,
+      intensity: SOURCE_CORE_HALO_INTENSITY,
+      size: SOURCE_CORE_HALO_SIZE,
+      color: '#ffffff',
+      blendMode: 'source-over',
+    },
+  ],
+})
 
 const createScene = (
   viewportSize: ViewportSize,
@@ -325,15 +367,32 @@ const SummerGodlightRays = () => {
       ),
     [renderMetrics, viewportSize],
   )
+  const sourceScene = React.useMemo(
+    () => createSourceScene(renderMetrics),
+    [renderMetrics],
+  )
 
   return (
     <div
       ref={containerRef}
+      data-godlights-canvas-count={raySpecs.length + 1}
       data-godlights-layer-count={raySpecs.length}
       data-godlights-origin={`${ORIGIN_X},${ORIGIN_Y}`}
       data-godlights-render-size={`${renderMetrics.width}x${renderMetrics.height}`}
+      data-godlights-source-core-size={SOURCE_CORE_HALO_SIZE}
+      data-godlights-source-halo="dedicated-source"
       style={layerStyle}
     >
+      <div
+        data-godlights-source-layer="dedicated-source"
+        style={{
+          ...layerStyle,
+          mixBlendMode: 'screen',
+          opacity: SOURCE_LAYER_OPACITY,
+        }}
+      >
+        <GodLights scene={sourceScene} style={layerStyle} />
+      </div>
       {raySpecs.map((spec, index) => (
         <motion.div
           key={spec.id}
