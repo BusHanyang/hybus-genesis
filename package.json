@@ -14,8 +14,6 @@
   "dependencies": {
     "@base-ui/react": "^1.5.0",
     "@qwik.dev/partytown": "^0.14.0",
-    "@react-three/fiber": "9.6.1",
-    "@react-three/postprocessing": "patch:@react-three/postprocessing@npm%3A3.0.4#~/.yarn/patches/@react-three-postprocessing-npm-3.0.4-3f56005bf4.patch",
     "@tanstack/react-query": "^5.100.14",
     "@tw-classed/react": "^2.0.0",
     "@types/node": "^22.19.19",
@@ -24,7 +22,6 @@
     "i18next": "^26.3.0",
     "i18next-browser-languagedetector": "^8.2.1",
     "i18next-http-backend": "^4.0.0",
-    "postprocessing": "6.39.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-i18next": "^17.0.8",
@@ -34,7 +31,6 @@
     "react-spinners": "^0.17.0",
     "react-tiny-fab": "^4.0.4",
     "react-transition-group": "^4.4.5",
-    "three": "0.185.1",
     "vite-plugin-svgr": "^5.2.0"
   },
   "devDependencies": {
@@ -44,7 +40,6 @@
     "@types/react": "^19.2.15",
     "@types/react-dom": "^19.2.3",
     "@types/react-transition-group": "^4",
-    "@types/three": "0.185.1",
     "@typescript-eslint/eslint-plugin": "^8.60.0",
     "@typescript-eslint/parser": "^8.60.0",
     "@vitejs/plugin-react": "6.0.2",

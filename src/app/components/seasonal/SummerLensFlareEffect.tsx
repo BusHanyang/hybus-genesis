@@ -1,123 +1,106 @@
-import { Canvas, useThree } from '@react-three/fiber'
-import { EffectComposer, LensFlareEffect } from '@react-three/postprocessing'
-import { BlendFunction } from 'postprocessing'
 import React from 'react'
-import { Color, Vector2, Vector3 } from 'three'
 
-const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
+import OpticalLensFlare, {
+  LensFlareGhostStyle,
+  LensFlareMotion,
+  LensFlarePoint,
+  LensFlareRayStyle,
+  LensFlareSourceStyle,
+  LensFlareStreakStyle,
+} from './lens-flare/OpticalLensFlare'
 
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
   inset: 0,
   zIndex: 2,
+  width: '100vw',
+  height: '100dvh',
+  overflow: 'hidden',
   pointerEvents: 'none',
   mixBlendMode: 'screen',
-  opacity: 1,
 }
 
-const flareColor = new Color(1.8, 2.1, 2.7)
-const transparentFlareColor = new Color(0, 0, 0)
-const flarePosition = new Vector3(-0.98, 0.98, 0)
-const densityFlarePosition = flarePosition.clone().multiplyScalar(0.62)
-
-const usePrefersReducedMotion = (): boolean => {
-  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(
-    () => window.matchMedia(REDUCED_MOTION_QUERY).matches,
-  )
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia(REDUCED_MOTION_QUERY)
-    const updatePreference = () => setPrefersReducedMotion(mediaQuery.matches)
-
-    mediaQuery.addEventListener('change', updatePreference)
-
-    return () => mediaQuery.removeEventListener('change', updatePreference)
-  }, [])
-
-  return prefersReducedMotion
+const canvasStyle: React.CSSProperties = {
+  position: 'absolute',
+  inset: 0,
+  display: 'block',
+  width: '100%',
+  height: '100%',
+  pointerEvents: 'none',
 }
 
-const LensFlareScene = ({
-  densityOnly,
-  reducedMotion,
-}: {
-  densityOnly: boolean
-  reducedMotion: boolean
-}) => {
-  const size = useThree((state) => state.size)
-  // v3.0.4's JSX wrapper consumes the shader's opacity prop as blend opacity.
-  // Keep the exported effect directly until https://github.com/pmndrs/react-postprocessing/issues/334 is fixed.
-  const effect = React.useMemo(
-    () =>
-      new LensFlareEffect({
-        aditionalStreaks: false,
-        animated: !densityOnly && !reducedMotion,
-        anamorphic: false,
-        blendFunction: BlendFunction.NORMAL,
-        colorGain: densityOnly ? transparentFlareColor : flareColor,
-        enabled: true,
-        flareShape: 0.14,
-        flareSize: densityOnly ? 0 : 0.036,
-        flareSpeed: 0,
-        ghostScale: densityOnly ? 0.2 : 0.42,
-        glareSize: 0.006,
-        haloScale: 0.5,
-        lensDirtTexture: null,
-        lensPosition: densityOnly ? densityFlarePosition : flarePosition,
-        opacity: densityOnly ? 0.45 : 0,
-        screenRes: new Vector2(1, 1),
-        secondaryGhosts: true,
-        starBurst: false,
-        starPoints: 8,
-      }),
-    [densityOnly, reducedMotion],
-  )
+const source: LensFlarePoint = { x: 0.5, y: 0 }
+const opticalCenter: LensFlarePoint = { x: 0.58, y: 0.62 }
 
-  React.useLayoutEffect(() => {
-    const screenResolution = effect.uniforms.get('screenRes')
-
-    screenResolution?.value.set(size.width, size.height)
-  }, [effect, size.height, size.width])
-
-  React.useEffect(() => () => effect.dispose(), [effect])
-
-  return (
-    <EffectComposer depthBuffer={false} multisampling={0}>
-      <primitive dispose={null} object={effect} />
-    </EffectComposer>
-  )
+const motion: LensFlareMotion = {
+  mode: 'horizontal',
+  amplitude: { x: 0.47, y: 0 },
+  speed: 1 / 84,
+  phase: 0,
+  persistAcrossMounts: true,
 }
 
-const LensFlareCanvas = ({
-  densityOnly,
-  reducedMotion,
-}: {
-  densityOnly: boolean
-  reducedMotion: boolean
-}) => (
-  <Canvas
+const sourceStyle: LensFlareSourceStyle = {
+  coreColor: '#fff9e8',
+  haloColor: '#ffdcb3',
+  coreRadius: 0.04,
+  coreIntensity: 1.7,
+  haloRadius: 0.17,
+  haloIntensity: 0.15,
+}
+
+const rays: LensFlareRayStyle = {
+  color: '#c9edff',
+  length: 1.04,
+  intensity: 0.064,
+  count: 6,
+  softness: 0.42,
+  angle: -0.1,
+}
+
+const streak: LensFlareStreakStyle = {
+  color: '#bceaff',
+  length: 1.08,
+  width: 0.0036,
+  intensity: 0.17,
+  angle: -0.018,
+}
+
+const ghosts: LensFlareGhostStyle = {
+  colorA: '#ff9875',
+  colorB: '#3bd4ff',
+  count: 9,
+  spread: 1,
+  scale: 0.78,
+  intensity: 1.08,
+  apertureSides: 6,
+  chroma: 0.21,
+  edgeSoftness: 0.022,
+  ringIntensity: 1.02,
+  breathe: 0.016,
+}
+
+const SummerLensFlareEffect = () => (
+  <div
     aria-hidden="true"
-    dpr={[1, 1.5]}
-    fallback={null}
-    flat
-    frameloop={densityOnly || reducedMotion ? 'demand' : 'always'}
-    gl={{ alpha: false, antialias: false, powerPreference: 'low-power' }}
-    onCreated={({ gl }) => gl.setClearColor(0x000000, 1)}
+    data-lens-flare-candidate="hybus-optical-2d"
     style={overlayStyle}
   >
-    <LensFlareScene densityOnly={densityOnly} reducedMotion={reducedMotion} />
-  </Canvas>
+    <OpticalLensFlare
+      ghosts={ghosts}
+      intensity={0.9}
+      maxDpr={1.5}
+      motion={motion}
+      motionPreference="system"
+      opticalCenter={opticalCenter}
+      rays={rays}
+      resolutionScale={0.9}
+      source={source}
+      sourceStyle={sourceStyle}
+      streak={streak}
+      style={canvasStyle}
+    />
+  </div>
 )
-
-const SummerLensFlareEffect = () => {
-  const reducedMotion = usePrefersReducedMotion()
-
-  return (
-    <>
-      <LensFlareCanvas densityOnly={false} reducedMotion={reducedMotion} />
-      <LensFlareCanvas densityOnly reducedMotion={reducedMotion} />
-    </>
-  )
-}
 
 export default SummerLensFlareEffect
