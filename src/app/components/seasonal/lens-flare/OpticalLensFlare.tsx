@@ -6,7 +6,7 @@ import {
 } from './opticalLensFlareShaders'
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
-const MAX_GHOSTS = 10
+const MAX_GHOSTS = 18
 const FULL_TURN = Math.PI * 2
 const PERSISTENT_MOTION_STARTED_AT = performance.now()
 
@@ -75,6 +75,10 @@ export type LensFlareGhostStyle = Readonly<{
   edgeSoftness?: number
   ringIntensity?: number
   breathe?: number
+  drift?: number
+  driftSpeed?: number
+  fadeVariation?: number
+  scatter?: number
 }>
 
 export type OpticalLensFlareProps = Readonly<{
@@ -134,6 +138,10 @@ type ResolvedOptions = Readonly<{
     edgeSoftness: number
     ringIntensity: number
     breathe: number
+    drift: number
+    driftSpeed: number
+    fadeVariation: number
+    scatter: number
   }>
   intensity: number
   maxDpr: number
@@ -160,14 +168,32 @@ type UniformLocations = Readonly<{
   ghostStyle: WebGLUniformLocation
   ghostAppearance: WebGLUniformLocation
   ghostRingIntensity: WebGLUniformLocation
+  ghostMotion: WebGLUniformLocation
   ghostData: WebGLUniformLocation
 }>
 
+// Keep one optical descriptor per line for visual tuning.
+// prettier-ignore
 const GHOST_PROFILE = new Float32Array([
-  0.11, 0.025, 0.64, 0.08, 0.24, 0.054, 0.34, 0.2, 0.47, 0.032, 0.78, 0.92,
-  0.54, 0.083, 0.22, 0.06, 0.88, 0.047, 0.62, 0.3, 1.02, 0.119, 0.16, 0.04,
-  1.13, 0.058, 0.48, 0.86, 1.46, 0.096, 0.18, 0.4, 1.62, 0.041, 0.58, 0.96,
-  1.88, 0.138, 0.11, 0.1,
+  // axis position, radius, local gain, roundness
+  0.18, 0.018, 0.36, 0.88,
+  0.25, 0.045, 0.44, 0.72,
+  0.31, 0.026, 0.42, 0.54,
+  0.36, 0.082, 0.40, 0.68,
+  0.48, 0.015, 0.35, 0.92,
+  0.54, 0.038, 0.46, 0.80,
+  0.62, 0.022, 0.38, 0.58,
+  0.68, 0.100, 0.38, 0.74,
+  0.76, 0.032, 0.48, 0.90,
+  0.82, 0.058, 0.42, 0.62,
+  0.88, 0.017, 0.37, 0.96,
+  0.94, 0.042, 0.45, 0.84,
+  1.02, 0.088, 0.36, 0.70,
+  1.12, 0.028, 0.47, 0.56,
+  1.24, 0.064, 0.40, 0.88,
+  1.38, 0.020, 0.35, 0.94,
+  1.52, 0.110, 0.32, 0.72,
+  1.68, 0.036, 0.44, 0.82,
 ])
 
 const clamp = (value: number, minimum: number, maximum: number): number =>
@@ -268,6 +294,10 @@ const resolveOptions = ({
     edgeSoftness: clamp(ghosts?.edgeSoftness ?? 0.045, 0.005, 0.25),
     ringIntensity: clamp(ghosts?.ringIntensity ?? 0.6, 0, 1.5),
     breathe: clamp(ghosts?.breathe ?? 0.025, 0, 0.25),
+    drift: clamp(ghosts?.drift ?? 0, 0, 2.5),
+    driftSpeed: clamp(ghosts?.driftSpeed ?? 0, 0, 0.2),
+    fadeVariation: clamp(ghosts?.fadeVariation ?? 0, 0, 0.98),
+    scatter: clamp(ghosts?.scatter ?? 0, 0, 0.08),
   },
   intensity: Math.max(intensity ?? 0.82, 0),
   maxDpr: clamp(maxDpr ?? 1.5, 0.5, 2),
@@ -374,6 +404,7 @@ const getUniformLocations = (
   ghostStyle: getUniform(gl, program, 'uGhostStyle'),
   ghostAppearance: getUniform(gl, program, 'uGhostAppearance'),
   ghostRingIntensity: getUniform(gl, program, 'uGhostRingIntensity'),
+  ghostMotion: getUniform(gl, program, 'uGhostMotion'),
   ghostData: getUniform(gl, program, 'uGhostData[0]'),
 })
 
@@ -557,11 +588,14 @@ const OpticalLensFlare = (props: OpticalLensFlareProps) => {
         ? 0
         : Math.max((now - timelineStart) / 1000, 0)
       const source = resolveSource(elapsed, deltaTime, reducedMotion)
+      const ghostDrift =
+        options.ghosts.drift * ((elapsed * options.ghosts.driftSpeed) % 1)
       lastFrameTime = now
 
       canvas.dataset.lensFlareSourceX = source.x.toFixed(4)
       canvas.dataset.lensFlareSourceY = source.y.toFixed(4)
       canvas.dataset.lensFlareGhostCount = String(options.ghosts.count)
+      canvas.dataset.lensFlareGhostDrift = ghostDrift.toFixed(4)
       canvas.dataset.lensFlareMotionElapsed = elapsed.toFixed(3)
       canvas.dataset.lensFlareMotionTimeline = options.motion
         .persistAcrossMounts
@@ -622,12 +656,22 @@ const OpticalLensFlare = (props: OpticalLensFlareProps) => {
         reducedMotion ? 0 : options.ghosts.breathe,
       )
       gl.uniform1f(uniforms.ghostRingIntensity, options.ghosts.ringIntensity)
+      gl.uniform4f(
+        uniforms.ghostMotion,
+        options.ghosts.drift,
+        options.ghosts.driftSpeed,
+        reducedMotion ? 0 : options.ghosts.fadeVariation,
+        options.ghosts.scatter,
+      )
       gl.uniform4fv(uniforms.ghostData, GHOST_PROFILE)
       gl.drawArrays(gl.TRIANGLES, 0, 3)
 
       const animated =
         !reducedMotion &&
-        (options.motion.mode === 'horizontal' || options.ghosts.breathe > 0)
+        (options.motion.mode === 'horizontal' ||
+          options.ghosts.breathe > 0 ||
+          (options.ghosts.driftSpeed > 0 &&
+            (options.ghosts.drift > 0 || options.ghosts.fadeVariation > 0)))
       if (animated) requestFrame()
     }
 
@@ -714,6 +758,7 @@ const OpticalLensFlare = (props: OpticalLensFlareProps) => {
       aria-hidden="true"
       className={props.className}
       data-lens-flare-engine="hybus-optical-webgl2"
+      data-lens-flare-ghost-motion={`${resolvedOptions.ghosts.drift},${resolvedOptions.ghosts.driftSpeed},${resolvedOptions.ghosts.fadeVariation}`}
       data-lens-flare-status={status}
       style={props.style}
     />

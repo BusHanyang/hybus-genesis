@@ -33,9 +33,10 @@ uniform vec4 uStreakStyle;
 uniform vec4 uGhostStyle;
 uniform vec4 uGhostAppearance;
 uniform float uGhostRingIntensity;
+uniform vec4 uGhostMotion;
 
 const float TAU = 6.283185307179586;
-const int MAX_GHOSTS = 10;
+const int MAX_GHOSTS = 18;
 uniform vec4 uGhostData[MAX_GHOSTS];
 
 float gaussian(float distanceValue, float radius) {
@@ -170,6 +171,11 @@ void main() {
   float chromaAmount = uGhostAppearance.y;
   float edgeSoftness = uGhostAppearance.z;
   float breatheAmount = uGhostAppearance.w;
+  float travelEnabled = step(0.0001, uGhostMotion.x);
+  float travelSpan = max(uGhostMotion.x, 0.0001);
+  float sharedDrift = fract(uTime * uGhostMotion.y) * travelSpan;
+  float fadeVariation = uGhostMotion.z;
+  vec2 axisNormal = vec2(-axisDirection.y, axisDirection.x);
 
   for (int index = 0; index < MAX_GHOSTS; index += 1) {
     if (float(index) >= ghostCount) {
@@ -177,21 +183,59 @@ void main() {
     }
 
     vec4 descriptor = uGhostData[index];
-    float axisPosition = descriptor.x * ghostSpread;
-    float pulse = 1.0 + breatheAmount * sin(uTime * 0.71 + float(index) * 1.19);
-    float radius = descriptor.y * ghostScale * pulse;
-    float localIntensity = descriptor.z * ghostIntensity;
-    float roundness = descriptor.w;
-    vec2 ghostCenter = axis * axisPosition;
-    vec2 ghostPoint = point - ghostCenter;
     float opticalSeed = fract(
       sin(descriptor.x * 91.73 + float(index) * 17.17) * 43758.5453
     );
+    float wrappedPosition = mod(descriptor.x + sharedDrift, travelSpan);
+    float pathPosition = mix(
+      descriptor.x,
+      wrappedPosition,
+      travelEnabled
+    );
+    float axisPosition = pathPosition * ghostSpread;
+    float pulse = 1.0 + breatheAmount * sin(uTime * 0.71 + float(index) * 1.19);
+    float radius = descriptor.y * ghostScale * pulse;
+    float fadeWave = 0.5 + 0.5 * sin(
+      uTime * TAU * uGhostMotion.y * mix(2.4, 5.2, opticalSeed) +
+      float(index) * 1.73
+    );
+    float fadeFloor = index < 12
+      ? mix(0.68, 0.78, 1.0 - opticalSeed)
+      : mix(0.03, 0.12, 1.0 - opticalSeed);
+    float animatedVisibility = mix(
+      fadeFloor,
+      1.0,
+      smoothstep(0.1, 0.9, fadeWave)
+    );
+    float pathVisibility =
+      smoothstep(0.24, 0.4, pathPosition) *
+      (1.0 - smoothstep(travelSpan - 0.18, travelSpan - 0.025, pathPosition));
+    pathVisibility = mix(1.0, pathVisibility, travelEnabled);
+    float localVisibility = mix(
+      1.0,
+      animatedVisibility,
+      fadeVariation
+    ) * pathVisibility;
+    float localIntensity = descriptor.z * ghostIntensity * localVisibility;
+    float roundness = descriptor.w;
+    float radiusTier = smoothstep(0.014, 0.125, descriptor.y);
+    float crossOffset =
+      (opticalSeed - 0.5) *
+      2.0 *
+      uGhostMotion.w *
+      mix(0.58, 1.0, radiusTier);
+    vec2 ghostCenter = axis * axisPosition + axisNormal * crossOffset;
+    vec2 ghostPoint = point - ghostCenter;
     float rotation =
       0.23 + sin(float(index) * 2.13 + descriptor.x * 1.7) * 0.052;
     float softnessVariation = mix(0.72, 1.46, opticalSeed);
+    float shapeSoftness = mix(
+      0.82,
+      1.15,
+      smoothstep(0.2, 0.82, roundness)
+    );
     float softness = max(
-      edgeSoftness * radius * softnessVariation,
+      edgeSoftness * radius * softnessVariation * shapeSoftness,
       0.00055
     );
     vec2 chromaOffset = axisDirection * radius * chromaAmount;
@@ -209,7 +253,14 @@ void main() {
       abs(field - radius * 0.88),
       radius * 0.055
     ) * outer;
-    float veil = outer * 0.025;
+    float innerLight = gaussian(
+      length(ghostPoint),
+      max(radius * mix(0.62, 0.82, roundness), 0.0005)
+    );
+    float polygonDefinition = 1.0 - smoothstep(0.42, 0.86, roundness);
+    float veil = outer * mix(0.23, 0.19, roundness) *
+      mix(0.9, 1.08, innerLight);
+    float innerVeil = outer * innerLight * mix(0.035, 0.022, roundness);
     float outside = max(field - radius, 0.0);
     float ghostGlow = gaussian(outside, radius * 0.28) * (1.0 - inner * 0.78);
     float reflectionRingSelector = smoothstep(0.72, 0.94, roundness);
@@ -254,19 +305,20 @@ void main() {
     vec3 ghostTint = mix(uGhostColorA, uGhostColorB, colorPhase);
     vec3 spectralRim = vec3(redRim, rim * 0.82, blueRim);
     float reflectionEnergy =
-      (reflectionRing * 0.34 +
-        reflectionEcho * 0.2 +
-        outerReflection * 0.085) *
+      (reflectionRing * 0.03 +
+        reflectionEcho * 0.012 +
+        outerReflection * 0.004) *
       reflectionRingSelector *
       uGhostRingIntensity;
     color += ghostTint * (
       veil +
-      rim * 0.68 +
-      apertureBand * 0.44 +
-      ghostGlow * mix(0.052, 0.092, opticalSeed) +
+      innerVeil +
+      rim * mix(0.018, 0.04, polygonDefinition) +
+      apertureBand * mix(0.008, 0.02, polygonDefinition) +
+      ghostGlow * mix(0.01, 0.018, opticalSeed) +
       reflectionEnergy
     ) * localIntensity;
-    color += spectralRim * localIntensity * chromaAmount * 1.05;
+    color += spectralRim * localIntensity * chromaAmount * 0.1;
 
     float glintAngle = opticalSeed * TAU;
     vec2 glintOffset =
@@ -285,7 +337,7 @@ void main() {
       mix(uGhostColorB, vec3(1.0), 0.72) *
       glint *
       localIntensity *
-      mix(0.34, 0.64, opticalSeed) *
+      mix(0.006, 0.014, opticalSeed) *
       glintSelector;
   }
 
