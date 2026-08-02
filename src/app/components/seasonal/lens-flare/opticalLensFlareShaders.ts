@@ -258,9 +258,9 @@ void main() {
       max(radius * mix(0.62, 0.82, roundness), 0.0005)
     );
     float polygonDefinition = 1.0 - smoothstep(0.42, 0.86, roundness);
-    float veil = outer * mix(0.23, 0.19, roundness) *
+    float veil = outer * mix(0.1, 0.075, roundness) *
       mix(0.9, 1.08, innerLight);
-    float innerVeil = outer * innerLight * mix(0.035, 0.022, roundness);
+    float innerVeil = outer * innerLight * mix(0.015, 0.01, roundness);
     float outside = max(field - radius, 0.0);
     float ghostGlow = gaussian(outside, radius * 0.28) * (1.0 - inner * 0.78);
     float reflectionRingSelector = smoothstep(0.72, 0.94, roundness);
@@ -313,8 +313,8 @@ void main() {
     color += ghostTint * (
       veil +
       innerVeil +
-      rim * mix(0.018, 0.04, polygonDefinition) +
-      apertureBand * mix(0.008, 0.02, polygonDefinition) +
+      rim * mix(0.07, 0.12, polygonDefinition) +
+      apertureBand * mix(0.03, 0.06, polygonDefinition) +
       ghostGlow * mix(0.01, 0.018, opticalSeed) +
       reflectionEnergy
     ) * localIntensity;
