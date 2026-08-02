@@ -1,206 +1,61 @@
 import React from 'react'
 
 import {
-  OPTICAL_LENS_FLARE_FRAGMENT_SHADER,
-  OPTICAL_LENS_FLARE_VERTEX_SHADER,
-} from './opticalLensFlareShaders'
+  LensFlareUnsupportedError,
+  OpticalLensFlareRenderer,
+  toAbsoluteLensFlareTime,
+} from './opticalLensFlareRenderer'
+import type {
+  LensFlareFrameSnapshot,
+  LensFlarePoint,
+  LensFlareRenderSize,
+  LensFlareStatus,
+  LensFlareTimeline,
+  LensFlareWorkerRequest,
+  LensFlareWorkerResponse,
+  OpticalLensFlareProps,
+  ResolvedLensFlareOptions,
+  RgbColor,
+  SerializedLensFlareError,
+} from './opticalLensFlareTypes'
+
+export type {
+  LensFlareGhostStyle,
+  LensFlareMotion,
+  LensFlareMotionMode,
+  LensFlareMotionPreference,
+  LensFlarePoint,
+  LensFlareRayStyle,
+  LensFlareSourceStyle,
+  LensFlareStatus,
+  LensFlareStreakStyle,
+  OpticalLensFlareProps,
+} from './opticalLensFlareTypes'
 
 const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 const MAX_GHOSTS = 18
-const FULL_TURN = Math.PI * 2
 const PERSISTENT_MOTION_STARTED_AT = performance.now()
+const PERSISTENT_MOTION_STARTED_AT_ABSOLUTE = toAbsoluteLensFlareTime(
+  PERSISTENT_MOTION_STARTED_AT,
+)
 
-type RgbColor = readonly [number, number, number]
-
-export type LensFlarePoint = Readonly<{
-  x: number
-  y: number
+type LensFlareBackend = Readonly<{
+  destroy: () => void
+  requestRender: () => void
+  resize: (size: LensFlareRenderSize) => void
+  setVisibility: (hidden: boolean) => void
+  updateOptions: (
+    options: ResolvedLensFlareOptions,
+    reducedMotion: boolean,
+  ) => void
+  updatePointer: (point: LensFlarePoint) => void
 }>
 
-export type LensFlareMotionMode = 'static' | 'horizontal' | 'pointer'
-export type LensFlareMotionPreference = 'system' | 'animate' | 'reduce'
-export type LensFlareStatus =
-  | 'idle'
-  | 'ready'
-  | 'lost'
-  | 'restored'
-  | 'unsupported'
-  | 'error'
-  | 'destroyed'
-
-export type LensFlareMotion = Readonly<{
-  mode?: LensFlareMotionMode
-  amplitude?: LensFlarePoint
-  speed?: number
-  phase?: number
-  settlingTime?: number
-  persistAcrossMounts?: boolean
+type LensFlareBackendCallbacks = Readonly<{
+  onError: (error: unknown) => void
+  onFrame: (snapshot: LensFlareFrameSnapshot) => void
+  onStatus: (status: LensFlareStatus) => void
 }>
-
-export type LensFlareSourceStyle = Readonly<{
-  coreColor?: string
-  haloColor?: string
-  coreRadius?: number
-  coreIntensity?: number
-  haloRadius?: number
-  haloIntensity?: number
-}>
-
-export type LensFlareRayStyle = Readonly<{
-  color?: string
-  length?: number
-  intensity?: number
-  count?: number
-  softness?: number
-  angle?: number
-}>
-
-export type LensFlareStreakStyle = Readonly<{
-  color?: string
-  length?: number
-  width?: number
-  intensity?: number
-  angle?: number
-}>
-
-export type LensFlareGhostStyle = Readonly<{
-  colorA?: string
-  colorB?: string
-  count?: number
-  spread?: number
-  scale?: number
-  intensity?: number
-  apertureSides?: number
-  chroma?: number
-  edgeSoftness?: number
-  ringIntensity?: number
-  breathe?: number
-  drift?: number
-  driftSpeed?: number
-  fadeVariation?: number
-  scatter?: number
-}>
-
-export type OpticalLensFlareProps = Readonly<{
-  source?: LensFlarePoint
-  opticalCenter?: LensFlarePoint
-  motion?: LensFlareMotion
-  sourceStyle?: LensFlareSourceStyle
-  rays?: LensFlareRayStyle
-  streak?: LensFlareStreakStyle
-  ghosts?: LensFlareGhostStyle
-  intensity?: number
-  maxDpr?: number
-  resolutionScale?: number
-  motionPreference?: LensFlareMotionPreference
-  className?: string
-  style?: React.CSSProperties
-  onError?: (error: Error) => void
-  onStatusChange?: (status: LensFlareStatus) => void
-}>
-
-type ResolvedOptions = Readonly<{
-  source: LensFlarePoint
-  opticalCenter: LensFlarePoint
-  motion: Required<LensFlareMotion>
-  sourceStyle: Readonly<{
-    coreColor: RgbColor
-    haloColor: RgbColor
-    coreRadius: number
-    coreIntensity: number
-    haloRadius: number
-    haloIntensity: number
-  }>
-  rays: Readonly<{
-    color: RgbColor
-    length: number
-    intensity: number
-    count: number
-    softness: number
-    angle: number
-  }>
-  streak: Readonly<{
-    color: RgbColor
-    length: number
-    width: number
-    intensity: number
-    angle: number
-  }>
-  ghosts: Readonly<{
-    colorA: RgbColor
-    colorB: RgbColor
-    count: number
-    spread: number
-    scale: number
-    intensity: number
-    apertureSides: number
-    chroma: number
-    edgeSoftness: number
-    ringIntensity: number
-    breathe: number
-    drift: number
-    driftSpeed: number
-    fadeVariation: number
-    scatter: number
-  }>
-  intensity: number
-  maxDpr: number
-  resolutionScale: number
-  motionPreference: LensFlareMotionPreference
-}>
-
-type UniformLocations = Readonly<{
-  resolution: WebGLUniformLocation
-  time: WebGLUniformLocation
-  intensity: WebGLUniformLocation
-  source: WebGLUniformLocation
-  opticalCenter: WebGLUniformLocation
-  coreColor: WebGLUniformLocation
-  haloColor: WebGLUniformLocation
-  rayColor: WebGLUniformLocation
-  streakColor: WebGLUniformLocation
-  ghostColorA: WebGLUniformLocation
-  ghostColorB: WebGLUniformLocation
-  sourceStyle: WebGLUniformLocation
-  rayStyle: WebGLUniformLocation
-  rayAngle: WebGLUniformLocation
-  streakStyle: WebGLUniformLocation
-  ghostStyle: WebGLUniformLocation
-  ghostAppearance: WebGLUniformLocation
-  ghostRingIntensity: WebGLUniformLocation
-  ghostMotion: WebGLUniformLocation
-  ghostData: WebGLUniformLocation
-}>
-
-type LensFlareResources = Readonly<{
-  program: WebGLProgram
-  vertexArray: WebGLVertexArrayObject
-  uniforms: UniformLocations
-}>
-
-// Keep one optical descriptor per line for visual tuning.
-// prettier-ignore
-const GHOST_PROFILE = new Float32Array([
-  // axis position, radius, local gain, roundness
-  0.18, 0.018, 0.36, 0.88,
-  0.25, 0.045, 0.44, 0.72,
-  0.31, 0.026, 0.42, 0.54,
-  0.36, 0.082, 0.40, 0.68,
-  0.48, 0.015, 0.35, 0.92,
-  0.54, 0.038, 0.46, 0.80,
-  0.62, 0.022, 0.38, 0.58,
-  0.68, 0.100, 0.38, 0.74,
-  0.76, 0.032, 0.48, 0.90,
-  0.82, 0.058, 0.42, 0.62,
-  0.88, 0.017, 0.37, 0.96,
-  0.94, 0.042, 0.45, 0.84,
-  1.02, 0.088, 0.36, 0.70,
-  1.12, 0.028, 0.47, 0.56,
-  1.24, 0.064, 0.40, 0.88,
-  1.38, 0.020, 0.35, 0.94,
-  1.52, 0.110, 0.32, 0.72,
-  1.68, 0.036, 0.44, 0.82,
-])
 
 const clamp = (value: number, minimum: number, maximum: number): number =>
   Math.min(Math.max(value, minimum), maximum)
@@ -239,7 +94,7 @@ const resolveOptions = ({
   maxDpr,
   resolutionScale,
   motionPreference,
-}: OpticalLensFlareProps): ResolvedOptions => ({
+}: OpticalLensFlareProps): ResolvedLensFlareOptions => ({
   source: {
     x: source?.x ?? 0.2,
     y: source?.y ?? 0.035,
@@ -311,154 +166,194 @@ const resolveOptions = ({
   motionPreference: motionPreference ?? 'system',
 })
 
-const createShader = (
-  gl: WebGL2RenderingContext,
-  type: number,
-  source: string,
-): WebGLShader => {
-  const shader = gl.createShader(type)
-
-  if (!shader) throw new Error('Unable to allocate a WebGL shader.')
-
-  gl.shaderSource(shader, source)
-  gl.compileShader(shader)
-
-  if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-    const message = gl.getShaderInfoLog(shader) ?? 'Unknown shader error.'
-    gl.deleteShader(shader)
-    throw new Error(`Lens flare shader compilation failed: ${message}`)
-  }
-
-  return shader
-}
-
-const createProgram = (gl: WebGL2RenderingContext): WebGLProgram => {
-  const vertexShader = createShader(
-    gl,
-    gl.VERTEX_SHADER,
-    OPTICAL_LENS_FLARE_VERTEX_SHADER,
-  )
-  let fragmentShader: WebGLShader
-
-  try {
-    fragmentShader = createShader(
-      gl,
-      gl.FRAGMENT_SHADER,
-      OPTICAL_LENS_FLARE_FRAGMENT_SHADER,
-    )
-  } catch (error) {
-    gl.deleteShader(vertexShader)
-    throw error
-  }
-
-  const program = gl.createProgram()
-
-  if (!program) {
-    gl.deleteShader(vertexShader)
-    gl.deleteShader(fragmentShader)
-    throw new Error('Unable to allocate a WebGL program.')
-  }
-
-  gl.attachShader(program, vertexShader)
-  gl.attachShader(program, fragmentShader)
-  gl.linkProgram(program)
-  gl.deleteShader(vertexShader)
-  gl.deleteShader(fragmentShader)
-
-  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-    const message = gl.getProgramInfoLog(program) ?? 'Unknown program error.'
-    gl.deleteProgram(program)
-    throw new Error(`Lens flare program linking failed: ${message}`)
-  }
-
-  return program
-}
-
-const getUniform = (
-  gl: WebGL2RenderingContext,
-  program: WebGLProgram,
-  name: string,
-): WebGLUniformLocation => {
-  const location = gl.getUniformLocation(program, name)
-
-  if (location === null) {
-    throw new Error(`Lens flare uniform is unavailable: ${name}`)
-  }
-
-  return location
-}
-
-const getUniformLocations = (
-  gl: WebGL2RenderingContext,
-  program: WebGLProgram,
-): UniformLocations => ({
-  resolution: getUniform(gl, program, 'uResolution'),
-  time: getUniform(gl, program, 'uTime'),
-  intensity: getUniform(gl, program, 'uIntensity'),
-  source: getUniform(gl, program, 'uSource'),
-  opticalCenter: getUniform(gl, program, 'uOpticalCenter'),
-  coreColor: getUniform(gl, program, 'uCoreColor'),
-  haloColor: getUniform(gl, program, 'uHaloColor'),
-  rayColor: getUniform(gl, program, 'uRayColor'),
-  streakColor: getUniform(gl, program, 'uStreakColor'),
-  ghostColorA: getUniform(gl, program, 'uGhostColorA'),
-  ghostColorB: getUniform(gl, program, 'uGhostColorB'),
-  sourceStyle: getUniform(gl, program, 'uSourceStyle'),
-  rayStyle: getUniform(gl, program, 'uRayStyle'),
-  rayAngle: getUniform(gl, program, 'uRayAngle'),
-  streakStyle: getUniform(gl, program, 'uStreakStyle'),
-  ghostStyle: getUniform(gl, program, 'uGhostStyle'),
-  ghostAppearance: getUniform(gl, program, 'uGhostAppearance'),
-  ghostRingIntensity: getUniform(gl, program, 'uGhostRingIntensity'),
-  ghostMotion: getUniform(gl, program, 'uGhostMotion'),
-  ghostData: getUniform(gl, program, 'uGhostData[0]'),
-})
-
-const createLensFlareResources = (
-  gl: WebGL2RenderingContext,
-): LensFlareResources => {
-  const program = createProgram(gl)
-  const vertexArray = gl.createVertexArray()
-
-  if (!vertexArray) {
-    gl.deleteProgram(program)
-    throw new Error('Unable to allocate the lens flare vertex array.')
-  }
-
-  try {
-    return {
-      program,
-      vertexArray,
-      uniforms: getUniformLocations(gl, program),
-    }
-  } catch (error) {
-    gl.deleteVertexArray(vertexArray)
-    gl.deleteProgram(program)
-    throw error
-  }
-}
-
-const deleteLensFlareResources = (
-  gl: WebGL2RenderingContext,
-  resources: LensFlareResources,
-): void => {
-  gl.deleteVertexArray(resources.vertexArray)
-  gl.deleteProgram(resources.program)
-}
-
-const setColor = (
-  gl: WebGL2RenderingContext,
-  location: WebGLUniformLocation,
-  color: RgbColor,
-): void => {
-  gl.uniform3f(location, color[0], color[1], color[2])
-}
-
 const shouldReduceMotion = (
-  preference: LensFlareMotionPreference,
+  options: ResolvedLensFlareOptions,
   systemPreference: boolean,
 ): boolean =>
-  preference === 'reduce' || (preference === 'system' && systemPreference)
+  options.motionPreference === 'reduce' ||
+  (options.motionPreference === 'system' && systemPreference)
+
+const getRenderSize = (
+  canvas: HTMLCanvasElement,
+  options: ResolvedLensFlareOptions,
+): LensFlareRenderSize => {
+  const bounds = canvas.getBoundingClientRect()
+  const dpr = Math.min(window.devicePixelRatio || 1, options.maxDpr)
+  const scale = dpr * options.resolutionScale
+
+  return {
+    height: Math.max(Math.round(bounds.height * scale), 1),
+    width: Math.max(Math.round(bounds.width * scale), 1),
+  }
+}
+
+const updateCanvasDiagnostics = (
+  canvas: HTMLCanvasElement,
+  snapshot: LensFlareFrameSnapshot,
+): void => {
+  canvas.dataset.lensFlareSourceX = snapshot.source.x.toFixed(4)
+  canvas.dataset.lensFlareSourceY = snapshot.source.y.toFixed(4)
+  canvas.dataset.lensFlareGhostCount = String(snapshot.ghostCount)
+  canvas.dataset.lensFlareGhostDrift = snapshot.ghostDrift.toFixed(4)
+  canvas.dataset.lensFlareMotionElapsed = snapshot.elapsed.toFixed(3)
+  canvas.dataset.lensFlareMotionTimeline = snapshot.timeline
+}
+
+const deserializeError = (error: SerializedLensFlareError): Error => {
+  const normalizedError = new Error(error.message)
+  normalizedError.name = error.name
+  if (error.stack) normalizedError.stack = error.stack
+
+  return normalizedError
+}
+
+const createMainThreadBackend = (
+  canvas: HTMLCanvasElement,
+  options: ResolvedLensFlareOptions,
+  timeline: LensFlareTimeline,
+  initialReducedMotion: boolean,
+  initialHidden: boolean,
+  initialPointer: LensFlarePoint,
+  initialSize: LensFlareRenderSize,
+  callbacks: LensFlareBackendCallbacks,
+): LensFlareBackend => {
+  const renderer = new OpticalLensFlareRenderer(canvas, options, timeline)
+  let currentOptions = options
+  let reducedMotion = initialReducedMotion
+  let hidden = initialHidden
+  let contextLost = false
+  let frameId: number | null = null
+  let destroyed = false
+
+  renderer.updatePointer(initialPointer)
+  renderer.resize(initialSize)
+
+  const cancelFrame = (): void => {
+    if (frameId === null) return
+
+    window.cancelAnimationFrame(frameId)
+    frameId = null
+  }
+
+  const requestFrame = (): void => {
+    if (destroyed || hidden || contextLost || frameId !== null) return
+
+    frameId = window.requestAnimationFrame(draw)
+  }
+
+  const draw = (timestamp: number): void => {
+    frameId = null
+    if (destroyed || hidden || contextLost) return
+
+    try {
+      const snapshot = renderer.draw(
+        toAbsoluteLensFlareTime(timestamp),
+        reducedMotion,
+      )
+
+      if (snapshot) callbacks.onFrame(snapshot)
+      if (renderer.isAnimated(reducedMotion)) requestFrame()
+    } catch (error) {
+      callbacks.onError(error)
+    }
+  }
+
+  const handleContextLost = (event: Event): void => {
+    event.preventDefault()
+    contextLost = true
+    cancelFrame()
+    callbacks.onStatus('lost')
+  }
+
+  const handleContextRestored = (): void => {
+    callbacks.onStatus('restored')
+
+    try {
+      renderer.restore()
+      renderer.resetLastFrameTime(toAbsoluteLensFlareTime(performance.now()))
+      contextLost = false
+      callbacks.onStatus('destroyed')
+      callbacks.onStatus('ready')
+      requestFrame()
+    } catch (error) {
+      callbacks.onError(error)
+    }
+  }
+
+  canvas.addEventListener('webglcontextlost', handleContextLost)
+  canvas.addEventListener('webglcontextrestored', handleContextRestored)
+  callbacks.onStatus('ready')
+  requestFrame()
+
+  return {
+    destroy: () => {
+      if (destroyed) return
+
+      destroyed = true
+      cancelFrame()
+      canvas.removeEventListener('webglcontextlost', handleContextLost)
+      canvas.removeEventListener('webglcontextrestored', handleContextRestored)
+      renderer.destroy()
+    },
+    requestRender: requestFrame,
+    resize: (size) => {
+      renderer.resize(size)
+      requestFrame()
+    },
+    setVisibility: (nextHidden) => {
+      hidden = nextHidden
+
+      if (hidden) {
+        cancelFrame()
+      } else {
+        renderer.resetLastFrameTime(toAbsoluteLensFlareTime(performance.now()))
+        requestFrame()
+      }
+    },
+    updateOptions: (nextOptions, nextReducedMotion) => {
+      currentOptions = nextOptions
+      reducedMotion = nextReducedMotion
+      renderer.updateOptions(nextOptions)
+      requestFrame()
+    },
+    updatePointer: (point) => {
+      renderer.updatePointer(point)
+      if (currentOptions.motion.mode === 'pointer') requestFrame()
+    },
+  }
+}
+
+const createWorkerBackend = (
+  worker: Worker,
+  initialOptions: ResolvedLensFlareOptions,
+  initialPointer: LensFlarePoint,
+): LensFlareBackend => {
+  let currentOptions = initialOptions
+  let pointer = initialPointer
+  const postMessage = (message: LensFlareWorkerRequest): void => {
+    worker.postMessage(message)
+  }
+
+  return {
+    destroy: () => postMessage({ type: 'destroy' }),
+    requestRender: () => postMessage({ type: 'render' }),
+    resize: (size) => postMessage({ type: 'resize', size }),
+    setVisibility: (hidden) => postMessage({ type: 'visibility', hidden }),
+    updateOptions: (options, reducedMotion) => {
+      currentOptions = options
+      if (options.motion.mode === 'pointer') {
+        postMessage({ type: 'pointer', point: pointer })
+      }
+      postMessage({ type: 'options', options, reducedMotion })
+    },
+    updatePointer: (point) => {
+      pointer = point
+      if (currentOptions.motion.mode === 'pointer') {
+        postMessage({ type: 'pointer', point })
+      }
+    },
+  }
+}
 
 const OpticalLensFlare = ({
   source,
@@ -507,11 +402,12 @@ const OpticalLensFlare = ({
     ],
   )
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const optionsRef = React.useRef<ResolvedOptions>(resolvedOptions)
+  const optionsRef = React.useRef<ResolvedLensFlareOptions>(resolvedOptions)
   const requestRenderRef = React.useRef<(() => void) | null>(null)
   const onErrorRef = React.useRef(onError)
   const onStatusChangeRef = React.useRef(onStatusChange)
-  const [contextVersion, setContextVersion] = React.useState(0)
+  const forceMainThreadRef = React.useRef(false)
+  const [canvasVersion, setCanvasVersion] = React.useState(0)
   const [status, setStatus] = React.useState<LensFlareStatus>('idle')
 
   React.useLayoutEffect(() => {
@@ -526,15 +422,21 @@ const OpticalLensFlare = ({
     if (!canvas) return
 
     let disposed = false
-    let frameId: number | null = null
-    let lastFrameTime = performance.now()
-    const startTime = lastFrameTime
+    let backend: LensFlareBackend | null = null
+    let worker: Worker | null = null
+    let workerTransferred = false
+    let switchingToMainThread = false
+    let hasRenderer = false
     let systemReducedMotion = window.matchMedia(REDUCED_MOTION_QUERY).matches
-    let currentSource: { x: number; y: number } | null = null
     let pointerSource = { ...optionsRef.current.source }
+    const timeline: LensFlareTimeline = {
+      mountStartedAt: toAbsoluteLensFlareTime(performance.now()),
+      persistentStartedAt: PERSISTENT_MOTION_STARTED_AT_ABSOLUTE,
+    }
 
     const updateStatus = (nextStatus: LensFlareStatus): void => {
       if (disposed) return
+      if (nextStatus === 'ready') hasRenderer = true
       setStatus(nextStatus)
       onStatusChangeRef.current?.(nextStatus)
     }
@@ -546,207 +448,162 @@ const OpticalLensFlare = ({
       onErrorRef.current?.(normalizedError)
     }
 
-    const gl = canvas.getContext('webgl2', {
-      alpha: true,
-      antialias: false,
-      depth: false,
-      failIfMajorPerformanceCaveat: false,
-      powerPreference: 'low-power',
-      premultipliedAlpha: false,
-      preserveDrawingBuffer: false,
-      stencil: false,
-    })
+    const getReducedMotion = (): boolean =>
+      shouldReduceMotion(optionsRef.current, systemReducedMotion)
 
-    if (!gl) {
-      updateStatus('unsupported')
-      onErrorRef.current?.(
-        new Error('WebGL2 is unavailable; the Summer lens flare was skipped.'),
-      )
-      return
+    const callbacks: LensFlareBackendCallbacks = {
+      onError: reportError,
+      onFrame: (snapshot) => {
+        if (!disposed) updateCanvasDiagnostics(canvas, snapshot)
+      },
+      onStatus: updateStatus,
     }
 
-    let resources: LensFlareResources
+    const startMainThreadBackend = (): void => {
+      if (disposed) return
 
-    try {
-      resources = createLensFlareResources(gl)
-    } catch (error) {
-      reportError(error)
-      return
+      try {
+        canvas.dataset.lensFlareBackend = 'main-thread'
+        backend = createMainThreadBackend(
+          canvas,
+          optionsRef.current,
+          timeline,
+          getReducedMotion(),
+          document.hidden,
+          pointerSource,
+          getRenderSize(canvas, optionsRef.current),
+          callbacks,
+        )
+      } catch (error) {
+        if (error instanceof LensFlareUnsupportedError) {
+          updateStatus('unsupported')
+          onErrorRef.current?.(error)
+          return
+        }
+
+        reportError(error)
+      }
     }
 
-    const { program, vertexArray, uniforms } = resources
+    const replaceCanvasWithMainThreadBackend = (): void => {
+      if (disposed || switchingToMainThread) return
 
-    gl.disable(gl.BLEND)
-    gl.disable(gl.CULL_FACE)
-    gl.disable(gl.DEPTH_TEST)
-    gl.useProgram(program)
-    gl.bindVertexArray(vertexArray)
+      switchingToMainThread = true
+      forceMainThreadRef.current = true
+      backend = null
+      worker?.terminate()
+      worker = null
+      setCanvasVersion((version) => version + 1)
+    }
 
-    const resize = (): void => {
-      const bounds = canvas.getBoundingClientRect()
-      const options = optionsRef.current
-      const dpr = Math.min(window.devicePixelRatio || 1, options.maxDpr)
-      const scale = dpr * options.resolutionScale
-      const width = Math.max(Math.round(bounds.width * scale), 1)
-      const height = Math.max(Math.round(bounds.height * scale), 1)
+    const handleWorkerFailure = (): void => {
+      if (disposed) return
 
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width
-        canvas.height = height
+      worker?.terminate()
+      worker = null
+
+      if (workerTransferred) {
+        replaceCanvasWithMainThreadBackend()
+      } else {
+        startMainThreadBackend()
+      }
+    }
+
+    const startWorkerBackend = (): void => {
+      try {
+        worker = new Worker(
+          new URL('./opticalLensFlare.worker.ts', import.meta.url),
+          {
+            name: 'hybus-optical-lens-flare',
+            type: 'module',
+          },
+        )
+      } catch {
+        startMainThreadBackend()
+        return
       }
 
-      gl.viewport(0, 0, width, height)
-    }
+      worker.addEventListener(
+        'message',
+        (event: MessageEvent<LensFlareWorkerResponse>) => {
+          if (disposed || !worker) return
 
-    const resolveSource = (
-      elapsed: number,
-      deltaTime: number,
-      reducedMotion: boolean,
-    ): LensFlarePoint => {
-      const options = optionsRef.current
-      const { motion, source } = options
-      let targetX = source.x
-      let targetY = source.y
+          const message = event.data
 
-      if (!reducedMotion && motion.mode === 'horizontal') {
-        const phase = elapsed * motion.speed * FULL_TURN + motion.phase
-        const horizontalWave = -Math.cos(phase)
-        targetX += motion.amplitude.x * horizontalWave
-        targetY += motion.amplitude.y * Math.sin(phase)
-      } else if (!reducedMotion && motion.mode === 'pointer') {
-        targetX = pointerSource.x
-        targetY = pointerSource.y
-      }
+          if (message.type === 'probe-result') {
+            if (!message.supported) {
+              worker.terminate()
+              worker = null
+              startMainThreadBackend()
+              return
+            }
 
-      if (
-        currentSource === null ||
-        reducedMotion ||
-        motion.mode === 'static' ||
-        (motion.mode === 'horizontal' && motion.persistAcrossMounts)
-      ) {
-        currentSource = { x: targetX, y: targetY }
-        return currentSource
-      }
+            try {
+              const offscreenCanvas = canvas.transferControlToOffscreen()
+              workerTransferred = true
+              canvas.dataset.lensFlareBackend = 'worker-offscreen'
+              backend = createWorkerBackend(
+                worker,
+                optionsRef.current,
+                pointerSource,
+              )
+              const initMessage: Extract<
+                LensFlareWorkerRequest,
+                { type: 'init' }
+              > = {
+                type: 'init',
+                canvas: offscreenCanvas,
+                hidden: document.hidden,
+                options: optionsRef.current,
+                pointer: pointerSource,
+                reducedMotion: getReducedMotion(),
+                size: getRenderSize(canvas, optionsRef.current),
+                timeline,
+              }
+              worker.postMessage(initMessage, [offscreenCanvas])
+            } catch {
+              replaceCanvasWithMainThreadBackend()
+            }
+            return
+          }
 
-      const smoothing = 1 - Math.exp(-deltaTime / motion.settlingTime)
-      currentSource.x += (targetX - currentSource.x) * smoothing
-      currentSource.y += (targetY - currentSource.y) * smoothing
+          if (message.type === 'frame') {
+            updateCanvasDiagnostics(canvas, message.snapshot)
+            return
+          }
 
-      return currentSource
-    }
+          if (message.type === 'status') {
+            updateStatus(message.status)
+            return
+          }
 
-    const draw = (now: number): void => {
-      frameId = null
-      if (disposed || document.hidden) return
-
-      resize()
-
-      const options = optionsRef.current
-      const reducedMotion = shouldReduceMotion(
-        options.motionPreference,
-        systemReducedMotion,
+          reportError(deserializeError(message.error))
+          handleWorkerFailure()
+        },
       )
-      const deltaTime = Math.min(
-        Math.max((now - lastFrameTime) / 1000, 0),
-        0.05,
-      )
-      const timelineStart = options.motion.persistAcrossMounts
-        ? PERSISTENT_MOTION_STARTED_AT
-        : startTime
-      const elapsed = reducedMotion
-        ? 0
-        : Math.max((now - timelineStart) / 1000, 0)
-      const source = resolveSource(elapsed, deltaTime, reducedMotion)
-      const ghostDrift =
-        options.ghosts.drift * ((elapsed * options.ghosts.driftSpeed) % 1)
-      lastFrameTime = now
-
-      canvas.dataset.lensFlareSourceX = source.x.toFixed(4)
-      canvas.dataset.lensFlareSourceY = source.y.toFixed(4)
-      canvas.dataset.lensFlareGhostCount = String(options.ghosts.count)
-      canvas.dataset.lensFlareGhostDrift = ghostDrift.toFixed(4)
-      canvas.dataset.lensFlareMotionElapsed = elapsed.toFixed(3)
-      canvas.dataset.lensFlareMotionTimeline = options.motion
-        .persistAcrossMounts
-        ? 'persistent'
-        : 'mount'
-
-      gl.useProgram(program)
-      gl.bindVertexArray(vertexArray)
-      gl.uniform2f(uniforms.resolution, canvas.width, canvas.height)
-      gl.uniform1f(uniforms.time, elapsed)
-      gl.uniform1f(uniforms.intensity, options.intensity)
-      gl.uniform2f(uniforms.source, source.x, source.y)
-      gl.uniform2f(
-        uniforms.opticalCenter,
-        options.opticalCenter.x,
-        options.opticalCenter.y,
-      )
-      setColor(gl, uniforms.coreColor, options.sourceStyle.coreColor)
-      setColor(gl, uniforms.haloColor, options.sourceStyle.haloColor)
-      setColor(gl, uniforms.rayColor, options.rays.color)
-      setColor(gl, uniforms.streakColor, options.streak.color)
-      setColor(gl, uniforms.ghostColorA, options.ghosts.colorA)
-      setColor(gl, uniforms.ghostColorB, options.ghosts.colorB)
-      gl.uniform4f(
-        uniforms.sourceStyle,
-        options.sourceStyle.coreRadius,
-        options.sourceStyle.coreIntensity,
-        options.sourceStyle.haloRadius,
-        options.sourceStyle.haloIntensity,
-      )
-      gl.uniform4f(
-        uniforms.rayStyle,
-        options.rays.length,
-        options.rays.intensity,
-        options.rays.count,
-        options.rays.softness,
-      )
-      gl.uniform1f(uniforms.rayAngle, options.rays.angle)
-      gl.uniform4f(
-        uniforms.streakStyle,
-        options.streak.length,
-        options.streak.width,
-        options.streak.intensity,
-        options.streak.angle,
-      )
-      gl.uniform4f(
-        uniforms.ghostStyle,
-        options.ghosts.count,
-        options.ghosts.spread,
-        options.ghosts.scale,
-        options.ghosts.intensity,
-      )
-      gl.uniform4f(
-        uniforms.ghostAppearance,
-        options.ghosts.apertureSides,
-        options.ghosts.chroma,
-        options.ghosts.edgeSoftness,
-        reducedMotion ? 0 : options.ghosts.breathe,
-      )
-      gl.uniform1f(uniforms.ghostRingIntensity, options.ghosts.ringIntensity)
-      gl.uniform4f(
-        uniforms.ghostMotion,
-        options.ghosts.drift,
-        options.ghosts.driftSpeed,
-        reducedMotion ? 0 : options.ghosts.fadeVariation,
-        options.ghosts.scatter,
-      )
-      gl.uniform4fv(uniforms.ghostData, GHOST_PROFILE)
-      gl.drawArrays(gl.TRIANGLES, 0, 3)
-
-      const animated =
-        !reducedMotion &&
-        (options.motion.mode === 'horizontal' ||
-          options.ghosts.breathe > 0 ||
-          (options.ghosts.driftSpeed > 0 &&
-            (options.ghosts.drift > 0 || options.ghosts.fadeVariation > 0)))
-      if (animated) requestFrame()
-    }
-
-    const requestFrame = (): void => {
-      if (disposed || frameId !== null || document.hidden) return
-      frameId = window.requestAnimationFrame(draw)
+      worker.addEventListener('error', (event) => {
+        event.preventDefault()
+        if (workerTransferred) {
+          reportError(
+            event.error instanceof Error
+              ? event.error
+              : new Error(event.message || 'The lens flare worker failed.'),
+          )
+        }
+        handleWorkerFailure()
+      })
+      worker.addEventListener('messageerror', () => {
+        if (workerTransferred) {
+          reportError(new Error('The lens flare worker response was invalid.'))
+        }
+        handleWorkerFailure()
+      })
+      worker.postMessage({
+        type: 'probe',
+        options: optionsRef.current,
+        reducedMotion: getReducedMotion(),
+        timeline,
+      } satisfies LensFlareWorkerRequest)
     }
 
     const handlePointerMove = (event: PointerEvent): void => {
@@ -754,74 +611,66 @@ const OpticalLensFlare = ({
         x: event.clientX / Math.max(window.innerWidth, 1),
         y: event.clientY / Math.max(window.innerHeight, 1),
       }
-
-      if (optionsRef.current.motion.mode === 'pointer') requestFrame()
+      backend?.updatePointer(pointerSource)
     }
 
     const handleVisibilityChange = (): void => {
-      if (document.hidden) {
-        if (frameId !== null) window.cancelAnimationFrame(frameId)
-        frameId = null
-        return
-      }
-
-      lastFrameTime = performance.now()
-      requestFrame()
+      backend?.setVisibility(document.hidden)
     }
 
     const mediaQuery = window.matchMedia(REDUCED_MOTION_QUERY)
     const handleMotionPreference = (event: MediaQueryListEvent): void => {
       systemReducedMotion = event.matches
-      requestFrame()
+      backend?.updateOptions(optionsRef.current, getReducedMotion())
     }
 
-    const handleContextLost = (event: Event): void => {
-      event.preventDefault()
-      if (frameId !== null) window.cancelAnimationFrame(frameId)
-      frameId = null
-      updateStatus('lost')
+    const handleResize = (): void => {
+      backend?.resize(getRenderSize(canvas, optionsRef.current))
     }
 
-    const handleContextRestored = (): void => {
-      updateStatus('restored')
-      setContextVersion((version) => version + 1)
-    }
-
-    const resizeObserver = new ResizeObserver(() => {
-      resize()
-      requestFrame()
-    })
-
+    const resizeObserver = new ResizeObserver(handleResize)
     resizeObserver.observe(canvas)
     window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    window.addEventListener('resize', handleResize, { passive: true })
+    window.visualViewport?.addEventListener('resize', handleResize, {
+      passive: true,
+    })
     document.addEventListener('visibilitychange', handleVisibilityChange)
     mediaQuery.addEventListener('change', handleMotionPreference)
-    canvas.addEventListener('webglcontextlost', handleContextLost)
-    canvas.addEventListener('webglcontextrestored', handleContextRestored)
-    requestRenderRef.current = requestFrame
-    resize()
-    updateStatus('ready')
-    requestFrame()
+    requestRenderRef.current = () => {
+      backend?.updateOptions(optionsRef.current, getReducedMotion())
+      backend?.resize(getRenderSize(canvas, optionsRef.current))
+      backend?.requestRender()
+    }
+
+    if (
+      forceMainThreadRef.current ||
+      typeof Worker !== 'function' ||
+      typeof canvas.transferControlToOffscreen !== 'function'
+    ) {
+      startMainThreadBackend()
+    } else {
+      startWorkerBackend()
+    }
 
     return () => {
       disposed = true
       requestRenderRef.current = null
-      if (frameId !== null) window.cancelAnimationFrame(frameId)
       resizeObserver.disconnect()
       window.removeEventListener('pointermove', handlePointerMove)
+      window.removeEventListener('resize', handleResize)
+      window.visualViewport?.removeEventListener('resize', handleResize)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
       mediaQuery.removeEventListener('change', handleMotionPreference)
-      canvas.removeEventListener('webglcontextlost', handleContextLost)
-      canvas.removeEventListener('webglcontextrestored', handleContextRestored)
-      gl.bindVertexArray(null)
-      gl.useProgram(null)
-      deleteLensFlareResources(gl, resources)
-      onStatusChangeRef.current?.('destroyed')
+      backend?.destroy()
+      worker?.terminate()
+      if (hasRenderer) onStatusChangeRef.current?.('destroyed')
     }
-  }, [contextVersion])
+  }, [canvasVersion])
 
   return (
     <canvas
+      key={canvasVersion}
       ref={canvasRef}
       aria-hidden="true"
       className={className}

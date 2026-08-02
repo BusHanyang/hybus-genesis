@@ -1,6 +1,8 @@
-import { GodLights, type SceneConfig } from 'godlights'
+import { type SceneConfig } from 'godlights'
 import { motion, useReducedMotion } from 'motion/react'
 import React from 'react'
+
+import StaticGodLights from './StaticGodLights'
 
 type ViewportSize = Readonly<{
   width: number
@@ -391,7 +393,7 @@ const SummerGodlightRays = () => {
           opacity: SOURCE_LAYER_OPACITY,
         }}
       >
-        <GodLights scene={sourceScene} style={layerStyle} />
+        <StaticGodLights scene={sourceScene} style={layerStyle} />
       </div>
       {raySpecs.map((spec, index) => (
         <motion.div
@@ -431,7 +433,7 @@ const SummerGodlightRays = () => {
                 }
           }
         >
-          <GodLights scene={scenes[index]} style={layerStyle} />
+          <StaticGodLights scene={scenes[index]} style={layerStyle} />
         </motion.div>
       ))}
     </div>
