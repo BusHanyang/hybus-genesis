@@ -172,6 +172,12 @@ type UniformLocations = Readonly<{
   ghostData: WebGLUniformLocation
 }>
 
+type LensFlareResources = Readonly<{
+  program: WebGLProgram
+  vertexArray: WebGLVertexArrayObject
+  uniforms: UniformLocations
+}>
+
 // Keep one optical descriptor per line for visual tuning.
 // prettier-ignore
 const GHOST_PROFILE = new Float32Array([
@@ -408,6 +414,38 @@ const getUniformLocations = (
   ghostData: getUniform(gl, program, 'uGhostData[0]'),
 })
 
+const createLensFlareResources = (
+  gl: WebGL2RenderingContext,
+): LensFlareResources => {
+  const program = createProgram(gl)
+  const vertexArray = gl.createVertexArray()
+
+  if (!vertexArray) {
+    gl.deleteProgram(program)
+    throw new Error('Unable to allocate the lens flare vertex array.')
+  }
+
+  try {
+    return {
+      program,
+      vertexArray,
+      uniforms: getUniformLocations(gl, program),
+    }
+  } catch (error) {
+    gl.deleteVertexArray(vertexArray)
+    gl.deleteProgram(program)
+    throw error
+  }
+}
+
+const deleteLensFlareResources = (
+  gl: WebGL2RenderingContext,
+  resources: LensFlareResources,
+): void => {
+  gl.deleteVertexArray(resources.vertexArray)
+  gl.deleteProgram(resources.program)
+}
+
 const setColor = (
   gl: WebGL2RenderingContext,
   location: WebGLUniformLocation,
@@ -422,23 +460,66 @@ const shouldReduceMotion = (
 ): boolean =>
   preference === 'reduce' || (preference === 'system' && systemPreference)
 
-const OpticalLensFlare = (props: OpticalLensFlareProps) => {
+const OpticalLensFlare = ({
+  source,
+  opticalCenter,
+  motion,
+  sourceStyle,
+  rays,
+  streak,
+  ghosts,
+  intensity,
+  maxDpr,
+  resolutionScale,
+  motionPreference,
+  className,
+  style,
+  onError,
+  onStatusChange,
+}: OpticalLensFlareProps) => {
+  const resolvedOptions = React.useMemo(
+    () =>
+      resolveOptions({
+        source,
+        opticalCenter,
+        motion,
+        sourceStyle,
+        rays,
+        streak,
+        ghosts,
+        intensity,
+        maxDpr,
+        resolutionScale,
+        motionPreference,
+      }),
+    [
+      source,
+      opticalCenter,
+      motion,
+      sourceStyle,
+      rays,
+      streak,
+      ghosts,
+      intensity,
+      maxDpr,
+      resolutionScale,
+      motionPreference,
+    ],
+  )
   const canvasRef = React.useRef<HTMLCanvasElement>(null)
-  const optionsRef = React.useRef<ResolvedOptions>(resolveOptions(props))
+  const optionsRef = React.useRef<ResolvedOptions>(resolvedOptions)
   const requestRenderRef = React.useRef<(() => void) | null>(null)
-  const onErrorRef = React.useRef(props.onError)
-  const onStatusChangeRef = React.useRef(props.onStatusChange)
+  const onErrorRef = React.useRef(onError)
+  const onStatusChangeRef = React.useRef(onStatusChange)
   const [contextVersion, setContextVersion] = React.useState(0)
   const [status, setStatus] = React.useState<LensFlareStatus>('idle')
 
-  const resolvedOptions = React.useMemo(() => resolveOptions(props), [props])
-
   React.useLayoutEffect(() => {
     optionsRef.current = resolvedOptions
-    onErrorRef.current = props.onError
-    onStatusChangeRef.current = props.onStatusChange
+    onErrorRef.current = onError
+    onStatusChangeRef.current = onStatusChange
     requestRenderRef.current?.()
-  }, [props.onError, props.onStatusChange, resolvedOptions])
+  }, [onError, onStatusChange, resolvedOptions])
 
   React.useEffect(() => {
     const canvas = canvasRef.current
@@ -484,28 +565,16 @@ const OpticalLensFlare = (props: OpticalLensFlareProps) => {
       return
     }
 
-    let program: WebGLProgram | null = null
-    let vertexArray: WebGLVertexArrayObject | null = null
-    let uniforms: UniformLocations | null = null
+    let resources: LensFlareResources
 
     try {
-      program = createProgram(gl)
-      const allocatedVertexArray = gl.createVertexArray()
-      if (!allocatedVertexArray) {
-        gl.deleteProgram(program)
-        program = null
-        throw new Error('Unable to allocate the lens flare vertex array.')
-      }
-      vertexArray = allocatedVertexArray
-      uniforms = getUniformLocations(gl, program)
+      resources = createLensFlareResources(gl)
     } catch (error) {
-      if (vertexArray) gl.deleteVertexArray(vertexArray)
-      if (program) gl.deleteProgram(program)
       reportError(error)
       return
     }
 
-    if (!program || !vertexArray || !uniforms) return
+    const { program, vertexArray, uniforms } = resources
 
     gl.disable(gl.BLEND)
     gl.disable(gl.CULL_FACE)
@@ -746,8 +815,7 @@ const OpticalLensFlare = (props: OpticalLensFlareProps) => {
       canvas.removeEventListener('webglcontextrestored', handleContextRestored)
       gl.bindVertexArray(null)
       gl.useProgram(null)
-      gl.deleteVertexArray(vertexArray)
-      gl.deleteProgram(program)
+      deleteLensFlareResources(gl, resources)
       onStatusChangeRef.current?.('destroyed')
     }
   }, [contextVersion])
@@ -756,11 +824,11 @@ const OpticalLensFlare = (props: OpticalLensFlareProps) => {
     <canvas
       ref={canvasRef}
       aria-hidden="true"
-      className={props.className}
+      className={className}
       data-lens-flare-engine="hybus-optical-webgl2"
       data-lens-flare-ghost-motion={`${resolvedOptions.ghosts.drift},${resolvedOptions.ghosts.driftSpeed},${resolvedOptions.ghosts.fadeVariation}`}
       data-lens-flare-status={status}
-      style={props.style}
+      style={style}
     />
   )
 }

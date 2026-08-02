@@ -3,7 +3,9 @@ import React from 'react'
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
 import SummerGodlightRays from './godlights/SummerGodlightRays'
-import OpticalLensFlare from './lens-flare/OpticalLensFlare'
+import OpticalLensFlare, {
+  type OpticalLensFlareProps,
+} from './lens-flare/OpticalLensFlare'
 
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
@@ -25,6 +27,36 @@ const lensStyle: React.CSSProperties = {
   pointerEvents: 'none',
 }
 
+const lensFlareOptions = {
+  ghosts: {
+    apertureSides: 8,
+    breathe: 0,
+    chroma: 0.014,
+    colorA: '#f4fbff',
+    colorB: '#78cde8',
+    count: 18,
+    drift: 1.72,
+    driftSpeed: 1 / 96,
+    edgeSoftness: 0.055,
+    fadeVariation: 0.95,
+    intensity: 5,
+    ringIntensity: 0.5,
+    scale: 1,
+    scatter: 0.025,
+    spread: 1,
+  },
+  intensity: 1,
+  maxDpr: 1.5,
+  motion: { mode: 'static', persistAcrossMounts: true },
+  opticalCenter: { x: 0.5, y: 0.5 },
+  rays: { intensity: 0 },
+  resolutionScale: 0.82,
+  source: { x: 0, y: 0 },
+  sourceStyle: { coreIntensity: 0, haloIntensity: 0 },
+  streak: { intensity: 0 },
+  style: lensStyle,
+} satisfies OpticalLensFlareProps
+
 const SummerLensFlareEffect = () => {
   const { theme } = useDarkmodeContext()
 
@@ -39,35 +71,7 @@ const SummerLensFlareEffect = () => {
       style={overlayStyle}
     >
       <SummerGodlightRays />
-      <OpticalLensFlare
-        ghosts={{
-          apertureSides: 8,
-          breathe: 0,
-          chroma: 0.014,
-          colorA: '#f4fbff',
-          colorB: '#78cde8',
-          count: 18,
-          drift: 1.72,
-          driftSpeed: 1 / 96,
-          edgeSoftness: 0.055,
-          fadeVariation: 0.95,
-          intensity: 5,
-          ringIntensity: 0.5,
-          scale: 1,
-          scatter: 0.025,
-          spread: 1,
-        }}
-        intensity={1}
-        maxDpr={1.5}
-        motion={{ mode: 'static', persistAcrossMounts: true }}
-        opticalCenter={{ x: 0.5, y: 0.5 }}
-        rays={{ intensity: 0 }}
-        resolutionScale={0.82}
-        source={{ x: 0, y: 0 }}
-        sourceStyle={{ coreIntensity: 0, haloIntensity: 0 }}
-        streak={{ intensity: 0 }}
-        style={lensStyle}
-      />
+      <OpticalLensFlare {...lensFlareOptions} />
     </div>
   )
 }
