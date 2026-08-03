@@ -319,7 +319,14 @@ const Subway = ({ station }: SubwayStop) => {
     const filtered =
       timetable.data
         ?.filter(
-          (val) => val.direction === direction && val.destination !== null,
+          (val) =>
+            val.direction === direction &&
+            val.destination !== null &&
+            !(
+              val.line === '4' &&
+              val.direction === 2 &&
+              val.destination === '사당'
+            ),
         )
         .sort(compare)
         .slice(0, 2) ?? []
