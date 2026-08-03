@@ -50,23 +50,12 @@ const StaticGodLights = ({ scene, className, style }: StaticGodLightsProps) => {
         }
 
         try {
-          let bitmapContext: ImageBitmapRenderingContext | null = null
-          try {
-            bitmapContext = canvas.getContext('bitmaprenderer')
-          } catch {
-            // A 2D context below provides the same visible fallback surface.
-          }
+          const context = canvas.getContext('2d')
+          if (!context) throw new Error('Canvas 2D context is unavailable')
 
-          if (bitmapContext) {
-            bitmapContext.transferFromImageBitmap(bitmap)
-          } else {
-            const context = canvas.getContext('2d')
-            if (!context) throw new Error('Canvas 2D context is unavailable')
-
-            context.clearRect(0, 0, scene.width, scene.height)
-            context.drawImage(bitmap, 0, 0)
-          }
-
+          context.clearRect(0, 0, scene.width, scene.height)
+          context.drawImage(bitmap, 0, 0)
+          canvas.dataset.godlightsPresenter = '2d-copy'
           canvas.dataset.godlightsRenderStatus = 'ready'
         } catch {
           if (active) setUseMainThreadFallback(true)

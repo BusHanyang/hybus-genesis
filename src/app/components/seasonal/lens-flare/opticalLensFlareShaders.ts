@@ -239,6 +239,11 @@ void main() {
       0.00055
     );
     vec2 chromaOffset = axisDirection * radius * chromaAmount;
+    float supportRadius = radius * 1.48 + max(softness * 4.0, 0.002);
+
+    if (dot(ghostPoint, ghostPoint) > supportRadius * supportRadius) {
+      continue;
+    }
 
     float field = apertureField(
       ghostPoint,
@@ -258,12 +263,12 @@ void main() {
       max(radius * mix(0.62, 0.82, roundness), 0.0005)
     );
     float polygonDefinition = 1.0 - smoothstep(0.42, 0.86, roundness);
-    float veil = outer * mix(0.1, 0.075, roundness) *
+    float veil = outer * mix(0.055, 0.04, roundness) *
       mix(0.9, 1.08, innerLight);
-    float innerVeil = outer * innerLight * mix(0.015, 0.01, roundness);
+    float innerVeil = outer * innerLight * mix(0.008, 0.0055, roundness);
     float outside = max(field - radius, 0.0);
     float ghostGlow = gaussian(outside, radius * 0.28) * (1.0 - inner * 0.78);
-    float reflectionRingSelector = smoothstep(0.72, 0.94, roundness);
+    float reflectionRingSelector = smoothstep(0.68, 0.9, roundness);
     float reflectionRingRadius = radius * mix(0.46, 0.62, opticalSeed);
     float reflectionRing = gaussian(
       abs(length(ghostPoint) - reflectionRingRadius),
@@ -305,20 +310,20 @@ void main() {
     vec3 ghostTint = mix(uGhostColorA, uGhostColorB, colorPhase);
     vec3 spectralRim = vec3(redRim, rim * 0.82, blueRim);
     float reflectionEnergy =
-      (reflectionRing * 0.03 +
-        reflectionEcho * 0.012 +
-        outerReflection * 0.004) *
+      (reflectionRing * 0.06 +
+        reflectionEcho * 0.022 +
+        outerReflection * 0.007) *
       reflectionRingSelector *
       uGhostRingIntensity;
     color += ghostTint * (
       veil +
       innerVeil +
-      rim * mix(0.07, 0.12, polygonDefinition) +
-      apertureBand * mix(0.03, 0.06, polygonDefinition) +
-      ghostGlow * mix(0.01, 0.018, opticalSeed) +
+      rim * mix(0.105, 0.17, polygonDefinition) +
+      apertureBand * mix(0.055, 0.095, polygonDefinition) +
+      ghostGlow * mix(0.004, 0.008, opticalSeed) +
       reflectionEnergy
     ) * localIntensity;
-    color += spectralRim * localIntensity * chromaAmount * 0.1;
+    color += spectralRim * localIntensity * chromaAmount * 0.14;
 
     float glintAngle = opticalSeed * TAU;
     vec2 glintOffset =
@@ -337,7 +342,7 @@ void main() {
       mix(uGhostColorB, vec3(1.0), 0.72) *
       glint *
       localIntensity *
-      mix(0.006, 0.014, opticalSeed) *
+      mix(0.008, 0.018, opticalSeed) *
       glintSelector;
   }
 
