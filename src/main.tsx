@@ -8,7 +8,6 @@ import ReactDOM from 'react-dom/client'
 
 import SeasonalEffect from '@/components/seasonal/SeasonalEffect'
 import { DarkmodeContextProvider } from '@/context/ThemeContext'
-import { TimeTableContextProvider } from '@/context/TimeTableContext'
 
 import App from './App'
 // import { Ptr } from './app/components/ptr/Ptr'
@@ -27,9 +26,7 @@ ReactDOM.createRoot(root).render(
       <Partytown debug={false} forward={['dataLayer.push']} />
       <DarkmodeContextProvider>
         <SeasonalEffect />
-        <TimeTableContextProvider>
-          <App />
-        </TimeTableContextProvider>
+        <App />
       </DarkmodeContextProvider>
     </QueryClientProvider>
   </React.StrictMode>,

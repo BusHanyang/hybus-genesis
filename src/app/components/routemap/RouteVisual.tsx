@@ -2,10 +2,7 @@ import { classed } from '@tw-classed/react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import DotAnimation, {
-  DotColor,
-  useDotAnimation,
-} from '@/components/routemap/DotAnimation'
+import DotAnimation, { DotColor } from '@/components/routemap/DotAnimation'
 import { RouteAnimationFlag } from '@/data'
 
 type RouteStatus = keyof RouteAnimationFlag
@@ -85,8 +82,7 @@ const SpecialStopsText = classed(
         cycle: 'text-chip-red',
         yesulin: 'text-chip-green',
         jungang: 'text-chip-purple',
-        inactive:
-          'text-[var(--color-route-inactive-text)] dark:text-slate-500',
+        inactive: 'text-[var(--color-route-inactive-text)] dark:text-slate-500',
       },
     },
   },
@@ -184,7 +180,7 @@ const RouteLines = (props: {
 const RouteElement = (props: {
   routeStatus: RouteStatus
   tab: string
-  animationFlagTable: { [key: string]: Array<boolean> }
+  animationFlagTable: RouteAnimationFlag
   item: number
 }) => {
   const { t, i18n } = useTranslation()
@@ -229,7 +225,7 @@ const RouteElement = (props: {
 const RouteElementGroup = (props: {
   routeStatus: RouteStatus
   tab: string
-  animationFlagTable: { [key: string]: Array<boolean> }
+  animationFlagTable: RouteAnimationFlag
 }) => {
   return (
     <>
@@ -278,14 +274,13 @@ const RouteElementGroup = (props: {
 const RouteVisual = (props: {
   routeStatus: keyof RouteAnimationFlag
   tab: string
+  animationFlagTable: RouteAnimationFlag
 }) => {
-  const animationFlagTable = useDotAnimation(props.tab)
-
   return (
     <RouteElementGroup
       routeStatus={props.routeStatus}
       tab={props.tab}
-      animationFlagTable={animationFlagTable}
+      animationFlagTable={props.animationFlagTable}
     />
   )
 }

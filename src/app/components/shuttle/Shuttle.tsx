@@ -1,7 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
 import { classed } from '@tw-classed/react'
-import dayjs from 'dayjs'
-import customParse from 'dayjs/plugin/customParseFormat'
 import { t } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -9,21 +6,13 @@ import { SyncLoader } from 'react-spinners'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
 import { openNaverMapApp } from '@/components/shuttle/map'
-import { useTimeTableContext } from '@/context/TimeTableContext'
 import {
-  ChipType,
-  Season,
-  Settings,
-  ShuttleStop,
-  SingleShuttleSchedule,
-  StopLocation,
-  Week,
-} from '@/data'
+  convertUnixToTime,
+  useShuttleTimetable,
+} from '@/components/shuttle/useShuttleTimetable'
+import { ChipType, ShuttleStop } from '@/data'
 import { seasonKeys } from '@/data/shuttle/season'
 import { weekKeys } from '@/data/shuttle/week'
-import { settingAPI, shuttleAPI } from '@/network'
-
-dayjs.extend(customParse)
 
 const TimetableWrapper = classed('div', 'h-[14.8rem]')
 const HeadlineWrapper = classed('div', 'relative drag-save-n')
@@ -112,130 +101,6 @@ const MapIcon = classed(
   'cursor-default h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n',
 )
 const CloseIcon = classed('img', 'cursor-default dark:invert h-4 w-4 my-auto')
-
-const isWeekend = (): boolean => {
-  return dayjs().day() == 0 || dayjs().day() == 6
-}
-
-const getSeason = (setting: Settings | null): [Season, Week] => {
-  const today = dayjs()
-  if (setting === null) {
-    // Error fetching settings
-    return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
-  } else {
-    const [semesterStart, semesterEnd] = [
-      dayjs(setting.semester.start_date, 'YYYY-MM-DD'),
-      dayjs(setting.semester.end_date, 'YYYY-MM-DD')
-        .set('hour', 23)
-        .set('minute', 59)
-        .set('second', 59),
-    ]
-    const [vacationSessionStart, vacationSessionEnd] = [
-      dayjs(setting.vacation_session.start_date, 'YYYY-MM-DD'),
-      dayjs(setting.vacation_session.end_date, 'YYYY-MM-DD')
-        .set('hour', 23)
-        .set('minute', 59)
-        .set('second', 59),
-    ]
-    const [vacationStart, vacationEnd] = [
-      dayjs(setting.vacation.start_date, 'YYYY-MM-DD'),
-      dayjs(setting.vacation.end_date, 'YYYY-MM-DD')
-        .set('hour', 23)
-        .set('minute', 59)
-        .set('second', 59),
-    ]
-
-    const todayUnix = today.unix()
-
-    const convertedHoliday = setting.holiday.map((s) => dayjs(s, 'YYYY-MM-DD'))
-    const convertedHaltDay = setting.halt.map((s) => dayjs(s, 'YYYY-MM-DD'))
-
-    let isHoliday = false
-
-    for (const holiday of convertedHoliday) {
-      if (
-        today.year() == holiday.year() &&
-        today.month() == holiday.month() &&
-        today.date() == holiday.date()
-      ) {
-        isHoliday = true
-        break
-      }
-    }
-
-    for (const haltDay of convertedHaltDay) {
-      if (
-        today.year() == haltDay.year() &&
-        today.month() == haltDay.month() &&
-        today.date() == haltDay.date()
-      ) {
-        return [seasonKeys.HALT, weekKeys.UNKNOWN]
-      }
-    }
-
-    if (semesterStart.unix() < todayUnix && todayUnix < semesterEnd.unix()) {
-      // Semester
-      if (isWeekend() || isHoliday) {
-        return [seasonKeys.SEMESTER, weekKeys.WEEKEND]
-      } else {
-        return [seasonKeys.SEMESTER, weekKeys.WEEK]
-      }
-    } else if (
-      vacationSessionStart.unix() < todayUnix &&
-      todayUnix < vacationSessionEnd.unix()
-    ) {
-      // Vacation Session
-      if (isWeekend() || isHoliday) {
-        return [seasonKeys.VACATION_SESSION, weekKeys.WEEKEND]
-      } else {
-        return [seasonKeys.VACATION_SESSION, weekKeys.WEEK]
-      }
-    } else if (
-      vacationStart.unix() < todayUnix &&
-      todayUnix < vacationEnd.unix()
-    ) {
-      // Vacation
-      if (isWeekend() || isHoliday) {
-        return [seasonKeys.VACATION, weekKeys.WEEKEND]
-      } else {
-        return [seasonKeys.VACATION, weekKeys.WEEK]
-      }
-    } else {
-      // Error!
-      return [seasonKeys.UNKNOWN, weekKeys.UNKNOWN]
-    }
-  }
-}
-
-const getTimetable = async (
-  season: Season,
-  week: Week,
-  location: StopLocation,
-): Promise<Array<SingleShuttleSchedule>> => {
-  return await shuttleAPI(season, week, location).then((res) => {
-    if (res !== null) {
-      res.map((data) => {
-        data['time'] = String(dayjs(data.time, 'HH:mm').unix())
-        return data
-      })
-    }
-    return res
-  })
-}
-
-const convertUnixToTime = (
-  sch: SingleShuttleSchedule,
-): SingleShuttleSchedule => {
-  return {
-    ...sch,
-    time: dayjs.unix(Number(sch.time)).format('HH:mm'),
-  }
-}
-
-const isAfterCurrentTime = (sch: SingleShuttleSchedule): boolean => {
-  const timestamp = new Date().getTime() / 1000
-  return Number(sch.time) - timestamp >= 0
-}
 
 const secondToTimeFormat = (n: number): string => {
   const seconds = n % 60
@@ -348,62 +213,26 @@ const ColoredChip = ({ chipType }: ChipType) => {
 }
 
 export const Shuttle = ({ location }: ShuttleStop) => {
-  const setting = useQuery({
-    queryKey: ['settings'],
-    queryFn: settingAPI,
-    staleTime: 5 * 60 * 1000,
-  })
-
-  const { currTimetable, setCurrTimetable } = useTimeTableContext()
-
-  const [season, week] =
-    setting.data !== undefined ? getSeason(setting.data) : [null, null]
-
-  const timetable = useQuery({
-    queryKey: ['shuttle', season, week, location],
-    queryFn: () => {
-      if (
-        season === null ||
-        week === null ||
-        season === seasonKeys.HALT ||
-        week === weekKeys.UNKNOWN
-      ) {
-        return Array<SingleShuttleSchedule>()
-      }
-      return getTimetable(season, week, location)
-    },
-    staleTime: 30 * 1000,
-    enabled: !!season && !!week && !!location,
-  })
-  const [currentTime, setCurrentTime] = useState<number>(new Date().getTime())
+  const { currentTime, season, timetable, upcomingTimetable, week } =
+    useShuttleTimetable(location)
   const [touched, setTouched] = useState<boolean>(false)
   const [infoClosed, setInfoClosed] = useState<boolean>(
     window.localStorage.getItem('touch_info') === 'closed',
   )
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
 
-  // Recalculate & Rerender every second
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrentTime(new Date().getTime())
-    }, 1000)
-
-    return () => clearTimeout(timer)
-  }, [timetable.data, currentTime])
-
   // For info card to not show when error or no shuttle available
   useEffect(() => {
-    const filtered = timetable.data?.filter((val) => isAfterCurrentTime(val))
     if (
       timetable.data?.length === 0 ||
       timetable.status !== 'success' ||
-      filtered?.length === 0
+      upcomingTimetable.length === 0
     ) {
       setTimetableAlive(false)
     } else {
       setTimetableAlive(true)
     }
-  }, [timetable.data, timetable.status])
+  }, [timetable.data, timetable.status, upcomingTimetable])
 
   // Set week and season to localStorage
   useEffect(() => {
@@ -450,8 +279,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     const { t } = useTranslation()
 
     if (timetable.data === undefined) {
-      if (currTimetable[0].time !== '')
-        setCurrTimetable([{ type: 'NA', time: '' }])
       return <></>
     }
 
@@ -460,8 +287,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     if (timetable.status === 'error') {
-      if (currTimetable[0].time !== '')
-        setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable API error
       return (
         <>
@@ -479,8 +304,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     }
 
     if (timetable.data.length === 0) {
-      if (currTimetable[0].time !== '')
-        setCurrTimetable([{ type: 'NA', time: '' }])
       // Timetable doesn't exist
       return (
         <>
@@ -491,12 +314,10 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       )
     }
 
-    const filtered = timetable.data.filter((val) => isAfterCurrentTime(val))
+    const filtered = upcomingTimetable
     const reverted = filtered.map((val) => convertUnixToTime(val))
 
     if (filtered.length === 0) {
-      if (currTimetable[0].time !== '')
-        setCurrTimetable([{ type: 'NA', time: '' }])
       // Buses are done for today. User should refresh after midnight.
       return (
         <>
@@ -505,14 +326,6 @@ export const Shuttle = ({ location }: ShuttleStop) => {
           </NoTimetable>
         </>
       )
-    }
-
-    // Send filtered[0](or also include filtered[1] when bus arrive simultaneously) Array to RouteVisual
-    // when filtered has been updated.
-    if (filtered[0] !== currTimetable[0]) {
-      if (filtered.length >= 2 && filtered[0].time === filtered[1].time)
-        setCurrTimetable([filtered[0], filtered[1]])
-      else setCurrTimetable([filtered[0]])
     }
 
     // Otherwise - normal case

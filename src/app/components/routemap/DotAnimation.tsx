@@ -1,7 +1,6 @@
 import { classed } from '@tw-classed/react'
-import React, { useEffect } from 'react'
+import React from 'react'
 
-import { useTimeTableContext } from '@/context/TimeTableContext'
 import {
   DotAnimationConfig,
   RouteAnimationFlag,
@@ -132,45 +131,36 @@ export const getDotAnimationConfig = (
   return []
 }
 
-export const useDotAnimation = (tab: string) => {
-  const [flagTable, setFlagTable] = React.useState<RouteAnimationFlag>({
-    direct: [false, false, false, false, false, false],
-    cycle: [false, false, false, false, false, false],
-    yesulin: [false, false, false, false, false, false],
-    jungang: [false, false, false, false, false, false],
-  })
-  const currTimetableArray = useTimeTableContext().currTimetable
-  const checkCurrTimetable =
-    React.useRef<SingleShuttleSchedule | undefined>(undefined)
+const createEmptyFlagTable = (): RouteAnimationFlag => ({
+  direct: [false, false, false, false, false, false],
+  cycle: [false, false, false, false, false, false],
+  yesulin: [false, false, false, false, false, false],
+  jungang: [false, false, false, false, false, false],
+})
 
-  React.useEffect(() => {
-    checkCurrTimetable.current = undefined
-  }, [])
+export const buildDotAnimationFlagTable = (
+  tab: string,
+  currTimetableArray: Array<SingleShuttleSchedule>,
+): RouteAnimationFlag => {
+  let flagTable = createEmptyFlagTable()
 
-  useEffect(() => {
-    if (checkCurrTimetable.current === currTimetableArray[0]) return
-
-    checkCurrTimetable.current = currTimetableArray[0]
-
-    let tempFlagTable = {
-      direct: [false, false, false, false, false, false],
-      cycle: [false, false, false, false, false, false],
-      yesulin: [false, false, false, false, false, false],
-      jungang: [false, false, false, false, false, false],
-    }
-
-    currTimetableArray.forEach((currTimetable: SingleShuttleSchedule) => {
-      const dotAnimationConfig = getDotAnimationConfig(tab, currTimetable)
-
-      dotAnimationConfig.forEach((config) => {
-        tempFlagTable = applyDotAnimationFlag(config, tempFlagTable)
-      })
+  currTimetableArray.forEach((currTimetable) => {
+    getDotAnimationConfig(tab, currTimetable).forEach((config) => {
+      flagTable = applyDotAnimationFlag(config, flagTable)
     })
-
-    setFlagTable(tempFlagTable)
-  }, [currTimetableArray, tab])
+  })
 
   return flagTable
+}
+
+export const useDotAnimation = (
+  tab: string,
+  currTimetableArray: Array<SingleShuttleSchedule>,
+) => {
+  return React.useMemo(
+    () => buildDotAnimationFlagTable(tab, currTimetableArray),
+    [currTimetableArray, tab],
+  )
 }
 
 const DotAnimation = (props: {
@@ -182,10 +172,7 @@ const DotAnimation = (props: {
   if (props.routeStatus === 'yesulin' && props.index === 2) return
 
   return (
-    <PingDot
-      data-state={props.isOn ? 'on' : 'off'}
-      data-tone={props.color}
-    />
+    <PingDot data-state={props.isOn ? 'on' : 'off'} data-tone={props.color} />
   )
 }
 
