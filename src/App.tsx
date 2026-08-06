@@ -36,6 +36,8 @@ type MainCardHeight =
   | 'stationPromptRealtime'
   | 'defaultPrompt'
 
+const CURRENT_YEAR = new Date().getFullYear()
+
 const cardShellBase =
   'mb-3 justify-center items-center font-medium rounded-lg transition-colors text-theme-text border-theme-border shadow-theme-shadow'
 const buttonShellBase =
@@ -683,7 +685,7 @@ function App() {
                         <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
                       </Link>
                       <CopyRightText id="copyright">
-                        Copyright © 2020-2025{' '}
+                        Copyright © 2020-{CURRENT_YEAR}{' '}
                         <a
                           className="underline"
                           target="_blank"
