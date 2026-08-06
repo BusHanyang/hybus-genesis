@@ -232,7 +232,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
     } else {
       setTimetableAlive(true)
     }
-  }, [timetable.data, timetable.status, upcomingTimetable])
+  }, [timetable.data?.length, timetable.status, upcomingTimetable.length])
 
   // Set week and season to localStorage
   useEffect(() => {

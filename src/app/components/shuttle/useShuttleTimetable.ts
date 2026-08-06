@@ -133,12 +133,13 @@ export const useShuttleTimetable = (location: StopLocation) => {
     return () => window.clearInterval(timer)
   }, [])
 
+  const departedScheduleCount =
+    timetable.data?.filter(
+      (schedule) => Number(schedule.time) - currentTime / 1000 < 0,
+    ).length ?? 0
   const upcomingTimetable = useMemo(
-    () =>
-      timetable.data?.filter(
-        (schedule) => Number(schedule.time) - currentTime / 1000 >= 0,
-      ) ?? [],
-    [currentTime, timetable.data],
+    () => timetable.data?.slice(departedScheduleCount) ?? [],
+    [departedScheduleCount, timetable.data],
   )
   const routeTimetable = useMemo(() => {
     const [first, second] = upcomingTimetable

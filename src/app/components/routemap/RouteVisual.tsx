@@ -285,4 +285,4 @@ const RouteVisual = (props: {
   )
 }
 
-export default RouteVisual
+export default React.memo(RouteVisual)
