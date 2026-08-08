@@ -124,5 +124,20 @@
   "seasonal_prompt_text": "The screen colors and effects such as rain and snow change with the season. You can turn seasonal themes on or off anytime from the bottom-right menu.",
   "seasonal_prompt_once": "(This message is shown only once.)",
   "seasonal_prompt_enable": "Enable seasonal themes",
-  "seasonal_prompt_keep": "Keep seasonal themes off"
+  "seasonal_prompt_keep": "Keep seasonal themes off",
+
+  "crowding_next_title": "Next shuttle crowding",
+  "crowding_departure_basis": "{{stop}} · {{time}} departure",
+  "crowding_departure_loading": "{{stop}} · Checking timetable",
+  "crowding_departure_unavailable": "{{stop}} · No upcoming service",
+  "crowding_level_relaxed": "Relaxed",
+  "crowding_level_relaxed_short": "Low",
+  "crowding_level_normal": "Average",
+  "crowding_level_normal_short": "Avg.",
+  "crowding_level_busy": "Busy",
+  "crowding_level_busy_short": "Busy",
+  "crowding_level_insufficient": "Unavailable",
+  "crowding_level_insufficient_short": "N/A",
+  "crowding_level_loading": "Checking",
+  "crowding_level_aria": "Expected crowding: {{level}}"
 }

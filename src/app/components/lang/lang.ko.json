@@ -124,5 +124,20 @@
   "seasonal_prompt_text": "계절에 맞춰 화면 색상과 비·눈 같은 효과가 함께 바뀝니다. 오른쪽 아래 메뉴에서 언제든 켜거나 끌 수 있어요.",
   "seasonal_prompt_once": "(이 안내는 처음 한 번만 표시됩니다.)",
   "seasonal_prompt_enable": "계절 테마 켜기",
-  "seasonal_prompt_keep": "계절 테마 사용 안 함"
+  "seasonal_prompt_keep": "계절 테마 사용 안 함",
+
+  "crowding_next_title": "다음 셔틀 예상 혼잡도",
+  "crowding_departure_basis": "{{stop}} · {{time}} 출발",
+  "crowding_departure_loading": "{{stop}} · 시간표 확인 중",
+  "crowding_departure_unavailable": "{{stop}} · 다음 운행 정보 없음",
+  "crowding_level_relaxed": "여유",
+  "crowding_level_relaxed_short": "여유",
+  "crowding_level_normal": "보통",
+  "crowding_level_normal_short": "보통",
+  "crowding_level_busy": "혼잡",
+  "crowding_level_busy_short": "혼잡",
+  "crowding_level_insufficient": "정보 없음",
+  "crowding_level_insufficient_short": "미정",
+  "crowding_level_loading": "확인 중",
+  "crowding_level_aria": "예상 혼잡도: {{level}}"
 }

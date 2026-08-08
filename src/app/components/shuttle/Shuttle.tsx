@@ -5,6 +5,11 @@ import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
+import {
+  CrowdingAvailability,
+  CrowdingLevelChip,
+  getCrowdingLevelForIndex,
+} from '@/components/crowding/CrowdingPreview'
 import { openNaverMapApp } from '@/components/shuttle/map'
 import {
   convertUnixToTime,
@@ -22,7 +27,7 @@ const Headline = classed(
 )
 const MainTimeTableWrapper = classed(
   'div',
-  'w-full h-45 inline-block touch-none',
+  'w-full h-47 inline-block touch-none',
 )
 const MainTimetable = classed('div', 'inline-block select-none h-full')
 const Chip = classed(
@@ -101,6 +106,16 @@ const MapIcon = classed(
   'cursor-default h-8 w-8 hsm:h-7 hsm:w-7 drag-save-n',
 )
 const CloseIcon = classed('img', 'cursor-default dark:invert h-4 w-4 my-auto')
+
+export type NextShuttleDeparture = {
+  location: ShuttleStop['location']
+  status: CrowdingAvailability
+  time?: string
+}
+
+type ShuttleProps = ShuttleStop & {
+  onNextDepartureChange?: (departure: NextShuttleDeparture | null) => void
+}
 
 const secondToTimeFormat = (n: number): string => {
   const seconds = n % 60
@@ -212,7 +227,7 @@ const ColoredChip = ({ chipType }: ChipType) => {
   return <Chip data-tone="direct">{busTypeToText(chipType)}</Chip>
 }
 
-export const Shuttle = ({ location }: ShuttleStop) => {
+export const Shuttle = ({ location, onNextDepartureChange }: ShuttleProps) => {
   const { currentTime, season, timetable, upcomingTimetable, week } =
     useShuttleTimetable(location)
   const [touched, setTouched] = useState<boolean>(false)
@@ -233,6 +248,26 @@ export const Shuttle = ({ location }: ShuttleStop) => {
       setTimetableAlive(true)
     }
   }, [timetable.data?.length, timetable.status, upcomingTimetable.length])
+
+  useEffect(() => {
+    const nextDeparture = upcomingTimetable[0]
+
+    if (timetable.status === 'pending') {
+      onNextDepartureChange?.({ location, status: 'loading' })
+      return
+    }
+
+    if (timetable.status !== 'success' || nextDeparture === undefined) {
+      onNextDepartureChange?.({ location, status: 'unavailable' })
+      return
+    }
+
+    onNextDepartureChange?.({
+      location,
+      status: 'ready',
+      time: convertUnixToTime(nextDeparture).time,
+    })
+  }, [location, onNextDepartureChange, timetable.status, upcomingTimetable])
 
   // Set week and season to localStorage
   useEffect(() => {
@@ -365,6 +400,7 @@ export const Shuttle = ({ location }: ShuttleStop) => {
                   <DestinationWrapper>
                     {getBusDestination(val.type, location)}
                   </DestinationWrapper>
+                  <CrowdingLevelChip level={getCrowdingLevelForIndex(idx)} />
                 </SingleTimetable>
               </React.Fragment>
             )

@@ -20,6 +20,13 @@
   }
 }
 
+.ptr__children {
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
 @layer base {
   :root {
     --color-route-inactive: var(--color-zinc-200);

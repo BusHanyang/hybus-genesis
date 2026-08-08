@@ -1,5 +1,12 @@
 import { classed } from '@tw-classed/react'
-import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
@@ -7,7 +14,11 @@ import { Transition } from 'react-transition-group'
 
 import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
-import { Shuttle } from '@/components'
+import {
+  CrowdingPreview,
+  type NextShuttleDeparture,
+  Shuttle,
+} from '@/components'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
@@ -48,7 +59,7 @@ const heightTransitionCardBase =
 const buttonBase =
   'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4'
 const circleBase =
-  "relative flex rounded-full inline-block shrink-0 transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
+  'relative flex rounded-full inline-block shrink-0 transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1'
 const circleThemeVariants = {
   variants: {
     'data-theme': {
@@ -84,12 +95,34 @@ const Apps = classed(
   'div',
   'h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors',
 )
-const CopyRightText = classed('p', 'text-theme-text pt-3 hsm:text-sm hsm:leading-4')
-const CycleCircle = classed('span', `${circleBase} bg-chip-red mr-2 hsm:mx-2`, circleThemeVariants)
-const DirectCircle = classed('span', `${circleBase} bg-chip-blue mx-2`, circleThemeVariants)
-const YesulinCircle = classed('span', `${circleBase} bg-chip-green mx-2`, circleThemeVariants)
-const JungangCircle = classed('span', `${circleBase} bg-chip-purple mx-2`, circleThemeVariants)
-const RouteText = classed('div', 'inline-block rt1:text-sm rt2:text-xs hsm:mx-1')
+const CopyRightText = classed(
+  'p',
+  'text-theme-text pt-3 hsm:text-sm hsm:leading-4',
+)
+const CycleCircle = classed(
+  'span',
+  `${circleBase} bg-chip-red mr-2 hsm:mx-2`,
+  circleThemeVariants,
+)
+const DirectCircle = classed(
+  'span',
+  `${circleBase} bg-chip-blue mx-2`,
+  circleThemeVariants,
+)
+const YesulinCircle = classed(
+  'span',
+  `${circleBase} bg-chip-green mx-2`,
+  circleThemeVariants,
+)
+const JungangCircle = classed(
+  'span',
+  `${circleBase} bg-chip-purple mx-2`,
+  circleThemeVariants,
+)
+const RouteText = classed(
+  'div',
+  'inline-block rt1:text-sm rt2:text-xs hsm:mx-1',
+)
 const MainCardView = classed(
   'div',
   `${heightTransitionCardBase} p-6 hm:p-4 transition-all`,
@@ -118,7 +151,7 @@ const Button = classed('div', `${buttonShellBase} ${buttonBase}`, {
       idle: 'bg-theme-card text-theme-text',
     },
     'data-location': {
-      'shuttlecoke_i': 'shuttlei:flex-col shuttlei:gap-x-0 gap-x-1',
+      ['shuttlecoke_i']: 'shuttlei:flex-col shuttlei:gap-x-0 gap-x-1',
       default: '',
     },
   },
@@ -127,7 +160,10 @@ const Button = classed('div', `${buttonShellBase} ${buttonBase}`, {
     'data-location': 'default',
   },
 })
-const FulltimeButton = classed('div', `${cardBase} ${buttonBase} w-full cursor-default`)
+const FulltimeButton = classed(
+  'div',
+  `${cardBase} ${buttonBase} w-full cursor-default`,
+)
 const HeadlineWrapper = classed('div', 'relative drag-save-n')
 const TitleRow = classed('div', 'grid grid-cols-[1fr_auto_1fr] items-center')
 const HelpIcon = classed(
@@ -152,7 +188,10 @@ const RouteIndexCardView = classed(
     },
   },
 )
-const RouteIndexWrapper = classed('div', 'flex flex-wrap place-content-center items-center')
+const RouteIndexWrapper = classed(
+  'div',
+  'flex flex-wrap place-content-center items-center',
+)
 const RouteIndexContainer = classed(
   'div',
   'absolute top-0 inset-0 flex place-content-center items-center transition ease-in-out duration-300',
@@ -213,7 +252,10 @@ const SegmentedControlWrapper = classed(
     },
   },
 )
-const OptionWrapper = classed('div', 'relative z-10 flex items-center justify-center')
+const OptionWrapper = classed(
+  'div',
+  'relative z-10 flex items-center justify-center',
+)
 const ActiveIndicator = classed(
   'div',
   'fixed w-[45%] h-[75%] bg-control-active transition-transform rounded-2xl duration-300 ease-in-out',
@@ -234,7 +276,10 @@ const RadioLabel = classed(
   'label',
   'w-full h-full block cursor-pointer select-none rounded-xl p-1 text-center peer-checked:font-bold peer-checked:text-white transition-colors duration-300',
 )
-const Title = classed('h1', 'font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3')
+const Title = classed(
+  'h1',
+  'font-bold p-3 text-3xl hm:text-[1.625rem] static pt-6 pb-3',
+)
 
 function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
@@ -326,6 +371,24 @@ function App() {
 
   const [tab, setTab] = useState<string>('')
   const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
+  const [nextShuttleDeparture, setNextShuttleDeparture] =
+    useState<NextShuttleDeparture | null>(null)
+
+  const handleNextShuttleDepartureChange = useCallback(
+    (departure: NextShuttleDeparture | null) => {
+      setNextShuttleDeparture((current) => {
+        if (
+          current?.location === departure?.location &&
+          current?.status === departure?.status &&
+          current?.time === departure?.time
+        ) {
+          return current
+        }
+        return departure
+      })
+    },
+    [],
+  )
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
@@ -425,7 +488,9 @@ function App() {
     setTouchPrompt(status)
   }, [])
 
-  {/** 계절 테마를 아직 선택하지 않은 사용자의 최초 선택 */}
+  {
+    /** 계절 테마를 아직 선택하지 않은 사용자의 최초 선택 */
+  }
   useEffect(() => {
     const storedTheme = normalizeTheme(window.localStorage.getItem('theme'))
     const storedSeasonalPreference = window.localStorage.getItem(
@@ -513,8 +578,10 @@ function App() {
                           <>
                             <Shuttle
                               location={
-                                (window.localStorage.getItem('tab') ||
-                                  'shuttlecoke_o') as StopLocation
+                                (tab || 'shuttlecoke_o') as StopLocation
+                              }
+                              onNextDepartureChange={
+                                handleNextShuttleDepartureChange
                               }
                             />
                           </>
@@ -562,6 +629,25 @@ function App() {
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
+                      {tab !== '' &&
+                        !(
+                          realtimeMode &&
+                          (tab === 'subway' || tab === 'jungang')
+                        ) && (
+                          <CrowdingPreview
+                            availability={
+                              nextShuttleDeparture?.location === tab
+                                ? nextShuttleDeparture.status
+                                : 'loading'
+                            }
+                            departureTime={
+                              nextShuttleDeparture?.location === tab
+                                ? nextShuttleDeparture.time
+                                : undefined
+                            }
+                            location={tab}
+                          />
+                        )}
                       <Transition
                         in={routeCardClick}
                         nodeRef={routeCardRef}
