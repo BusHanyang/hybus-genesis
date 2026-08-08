@@ -50,9 +50,9 @@ export const getAutomaticSeasonTheme = (date = new Date()): THEME => {
   const monthDay = getKoreaMonthDay(date)
 
   if (monthDay >= 1215 && monthDay <= 1226) return THEME.CHRISTMAS
-  if (monthDay >= 1107 || monthDay < 204) return THEME.WINTER
-  if (monthDay >= 807) return THEME.AUTUMN
-  if (monthDay >= 505) return THEME.SUMMER
+  if (monthDay >= 1124 || monthDay < 312) return THEME.WINTER
+  if (monthDay >= 926) return THEME.AUTUMN
+  if (monthDay >= 608) return THEME.SUMMER
 
   return THEME.SPRING
 }
