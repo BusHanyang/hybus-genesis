@@ -96,7 +96,7 @@ export const CrowdingLevelChip = ({ level }: { level: CrowdingLevel }) => {
   return (
     <span
       aria-label={t('crowding_level_aria', { level: t(config.labelKey) })}
-      className={`ml-2 inline-flex h-6 w-12 shrink-0 items-center justify-center rounded-full border text-xs font-bold hm:ml-1 hm:w-10 hm:text-[0.7rem] ${config.tone}`}
+      className={`relative -top-px ml-2 inline-flex h-6 w-12 shrink-0 items-center justify-center align-middle rounded-full border text-xs font-bold hm:ml-1 hm:w-10 hm:text-[0.7rem] ${config.tone}`}
       data-crowding-level={level}
     >
       {t(config.shortLabelKey)}
