@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import { SyncLoader } from 'react-spinners'
 
 import MapImg from '/public/image/map_black_24dp.svg?react'
+import { crowdingNetworkIntervals } from '@/components/crowding/crowdingConfig'
 import {
-  type CrowdingAvailability,
   type CrowdingLevel,
   CrowdingLevelChip,
 } from '@/components/crowding/CrowdingPreview'
@@ -29,8 +29,6 @@ import {
   getCrowdingAggregates,
   mapCrowdingAggregateStatus,
 } from '@/network/crowding'
-
-const CROWDING_REFRESH_INTERVAL_MILLISECONDS = 20_000
 
 const TimetableWrapper = classed('div', 'h-[14.8rem]')
 const HeadlineWrapper = classed('div', 'relative drag-save-n')
@@ -125,14 +123,13 @@ const CloseIcon = classed('img', 'cursor-default dark:invert h-4 w-4 my-auto')
 
 export type NextShuttleDeparture = {
   location: ShuttleStop['location']
-  status: CrowdingAvailability
-  time?: string
+  status: 'loading' | 'ready' | 'unavailable'
   trip?: ScheduledTripDescriptor
 }
 
 type ShuttleProps = ShuttleStop & {
   crowdingEnabled: boolean
-  onNextDepartureChange?: (departure: NextShuttleDeparture | null) => void
+  onNextDepartureChange: (departure: NextShuttleDeparture | null) => void
 }
 
 const secondToTimeFormat = (n: number): string => {
@@ -259,13 +256,17 @@ export const Shuttle = ({
   const [timetableAlive, setTimetableAlive] = useState<boolean>(true)
   const stopId = isCrowdingStopId(location) ? location : null
   const observedAtMinute = Math.floor(currentTime / 60_000)
+  const visibleTimetable = useMemo(
+    () => upcomingTimetable.slice(0, 5),
+    [upcomingTimetable],
+  )
   const convertedTimetable = useMemo(
     () => timetable.data?.map((schedule) => convertUnixToTime(schedule)) ?? [],
     [timetable.data],
   )
   const visibleCrowdingTrips = useMemo(
     () =>
-      upcomingTimetable.slice(0, 5).map((schedule) => {
+      visibleTimetable.map((schedule) => {
         if (stopId === null || timetable.data === undefined) return null
 
         const descriptor = createScheduledTripDescriptor(
@@ -282,7 +283,7 @@ export const Shuttle = ({
       observedAtMinute,
       stopId,
       timetable.data,
-      upcomingTimetable,
+      visibleTimetable,
     ],
   )
   const visibleScheduledTripIds = useMemo(
@@ -311,8 +312,8 @@ export const Shuttle = ({
       stopId !== null &&
       timetable.status === 'success' &&
       visibleScheduledTripIds.length > 0,
-    refetchInterval: CROWDING_REFRESH_INTERVAL_MILLISECONDS,
-    staleTime: CROWDING_REFRESH_INTERVAL_MILLISECONDS,
+    refetchInterval: crowdingNetworkIntervals.aggregateRefreshMilliseconds,
+    staleTime: crowdingNetworkIntervals.aggregateRefreshMilliseconds,
   })
   const crowdingLevelByTripId = useMemo(() => {
     if (
@@ -350,12 +351,12 @@ export const Shuttle = ({
     const nextDeparture = upcomingTimetable[0]
 
     if (timetable.status === 'pending') {
-      onNextDepartureChange?.({ location, status: 'loading' })
+      onNextDepartureChange({ location, status: 'loading' })
       return
     }
 
     if (timetable.status !== 'success' || nextDeparture === undefined) {
-      onNextDepartureChange?.({ location, status: 'unavailable' })
+      onNextDepartureChange({ location, status: 'unavailable' })
       return
     }
 
@@ -369,10 +370,9 @@ export const Shuttle = ({
             stopId,
           )
 
-    onNextDepartureChange?.({
+    onNextDepartureChange({
       location,
       status: 'ready',
-      time: convertUnixToTime(nextDeparture).time,
       ...(trip === null ? {} : { trip }),
     })
   }, [
@@ -465,13 +465,12 @@ export const Shuttle = ({
       )
     }
 
-    const filtered = upcomingTimetable
-    const reverted = filtered.map((val) => convertUnixToTime(val))
-    const visibleDestinations = filtered
-      .slice(0, 5)
-      .map((val) => getBusDestination(val.type, location))
+    const reverted = visibleTimetable.map((val) => convertUnixToTime(val))
+    const visibleDestinations = visibleTimetable.map((val) =>
+      getBusDestination(val.type, location),
+    )
 
-    if (filtered.length === 0) {
+    if (upcomingTimetable.length === 0) {
       // Buses are done for today. User should refresh after midnight.
       return (
         <>
@@ -485,75 +484,58 @@ export const Shuttle = ({
     // Otherwise - normal case
     return (
       <>
-        {filtered.map((val, idx) => {
-          if (idx < 5) {
-            return (
-              <React.Fragment key={idx}>
-                <SingleTimetable>
-                  <ColoredChip chipType={val.type} />
-                  <TimeLeftWrapper
-                    data-state={showActualTime ? 'touched' : 'default'}
+        {visibleTimetable.map((val, idx) => (
+          <SingleTimetable key={idx}>
+            <ColoredChip chipType={val.type} />
+            <TimeLeftWrapper
+              data-state={showActualTime ? 'touched' : 'default'}
+            >
+              {showActualTime ? (
+                <TimeClickableConversionText>
+                  {reverted[idx].time.split(':')[0] +
+                    t('hour') +
+                    reverted[idx].time.split(':')[1] +
+                    t('minute') +
+                    ' ' +
+                    t('departure')}
+                </TimeClickableConversionText>
+              ) : (
+                <TimeClickableConversionText>
+                  {secondToTimeFormat(
+                    Math.floor(Number(val.time) - Number(currentTime) / 1000),
+                  ) +
+                    ' ' +
+                    t('left')}
+                </TimeClickableConversionText>
+              )}
+            </TimeLeftWrapper>
+            <ArrowWrapper>▶</ArrowWrapper>
+            <DestinationWrapper>
+              <span className="col-start-1 row-start-1">
+                {getBusDestination(val.type, location)}
+              </span>
+              {crowdingEnabled &&
+                visibleDestinations.map((destination, destinationIndex) => (
+                  <span
+                    aria-hidden="true"
+                    className="invisible col-start-1 row-start-1"
+                    key={`${destination}-${destinationIndex}`}
                   >
-                    {showActualTime ? (
-                      <TimeClickableConversionText>
-                        {reverted[idx].time.split(':')[0] +
-                          t('hour') +
-                          reverted[idx].time.split(':')[1] +
-                          t('minute') +
-                          ' ' +
-                          t('departure')}
-                      </TimeClickableConversionText>
-                    ) : (
-                      <TimeClickableConversionText>
-                        {secondToTimeFormat(
-                          Math.floor(
-                            Number(val.time) - Number(currentTime) / 1000,
-                          ),
-                        ) +
-                          ' ' +
-                          t('left')}
-                      </TimeClickableConversionText>
-                    )}
-                  </TimeLeftWrapper>
-                  <ArrowWrapper>▶</ArrowWrapper>
-                  <DestinationWrapper>
-                    <span className="col-start-1 row-start-1">
-                      {getBusDestination(val.type, location)}
-                    </span>
-                    {crowdingEnabled &&
-                      visibleDestinations.map(
-                        (destination, destinationIndex) => (
-                          <span
-                            aria-hidden="true"
-                            className="invisible col-start-1 row-start-1"
-                            key={`${destination}-${destinationIndex}`}
-                          >
-                            {destination}
-                          </span>
-                        ),
-                      )}
-                  </DestinationWrapper>
-                  {crowdingEnabled &&
-                    typeof visibleCrowdingTrips[idx] === 'string' && (
-                      <CrowdingLevelChip
-                        level={
-                          crowdingLevelByTripId?.get(
-                            visibleCrowdingTrips[idx],
-                          ) ??
-                          (hasCrowdingAggregateError
-                            ? 'unavailable'
-                            : 'loading')
-                        }
-                        variant="row"
-                      />
-                    )}
-                </SingleTimetable>
-              </React.Fragment>
-            )
-          } else {
-            return <React.Fragment key={idx} />
-          }
-        })}
+                    {destination}
+                  </span>
+                ))}
+            </DestinationWrapper>
+            {crowdingEnabled &&
+              typeof visibleCrowdingTrips[idx] === 'string' && (
+                <CrowdingLevelChip
+                  level={
+                    crowdingLevelByTripId?.get(visibleCrowdingTrips[idx]) ??
+                    (hasCrowdingAggregateError ? 'unavailable' : 'loading')
+                  }
+                />
+              )}
+          </SingleTimetable>
+        ))}
       </>
     )
   }

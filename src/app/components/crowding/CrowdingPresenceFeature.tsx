@@ -3,66 +3,60 @@ import React, {
   useEffect,
   useLayoutEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from 'react'
 
 import { createPresenceSignal } from '@/components/crowding/createPresenceSignal'
+import { crowdingNetworkIntervals } from '@/components/crowding/crowdingConfig'
 import { createSerialHeartbeat } from '@/components/crowding/crowdingHeartbeat'
 import {
   crowdingNativeActionClassName,
-  type CrowdingPresenceUiStatus,
   CrowdingPreview,
 } from '@/components/crowding/CrowdingPreview'
+import {
+  canSendCrowdingHeartbeatRequest,
+  canSendCrowdingPresence,
+  createCrowdingHeartbeatRevisionKey,
+  deriveCrowdingPresenceUiStatus,
+  getCrowdingLocationReady,
+  getNativeUsabilityFallbackAction,
+  hasTerminalHeartbeatFailure,
+  initialCrowdingHeartbeatState,
+  reduceCrowdingHeartbeatState,
+} from '@/components/crowding/crowdingState'
 import GpsDebugPanel from '@/components/crowding/GpsDebugPanel'
 import NativeGeolocationRecovery, {
   supportsNativeGeolocationRecovery,
 } from '@/components/crowding/NativeGeolocationRecovery'
-import {
-  createScheduledTripId,
-  getScheduledTripDescriptorKey,
-  type ScheduledTripDescriptor,
-} from '@/components/crowding/scheduledTrip'
+import { createScheduledTripId } from '@/components/crowding/scheduledTrip'
 import { useStopPresence } from '@/components/crowding/useStopPresence'
 import type { NextShuttleDeparture } from '@/components/shuttle/Shuttle'
 import type { CrowdingStopId } from '@/data/crowding/stopGeometry'
 import {
-  type CrowdingAggregate,
   CrowdingApiError,
   type CrowdingPresenceRequest,
-  type CrowdingPresenceResponse,
+  isRetryableCrowdingRequestError,
   postCrowdingPresence,
 } from '@/network/crowding'
 
-const HEARTBEAT_INTERVAL_MILLISECONDS = 20_000
+const HEARTBEAT_REQUEST_TIMEOUT_MILLISECONDS = 15_000
 
-const isRetryableHeartbeatError = (error: unknown): boolean =>
-  !(error instanceof CrowdingApiError) ||
-  error.status === null ||
-  error.status === 429 ||
-  error.status >= 500
-
-type HeartbeatPhase = 'error' | 'idle' | 'ready' | 'sending'
-
-type HeartbeatSnapshot = {
-  aggregate: CrowdingAggregate | null
-  expiresAt: number
-  phase: HeartbeatPhase
-  tripKey: string | null
+class CrowdingHeartbeatContextExpiredError extends Error {
+  constructor() {
+    super('crowding_heartbeat_context_expired')
+    this.name = 'CrowdingHeartbeatContextExpiredError'
+  }
 }
 
-const emptyHeartbeatSnapshot: HeartbeatSnapshot = {
-  aggregate: null,
-  expiresAt: 0,
-  phase: 'idle',
-  tripKey: null,
-}
+const isHeartbeatContextExpiredError = (error: unknown): boolean =>
+  error instanceof CrowdingHeartbeatContextExpiredError
 
 const CrowdingPresenceFeature = ({
   departure,
   isEnabled,
   isSummaryVisible,
-  location,
   onDisable,
   onEnable,
   onOpenLocationHelp,
@@ -72,7 +66,6 @@ const CrowdingPresenceFeature = ({
   departure: NextShuttleDeparture | null
   isEnabled: boolean
   isSummaryVisible: boolean
-  location: string
   onDisable: () => void
   onEnable: () => void
   onOpenLocationHelp: () => void
@@ -80,29 +73,36 @@ const CrowdingPresenceFeature = ({
   selectedStopId: CrowdingStopId | null
 }) => {
   const presence = useStopPresence(selectedStopId)
-  const [heartbeat, setHeartbeat] = useState<HeartbeatSnapshot>(
-    emptyHeartbeatSnapshot,
-  )
   const [nativeRecoveryUsable, setNativeRecoveryUsable] = useState(true)
+  const [heartbeatState, dispatchHeartbeat] = useReducer(
+    reduceCrowdingHeartbeatState,
+    initialCrowdingHeartbeatState,
+  )
   const shouldCollect = isEnabled && isSummaryVisible && selectedStopId !== null
-  const wasCollectingRef = useRef(false)
   const {
     classification,
     beginNativeRecovery,
     handleNativePosition,
     handleNativePositionError,
-    isActive,
+    hasFreshPosition,
     isPageVisible,
     latestSample,
     permission,
+    releaseNativeRecovery,
     reset,
-    sampleCount,
+    retry,
     source,
     start,
     status,
   } = presence
-  const isLocationReady =
-    isEnabled && selectedStopId !== null && permission === 'granted'
+  const nativeRecoveryStateRef = useRef({ source, status })
+  nativeRecoveryStateRef.current = { source, status }
+  const isLocationReady = getCrowdingLocationReady({
+    hasFreshPosition,
+    hasSelectedStop: selectedStopId !== null,
+    isEnabled,
+    permission,
+  })
 
   useLayoutEffect(() => {
     onRowCrowdingVisibilityChange(isLocationReady)
@@ -116,14 +116,26 @@ const CrowdingPresenceFeature = ({
     reset()
     onDisable()
   }, [onDisable, reset])
+  const handleNativeUsabilityChange = useCallback(
+    (isUsable: boolean) => {
+      setNativeRecoveryUsable(isUsable)
+      const currentNativeState = nativeRecoveryStateRef.current
+      const fallbackAction = getNativeUsabilityFallbackAction({
+        isUsable,
+        source: currentNativeState.source,
+        status: currentNativeState.status,
+      })
+      if (fallbackAction === 'retryNavigator') retry()
+      else if (fallbackAction === 'release') releaseNativeRecovery()
+    },
+    [releaseNativeRecovery, retry],
+  )
   const nativeRecoverySupported = supportsNativeGeolocationRecovery()
   const signal = useMemo(
     () => createPresenceSignal(classification, latestSample),
     [classification, latestSample],
   )
-  const trip: ScheduledTripDescriptor | null = departure?.trip ?? null
-  const descriptorKey =
-    trip === null ? null : getScheduledTripDescriptorKey(trip)
+  const trip = departure?.trip ?? null
   const signalMatchesTrip =
     signal !== null &&
     trip !== null &&
@@ -134,212 +146,154 @@ const CrowdingPresenceFeature = ({
     signalMatchesTrip && trip !== null && signal !== null
       ? createScheduledTripId(trip, signal.observedAtMinute)
       : null
-  const heartbeatKey = shouldCollect && isPageVisible ? scheduledTripId : null
-  const signalRef = useRef(signal)
-  const tripRef = useRef(trip)
-  signalRef.current = signal
-  tripRef.current = trip
-
-  useEffect(() => {
-    const wasCollecting = wasCollectingRef.current
-    wasCollectingRef.current = shouldCollect
-
-    if (shouldCollect && !wasCollecting) {
-      start()
+  const canSend = canSendCrowdingPresence({
+    hasFreshPosition,
+    hasScheduledTrip: scheduledTripId !== null,
+    isEnabled,
+    isPageVisible,
+    isSummaryVisible,
+    permission,
+    presenceStatus: status,
+  })
+  const heartbeatRevisionKey =
+    canSend && scheduledTripId !== null && signal !== null
+      ? createCrowdingHeartbeatRevisionKey(
+          scheduledTripId,
+          signal.observedAtMinute,
+        )
+      : null
+  const hasTerminalHeartbeatError = hasTerminalHeartbeatFailure(
+    heartbeatState,
+    heartbeatRevisionKey,
+  )
+  const heartbeatContextRef = useRef({ canSend, latestSample, signal, trip })
+  heartbeatContextRef.current = { canSend, latestSample, signal, trip }
+  const handleRetry = useCallback(() => {
+    if (heartbeatRevisionKey !== null && hasTerminalHeartbeatError) {
+      dispatchHeartbeat({
+        key: heartbeatRevisionKey,
+        type: 'retryRequested',
+      })
       return
     }
 
-    if (
-      !shouldCollect &&
-      (wasCollecting || isActive || status !== 'idle' || sampleCount > 0)
-    ) {
-      reset()
-    }
-  }, [isActive, reset, sampleCount, shouldCollect, start, status])
+    retry()
+  }, [hasTerminalHeartbeatError, heartbeatRevisionKey, retry])
 
   useEffect(() => {
-    const canResume =
-      shouldCollect &&
-      source === 'navigator' &&
-      permission === 'granted' &&
-      isPageVisible &&
-      !isActive &&
-      (status === 'idle' || status === 'paused' || status === 'stopped')
-
-    if (canResume) start()
-  }, [
-    isActive,
-    isPageVisible,
-    permission,
-    shouldCollect,
-    source,
-    start,
-    status,
-  ])
+    if (shouldCollect) start()
+    else reset()
+  }, [reset, shouldCollect, start])
 
   useEffect(() => {
-    if (heartbeatKey === null || descriptorKey === null) return
+    if (heartbeatRevisionKey === null || scheduledTripId === null) return
 
-    const heartbeatController = createSerialHeartbeat<CrowdingPresenceResponse>(
-      {
-        getRetryDelay: (error) => {
-          if (!isRetryableHeartbeatError(error)) return null
+    const heartbeatController = createSerialHeartbeat({
+      getRetryDelay: (error) => {
+        if (
+          isHeartbeatContextExpiredError(error) ||
+          !isRetryableCrowdingRequestError(error)
+        ) {
+          return null
+        }
 
-          return Math.max(
-            HEARTBEAT_INTERVAL_MILLISECONDS,
-            error instanceof CrowdingApiError
-              ? (error.retryAfterMilliseconds ?? 0)
-              : 0,
-          )
-        },
-        intervalMilliseconds: HEARTBEAT_INTERVAL_MILLISECONDS,
-        onError: (error) => {
-          setHeartbeat((current) => ({
-            aggregate:
-              current.tripKey === heartbeatKey &&
-              isRetryableHeartbeatError(error)
-                ? current.aggregate
-                : null,
-            expiresAt:
-              current.tripKey === heartbeatKey &&
-              isRetryableHeartbeatError(error)
-                ? current.expiresAt
-                : 0,
-            phase: 'error',
-            tripKey: heartbeatKey,
-          }))
-        },
-        onSending: () => {
-          setHeartbeat((current) => ({
-            aggregate:
-              current.tripKey === heartbeatKey ? current.aggregate : null,
-            expiresAt: current.tripKey === heartbeatKey ? current.expiresAt : 0,
-            phase: 'sending',
-            tripKey: heartbeatKey,
-          }))
-        },
-        onSuccess: (response) => {
-          setHeartbeat({
-            aggregate: response.aggregate,
-            expiresAt: Date.now() + response.expiresInSeconds * 1_000,
-            phase: 'ready',
-            tripKey: heartbeatKey,
-          })
-        },
-        request: (requestSignal) => {
-          const currentSignal = signalRef.current
-          const currentTrip = tripRef.current
-          if (
-            currentSignal === null ||
-            currentTrip === null ||
-            currentSignal.stopId !== currentTrip.stopId ||
-            getScheduledTripDescriptorKey(currentTrip) !== descriptorKey
-          ) {
-            throw new CrowdingApiError('invalid_heartbeat_context', {
-              status: 422,
-            })
-          }
-
-          const currentScheduledTripId = createScheduledTripId(
-            currentTrip,
-            currentSignal.observedAtMinute,
-          )
-          if (currentScheduledTripId !== heartbeatKey) {
-            throw new CrowdingApiError('invalid_trip_id', { status: 422 })
-          }
-
-          const request: CrowdingPresenceRequest = {
-            ...currentSignal,
-            scheduledTripId: heartbeatKey,
-          }
-          return postCrowdingPresence(request, { signal: requestSignal })
-        },
+        return Math.max(
+          crowdingNetworkIntervals.heartbeatMilliseconds,
+          error instanceof CrowdingApiError
+            ? (error.retryAfterMilliseconds ?? 0)
+            : 0,
+        )
       },
-    )
+      intervalMilliseconds: crowdingNetworkIntervals.heartbeatMilliseconds,
+      onError: (error) => {
+        if (isHeartbeatContextExpiredError(error)) return
+
+        dispatchHeartbeat({
+          key: heartbeatRevisionKey,
+          retryable: isRetryableCrowdingRequestError(error),
+          type: 'failed',
+        })
+      },
+      onSending: () => {
+        dispatchHeartbeat({
+          key: heartbeatRevisionKey,
+          type: 'requestStarted',
+        })
+      },
+      request: (requestSignal) => {
+        const context = heartbeatContextRef.current
+        if (
+          !canSendCrowdingHeartbeatRequest({
+            canSend: context.canSend,
+            latestSample: context.latestSample,
+            now: Date.now(),
+          })
+        ) {
+          throw new CrowdingHeartbeatContextExpiredError()
+        }
+
+        if (
+          context.signal === null ||
+          context.trip === null ||
+          context.signal.stopId !== context.trip.stopId
+        ) {
+          throw new CrowdingApiError('invalid_heartbeat_context', {
+            status: 422,
+          })
+        }
+
+        const currentScheduledTripId = createScheduledTripId(
+          context.trip,
+          context.signal.observedAtMinute,
+        )
+        if (
+          currentScheduledTripId !== scheduledTripId ||
+          createCrowdingHeartbeatRevisionKey(
+            scheduledTripId,
+            context.signal.observedAtMinute,
+          ) !== heartbeatRevisionKey
+        ) {
+          throw new CrowdingApiError('invalid_heartbeat_context', {
+            status: 422,
+          })
+        }
+
+        const request: CrowdingPresenceRequest = {
+          ...context.signal,
+          scheduledTripId,
+        }
+        return postCrowdingPresence(request, { signal: requestSignal })
+      },
+      requestTimeoutMilliseconds: HEARTBEAT_REQUEST_TIMEOUT_MILLISECONDS,
+    })
 
     heartbeatController.start()
     return heartbeatController.stop
-  }, [descriptorKey, heartbeatKey])
+  }, [heartbeatRevisionKey, heartbeatState.restartGeneration, scheduledTripId])
 
-  useEffect(() => {
-    if (heartbeat.aggregate === null) return
-
-    const remainingMilliseconds = heartbeat.expiresAt - Date.now()
-    if (remainingMilliseconds <= 0) {
-      setHeartbeat((current) =>
-        current.expiresAt === heartbeat.expiresAt
-          ? { ...current, aggregate: null }
-          : current,
-      )
-      return
-    }
-
-    const expiryTimer = window.setTimeout(() => {
-      setHeartbeat((current) =>
-        current.expiresAt === heartbeat.expiresAt
-          ? { ...current, aggregate: null }
-          : current,
-      )
-    }, remainingMilliseconds + 1)
-
-    return () => window.clearTimeout(expiryTimer)
-  }, [heartbeat.aggregate, heartbeat.expiresAt])
-
-  const aggregate =
-    signalMatchesTrip &&
-    heartbeatKey !== null &&
-    heartbeat.tripKey === heartbeatKey &&
-    heartbeat.expiresAt > Date.now()
-      ? heartbeat.aggregate
-      : null
-  let uiStatus: CrowdingPresenceUiStatus
-
-  if (selectedStopId === null) {
-    uiStatus = 'unsupportedStop'
-  } else if (!isEnabled) {
-    uiStatus = 'disabled'
-  } else if (status === 'denied') {
-    uiStatus = 'denied'
-  } else if (status === 'unsupported') {
-    uiStatus = 'unsupported'
-  } else if (departure === null || departure.status === 'loading') {
-    uiStatus = 'timetableLoading'
-  } else if (departure.status === 'unavailable' || trip === null) {
-    uiStatus = 'unavailable'
-  } else if (status === 'requesting') {
-    uiStatus = 'requesting'
-  } else if (status === 'error') {
-    uiStatus = 'error'
-  } else if (
-    classification.status === 'outside' ||
-    classification.status === 'transient' ||
-    classification.status === 'ambiguous' ||
-    (classification.status === 'waiting' && !signalMatchesTrip)
-  ) {
-    uiStatus = 'outside'
-  } else if (signalMatchesTrip && heartbeat.phase === 'sending') {
-    uiStatus = 'sending'
-  } else if (signalMatchesTrip && heartbeat.phase === 'error') {
-    uiStatus = 'error'
-  } else if (signalMatchesTrip && aggregate !== null) {
-    uiStatus = 'ready'
-  } else {
-    uiStatus = 'collecting'
-  }
-
+  const uiStatus = deriveCrowdingPresenceUiStatus({
+    classificationStatus: classification.status,
+    departureStatus: departure?.status ?? 'loading',
+    hasSelectedStop: selectedStopId !== null,
+    hasTrip: trip !== null,
+    hasTerminalHeartbeatError,
+    isEnabled,
+    presenceStatus: status,
+    signalMatchesTrip,
+  })
   const shouldMountNativeRecovery =
     isEnabled &&
     nativeRecoverySupported &&
+    nativeRecoveryUsable &&
     (status === 'denied' || source === 'native')
   const nativeRecoveryControl = shouldMountNativeRecovery ? (
     <NativeGeolocationRecovery
-      key="native-geolocation-recovery"
       className={crowdingNativeActionClassName}
-      isVisible={status === 'denied' && nativeRecoveryUsable}
+      isVisible={status === 'denied'}
       onActivate={beginNativeRecovery}
       onError={handleNativePositionError}
       onPosition={handleNativePosition}
-      onUsabilityChange={setNativeRecoveryUsable}
+      onUsabilityChange={handleNativeUsabilityChange}
     />
   ) : null
 
@@ -347,20 +301,15 @@ const CrowdingPresenceFeature = ({
     <>
       {isSummaryVisible && (
         <CrowdingPreview
-          aggregate={aggregate}
-          availability={departure?.status ?? 'loading'}
-          departureTime={departure?.time}
           isEnabled={isEnabled}
           isLocationReady={isLocationReady}
-          location={location}
           nativeRecoveryControl={nativeRecoveryControl}
-          nativeRecoverySupported={
-            nativeRecoverySupported && nativeRecoveryUsable
-          }
           onDisable={handleDisable}
           onEnable={handleEnable}
           onOpenLocationHelp={onOpenLocationHelp}
+          onRetry={handleRetry}
           status={uiStatus}
+          stopId={selectedStopId}
         />
       )}
       {import.meta.env.DEV && (

@@ -105,3 +105,34 @@ test('retry delay is selected from the request error', async () => {
   assert.equal(scheduled[0].delayMilliseconds, 35_000)
   controller.stop()
 })
+
+test('request timeout aborts a pending heartbeat and enters the retry policy', async () => {
+  const request = deferred()
+  const scheduled = []
+  const errors = []
+  let requestSignal
+  const controller = createSerialHeartbeat({
+    getRetryDelay: () => 20_000,
+    intervalMilliseconds: 20_000,
+    onError: (error) => errors.push(error),
+    request: async (signal) => {
+      requestSignal = signal
+      return await request.promise
+    },
+    requestTimeoutMilliseconds: 15_000,
+    scheduleTimer: (callback, delayMilliseconds) => {
+      scheduled.push({ callback, delayMilliseconds })
+      return scheduled.length
+    },
+  })
+
+  controller.start()
+  assert.equal(scheduled[0].delayMilliseconds, 15_000)
+  scheduled[0].callback()
+  await flushPromises()
+
+  assert.equal(requestSignal.aborted, true)
+  assert.equal(errors[0].name, 'HeartbeatRequestTimeoutError')
+  assert.equal(scheduled[1].delayMilliseconds, 20_000)
+  controller.stop()
+})

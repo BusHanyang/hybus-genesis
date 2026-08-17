@@ -40,7 +40,6 @@ const statusLabels: Record<StopPresenceStatus, string> = {
   idle: '측정 전',
   paused: '화면 숨김으로 중지',
   requesting: '권한 또는 첫 좌표 대기',
-  stopped: '측정 중지',
   unsupported: 'GPS 미지원',
 }
 

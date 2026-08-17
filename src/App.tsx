@@ -1,12 +1,5 @@
 import { classed } from '@tw-classed/react'
-import React, {
-  lazy,
-  Suspense,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
@@ -382,15 +375,6 @@ function App() {
     setCrowdingRowsVisible(false)
   }
 
-  const handleRowCrowdingVisibilityChange = useCallback(
-    (isVisible: boolean) => {
-      setCrowdingRowsVisible((current) =>
-        current === isVisible ? current : isVisible,
-      )
-    },
-    [],
-  )
-
   const handleRefresh = (): Promise<React.FC> => {
     return new Promise(() => {
       location.reload()
@@ -403,26 +387,8 @@ function App() {
   const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
   const [nextShuttleDeparture, setNextShuttleDeparture] =
     useState<NextShuttleDeparture | null>(null)
-
-  const handleNextShuttleDepartureChange = useCallback(
-    (departure: NextShuttleDeparture | null) => {
-      setNextShuttleDeparture((current) => {
-        if (
-          current?.location === departure?.location &&
-          current?.status === departure?.status &&
-          current?.time === departure?.time &&
-          current?.trip?.stopId === departure?.trip?.stopId &&
-          current?.trip?.departureTime === departure?.trip?.departureTime &&
-          current?.trip?.routeType === departure?.trip?.routeType &&
-          current?.trip?.ordinal === departure?.trip?.ordinal
-        ) {
-          return current
-        }
-        return departure
-      })
-    },
-    [],
-  )
+  const isStationTab = tab === 'subway' || tab === 'jungang'
+  const isRealtimeStationView = realtimeMode && isStationTab
 
   const saveClicked = (stn: string) => {
     window.localStorage.setItem('tab', stn)
@@ -436,7 +402,7 @@ function App() {
 
   const getCardHeight = (): MainCardHeight => {
     if (!touchPrompt) {
-      if (tab === 'subway' || tab === 'jungang') {
+      if (isStationTab) {
         // No prompt at Stations
         return 'stationNoPrompt'
       } else {
@@ -444,7 +410,7 @@ function App() {
         return 'defaultNoPrompt'
       }
     } else {
-      if (tab === 'subway' || tab === 'jungang') {
+      if (isStationTab) {
         if (!realtimeMode) {
           // Shuttle Bus Info at Stations with prompt
           return 'stationPromptBus'
@@ -595,8 +561,7 @@ function App() {
                         </NoticeWrapper>
                       </header>
                       <MainCardView data-height={getCardHeight()}>
-                        {realtimeMode &&
-                        (tab === 'subway' || tab === 'jungang') ? (
+                        {isRealtimeStationView ? (
                           <>
                             <Suspense fallback={<SubwayFallback />}>
                               <Subway
@@ -616,9 +581,7 @@ function App() {
                               location={
                                 (tab || 'shuttlecoke_o') as StopLocation
                               }
-                              onNextDepartureChange={
-                                handleNextShuttleDepartureChange
-                              }
+                              onNextDepartureChange={setNextShuttleDeparture}
                             />
                           </>
                         )}
@@ -626,11 +589,7 @@ function App() {
                           data-offset={
                             !realtimeMode && touchPrompt ? 'prompt' : 'default'
                           }
-                          data-visibility={
-                            tab === 'subway' || tab === 'jungang'
-                              ? 'visible'
-                              : 'hidden'
-                          }
+                          data-visibility={isStationTab ? 'visible' : 'hidden'}
                         >
                           <SegmentedControl>
                             <ActiveIndicator
@@ -667,28 +626,17 @@ function App() {
                       </MainCardView>
                       <CrowdingPresenceFeature
                         departure={
-                          !(
-                            realtimeMode &&
-                            (tab === 'subway' || tab === 'jungang')
-                          ) && nextShuttleDeparture?.location === tab
+                          !isRealtimeStationView &&
+                          nextShuttleDeparture?.location === tab
                             ? nextShuttleDeparture
                             : null
                         }
                         isEnabled={crowdingLocationEnabled}
-                        isSummaryVisible={
-                          tab !== '' &&
-                          !(
-                            realtimeMode &&
-                            (tab === 'subway' || tab === 'jungang')
-                          )
-                        }
-                        location={tab || 'shuttlecoke_o'}
+                        isSummaryVisible={tab !== '' && !isRealtimeStationView}
                         onDisable={disableCrowdingLocation}
                         onEnable={enableCrowdingLocation}
                         onOpenLocationHelp={handleCrowdingLocationHelpOpen}
-                        onRowCrowdingVisibilityChange={
-                          handleRowCrowdingVisibilityChange
-                        }
+                        onRowCrowdingVisibilityChange={setCrowdingRowsVisible}
                         selectedStopId={isCrowdingStopId(tab) ? tab : null}
                       />
                       <Transition

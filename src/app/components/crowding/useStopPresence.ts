@@ -3,11 +3,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   classifyStopPresence,
   type GpsSample,
+  isFreshUsableGpsSample,
 } from '@/components/crowding/classifyStopPresence'
 import {
   crowdingStopAnchors,
   type CrowdingStopId,
 } from '@/data/crowding/stopGeometry'
+
+import { crowdingPresencePolicy } from './crowdingConfig'
+import { appendCrowdingSample, getRetryPresenceSource } from './crowdingState'
 
 export type StopPresenceStatus =
   | 'collecting'
@@ -16,7 +20,6 @@ export type StopPresenceStatus =
   | 'idle'
   | 'paused'
   | 'requesting'
-  | 'stopped'
   | 'unsupported'
 
 export type StopPresenceErrorCode =
@@ -28,9 +31,16 @@ export type StopPresenceErrorCode =
 export type StopPresencePermission = PermissionState | 'unknown' | 'unsupported'
 export type StopPresenceSource = 'native' | 'navigator' | null
 
-const MAX_SAMPLE_AGE_MILLISECONDS = 2 * 60 * 1000
-const MAX_SAMPLE_COUNT = 60
 const RETRY_DELAYS_MILLISECONDS = [5_000, 15_000, 30_000] as const
+
+const getGeolocationErrorCode = (
+  error: GeolocationPositionError,
+): StopPresenceErrorCode => {
+  if (error.code === error.PERMISSION_DENIED) return 'permission_denied'
+  if (error.code === error.POSITION_UNAVAILABLE) return 'position_unavailable'
+  if (error.code === error.TIMEOUT) return 'timeout'
+  return 'unknown'
+}
 
 export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
   const watchIdRef = useRef<number | null>(null)
@@ -77,6 +87,19 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
     setNextRetryAt(null)
   }, [clearRetryTimer])
 
+  const markPermissionDenied = useCallback(
+    (nextSource: StopPresenceSource) => {
+      shouldCollectRef.current = false
+      resetRetryState()
+      clearActiveWatch()
+      setSourceMode(nextSource)
+      setErrorCode('permission_denied')
+      setPermission('denied')
+      setStatus('denied')
+    },
+    [clearActiveWatch, resetRetryState, setSourceMode],
+  )
+
   const recordPosition = useCallback(
     (
       position: GeolocationPosition,
@@ -89,13 +112,14 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
         speedMetersPerSecond: position.coords.speed,
         timestamp: position.timestamp,
       }
-      const cutoff = Date.now() - MAX_SAMPLE_AGE_MILLISECONDS
+      const cutoff =
+        Date.now() - crowdingPresencePolicy.maxSampleAgeMilliseconds
 
       setSamples((currentSamples) =>
-        [
-          ...currentSamples.filter((sample) => sample.timestamp >= cutoff),
-          nextSample,
-        ].slice(-MAX_SAMPLE_COUNT),
+        appendCrowdingSample(currentSamples, nextSample, {
+          cutoffTimestamp: cutoff,
+          maxSampleCount: crowdingPresencePolicy.maxSampleCount,
+        }),
       )
       resetRetryState()
       setSourceMode(nextSource)
@@ -140,31 +164,18 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
   const handlePositionError = useCallback(
     (error: GeolocationPositionError) => {
       if (sourceRef.current !== 'navigator') return
-      clearActiveWatch()
-
       if (!shouldCollectRef.current) return
 
       if (error.code === error.PERMISSION_DENIED) {
-        shouldCollectRef.current = false
-        resetRetryState()
-        setErrorCode('permission_denied')
-        setPermission('denied')
-        setStatus('denied')
-      } else if (error.code === error.POSITION_UNAVAILABLE) {
-        setErrorCode('position_unavailable')
-        setStatus('error')
-        scheduleRetry()
-      } else if (error.code === error.TIMEOUT) {
-        setErrorCode('timeout')
-        setStatus('error')
-        scheduleRetry()
+        markPermissionDenied(null)
       } else {
-        setErrorCode('unknown')
+        clearActiveWatch()
+        setErrorCode(getGeolocationErrorCode(error))
         setStatus('error')
         scheduleRetry()
       }
     },
-    [clearActiveWatch, resetRetryState, scheduleRetry],
+    [clearActiveWatch, markPermissionDenied, scheduleRetry],
   )
 
   const startWatch = useCallback(() => {
@@ -215,6 +226,21 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
     setErrorCode(null)
   }, [clearActiveWatch, resetRetryState, setSourceMode])
 
+  const releaseNativeRecovery = useCallback(() => {
+    if (sourceRef.current !== 'native') return
+    setSourceMode(null)
+  }, [setSourceMode])
+
+  const retry = useCallback(() => {
+    shouldCollectRef.current = true
+    resetRetryState()
+    clearActiveWatch()
+
+    const nextSource = getRetryPresenceSource(sourceRef.current)
+    if (nextSource !== sourceRef.current) setSourceMode(nextSource)
+    startWatchRef.current()
+  }, [clearActiveWatch, resetRetryState, setSourceMode])
+
   const handleNativePosition = useCallback(
     (position: GeolocationPosition) => {
       if (!shouldCollectRef.current || sourceRef.current !== 'native') {
@@ -231,36 +257,20 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
       if (!shouldCollectRef.current || sourceRef.current !== 'native') {
         return
       }
-      clearActiveWatch()
-      resetRetryState()
-      setSourceMode('native')
       const isDenied = error.code === error.PERMISSION_DENIED
-      setPermission(isDenied ? 'denied' : 'unknown')
-      setErrorCode(
-        error.code === error.PERMISSION_DENIED
-          ? 'permission_denied'
-          : error.code === error.POSITION_UNAVAILABLE
-            ? 'position_unavailable'
-            : error.code === error.TIMEOUT
-              ? 'timeout'
-              : 'unknown',
-      )
-      if (isDenied) shouldCollectRef.current = false
-      setStatus(isDenied ? 'denied' : 'error')
+      if (isDenied) {
+        markPermissionDenied('native')
+      } else {
+        clearActiveWatch()
+        resetRetryState()
+        setSourceMode(null)
+        setPermission('unknown')
+        setErrorCode(getGeolocationErrorCode(error))
+        setStatus('error')
+      }
     },
-    [clearActiveWatch, resetRetryState, setSourceMode],
+    [clearActiveWatch, markPermissionDenied, resetRetryState, setSourceMode],
   )
-
-  const stop = useCallback(() => {
-    shouldCollectRef.current = false
-    resetRetryState()
-    clearActiveWatch()
-    setSourceMode(null)
-    setErrorCode(null)
-    setStatus((currentStatus) =>
-      currentStatus === 'idle' ? 'idle' : 'stopped',
-    )
-  }, [clearActiveWatch, resetRetryState, setSourceMode])
 
   const reset = useCallback(() => {
     shouldCollectRef.current = false
@@ -286,11 +296,7 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
         shouldCollectRef.current &&
         sourceRef.current !== 'native'
       ) {
-        shouldCollectRef.current = false
-        resetRetryState()
-        clearActiveWatch()
-        setErrorCode('permission_denied')
-        setStatus('denied')
+        markPermissionDenied(null)
       }
     }
 
@@ -310,11 +316,12 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
       disposed = true
       permissionStatus?.removeEventListener('change', handlePermissionChange)
     }
-  }, [clearActiveWatch, resetRetryState])
+  }, [markPermissionDenied])
 
   useEffect(() => {
     const pruneExpiredSamples = window.setInterval(() => {
-      const cutoff = Date.now() - MAX_SAMPLE_AGE_MILLISECONDS
+      const cutoff =
+        Date.now() - crowdingPresencePolicy.maxSampleAgeMilliseconds
 
       setSamples((currentSamples) => {
         const recentSamples = currentSamples.filter(
@@ -345,11 +352,7 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
         clearActiveWatch()
         if (shouldCollectRef.current) setStatus('paused')
       } else if (shouldCollectRef.current) {
-        if (sourceRef.current === 'native') {
-          setStatus('requesting')
-        } else {
-          startWatchRef.current()
-        }
+        startWatchRef.current()
       }
     }
 
@@ -370,6 +373,8 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
       }),
     [samples, selectedStopId],
   )
+  const latestSample = samples.at(-1) ?? null
+  const hasFreshPosition = isFreshUsableGpsSample(latestSample, Date.now())
 
   return {
     classification,
@@ -377,19 +382,20 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
     errorCode,
     handleNativePosition,
     handleNativePositionError,
+    hasFreshPosition,
     isActive: status === 'collecting' || status === 'requesting',
     isPageVisible,
-    latestSample: samples.at(-1) ?? null,
+    latestSample,
     nextRetryAt,
     permission,
+    releaseNativeRecovery,
     reset,
+    retry,
     retryAttempt,
     sampleCount: samples.length,
-    selectedStopId,
     source,
     start,
     status,
-    stop,
   }
 }
 

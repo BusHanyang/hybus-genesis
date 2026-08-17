@@ -6,6 +6,7 @@
     "skipLibCheck": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
@@ -15,7 +16,7 @@
     "noEmit": true,
     "jsx": "react",
     "paths": {
-      "@/*": ["./src/app/*"],
+      "@/*": ["./src/app/*"]
     }
   },
   "include": ["./src", "vite-env.override.d.ts"]

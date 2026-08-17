@@ -1,19 +1,19 @@
-import type {
-  GpsSample,
-  PresenceClassification,
-} from '@/components/crowding/classifyStopPresence'
-import type { CrowdingStopId } from '@/data/crowding/stopGeometry'
+import type { CrowdingPresencePayload } from '@/network/crowding'
 
-export type PresenceSignal = {
-  accuracyBucket: '0-15m' | '16-30m' | '31-60m'
-  confidence: 'high' | 'medium'
-  dwellBucket: '120s+' | '30-59s' | '60-119s'
-  observedAtMinute: number
-  sampleCount: number
-  schemaVersion: 1
-  state: 'waiting'
-  stopId: CrowdingStopId
-}
+import {
+  crowdingStopAnchors,
+  type CrowdingStopId,
+} from '../../data/crowding/stopGeometry.ts'
+import {
+  distanceBetweenPointsMeters,
+  getSampleAnchorLikelihood,
+  type GpsSample,
+  isFreshUsableGpsSample,
+  type PresenceClassification,
+} from './classifyStopPresence.ts'
+import { crowdingPresencePolicy } from './crowdingConfig.ts'
+
+export type PresenceSignal = CrowdingPresencePayload
 
 const getAccuracyBucket = (
   accuracyMeters: number,
@@ -34,17 +34,36 @@ const getDwellBucket = (
 export const createPresenceSignal = (
   classification: PresenceClassification<CrowdingStopId>,
   latestSample: GpsSample | null,
+  options?: { now?: number },
 ): PresenceSignal | null => {
+  const now = options?.now ?? Date.now()
+
   if (
     classification.status !== 'waiting' ||
     classification.stopId === null ||
     latestSample === null ||
-    classification.sampleCount < 3 ||
-    classification.sampleCount > 60 ||
-    classification.dwellMilliseconds < 30_000 ||
-    latestSample.accuracyMeters <= 0 ||
-    latestSample.accuracyMeters > 60 ||
-    !Number.isFinite(latestSample.timestamp)
+    classification.latestSampleTimestamp !== latestSample.timestamp ||
+    classification.sampleCount < crowdingPresencePolicy.minSamples ||
+    classification.sampleCount > crowdingPresencePolicy.maxSampleCount ||
+    classification.dwellMilliseconds <
+      crowdingPresencePolicy.minDwellMilliseconds ||
+    !isFreshUsableGpsSample(latestSample, now)
+  ) {
+    return null
+  }
+
+  const stopAnchor = crowdingStopAnchors.find(
+    (anchor) => anchor.id === classification.stopId,
+  )
+  if (
+    stopAnchor === undefined ||
+    distanceBetweenPointsMeters(latestSample, stopAnchor) >
+      crowdingPresencePolicy.maxAnchorDistanceMeters ||
+    getSampleAnchorLikelihood(
+      latestSample,
+      stopAnchor,
+      crowdingPresencePolicy.minSigmaMeters,
+    ) < crowdingPresencePolicy.minAnchorLikelihood
   ) {
     return null
   }

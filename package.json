@@ -10,8 +10,8 @@
     "precommit": "yarn run validate",
     "prepush": "yarn run validate",
     "prettier": "prettier --write --cache ./src",
-    "test:gps": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/classifyStopPresence.test.mjs src/app/components/crowding/nativeGeolocationUsability.test.mjs",
-    "test:crowding": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/createPresenceSignal.test.mjs src/app/components/crowding/crowdingHeartbeat.test.mjs src/app/components/crowding/scheduledTrip.test.mjs src/app/network/crowding.test.mjs"
+    "test:gps": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/classifyStopPresence.test.mjs",
+    "test:crowding": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/createPresenceSignal.test.mjs src/app/components/crowding/crowdingHeartbeat.test.mjs src/app/components/crowding/crowdingState.test.mjs src/app/components/crowding/scheduledTrip.test.mjs src/app/network/crowding.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",

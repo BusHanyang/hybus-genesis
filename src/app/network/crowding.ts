@@ -5,56 +5,57 @@ export const CROWDING_PRESENCE_ENDPOINT =
 export const CROWDING_AGGREGATES_ENDPOINT =
   'https://api.hybus.app/v1/crowding/aggregates'
 
-export type CrowdingAggregateStatus = 'high' | 'insufficient' | 'low' | 'medium'
+type CrowdingAggregateStatus = 'high' | 'insufficient' | 'low' | 'medium'
 
-export type CrowdingAggregate = {
+type CrowdingAggregate = {
   bucket: string
   status: CrowdingAggregateStatus
 }
 
-export type CrowdingPresenceRequest = {
+export type CrowdingPresencePayload = {
   accuracyBucket: '0-15m' | '16-30m' | '31-60m'
   confidence: 'high' | 'medium'
   dwellBucket: '120s+' | '30-59s' | '60-119s'
   observedAtMinute: number
   sampleCount: number
-  scheduledTripId: string
   schemaVersion: 1
   state: 'waiting'
   stopId: CrowdingStopId
 }
 
-export type CrowdingPresenceResponse = {
-  accepted: true
-  aggregate: CrowdingAggregate
-  expiresInSeconds: number
-  schemaVersion: 1
+export type CrowdingPresenceRequest = CrowdingPresencePayload & {
+  scheduledTripId: string
 }
 
-export type CrowdingAggregatesRequest = {
+type CrowdingAggregatesRequest = {
   scheduledTripIds: ReadonlyArray<string>
   stopId: CrowdingStopId
 }
 
-export type CrowdingAggregateEntry = {
+type CrowdingAggregateEntry = {
   aggregate: CrowdingAggregate
   scheduledTripId: string
 }
 
-export type CrowdingAggregatesResponse = {
+type CrowdingAggregatesResponse = {
   aggregates: Array<CrowdingAggregateEntry>
   expiresInSeconds: number
   schemaVersion: 1
 }
 
-export type CrowdingMappedLevel = 'busy' | 'insufficient' | 'normal' | 'relaxed'
+const crowdingLevelByAggregateStatus = {
+  high: 'busy',
+  insufficient: 'insufficient',
+  low: 'relaxed',
+  medium: 'normal',
+} as const satisfies Record<CrowdingAggregateStatus, string>
 
-const aggregateStatuses: ReadonlySet<string> = new Set([
-  'high',
-  'insufficient',
-  'low',
-  'medium',
-])
+type CrowdingMappedLevel =
+  (typeof crowdingLevelByAggregateStatus)[CrowdingAggregateStatus]
+
+const aggregateStatuses: ReadonlySet<string> = new Set(
+  Object.keys(crowdingLevelByAggregateStatus),
+)
 const BUCKET_RANGE_PATTERN = /^(0|[1-9]\d*)-(0|[1-9]\d*)$/
 const BUCKET_OPEN_ENDED_PATTERN = /^([1-9]\d*)\+$/
 
@@ -96,9 +97,7 @@ const parseCrowdingAggregate = (value: unknown): CrowdingAggregate | null => {
   }
 }
 
-export const parseCrowdingPresenceResponse = (
-  value: unknown,
-): CrowdingPresenceResponse | null => {
+const isValidCrowdingPresenceResponse = (value: unknown): boolean => {
   if (
     !isRecord(value) ||
     value.accepted !== true ||
@@ -107,18 +106,10 @@ export const parseCrowdingPresenceResponse = (
     Number(value.expiresInSeconds) <= 0 ||
     !isRecord(value.aggregate)
   ) {
-    return null
+    return false
   }
 
-  const aggregate = parseCrowdingAggregate(value.aggregate)
-  if (aggregate === null) return null
-
-  return {
-    accepted: true,
-    aggregate,
-    expiresInSeconds: Number(value.expiresInSeconds),
-    schemaVersion: 1,
-  }
+  return parseCrowdingAggregate(value.aggregate) !== null
 }
 
 export const parseCrowdingAggregatesResponse = (
@@ -130,7 +121,6 @@ export const parseCrowdingAggregatesResponse = (
     !Number.isSafeInteger(value.expiresInSeconds) ||
     Number(value.expiresInSeconds) <= 0 ||
     !Array.isArray(value.aggregates) ||
-    value.aggregates.length < 1 ||
     value.aggregates.length > 5
   ) {
     return null
@@ -168,18 +158,7 @@ export const parseCrowdingAggregatesResponse = (
 
 export const mapCrowdingAggregateStatus = (
   status: CrowdingAggregateStatus,
-): CrowdingMappedLevel => {
-  switch (status) {
-    case 'high':
-      return 'busy'
-    case 'insufficient':
-      return 'insufficient'
-    case 'low':
-      return 'relaxed'
-    case 'medium':
-      return 'normal'
-  }
-}
+): CrowdingMappedLevel => crowdingLevelByAggregateStatus[status]
 
 export class CrowdingApiError extends Error {
   readonly retryAfterMilliseconds: number | null
@@ -199,6 +178,22 @@ export class CrowdingApiError extends Error {
   }
 }
 
+export const isRetryableCrowdingRequestError = (error: unknown): boolean => {
+  if (!(error instanceof CrowdingApiError)) return true
+  if (error.message === 'network_error') return true
+  if (
+    error.message === 'invalid_request' ||
+    error.message === 'invalid_response'
+  ) {
+    return false
+  }
+
+  return (
+    error.status === 429 ||
+    (error.status !== null && error.status >= 500 && error.status <= 599)
+  )
+}
+
 const parseRetryAfterMilliseconds = (value: string | null): number | null => {
   if (value === null || !/^\d+$/.test(value)) return null
 
@@ -206,27 +201,28 @@ const parseRetryAfterMilliseconds = (value: string | null): number | null => {
   return Number.isSafeInteger(seconds) && seconds > 0 ? seconds * 1_000 : null
 }
 
-export const postCrowdingPresence = async (
-  request: CrowdingPresenceRequest,
-  options: {
-    fetchImpl?: typeof fetch
-    signal?: AbortSignal
-  } = {},
-): Promise<CrowdingPresenceResponse> => {
-  const fetchImpl = options.fetchImpl ?? fetch
+type CrowdingFetchOptions = {
+  fetchImpl?: typeof fetch
+  signal?: AbortSignal
+}
+
+const isAbortError = (error: unknown): boolean =>
+  error instanceof DOMException && error.name === 'AbortError'
+
+const fetchCrowdingJson = async (
+  input: RequestInfo | URL,
+  init: RequestInit,
+  options: CrowdingFetchOptions,
+): Promise<unknown> => {
   let response: Response
 
   try {
-    response = await fetchImpl(CROWDING_PRESENCE_ENDPOINT, {
-      body: JSON.stringify(request),
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
+    response = await (options.fetchImpl ?? fetch)(input, {
+      ...init,
       signal: options.signal,
     })
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError')
-      throw error
+    if (isAbortError(error)) throw error
     throw new CrowdingApiError('network_error')
   }
 
@@ -239,25 +235,37 @@ export const postCrowdingPresence = async (
     })
   }
 
-  let body: unknown
   try {
-    body = await response.json()
-  } catch {
+    return await response.json()
+  } catch (error) {
+    if (isAbortError(error)) throw error
     throw new CrowdingApiError('invalid_response')
   }
+}
 
-  const parsed = parseCrowdingPresenceResponse(body)
-  if (parsed === null) throw new CrowdingApiError('invalid_response')
+export const postCrowdingPresence = async (
+  request: CrowdingPresenceRequest,
+  options: CrowdingFetchOptions = {},
+): Promise<void> => {
+  const body = await fetchCrowdingJson(
+    CROWDING_PRESENCE_ENDPOINT,
+    {
+      body: JSON.stringify(request),
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+    },
+    options,
+  )
 
-  return parsed
+  if (!isValidCrowdingPresenceResponse(body)) {
+    throw new CrowdingApiError('invalid_response')
+  }
 }
 
 export const getCrowdingAggregates = async (
   request: CrowdingAggregatesRequest,
-  options: {
-    fetchImpl?: typeof fetch
-    signal?: AbortSignal
-  } = {},
+  options: CrowdingFetchOptions = {},
 ): Promise<CrowdingAggregatesResponse> => {
   const scheduledTripIds = [...request.scheduledTripIds]
   if (
@@ -278,36 +286,14 @@ export const getCrowdingAggregates = async (
     url.searchParams.append('scheduledTripId', scheduledTripId)
   })
 
-  const fetchImpl = options.fetchImpl ?? fetch
-  let response: Response
-
-  try {
-    response = await fetchImpl(url, {
-      credentials: 'include',
+  const body = await fetchCrowdingJson(
+    url,
+    {
+      credentials: 'omit',
       method: 'GET',
-      signal: options.signal,
-    })
-  } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError')
-      throw error
-    throw new CrowdingApiError('network_error')
-  }
-
-  if (!response.ok) {
-    throw new CrowdingApiError('http_error', {
-      retryAfterMilliseconds: parseRetryAfterMilliseconds(
-        response.headers.get('Retry-After'),
-      ),
-      status: response.status,
-    })
-  }
-
-  let body: unknown
-  try {
-    body = await response.json()
-  } catch {
-    throw new CrowdingApiError('invalid_response')
-  }
+    },
+    options,
+  )
 
   const parsed = parseCrowdingAggregatesResponse(body)
   if (
