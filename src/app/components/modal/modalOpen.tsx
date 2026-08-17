@@ -89,6 +89,28 @@ const ModalOpen = (props: {
                   src={t('info_link')}
                 ></iframe>
               )}
+              {props.mTarget === 'LocationHelp' && (
+                <>
+                  <P>{t('crowding_location_help_intro')}</P>
+                  <ChangelogMargin>
+                    <h4>{t('crowding_location_help_ios_title')}</h4>
+                    <P>{t('crowding_location_help_ios_steps')}</P>
+                  </ChangelogMargin>
+                  <ChangelogMargin>
+                    <h4>{t('crowding_location_help_chrome_title')}</h4>
+                    <P>{t('crowding_location_help_chrome_steps')}</P>
+                  </ChangelogMargin>
+                  <ChangelogMargin>
+                    <h4>{t('crowding_location_help_samsung_title')}</h4>
+                    <P>{t('crowding_location_help_samsung_steps')}</P>
+                  </ChangelogMargin>
+                  <ChangelogMargin>
+                    <h4>{t('crowding_location_help_other_title')}</h4>
+                    <P>{t('crowding_location_help_other_steps')}</P>
+                  </ChangelogMargin>
+                  <P>{t('crowding_location_help_retry_hint')}</P>
+                </>
+              )}
               {props.mTarget === 'Seasonal' && (
                 <SeasonalPrompt>
                   <SeasonalPromptText>

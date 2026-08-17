@@ -14,11 +14,8 @@ import { Transition } from 'react-transition-group'
 
 import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
-import {
-  CrowdingPreview,
-  type NextShuttleDeparture,
-  Shuttle,
-} from '@/components'
+import { type NextShuttleDeparture, Shuttle } from '@/components'
+import CrowdingPresenceFeature from '@/components/crowding/CrowdingPresenceFeature'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
@@ -30,6 +27,7 @@ import {
   useDarkmodeContext,
 } from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
+import { isCrowdingStopId } from '@/data/crowding/stopGeometry'
 
 import Refreshing from './app/components/ptr/refreshing-content'
 
@@ -48,6 +46,7 @@ type MainCardHeight =
   | 'defaultPrompt'
 
 const CURRENT_YEAR = new Date().getFullYear()
+const CROWDING_LOCATION_ENABLED_STORAGE_KEY = 'hybus:crowding-location-enabled'
 
 const cardShellBase =
   'mb-3 justify-center items-center font-medium rounded-lg transition-colors text-theme-text border-theme-border shadow-theme-shadow'
@@ -304,6 +303,12 @@ function App() {
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
   )
+  const [crowdingLocationEnabled, setCrowdingLocationEnabled] = useState(
+    () =>
+      window.localStorage.getItem(CROWDING_LOCATION_ENABLED_STORAGE_KEY) ===
+      'true',
+  )
+  const [crowdingRowsVisible, setCrowdingRowsVisible] = useState<boolean>(false)
 
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
   const routeCardRef = useRef<HTMLDivElement>(null)
@@ -335,6 +340,11 @@ function App() {
     openModal()
   }
 
+  const handleCrowdingLocationHelpOpen = () => {
+    setModalTarget('LocationHelp')
+    openModal()
+  }
+
   const dismissModal = () => {
     if (modalDismissTimeoutRef.current !== null) return
     setModalAni(true)
@@ -361,6 +371,26 @@ function App() {
     dismissModal()
   }
 
+  const enableCrowdingLocation = () => {
+    window.localStorage.setItem(CROWDING_LOCATION_ENABLED_STORAGE_KEY, 'true')
+    setCrowdingLocationEnabled(true)
+  }
+
+  const disableCrowdingLocation = () => {
+    window.localStorage.removeItem(CROWDING_LOCATION_ENABLED_STORAGE_KEY)
+    setCrowdingLocationEnabled(false)
+    setCrowdingRowsVisible(false)
+  }
+
+  const handleRowCrowdingVisibilityChange = useCallback(
+    (isVisible: boolean) => {
+      setCrowdingRowsVisible((current) =>
+        current === isVisible ? current : isVisible,
+      )
+    },
+    [],
+  )
+
   const handleRefresh = (): Promise<React.FC> => {
     return new Promise(() => {
       location.reload()
@@ -380,7 +410,11 @@ function App() {
         if (
           current?.location === departure?.location &&
           current?.status === departure?.status &&
-          current?.time === departure?.time
+          current?.time === departure?.time &&
+          current?.trip?.stopId === departure?.trip?.stopId &&
+          current?.trip?.departureTime === departure?.trip?.departureTime &&
+          current?.trip?.routeType === departure?.trip?.routeType &&
+          current?.trip?.ordinal === departure?.trip?.ordinal
         ) {
           return current
         }
@@ -560,7 +594,6 @@ function App() {
                           </Suspense>
                         </NoticeWrapper>
                       </header>
-
                       <MainCardView data-height={getCardHeight()}>
                         {realtimeMode &&
                         (tab === 'subway' || tab === 'jungang') ? (
@@ -577,6 +610,9 @@ function App() {
                         ) : (
                           <>
                             <Shuttle
+                              crowdingEnabled={
+                                crowdingLocationEnabled && crowdingRowsVisible
+                              }
                               location={
                                 (tab || 'shuttlecoke_o') as StopLocation
                               }
@@ -629,25 +665,32 @@ function App() {
                           </SegmentedControl>
                         </SegmentedControlWrapper>
                       </MainCardView>
-                      {tab !== '' &&
-                        !(
-                          realtimeMode &&
-                          (tab === 'subway' || tab === 'jungang')
-                        ) && (
-                          <CrowdingPreview
-                            availability={
-                              nextShuttleDeparture?.location === tab
-                                ? nextShuttleDeparture.status
-                                : 'loading'
-                            }
-                            departureTime={
-                              nextShuttleDeparture?.location === tab
-                                ? nextShuttleDeparture.time
-                                : undefined
-                            }
-                            location={tab}
-                          />
-                        )}
+                      <CrowdingPresenceFeature
+                        departure={
+                          !(
+                            realtimeMode &&
+                            (tab === 'subway' || tab === 'jungang')
+                          ) && nextShuttleDeparture?.location === tab
+                            ? nextShuttleDeparture
+                            : null
+                        }
+                        isEnabled={crowdingLocationEnabled}
+                        isSummaryVisible={
+                          tab !== '' &&
+                          !(
+                            realtimeMode &&
+                            (tab === 'subway' || tab === 'jungang')
+                          )
+                        }
+                        location={tab || 'shuttlecoke_o'}
+                        onDisable={disableCrowdingLocation}
+                        onEnable={enableCrowdingLocation}
+                        onOpenLocationHelp={handleCrowdingLocationHelpOpen}
+                        onRowCrowdingVisibilityChange={
+                          handleRowCrowdingVisibilityChange
+                        }
+                        selectedStopId={isCrowdingStopId(tab) ? tab : null}
+                      />
                       <Transition
                         in={routeCardClick}
                         nodeRef={routeCardRef}

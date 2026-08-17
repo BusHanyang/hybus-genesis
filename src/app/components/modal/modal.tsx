@@ -170,6 +170,11 @@ export const Modal = (props: {
                 {t('info')}
               </ModalHeader>
             )}
+            {props.mTarget === 'LocationHelp' && (
+              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
+                {t('crowding_location_help_title')}
+              </ModalHeader>
+            )}
             {props.mTarget === 'Seasonal' && (
               <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
                 {t('seasonal_prompt_title')}
