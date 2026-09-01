@@ -79,10 +79,14 @@ const themeRootVariants = {
   },
 } as const
 
-const ThemeRoot = classed('div', 'h-full', themeRootVariants)
+const ThemeRoot = classed(
+  'div',
+  'mobile-fab-scroll-root relative h-full',
+  themeRootVariants,
+)
 const Apps = classed(
   'div',
-  'h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors',
+  'mobile-fab-scroll-content h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors',
 )
 const CopyRightText = classed('p', 'text-theme-text pt-3 hsm:text-sm hsm:leading-4')
 const CycleCircle = classed('span', `${circleBase} bg-chip-red mr-2 hsm:mx-2`, circleThemeVariants)
@@ -450,7 +454,6 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   //backgroundColor={}
@@ -463,6 +466,7 @@ function App() {
                     data-theme={theme}
                     onContextMenu={(e) => e.preventDefault()}
                   >
+                    <Fabs openModal={openModal} mTarget={setModalTarget} />
                     <Apps>
                       <header>
                         <HeadlineWrapper>
