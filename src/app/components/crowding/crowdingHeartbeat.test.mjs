@@ -18,12 +18,141 @@ const flushPromises = async () => {
   await Promise.resolve()
 }
 
+const createClock = (initialTime) => {
+  let now = initialTime
+  const timers = new Set()
+  return {
+    options: {
+      now: () => now,
+      cancelTimer: (timer) => timers.delete(timer),
+      scheduleTimer: (callback, delay) => {
+        const timer = { at: now + delay, callback }
+        timers.add(timer)
+        return timer
+      },
+    },
+    advanceTo: async (target) => {
+      for (;;) {
+        const timer = [...timers].sort((a, b) => a.at - b.at)[0]
+        if (!timer || timer.at > target) break
+        now = timer.at
+        timers.delete(timer)
+        timer.callback()
+        await flushPromises()
+      }
+      now = target
+    },
+  }
+}
+
+test('a new observation-minute controller preserves the server retry deadline', async () => {
+  const clock = createClock(55_000)
+  const scheduleState = { nextRequestAt: 0 }
+  const sentAt = []
+  const options = {
+    ...clock.options,
+    scheduleState,
+    intervalMilliseconds: 20_000,
+    getRetryDelay: (error) => error.retryAfterMilliseconds,
+    request: async () => {
+      sentAt.push(clock.options.now())
+      throw { retryAfterMilliseconds: 120_000 }
+    },
+  }
+  const previousMinute = createSerialHeartbeat(options)
+  previousMinute.start()
+  await flushPromises()
+
+  await clock.advanceTo(60_000)
+  previousMinute.stop()
+  const nextMinute = createSerialHeartbeat(options)
+  nextMinute.start()
+  await flushPromises()
+  assert.deepEqual(sentAt, [55_000])
+  await clock.advanceTo(174_999)
+  assert.deepEqual(sentAt, [55_000])
+  await clock.advanceTo(175_000)
+  assert.deepEqual(sentAt, [55_000, 175_000])
+  nextMinute.stop()
+})
+
+test('pause and resume preserve the interval reserved by an in-flight request', async () => {
+  const clock = createClock(55_000)
+  const scheduleState = { nextRequestAt: 0 }
+  const pending = deferred()
+  let signal
+  const sentAt = []
+  const options = {
+    ...clock.options,
+    scheduleState,
+    intervalMilliseconds: 20_000,
+    getRetryDelay: () => 20_000,
+    request: async (requestSignal) => {
+      signal = requestSignal
+      sentAt.push(clock.options.now())
+      if (sentAt.length === 1) return await pending.promise
+    },
+  }
+  const initial = createSerialHeartbeat(options)
+  initial.start()
+  await clock.advanceTo(60_000)
+  initial.stop()
+  assert.equal(signal.aborted, true)
+  pending.reject(new DOMException('Stopped', 'AbortError'))
+  await flushPromises()
+
+  const resumed = createSerialHeartbeat(options)
+  resumed.start()
+  assert.deepEqual(sentAt, [55_000])
+  await clock.advanceTo(74_999)
+  assert.deepEqual(sentAt, [55_000])
+  await clock.advanceTo(75_000)
+  assert.deepEqual(sentAt, [55_000, 75_000])
+  resumed.stop()
+})
+
+test('a received rate limit settling after stop extends a replacement timer', async () => {
+  const clock = createClock(55_000)
+  const scheduleState = { nextRequestAt: 0 }
+  const pending = deferred()
+  const sentAt = []
+  let oldErrorCallbacks = 0
+  const options = {
+    ...clock.options,
+    scheduleState,
+    intervalMilliseconds: 20_000,
+    getRetryDelay: (error) => error.retryAfterMilliseconds,
+    request: async () => {
+      sentAt.push(clock.options.now())
+      if (sentAt.length === 1) return await pending.promise
+    },
+  }
+  const initial = createSerialHeartbeat({
+    ...options,
+    onError: () => oldErrorCallbacks++,
+  })
+  initial.start()
+  await clock.advanceTo(60_000)
+  initial.stop()
+  const replacement = createSerialHeartbeat(options)
+  replacement.start()
+  pending.reject({ retryAfterMilliseconds: 120_000 })
+  await flushPromises()
+  assert.equal(oldErrorCallbacks, 0)
+  await clock.advanceTo(179_999)
+  assert.deepEqual(sentAt, [55_000])
+  await clock.advanceTo(180_000)
+  assert.deepEqual(sentAt, [55_000, 180_000])
+  replacement.stop()
+})
+
 test('heartbeats remain serial and wait the configured interval', async () => {
+  const clock = createClock(0)
   const requests = []
-  const scheduled = []
   let concurrent = 0
   let maxConcurrent = 0
   const controller = createSerialHeartbeat({
+    ...clock.options,
     getRetryDelay: () => null,
     intervalMilliseconds: 20_000,
     request: async () => {
@@ -37,10 +166,6 @@ test('heartbeats remain serial and wait the configured interval', async () => {
         concurrent -= 1
       }
     },
-    scheduleTimer: (callback, delayMilliseconds) => {
-      scheduled.push({ callback, delayMilliseconds })
-      return scheduled.length
-    },
   })
 
   controller.start()
@@ -50,10 +175,10 @@ test('heartbeats remain serial and wait the configured interval', async () => {
 
   requests[0].resolve('ok')
   await flushPromises()
-  assert.equal(scheduled[0].delayMilliseconds, 20_000)
+  await clock.advanceTo(19_999)
   assert.equal(requests.length, 1)
 
-  scheduled[0].callback()
+  await clock.advanceTo(20_000)
   assert.equal(requests.length, 2)
   assert.equal(maxConcurrent, 1)
   controller.stop()

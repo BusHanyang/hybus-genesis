@@ -1,14 +1,20 @@
 type TimerHandle = unknown
 
+export type SerialHeartbeatSchedule = {
+  nextRequestAt: number
+}
+
 export type SerialHeartbeatOptions<Result> = {
   cancelTimer?: (handle: TimerHandle) => void
   getRetryDelay: (error: unknown) => number | null
   intervalMilliseconds: number
+  now?: () => number
   onError?: (error: unknown) => void
   onSending?: () => void
   onSuccess?: (result: Result) => void
   request: (signal: AbortSignal) => Promise<Result>
   requestTimeoutMilliseconds?: number
+  scheduleState?: SerialHeartbeatSchedule
   scheduleTimer?: (
     callback: () => void,
     delayMilliseconds: number,
@@ -40,11 +46,13 @@ export const createSerialHeartbeat = <Result>({
   cancelTimer = defaultCancelTimer,
   getRetryDelay,
   intervalMilliseconds,
+  now = Date.now,
   onError,
   onSending,
   onSuccess,
   request,
   requestTimeoutMilliseconds,
+  scheduleState = { nextRequestAt: 0 },
   scheduleTimer = defaultScheduleTimer,
 }: SerialHeartbeatOptions<Result>): SerialHeartbeatController => {
   let activeRequest: AbortController | null = null
@@ -66,7 +74,15 @@ export const createSerialHeartbeat = <Result>({
   const execute = async (): Promise<void> => {
     if (isStopped || isRunning) return
 
+    // A replacement controller or a late response can extend this deadline.
+    const remainingDelay = scheduleState.nextRequestAt - now()
+    if (remainingDelay > 0) {
+      schedule(remainingDelay)
+      return
+    }
+
     isRunning = true
+    scheduleState.nextRequestAt = now() + intervalMilliseconds
     activeRequest = new AbortController()
     onSending?.()
     let nextDelay: number | null = null
@@ -86,15 +102,31 @@ export const createSerialHeartbeat = <Result>({
                 }, requestTimeoutMilliseconds)
               }),
             ])
+      nextDelay = intervalMilliseconds
+      scheduleState.nextRequestAt = Math.max(
+        scheduleState.nextRequestAt,
+        now() + nextDelay,
+      )
       if (isStopped) return
 
       onSuccess?.(result)
-      nextDelay = intervalMilliseconds
     } catch (error) {
+      const isStoppedAbort =
+        isStopped &&
+        error instanceof DOMException &&
+        error.name === 'AbortError'
+      if (isStoppedAbort) return
+
+      nextDelay = getRetryDelay(error)
+      if (nextDelay !== null) {
+        scheduleState.nextRequestAt = Math.max(
+          scheduleState.nextRequestAt,
+          now() + nextDelay,
+        )
+      }
       if (isStopped) return
 
       onError?.(error)
-      nextDelay = getRetryDelay(error)
     } finally {
       if (requestTimer !== null) {
         cancelTimer(requestTimer)

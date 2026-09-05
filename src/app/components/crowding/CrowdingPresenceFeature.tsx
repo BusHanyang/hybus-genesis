@@ -78,6 +78,7 @@ const CrowdingPresenceFeature = ({
     reduceCrowdingHeartbeatState,
     initialCrowdingHeartbeatState,
   )
+  const heartbeatScheduleRef = useRef({ nextRequestAt: 0 })
   const shouldCollect = isEnabled && isSummaryVisible && selectedStopId !== null
   const {
     classification,
@@ -265,6 +266,7 @@ const CrowdingPresenceFeature = ({
         return postCrowdingPresence(request, { signal: requestSignal })
       },
       requestTimeoutMilliseconds: HEARTBEAT_REQUEST_TIMEOUT_MILLISECONDS,
+      scheduleState: heartbeatScheduleRef.current,
     })
 
     heartbeatController.start()
