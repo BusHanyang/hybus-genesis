@@ -1,9 +1,11 @@
 import type { CrowdingStopId } from '../data/crowding/stopGeometry'
+import { getCrowdingApiBase } from './crowdingEndpoints.ts'
 
-export const CROWDING_PRESENCE_ENDPOINT =
-  'https://api.hybus.app/v1/crowding/presence'
-export const CROWDING_AGGREGATES_ENDPOINT =
-  'https://api.hybus.app/v1/crowding/aggregates'
+const crowdingApiBase = getCrowdingApiBase(
+  typeof window === 'undefined' ? undefined : window.location.origin,
+)
+export const CROWDING_PRESENCE_ENDPOINT = `${crowdingApiBase}/presence`
+export const CROWDING_AGGREGATES_ENDPOINT = `${crowdingApiBase}/aggregates`
 
 type CrowdingAggregateStatus = 'high' | 'insufficient' | 'low' | 'medium'
 

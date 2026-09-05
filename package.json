@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite --configLoader runner",
-    "build": "tsc && vite build --configLoader runner",
+    "build": "tsc && tsc -p tsconfig.pages.json --noEmit && vite build --configLoader runner",
     "serve": "vite preview --configLoader runner",
     "validate": "eslint src/**/*.{ts,tsx}",
     "https-preview": "vite preview --configLoader runner",
@@ -11,7 +11,7 @@
     "prepush": "yarn run validate",
     "prettier": "prettier --write --cache ./src",
     "test:gps": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/classifyStopPresence.test.mjs",
-    "test:crowding": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/createPresenceSignal.test.mjs src/app/components/crowding/crowdingHeartbeat.test.mjs src/app/components/crowding/crowdingState.test.mjs src/app/components/crowding/scheduledTrip.test.mjs src/app/network/crowding.test.mjs"
+    "test:crowding": "node --experimental-default-type=module --experimental-strip-types --test src/app/components/crowding/createPresenceSignal.test.mjs src/app/components/crowding/crowdingHeartbeat.test.mjs src/app/components/crowding/crowdingState.test.mjs src/app/components/crowding/scheduledTrip.test.mjs src/app/network/crowding.test.mjs src/app/network/crowdingProxy.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.5.0",
