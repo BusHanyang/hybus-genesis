@@ -77,41 +77,6 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVQ7FQG"
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <script>
-      ;(() => {
-        const seasonal = /^(christmas|spring|summer|autumn|winter)$/
-        const normalize = (theme) =>
-          theme === 'frozen' ? 'winter' : seasonal.test(theme) ? theme : null
-        const automatic = () => {
-          const [month, day] = new Intl.DateTimeFormat('en-US', {
-            timeZone: 'Asia/Seoul', month: '2-digit', day: '2-digit',
-          }).format(new Date()).split('/').map(Number)
-          const monthDay = month * 100 + day
-          return monthDay >= 1215 && monthDay <= 1226 ? 'christmas'
-            : monthDay >= 1107 || monthDay < 204 ? 'winter'
-            : monthDay >= 807 ? 'autumn'
-            : monthDay >= 505 ? 'summer' : 'spring'
-        }
-
-        const storedTheme = window.localStorage.getItem('theme')
-        const storedSeason = normalize(storedTheme)
-        const preference = window.localStorage.getItem('seasonalThemeEnabled')
-        const enabled = preference === 'true' ||
-          (preference !== 'false' && storedSeason !== null)
-        const manual = '%DEV%' === 'true' && enabled
-          ? normalize(window.localStorage.getItem('manualSeasonalTheme')) || storedSeason
-          : null
-        const theme = storedTheme === 'dark' ? 'dark'
-          : enabled ? manual || automatic() : 'light'
-        const color = ({
-          dark: '#27272A', christmas: '#b23e3e', spring: '#fff4f4',
-          summer: '#8ed4ea', autumn: '#fff8ef', winter: '#eff8ff',
-        })[theme] || '#FFFFFF'
-
-        document.body.style.backgroundColor = color
-        document.querySelector('meta[name="theme-color"]').content = color
-      })()
-    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

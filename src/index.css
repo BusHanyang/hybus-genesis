@@ -180,8 +180,7 @@
     --color-ft-selected: #4a2b12;
   }
 
-  .winter,
-  .frozen {
+  .winter {
     --color-theme-main: #eff8ff;
     --color-theme-card: #fcffff;
     --color-theme-text: #0D2C61;
