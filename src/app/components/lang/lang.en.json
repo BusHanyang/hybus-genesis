@@ -121,7 +121,7 @@
   "rapid_train_img": "/image/rapid_train_en.svg",
 
   "seasonal_prompt_title": "Would you like to use seasonal themes?",
-  "seasonal_prompt_text": "The screen colors and effects such as rain and snow change with the season. You can turn seasonal themes on or off anytime from the bottom-right menu.",
+  "seasonal_prompt_text": "The screen colors and effects such as sunlight and snow change with the season. You can turn seasonal themes on or off anytime from the bottom-right menu.",
   "seasonal_prompt_once": "(This message is shown only once.)",
   "seasonal_prompt_enable": "Enable seasonal themes",
   "seasonal_prompt_keep": "Keep seasonal themes off"

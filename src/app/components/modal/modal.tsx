@@ -1,5 +1,5 @@
 import { classed } from '@tw-classed/react'
-import React, { useLayoutEffect, useRef } from 'react'
+import React, { useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { useDarkmodeContext } from '@/context/ThemeContext'
@@ -119,7 +119,7 @@ export const Modal = (props: {
     }
   }
 
-  const { theme, setSeasonalThemePreview } = useDarkmodeContext()
+  const { theme } = useDarkmodeContext()
 
   const { t } = useTranslation()
   const modalAnimationState = props.ani
@@ -127,17 +127,6 @@ export const Modal = (props: {
     : props.open
       ? 'opening'
       : 'idle'
-
-  useLayoutEffect(() => {
-    const shouldPreviewSeasonalTheme =
-      props.open && props.mTarget === 'Seasonal'
-
-    setSeasonalThemePreview(shouldPreviewSeasonalTheme)
-
-    return () => {
-      setSeasonalThemePreview(false)
-    }
-  }, [props.mTarget, props.open, setSeasonalThemePreview])
 
   return (
     <ModalBackground

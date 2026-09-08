@@ -121,7 +121,7 @@
   "rapid_train_img": "/image/rapid_train_kr.svg",
 
   "seasonal_prompt_title": "계절 테마를 사용해 볼까요?",
-  "seasonal_prompt_text": "계절에 맞춰 화면 색상과 비·눈 같은 효과가 함께 바뀝니다. 오른쪽 아래 메뉴에서 언제든 켜거나 끌 수 있어요.",
+  "seasonal_prompt_text": "계절에 맞춰 화면 색상과 햇살·눈 같은 효과가 함께 바뀝니다. 오른쪽 아래 메뉴에서 언제든 켜거나 끌 수 있어요.",
   "seasonal_prompt_once": "(이 안내는 처음 한 번만 표시됩니다.)",
   "seasonal_prompt_enable": "계절 테마 켜기",
   "seasonal_prompt_keep": "계절 테마 사용 안 함"

@@ -15,11 +15,6 @@ const SummerLensFlareEffect = React.lazy(
   () => import('./SummerLensFlareEffect'),
 )
 
-const getEffectStyle = (visible: boolean): React.CSSProperties => ({
-  ...effectStyle,
-  opacity: visible ? 1 : 0,
-})
-
 const createImage = (src: string): HTMLImageElement => {
   const image = document.createElement('img')
   image.src = src
@@ -45,14 +40,12 @@ const SeasonalEffect = () => {
     automaticSeasonTheme,
     seasonalThemeEnabled,
     manualSeasonalTheme,
-    seasonalThemePreview,
   } = useDarkmodeContext()
   const effectTheme = getEffectTheme(
     theme,
     manualSeasonalTheme,
     automaticSeasonTheme,
   )
-  const effectVisible = seasonalThemeEnabled || seasonalThemePreview
   const springImages = React.useMemo(
     () => [
       createImage('/image/flower_pink.png'),
@@ -68,7 +61,7 @@ const SeasonalEffect = () => {
     [],
   )
 
-  const style = getEffectStyle(effectVisible)
+  if (!seasonalThemeEnabled) return null
 
   if (effectTheme === THEME.SPRING) {
     return (
@@ -78,14 +71,12 @@ const SeasonalEffect = () => {
         wind={[-0.3, 0.8]}
         radius={[14.0, 16.0]}
         speed={[0.5, 1.0]}
-        style={style}
+        style={effectStyle}
       />
     )
   }
 
   if (effectTheme === THEME.SUMMER) {
-    if (!effectVisible) return null
-
     return (
       <React.Suspense fallback={null}>
         <SummerLensFlareEffect />
@@ -101,7 +92,7 @@ const SeasonalEffect = () => {
         wind={[-0.8, 1.2]}
         radius={[14.0, 16.0]}
         speed={[0.6, 1.2]}
-        style={style}
+        style={effectStyle}
       />
     )
   }
@@ -112,7 +103,7 @@ const SeasonalEffect = () => {
         color={effectTheme === THEME.CHRISTMAS ? '#fff7ed' : '#cfd8f4'}
         snowflakeCount={effectTheme === THEME.CHRISTMAS ? 36 : 28}
         wind={[-0.5, 0.5]}
-        style={style}
+        style={effectStyle}
       />
     )
   }

@@ -121,8 +121,6 @@ interface ThemeContextProps {
   setSeasonalThemeEnabled: React.Dispatch<React.SetStateAction<boolean>>
   manualSeasonalTheme: THEME | null
   setManualSeasonalTheme: React.Dispatch<React.SetStateAction<THEME | null>>
-  seasonalThemePreview: boolean
-  setSeasonalThemePreview: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const ThemeContext = React.createContext<ThemeContextProps | null>(null)
@@ -155,8 +153,6 @@ export const DarkmodeContextProvider = ({
     React.useState<boolean>(storedSeasonalThemeEnabled)
   const [manualSeasonalTheme, setManualSeasonalTheme] =
     React.useState<THEME | null>(storedManualSeasonalTheme)
-  const [seasonalThemePreview, setSeasonalThemePreview] =
-    React.useState<boolean>(false)
 
   React.useEffect(() => {
     let refreshTimer: number | null = null
@@ -209,8 +205,6 @@ export const DarkmodeContextProvider = ({
         setSeasonalThemeEnabled,
         manualSeasonalTheme,
         setManualSeasonalTheme,
-        seasonalThemePreview,
-        setSeasonalThemePreview,
       }}
     >
       {children}
