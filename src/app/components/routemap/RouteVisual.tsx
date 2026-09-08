@@ -2,10 +2,7 @@ import { classed } from '@tw-classed/react'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-import DotAnimation, {
-  DotColor,
-  useDotAnimation,
-} from '@/components/routemap/DotAnimation'
+import DotAnimation, { DotColor } from '@/components/routemap/DotAnimation'
 import { RouteAnimationFlag } from '@/data'
 
 type RouteStatus = keyof RouteAnimationFlag
@@ -34,7 +31,7 @@ const RouteLine = classed(
         yesulin: 'bg-chip-green',
         jungang: 'bg-chip-purple',
         orange: 'bg-chip-orange',
-        inactive: 'bg-zinc-200 dark:bg-slate-500',
+        inactive: 'bg-[var(--color-route-inactive)] dark:bg-slate-500',
       },
     },
     defaultVariants: {
@@ -54,7 +51,7 @@ const Dot = classed(
         yesulin: 'bg-chip-green',
         jungang: 'bg-chip-purple',
         orange: 'bg-chip-orange',
-        inactive: 'bg-zinc-200 dark:bg-slate-500',
+        inactive: 'bg-[var(--color-route-inactive)] dark:bg-slate-500',
       },
       'data-state': {
         hidden: 'opacity-0',
@@ -85,7 +82,7 @@ const SpecialStopsText = classed(
         cycle: 'text-chip-red',
         yesulin: 'text-chip-green',
         jungang: 'text-chip-purple',
-        inactive: 'text-zinc-200 dark:text-slate-500',
+        inactive: 'text-[var(--color-route-inactive-text)] dark:text-slate-500',
       },
     },
   },
@@ -183,7 +180,7 @@ const RouteLines = (props: {
 const RouteElement = (props: {
   routeStatus: RouteStatus
   tab: string
-  animationFlagTable: { [key: string]: Array<boolean> }
+  animationFlagTable: RouteAnimationFlag
   item: number
 }) => {
   const { t, i18n } = useTranslation()
@@ -228,7 +225,7 @@ const RouteElement = (props: {
 const RouteElementGroup = (props: {
   routeStatus: RouteStatus
   tab: string
-  animationFlagTable: { [key: string]: Array<boolean> }
+  animationFlagTable: RouteAnimationFlag
 }) => {
   return (
     <>
@@ -277,16 +274,15 @@ const RouteElementGroup = (props: {
 const RouteVisual = (props: {
   routeStatus: keyof RouteAnimationFlag
   tab: string
+  animationFlagTable: RouteAnimationFlag
 }) => {
-  const animationFlagTable = useDotAnimation(props.tab)
-
   return (
     <RouteElementGroup
       routeStatus={props.routeStatus}
       tab={props.tab}
-      animationFlagTable={animationFlagTable}
+      animationFlagTable={props.animationFlagTable}
     />
   )
 }
 
-export default RouteVisual
+export default React.memo(RouteVisual)

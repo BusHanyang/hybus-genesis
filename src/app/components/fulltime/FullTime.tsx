@@ -34,7 +34,9 @@ const themeRootVariants = {
       dark: 'dark',
       christmas: 'christmas',
       spring: 'spring',
-      frozen: 'frozen',
+      summer: 'summer',
+      autumn: 'autumn',
+      winter: 'winter',
     },
   },
   defaultVariants: {
@@ -150,8 +152,6 @@ const ComboBox = (props: {
       >
         {props.type === props.value ? (
           <SelectedIcon
-            //src="../image/selected.svg"
-            //alt="check"
             fill="var(--color-ft-selected)"
             onContextMenu={handleContextMenu}
           />

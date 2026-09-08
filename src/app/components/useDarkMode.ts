@@ -1,22 +1,50 @@
 import { useCallback, useLayoutEffect } from 'react'
 
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
+import {
+  getAutomaticSeasonTheme,
+  getResolvedTheme,
+  getStoredManualSeasonalTheme,
+  getStoredSeasonalThemeEnabled,
+  isSeasonalTheme,
+  MANUAL_SEASONAL_THEME_STORAGE_KEY,
+  normalizeTheme,
+  SEASONAL_THEME_ENABLED_STORAGE_KEY,
+  THEME,
+  themeValues,
+  useDarkmodeContext,
+} from '@/context/ThemeContext'
+
+const themeBackgrounds: Record<THEME, string> = {
+  [THEME.LIGHT]: '#FFFFFF',
+  [THEME.DARK]: '#27272A',
+  [THEME.CHRISTMAS]: '#b23e3e',
+  [THEME.SPRING]: '#fff4f4',
+  [THEME.SUMMER]: '#8ed4ea',
+  [THEME.AUTUMN]: '#fff8ef',
+  [THEME.WINTER]: '#eff8ff',
+}
 
 export const useDarkMode = () => {
-  const { setTheme, theme } = useDarkmodeContext()
+  const {
+    setTheme,
+    theme,
+    seasonalThemeEnabled,
+    setSeasonalThemeEnabled,
+    manualSeasonalTheme,
+    setManualSeasonalTheme,
+  } = useDarkmodeContext()
   const BAR_STYLE = document.querySelector('meta[name=theme-color]')
 
-  const setCookie = (
-    cookieName: string,
-    cookieValue: string,
-    validDay: number,
-  ) => {
-    const d = new Date()
-    d.setTime(d.getTime() + validDay * (24 * 60 * 60 * 1000))
+  const setCookie = useCallback(
+    (cookieName: string, cookieValue: string, validDay: number) => {
+      const d = new Date()
+      d.setTime(d.getTime() + validDay * (24 * 60 * 60 * 1000))
 
-    const expires = `expires=${d.toUTCString()}`
-    document.cookie = `${cookieName}=${cookieValue}; ${expires}; path=/; domain=hybus.app;`
-  }
+      const expires = `expires=${d.toUTCString()}`
+      document.cookie = `${cookieName}=${cookieValue}; ${expires}; path=/; domain=hybus.app;`
+    },
+    [],
+  )
 
   const setBarStyle = useCallback(
     (color: string) => {
@@ -25,93 +53,205 @@ export const useDarkMode = () => {
     [BAR_STYLE],
   )
 
-  const setBackground = useCallback(() => {
-    if (theme === THEME.DARK) {
-      document.body.style.backgroundColor = '#27272A'
-      if (BAR_STYLE) setBarStyle('#27272A')
-    } else if (theme === THEME.CHRISTMAS) {
-      document.body.style.backgroundColor = '#b23e3e'
-      if (BAR_STYLE) setBarStyle('#b23e3e')
-    } else if (theme === THEME.SPRING) {
-      document.body.style.backgroundColor = '#fff4f4'
-      if (BAR_STYLE) setBarStyle('#fff4f4')
-    } else if (theme === THEME.FROZEN) {
-      document.body.style.backgroundColor = '#eff8ff'
-      if (BAR_STYLE) setBarStyle('#eff8ff')
-    } else {
-      // THEME.LIGHT
-      document.body.style.backgroundColor = '#FFFFFF'
-      if (BAR_STYLE) setBarStyle('#FFFFFF')
-    }
-    //theme === THEME.DARK ? setBarStyle('#27272A') : setBarStyle('#FFFFFF')
-    //document.body.style.backgroundColor = 'var(--color-theme-main)'
-  }, [BAR_STYLE, setBarStyle, theme])
+  const applyTheme = useCallback(
+    (nextTheme: THEME) => {
+      document.body.classList.add('transition-colors')
+      document.body.classList.remove(...themeValues, 'frozen')
+      document.body.classList.add(nextTheme)
+      document.body.style.backgroundColor = themeBackgrounds[nextTheme]
+      setBarStyle(themeBackgrounds[nextTheme])
+    },
+    [setBarStyle],
+  )
+
+  const persistManualSeasonalTheme = useCallback(
+    (nextTheme: THEME | null) => {
+      const nextManualTheme =
+        import.meta.env.DEV && isSeasonalTheme(nextTheme) ? nextTheme : null
+
+      if (nextManualTheme === null) {
+        window.localStorage.removeItem(MANUAL_SEASONAL_THEME_STORAGE_KEY)
+      } else {
+        window.localStorage.setItem(
+          MANUAL_SEASONAL_THEME_STORAGE_KEY,
+          nextManualTheme,
+        )
+      }
+
+      setManualSeasonalTheme(nextManualTheme)
+    },
+    [setManualSeasonalTheme],
+  )
+
+  const setThemeMode = useCallback(
+    (
+      nextTheme: THEME,
+      options?: {
+        seasonalThemeEnabled?: boolean
+        storeTheme?: boolean
+        manualSeasonalTheme?: THEME | null
+      },
+    ) => {
+      const nextSeasonalThemeEnabled =
+        options?.seasonalThemeEnabled ?? isSeasonalTheme(nextTheme)
+      const forceAutomaticSeason =
+        !import.meta.env.DEV &&
+        nextSeasonalThemeEnabled &&
+        isSeasonalTheme(nextTheme)
+      const appliedTheme = forceAutomaticSeason
+        ? getAutomaticSeasonTheme()
+        : nextTheme
+      const nextManualSeasonalTheme = nextSeasonalThemeEnabled
+        ? options?.manualSeasonalTheme === undefined
+          ? manualSeasonalTheme
+          : options.manualSeasonalTheme
+        : null
+
+      persistManualSeasonalTheme(nextManualSeasonalTheme)
+
+      window.localStorage.setItem(
+        SEASONAL_THEME_ENABLED_STORAGE_KEY,
+        nextSeasonalThemeEnabled ? 'true' : 'false',
+      )
+
+      if (options?.storeTheme === false || forceAutomaticSeason) {
+        window.localStorage.removeItem('theme')
+      } else {
+        window.localStorage.setItem('theme', appliedTheme)
+      }
+
+      setSeasonalThemeEnabled(nextSeasonalThemeEnabled)
+      setCookie('_theme', appliedTheme, 180)
+      setTheme(appliedTheme)
+      applyTheme(appliedTheme)
+    },
+    [
+      applyTheme,
+      manualSeasonalTheme,
+      persistManualSeasonalTheme,
+      setCookie,
+      setSeasonalThemeEnabled,
+      setTheme,
+    ],
+  )
+
+  const setAutomaticTheme = useCallback(() => {
+    const nextTheme = getAutomaticSeasonTheme()
+    setThemeMode(nextTheme, {
+      seasonalThemeEnabled: true,
+      storeTheme: false,
+      manualSeasonalTheme: null,
+    })
+  }, [setThemeMode])
+
+  const setManualSeasonalThemeMode = useCallback(
+    (nextTheme: THEME) => {
+      if (!isSeasonalTheme(nextTheme)) return
+      if (!import.meta.env.DEV) {
+        setAutomaticTheme()
+        return
+      }
+
+      setThemeMode(nextTheme, {
+        seasonalThemeEnabled: true,
+        manualSeasonalTheme: nextTheme,
+      })
+    },
+    [setAutomaticTheme, setThemeMode],
+  )
+
+  const setSeasonalThemeEnabledMode = useCallback(
+    (enabled: boolean) => {
+      const nextTheme =
+        theme === THEME.DARK
+          ? THEME.DARK
+          : enabled
+            ? getAutomaticSeasonTheme()
+            : THEME.LIGHT
+
+      setThemeMode(nextTheme, {
+        seasonalThemeEnabled: enabled,
+        storeTheme: theme === THEME.DARK || !enabled,
+        manualSeasonalTheme: null,
+      })
+    },
+    [setThemeMode, theme],
+  )
+
+  const toggleSeasonalTheme = useCallback(() => {
+    setSeasonalThemeEnabledMode(!seasonalThemeEnabled)
+  }, [seasonalThemeEnabled, setSeasonalThemeEnabledMode])
 
   const toggleTheme = useCallback(() => {
-    document.body.classList.add('transition-colors')
-    document.body.style.backgroundColor = 'var(--color-theme-main)'
+    const nextTheme =
+      theme === THEME.DARK
+        ? seasonalThemeEnabled
+          ? (manualSeasonalTheme ?? getAutomaticSeasonTheme())
+          : THEME.LIGHT
+        : THEME.DARK
 
-    if (theme === THEME.LIGHT) {
-      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#27272A')
-      document.body.classList.add('dark')
-      document.body.style.backgroundColor = '#27272A'
-      window.localStorage.setItem('theme', THEME.DARK)
-      setCookie('_theme', THEME.DARK, 180)
-      setTheme(THEME.DARK)
-    {/** Another Theme
-    } else if (theme === THEME.DARK) {
-      {/** Christmas
-        if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#b23e3e')
-        document.body.classList.add('christmas')
+    setThemeMode(nextTheme, {
+      seasonalThemeEnabled,
+      storeTheme: !seasonalThemeEnabled || nextTheme === THEME.DARK,
+    })
+  }, [manualSeasonalTheme, seasonalThemeEnabled, setThemeMode, theme])
 
-        window.localStorage.setItem('theme', THEME.CHRISTMAS)
-        setCookie('_theme', THEME.CHRISTMAS, 180)
-        setTheme(THEME.CHRISTMAS)
-      */}
-      {/** Spring
-        if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#fff4f4')
-        document.body.style.backgroundColor = '#fff4f4'
-        document.body.classList.add('spring')
-
-        window.localStorage.setItem('theme', THEME.SPRING)
-        setCookie('_theme', THEME.SPRING, 180)
-        setTheme(THEME.SPRING)
-      */}
-      //document.body.classList.add('dark')
-    } else if (theme === THEME.DARK) {
-      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#eff8ff')
-      document.body.style.backgroundColor = '#eff8ff'
-      document.body.classList.remove('dark')
-      document.body.classList.add('frozen')
-
-      window.localStorage.setItem('theme', THEME.FROZEN)
-      setCookie('_theme', THEME.FROZEN, 180)
-      setTheme(THEME.FROZEN)
-    } else {
-      // Change to Light Mode (Default)
-      if (BAR_STYLE) BAR_STYLE.setAttribute('content', '#FFFFFF')
-      document.body.classList.remove('dark')
-      document.body.classList.remove('christmas')
-      document.body.classList.remove('spring')
-      document.body.classList.remove('frozen')
-      document.body.style.backgroundColor = '#FFFFFF'
-      window.localStorage.setItem('theme', THEME.LIGHT)
-      setCookie('_theme', THEME.LIGHT, 180)
-      setTheme(THEME.LIGHT)
-    }
-    // location.reload()
-  }, [BAR_STYLE, setTheme, theme])
+  const setBackground = useCallback(() => {
+    applyTheme(theme)
+  }, [applyTheme, theme])
 
   useLayoutEffect(() => {
     const localTheme = window.localStorage.getItem('theme')
-    if (localTheme) {
-      setTheme(localTheme as THEME)
-      setBackground()
-      setCookie('_theme', localTheme, 180)
-    } else {
-      setCookie('_theme', THEME.LIGHT, 180)
-    }
-  }, [setBackground, setTheme])
+    const normalizedTheme = normalizeTheme(localTheme)
+    const nextSeasonalThemeEnabled =
+      getStoredSeasonalThemeEnabled(normalizedTheme)
+    const nextManualSeasonalTheme = getStoredManualSeasonalTheme(
+      normalizedTheme,
+      nextSeasonalThemeEnabled,
+    )
+    const nextTheme = getResolvedTheme(
+      normalizedTheme,
+      nextSeasonalThemeEnabled,
+      nextManualSeasonalTheme,
+    )
 
-  return { toggleTheme, setBackground }
+    const storedSeasonalPreference = window.localStorage.getItem(
+      SEASONAL_THEME_ENABLED_STORAGE_KEY,
+    )
+    const hasStoredSeasonalPreference =
+      storedSeasonalPreference === 'true' ||
+      storedSeasonalPreference === 'false'
+
+    if (!hasStoredSeasonalPreference && isSeasonalTheme(normalizedTheme)) {
+      window.localStorage.setItem(SEASONAL_THEME_ENABLED_STORAGE_KEY, 'true')
+    }
+
+    if (!import.meta.env.DEV && isSeasonalTheme(normalizedTheme)) {
+      window.localStorage.removeItem('theme')
+    } else if (localTheme === 'frozen') {
+      window.localStorage.setItem('theme', nextTheme)
+    }
+    persistManualSeasonalTheme(nextManualSeasonalTheme)
+    setSeasonalThemeEnabled(nextSeasonalThemeEnabled)
+    setTheme(nextTheme)
+    applyTheme(nextTheme)
+    setCookie('_theme', nextTheme, 180)
+  }, [
+    applyTheme,
+    persistManualSeasonalTheme,
+    setCookie,
+    setSeasonalThemeEnabled,
+    setTheme,
+  ])
+
+  return {
+    toggleTheme,
+    setBackground,
+    setThemeMode,
+    setAutomaticTheme,
+    setManualSeasonalThemeMode,
+    seasonalThemeEnabled,
+    toggleSeasonalTheme,
+    setSeasonalThemeEnabledMode,
+  }
 }

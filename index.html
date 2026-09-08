@@ -14,6 +14,7 @@
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#FFFFFF">
     <meta name="viewport" content="width=device-width, initial-scale=1.0 viewport-fit=cover" />
     <meta name="google" content="notranslate">
     <title>버스하냥 - 한양대 ERICA 셔틀버스 시간표 서비스</title>
@@ -76,27 +77,6 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVQ7FQG"
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <script>
-      var meta = document.createElement('meta')
-      meta.name = 'theme-color'
-      if (window.localStorage.getItem('theme') === 'dark') {
-        meta.content = '#27272A'
-        document.body.style.backgroundColor = '#27272A'
-      } else if (window.localStorage.getItem('theme') === 'christmas') {
-        meta.content = '#b23e3e'
-        document.body.style.backgroundColor = '#b23e3e'
-      } else if (window.localStorage.getItem('theme') === 'spring') {
-        meta.content = '#fff4f4'
-        document.body.style.backgroundColor = '#fff4f4'
-      } else if (window.localStorage.getItem('theme') === 'frozen') {
-        meta.content = '#eff8ff'
-        document.body.style.backgroundColor = '#eff8ff'
-      } else {
-        meta.content = '#FFFFFF'
-        document.body.style.backgroundColor = '#FFFFFF'
-      }
-      document.getElementsByTagName('head')[0].appendChild(meta)
-    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

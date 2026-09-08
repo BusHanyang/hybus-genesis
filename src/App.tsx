@@ -8,9 +8,16 @@ import { Transition } from 'react-transition-group'
 import Arrow from '/public/image/expand_less_white_48dp.svg?react'
 import HelpImg from '/public/image/helpblack.svg?react'
 import { Shuttle } from '@/components'
+import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
 import { useDarkMode } from '@/components/useDarkMode'
-import { useDarkmodeContext } from '@/context/ThemeContext'
+import {
+  isSeasonalTheme,
+  normalizeTheme,
+  SEASONAL_THEME_ENABLED_STORAGE_KEY,
+  THEME,
+  useDarkmodeContext,
+} from '@/context/ThemeContext'
 import { StopLocation } from '@/data'
 
 import Refreshing from './app/components/ptr/refreshing-content'
@@ -29,6 +36,8 @@ type MainCardHeight =
   | 'stationPromptRealtime'
   | 'defaultPrompt'
 
+const CURRENT_YEAR = new Date().getFullYear()
+
 const cardShellBase =
   'mb-3 justify-center items-center font-medium rounded-lg transition-colors text-theme-text border-theme-border shadow-theme-shadow'
 const buttonShellBase =
@@ -39,12 +48,12 @@ const heightTransitionCardBase =
 const buttonBase =
   'flex will-change-transform overflow-hidden cursor-default border-none px-2 py-6 hm:py-4 hm:text-sm hm:leading-4'
 const circleBase =
-  "flex rounded-full inline-block transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
+  "relative flex rounded-full inline-block shrink-0 transition-transform h-3 w-3 rt1:h-2.5 rt1:w-2.5 hsm:my-1"
 const circleThemeVariants = {
   variants: {
     'data-theme': {
       spring:
-        "rotate-45 scale-75 rounded-none before:absolute before:w-full before:h-full before:rounded-full before:bg-inherit before:content-[''] before:left-[-50%] after:absolute after:w-full after:h-full after:rounded-full after:bg-inherit after:content-[''] after:top-[-50%]",
+        "rotate-45 scale-75 rounded-none before:absolute before:left-[-50%] before:top-0 before:w-full before:h-full before:rounded-full before:bg-inherit before:content-[''] after:absolute after:left-0 after:top-[-50%] after:w-full after:h-full after:rounded-full after:bg-inherit after:content-['']",
       default: '',
     },
   },
@@ -60,7 +69,9 @@ const themeRootVariants = {
       dark: 'dark',
       christmas: 'christmas',
       spring: 'spring',
-      frozen: 'frozen',
+      summer: 'summer',
+      autumn: 'autumn',
+      winter: 'winter',
     },
   },
   defaultVariants: {
@@ -68,10 +79,14 @@ const themeRootVariants = {
   },
 } as const
 
-const ThemeRoot = classed('div', 'h-full', themeRootVariants)
+const ThemeRoot = classed(
+  'div',
+  'mobile-fab-scroll-root relative h-full',
+  themeRootVariants,
+)
 const Apps = classed(
   'div',
-  'h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors',
+  'mobile-fab-scroll-content h-full pl-5 pr-5 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors',
 )
 const CopyRightText = classed('p', 'text-theme-text pt-3 hsm:text-sm hsm:leading-4')
 const CycleCircle = classed('span', `${circleBase} bg-chip-red mr-2 hsm:mx-2`, circleThemeVariants)
@@ -118,6 +133,7 @@ const Button = classed('div', `${buttonShellBase} ${buttonBase}`, {
 })
 const FulltimeButton = classed('div', `${cardBase} ${buttonBase} w-full cursor-default`)
 const HeadlineWrapper = classed('div', 'relative drag-save-n')
+const TitleRow = classed('div', 'grid grid-cols-[1fr_auto_1fr] items-center')
 const HelpIcon = classed(
   HelpImg,
   'bottom-3 right-0 absolute h-9 w-9 hsm:h-8 hsm:w-8 cursor-default drag-save-n',
@@ -230,25 +246,39 @@ function App() {
   const [modalAni, setModalAni] = useState<boolean>(false)
   const [noticeContent, setNoticeContent] = useState<string>('')
   const [noticeTitle, setNoticeTitle] = useState<string>('')
-  const { toggleTheme } = useDarkMode()
+  const {
+    theme,
+    automaticSeasonTheme,
+    manualSeasonalTheme,
+    seasonalThemeEnabled,
+  } = useDarkmodeContext()
+  const {
+    setAutomaticTheme,
+    setBackground,
+    setManualSeasonalThemeMode,
+    setSeasonalThemeEnabledMode,
+    setThemeMode,
+    toggleTheme,
+  } = useDarkMode()
   const [touchPrompt, setTouchPrompt] = useState<boolean>(
     window.localStorage.getItem('touch_info') === null,
-  )
-  {/** 테마 Alert state */}
-  const [themeAlert, setThemeAlert] = useState<boolean>(
-    // window.localStorage.getItem('xmas_alert') === null,
-    // window.localStorage.getItem('spring_2025') === null,
-    window.localStorage.getItem('frozen_2025') === null,
   )
 
   const [routeCardClick, setRouteCardClick] = useState<boolean>(false)
   const routeCardRef = useRef<HTMLDivElement>(null)
+  const seasonalChoiceHandledRef = useRef(false)
+  const modalDismissTimeoutRef = useRef<number | null>(null)
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
 
   const openModal = () => {
+    if (modalDismissTimeoutRef.current !== null) {
+      window.clearTimeout(modalDismissTimeoutRef.current)
+      modalDismissTimeoutRef.current = null
+    }
+    setModalAni(false)
     setModalOpen(true)
   }
 
@@ -264,12 +294,30 @@ function App() {
     openModal()
   }
 
-  const closeModal = () => {
+  const dismissModal = () => {
+    if (modalDismissTimeoutRef.current !== null) return
     setModalAni(true)
-    setTimeout(() => {
+    modalDismissTimeoutRef.current = window.setTimeout(() => {
+      modalDismissTimeoutRef.current = null
       setModalAni(false)
       setModalOpen(false)
     }, 300)
+  }
+
+  const closeModal = () => {
+    if (modalTarget === 'Seasonal') {
+      if (seasonalChoiceHandledRef.current) return
+      seasonalChoiceHandledRef.current = true
+      setSeasonalThemeEnabledMode(false)
+    }
+    dismissModal()
+  }
+
+  const handleEnableSeasonalTheme = () => {
+    if (seasonalChoiceHandledRef.current) return
+    seasonalChoiceHandledRef.current = true
+    setAutomaticTheme()
+    dismissModal()
   }
 
   const handleRefresh = (): Promise<React.FC> => {
@@ -280,7 +328,6 @@ function App() {
 
   const { t, i18n } = useTranslation()
 
-  const { theme } = useDarkmodeContext()
   const [tab, setTab] = useState<string>('')
   const [realtimeMode, setRealtimeMode] = useState<boolean>(false)
 
@@ -348,61 +395,56 @@ function App() {
   }, [])
 
   useEffect(() => {
-    const localTheme = window.localStorage.getItem('theme') || 'light'
-    if (localTheme === 'dark') {
-      document.body.classList.remove('light')
-      document.body.classList.remove('christmas')
-      document.body.classList.remove('spring')
-      document.body.classList.remove('frozen')
-      document.body.classList.add('dark')
-    } else if (localTheme === 'christmas' || localTheme === 'spring') {
-      // 강제 light 적용
-      document.body.classList.add('light')
-      document.body.classList.remove('spring')
-      document.body.classList.remove('christmas')
-      document.body.classList.remove('dark')
-      toggleTheme()
-    {/** 봄 테마 사용 시
-    } else if (localTheme === 'spring') {
-        document.body.classList.remove('light')
-        document.body.classList.remove('dark')
-        document.body.classList.remove('christmas')
-        document.body.classList.remove('frozen')
-        document.body.classList.add('spring')
-    */}
-    } else if (localTheme === 'frozen') {
-        document.body.classList.remove('light')
-        document.body.classList.remove('dark')
-        document.body.classList.remove('christmas')
-        document.body.classList.remove('spring')
-        document.body.classList.add('frozen')
-    } else {
-      document.body.classList.remove('dark')
-      document.body.classList.remove('christmas')
-      document.body.classList.remove('spring')
-      document.body.classList.remove('frozen')
-      document.body.classList.add('light')
+    return () => {
+      if (modalDismissTimeoutRef.current !== null) {
+        window.clearTimeout(modalDismissTimeoutRef.current)
+        modalDismissTimeoutRef.current = null
+      }
     }
-  }, [theme, toggleTheme])
+  }, [])
+
+  useEffect(() => {
+    setBackground()
+  }, [setBackground, theme])
+
+  useEffect(() => {
+    const automaticThemeIsVisible =
+      seasonalThemeEnabled &&
+      manualSeasonalTheme === null &&
+      theme !== THEME.DARK
+
+    if (automaticThemeIsVisible && theme !== automaticSeasonTheme) {
+      setAutomaticTheme()
+    }
+  }, [
+    automaticSeasonTheme,
+    manualSeasonalTheme,
+    seasonalThemeEnabled,
+    setAutomaticTheme,
+    theme,
+  ])
 
   useEffect(() => {
     const status = window.localStorage.getItem('touch_info') === null
     setTouchPrompt(status)
   }, [])
 
-  {/** 테마 사용시 최초 Alert */}
+  {/** 계절 테마를 아직 선택하지 않은 사용자의 최초 선택 */}
   useEffect(() => {
-    const status = window.localStorage.getItem('frozen_2025') === null
-    setThemeAlert(status)
-  }, [])
+    const storedTheme = normalizeTheme(window.localStorage.getItem('theme'))
+    const storedSeasonalPreference = window.localStorage.getItem(
+      SEASONAL_THEME_ENABLED_STORAGE_KEY,
+    )
+    const hasStoredSeasonalPreference =
+      storedSeasonalPreference === 'true' ||
+      storedSeasonalPreference === 'false'
 
-  useEffect(() => {
-    if (themeAlert) {
-      setModalTarget('Frozen')
-      openModal()
-      window.localStorage.setItem('frozen_2025', 'false')
+    if (!hasStoredSeasonalPreference && !isSeasonalTheme(storedTheme)) {
+      seasonalChoiceHandledRef.current = false
+      setModalTarget('Seasonal')
+      setModalOpen(true)
     }
-  }, [themeAlert])
+  }, [])
 
   return (
     <>
@@ -412,7 +454,6 @@ function App() {
             path="/"
             element={
               <>
-                <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   //backgroundColor={}
@@ -425,19 +466,32 @@ function App() {
                     data-theme={theme}
                     onContextMenu={(e) => e.preventDefault()}
                   >
+                    <Fabs openModal={openModal} mTarget={setModalTarget} />
                     <Apps>
                       <header>
                         <HeadlineWrapper>
-                          <Title>
-                            {t('title')}
-                            <HelpIcon
-                              aria-label="information icon"
-                              onClick={handleModalTarget}
-                              onContextMenu={handleContextMenu}
-                              //draggable="false"
-                              fill="var(--color-theme-text)"
-                            ></HelpIcon>
-                          </Title>
+                          <TitleRow>
+                            <span aria-hidden="true" />
+                            <Title>{t('title')}</Title>
+                            {import.meta.env.DEV && (
+                              <ThemeDebugMenu
+                                theme={theme}
+                                manualSeasonalTheme={manualSeasonalTheme}
+                                seasonalThemeEnabled={seasonalThemeEnabled}
+                                onSelectTheme={setThemeMode}
+                                onSelectManualTheme={setManualSeasonalThemeMode}
+                                onSelectAutomaticTheme={setAutomaticTheme}
+                                onToggleTheme={toggleTheme}
+                              />
+                            )}
+                          </TitleRow>
+                          <HelpIcon
+                            aria-label="information icon"
+                            onClick={handleModalTarget}
+                            onContextMenu={handleContextMenu}
+                            //draggable="false"
+                            fill="var(--color-theme-text)"
+                          ></HelpIcon>
                         </HeadlineWrapper>
                         <NoticeWrapper>
                           <Suspense fallback={<div />}>
@@ -635,7 +689,7 @@ function App() {
                         <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
                       </Link>
                       <CopyRightText id="copyright">
-                        Copyright © 2020-2025{' '}
+                        Copyright © 2020-{CURRENT_YEAR}{' '}
                         <a
                           className="underline"
                           target="_blank"
@@ -653,11 +707,11 @@ function App() {
                   <ModalOpen
                     isModalAni={modalAni}
                     isOpen={modalOpen}
-                    openModal={openModal}
                     closeModal={closeModal}
                     mTarget={modalTarget}
                     noticeContent={noticeContent}
                     noticeTitle={noticeTitle}
+                    onEnableSeasonalTheme={handleEnableSeasonalTheme}
                   />
                 </Suspense>
               </>

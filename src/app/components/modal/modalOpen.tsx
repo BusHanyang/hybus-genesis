@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { classed } from '@tw-classed/react'
 import { t } from 'i18next'
 import React from 'react'
-import { Trans } from 'react-i18next'
 
 import { changelogAPI } from '@/network/changelog'
 
@@ -13,31 +12,39 @@ const ChangelogMargin = classed('div', 'mb-[1em]')
 const ContentArea = classed('div', 'm-auto justify-between')
 const ChangelogDiv = classed(ContentArea, 'text-left')
 const ModalButton = classed('button', 'outline-hidden cursor-pointer border-0')
-const ModalFooterButton = classed(
-  ModalButton,
-  'mt-6 py-6 w-full text-white bg-indigo-400 font-Ptd font-bold text-lg rounded-md',
-)
 const ModalScrollArea = classed('div', 'font-Ptd overflow-auto max-h-[450px]')
+const SeasonalPrompt = classed('div')
+const SeasonalPromptText = classed(
+  'p',
+  'text-sm leading-6 opacity-90 hsm:text-[13px] hsm:leading-5',
+)
+const SeasonalPromptHint = classed(
+  'p',
+  'mt-4 text-sm leading-6 opacity-80 hsm:text-[13px] hsm:leading-5',
+)
+const SeasonalPromptPrimaryButton = classed(
+  ModalButton,
+  'mt-6 w-full rounded-md bg-indigo-400 px-4 py-6 font-Ptd text-lg font-bold text-white transition-colors hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 hsm:py-5 hsm:text-base',
+)
+const SeasonalPromptSecondaryButton = classed(
+  ModalButton,
+  'rounded-md bg-gray-500 px-4 py-2 font-Ptd text-xs text-white transition-colors hover:bg-gray-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-500 hsm:min-h-11',
+)
 
 const ModalOpen = (props: {
   isOpen: boolean
   isModalAni: boolean
-  openModal: () => void
   closeModal: () => void
   mTarget: string
   noticeContent?: string
   noticeTitle?: string
+  onEnableSeasonalTheme: () => void
 }) => {
   const changelogs = useQuery({
     queryKey: ['changelog'],
     queryFn: changelogAPI,
     staleTime: 5 * 60 * 1000,
   })
-
-  const toggleTheme = (themeName: string) => {
-    window.localStorage.setItem('theme', themeName)
-    window.location.reload()
-  }
 
   return (
     <React.Fragment>
@@ -46,6 +53,16 @@ const ModalOpen = (props: {
         ani={props.isModalAni}
         close={props.closeModal}
         mTarget={props.mTarget}
+        seasonalFooter={
+          props.mTarget === 'Seasonal' ? (
+            <SeasonalPromptSecondaryButton
+              type="button"
+              onClick={props.closeModal}
+            >
+              {t('seasonal_prompt_keep')}
+            </SeasonalPromptSecondaryButton>
+          ) : undefined
+        }
       >
         <ModalScrollArea>
           <ContentArea>
@@ -72,35 +89,21 @@ const ModalOpen = (props: {
                   src={t('info_link')}
                 ></iframe>
               )}
-              {props.mTarget === 'Christmas' && (
-                <>
-                  <Trans i18nKey="christmas_txt" />
-                  <br />
-
-                  <ModalFooterButton onClick={() => toggleTheme('christmas')}>
-                    {t('christmas_btn')}
-                  </ModalFooterButton>
-                </>
-              )}
-              {props.mTarget === 'Spring' && (
-                <>
-                  <Trans i18nKey="spring_txt" />
-                  <br />
-
-                  <ModalFooterButton onClick={() => toggleTheme('spring')}>
-                    {t('spring_btn')}
-                  </ModalFooterButton>
-                </>
-              )}
-              {props.mTarget === 'Frozen' && (
-                <>
-                  <Trans i18nKey="frozen_txt" />
-                  <br />
-
-                  <ModalFooterButton onClick={() => toggleTheme('frozen')}>
-                    {t('frozen_btn')}
-                  </ModalFooterButton>
-                </>
+              {props.mTarget === 'Seasonal' && (
+                <SeasonalPrompt>
+                  <SeasonalPromptText>
+                    {t('seasonal_prompt_text')}
+                  </SeasonalPromptText>
+                  <SeasonalPromptHint>
+                    {t('seasonal_prompt_once')}
+                  </SeasonalPromptHint>
+                  <SeasonalPromptPrimaryButton
+                    type="button"
+                    onClick={props.onEnableSeasonalTheme}
+                  >
+                    {t('seasonal_prompt_enable')}
+                  </SeasonalPromptPrimaryButton>
+                </SeasonalPrompt>
               )}
               {props.mTarget === 'Notice' && (
                 <>

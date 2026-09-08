@@ -1,11 +1,8 @@
 {
-  "lang": "en",
   "changeLang": "한국어",
   "title": "BusHanyang",
 
   "notice": "Notice",
-  "news": "News",
-
   "cycle": "Cycle",
   "direct": "Direct",
   "cycle_ja": "Direct",
@@ -42,7 +39,6 @@
   "yesulin_btn": "Yesulin Apartment",
   "jungang_btn": "Jungang Station",
   "all_btn": "Full Timetable",
-  "to_yesulin": "To Yesulin",
 
   "no_today": "There is no shuttle bus for today.",
   "end_today": "Shuttle bus service has ended today.",
@@ -54,6 +50,14 @@
   "changelog": "ChangeLog",
   "dark": "Dark",
   "light": "Light",
+  "theme_on": "Theme On",
+  "theme_off": "Theme Off",
+  "theme_auto": "Auto Season",
+  "theme_spring": "Spring",
+  "theme_summer": "Summer",
+  "theme_autumn": "Autumn",
+  "theme_winter": "Winter",
+  "theme_christmas": "Christmas",
   "info": "Information",
   "close": "Close",
 
@@ -116,15 +120,9 @@
   "last_train_img": "/image/last_train_en.svg",
   "rapid_train_img": "/image/rapid_train_en.svg",
 
-  "christmas": "Merry Christmas!",
-  "christmas_txt": "Discover the new Christmas theme now 🎄 <br/> You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
-  "christmas_btn": "Switch Now 🎁",
-
-  "spring": "Happy Spring!",
-  "spring_txt": "Discover the new spring theme now🌸 <br/>  You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
-  "spring_btn": "Coloring with flowers 🌸",
-
-  "frozen": "Frozen Theme",
-  "frozen_txt": "Discover the new frozen theme now❄️ <br/> You can always switch back from the floating menu :) <br/><br/> (This notification will only appear once.)",
-  "frozen_btn": "Switch Now ❄️"
+  "seasonal_prompt_title": "Would you like to use seasonal themes?",
+  "seasonal_prompt_text": "The screen colors and effects such as sunlight and snow change with the season. You can turn seasonal themes on or off anytime from the bottom-right menu.",
+  "seasonal_prompt_once": "(This message is shown only once.)",
+  "seasonal_prompt_enable": "Enable seasonal themes",
+  "seasonal_prompt_keep": "Keep seasonal themes off"
 }

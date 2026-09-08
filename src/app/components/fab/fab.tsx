@@ -6,16 +6,14 @@ import React, { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Action, Fab } from 'react-tiny-fab'
 
-//import ChristmasImg from '/image/christmas_mode_black_48dp.svg'
 import DarkImg from '/image/dark_mode_black_48dp.svg'
 import Email from '/image/email_black_48dp.svg'
 import Arrow from '/image/expand_less_white_48dp.svg'
-//import SpringImg from '/image/flower.svg'
+import ThemeImg from '/image/flower.svg'
 import Info from '/image/infoblack.svg'
 import LangImg from '/image/lang_black_48dp.svg'
 import LightImg from '/image/light_mode_black_48dp.svg'
 import Donate from '/image/local_cafe_black_48dp.svg'
-import SnowflakeImg from '/image/snowflake.svg'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
@@ -42,12 +40,15 @@ const FabBackground = classed('div', 'select-none font-Ptd', {
     'data-state': 'closed',
   },
 })
-
 const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  const { toggleTheme } = useDarkMode()
+  const {
+    toggleTheme,
+    seasonalThemeEnabled,
+    toggleSeasonalTheme,
+  } = useDarkMode()
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const { theme } = useDarkmodeContext()
@@ -123,6 +124,11 @@ const Fabs = (props: {
       toggleTheme()
     })
   }
+  const handleSeasonalThemeOnClick = (): Promise<React.FC> => {
+    return new Promise(() => {
+      toggleSeasonalTheme()
+    })
+  }
   const handleLangOnClick = (): Promise<React.FC> => {
     return new Promise(() => {
       if (i18n.language === 'en') {
@@ -139,40 +145,50 @@ const Fabs = (props: {
     if (theme === 'dark') {
       setMetadata({
         changeColor: '#374151',
-        //changeText: t('light'),
-        //imgIcon: LightImg,
+        changeText: t('light'),
+        imgIcon: LightImg,
         iconColor: 'white',
         dataTheme: 'dark',
-        // changeText: t('christmas'),
-        // imgIcon: ChristmasImg,
-        // changeText: t('spring'),
-        // imgIcon: SpringImg,
-        changeText: t('frozen'),
-        imgIcon: SnowflakeImg,
       })
     } else if (theme === 'christmas') {
       setMetadata({
-        changeText: t('light'),
+        changeText: t('dark'),
         changeColor: 'var(--color-theme-main)',
         iconColor: 'white',
         dataTheme: 'christmas',
-        imgIcon: LightImg,
+        imgIcon: DarkImg,
       })
     } else if (theme === 'spring') {
       setMetadata({
-        changeText: t('light'),
+        changeText: t('dark'),
         changeColor: '#e37da6',
         iconColor: 'white',
         dataTheme: 'spring',
-        imgIcon: LightImg,
+        imgIcon: DarkImg,
       })
-    } else if (theme === 'frozen') {
+    } else if (theme === 'summer') {
       setMetadata({
-        changeText: t('light'),
+        changeText: t('dark'),
+        changeColor: '#2ca6a4',
+        iconColor: 'white',
+        dataTheme: 'summer',
+        imgIcon: DarkImg,
+      })
+    } else if (theme === 'autumn') {
+      setMetadata({
+        changeText: t('dark'),
+        changeColor: '#b45309',
+        iconColor: 'white',
+        dataTheme: 'autumn',
+        imgIcon: DarkImg,
+      })
+    } else if (theme === 'winter') {
+      setMetadata({
+        changeText: t('dark'),
         changeColor: '#647ab3',
         iconColor: 'white',
-        dataTheme: 'frozen',
-        imgIcon: LightImg,
+        dataTheme: 'winter',
+        imgIcon: DarkImg,
       })
     } else {
       setMetadata({
@@ -228,7 +244,9 @@ const Fabs = (props: {
           onClick={handleDarkOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={metadata.imgIcon}
@@ -240,12 +258,33 @@ const Fabs = (props: {
           </Icons>
         </Action>
         <Action
+          text={seasonalThemeEnabled ? t('theme_off') : t('theme_on')}
+          style={fabMainStyle}
+          onClick={handleSeasonalThemeOnClick}
+          onContextMenu={handleContextMenu}
+        >
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
+            <img
+              className="cursor-default mx-auto drag-save-n"
+              src={ThemeImg}
+              style={{ padding: 8 }}
+              alt="seasonal theme icon"
+              draggable="false"
+              onContextMenu={(e) => e.preventDefault()}
+            />
+          </Icons>
+        </Action>
+        <Action
           text={t('changeLang')}
           style={fabMainStyle}
           onClick={handleLangOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={LangImg}
@@ -262,7 +301,9 @@ const Fabs = (props: {
           onClick={handleModalOpen}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Info}
@@ -278,7 +319,9 @@ const Fabs = (props: {
           onClick={handleDonateOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Donate}
@@ -294,7 +337,9 @@ const Fabs = (props: {
           onClick={handleEmailOnClick}
           onContextMenu={handleContextMenu}
         >
-          <Icons data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}>
+          <Icons
+            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
+          >
             <img
               className="cursor-default mx-auto drag-save-n"
               src={Email}
