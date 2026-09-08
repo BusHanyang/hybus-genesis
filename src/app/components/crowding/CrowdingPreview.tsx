@@ -27,7 +27,7 @@ type CrowdingPreviewProps = {
   stopId: CrowdingStopId | null
 }
 
-export const crowdingCompactActionClassName =
+const crowdingCompactActionClassName =
   'min-h-8 shrink-0 rounded-md border border-theme-border px-2.5 py-1 text-[11px] font-medium opacity-75 transition-opacity hover:opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2'
 export const crowdingNativeActionClassName =
   'relative z-[3] min-h-6 shrink-0 rounded-md border border-theme-border bg-theme-card px-2.5 py-1 [font-size:small] font-medium text-theme-text opacity-100 focus-visible:outline-2 focus-visible:outline-offset-2'

@@ -4,14 +4,14 @@ import {
   classifyStopPresence,
   type GpsSample,
   isFreshUsableGpsSample,
-} from '@/components/crowding/classifyStopPresence'
+} from '@/components/crowding/gps/classifyStopPresence'
 import {
   crowdingStopAnchors,
   type CrowdingStopId,
 } from '@/data/crowding/stopGeometry'
 
-import { crowdingPresencePolicy } from './crowdingConfig'
-import { appendCrowdingSample, getRetryPresenceSource } from './crowdingState'
+import { crowdingPresencePolicy } from '../crowdingConfig'
+import { appendCrowdingSample, getRetryPresenceSource } from '../crowdingState'
 
 export type StopPresenceStatus =
   | 'collecting'
@@ -56,8 +56,6 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
     'geolocation' in navigator ? 'unknown' : 'unsupported',
   )
   const [isPageVisible, setIsPageVisible] = useState(isPageVisibleRef.current)
-  const [retryAttempt, setRetryAttempt] = useState(0)
-  const [nextRetryAt, setNextRetryAt] = useState<number | null>(null)
   const [samples, setSamples] = useState<ReadonlyArray<GpsSample>>([])
   const [source, setSource] = useState<StopPresenceSource>(null)
 
@@ -83,8 +81,6 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
   const resetRetryState = useCallback(() => {
     clearRetryTimer()
     retryAttemptRef.current = 0
-    setRetryAttempt(0)
-    setNextRetryAt(null)
   }, [clearRetryTimer])
 
   const markPermissionDenied = useCallback(
@@ -142,7 +138,6 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
     clearRetryTimer()
 
     if (!shouldCollectRef.current || !isPageVisibleRef.current) {
-      setNextRetryAt(null)
       return
     }
 
@@ -152,11 +147,8 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
         Math.min(nextAttempt - 1, RETRY_DELAYS_MILLISECONDS.length - 1)
       ]
     retryAttemptRef.current = nextAttempt
-    setRetryAttempt(nextAttempt)
-    setNextRetryAt(Date.now() + delay)
     retryTimeoutRef.current = window.setTimeout(() => {
       retryTimeoutRef.current = null
-      setNextRetryAt(null)
       startWatchRef.current()
     }, delay)
   }, [clearRetryTimer])
@@ -180,7 +172,6 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
 
   const startWatch = useCallback(() => {
     clearRetryTimer()
-    setNextRetryAt(null)
 
     if (!shouldCollectRef.current || !isPageVisibleRef.current) return
     if (sourceRef.current === 'native') return
@@ -348,7 +339,6 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
           return
         }
         clearRetryTimer()
-        setNextRetryAt(null)
         clearActiveWatch()
         if (shouldCollectRef.current) setStatus('paused')
       } else if (shouldCollectRef.current) {
@@ -383,15 +373,12 @@ export const useStopPresence = (selectedStopId: CrowdingStopId | null) => {
     handleNativePosition,
     handleNativePositionError,
     hasFreshPosition,
-    isActive: status === 'collecting' || status === 'requesting',
     isPageVisible,
     latestSample,
-    nextRetryAt,
     permission,
     releaseNativeRecovery,
     reset,
     retry,
-    retryAttempt,
     sampleCount: samples.length,
     source,
     start,

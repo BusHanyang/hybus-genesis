@@ -1,4 +1,4 @@
-import { crowdingPresencePolicy } from './crowdingConfig.ts'
+import { crowdingPresencePolicy } from '../crowdingConfig.ts'
 
 export type GpsSample = {
   accuracyMeters: number
@@ -85,7 +85,7 @@ export const getSampleAnchorLikelihood = (
   return Math.exp(-(distanceMeters ** 2) / (2 * sigmaMeters ** 2))
 }
 
-export const isUsableGpsSample = (sample: GpsSample): boolean =>
+const isUsableGpsSample = (sample: GpsSample): boolean =>
   Number.isFinite(sample.accuracyMeters) &&
   sample.accuracyMeters > 0 &&
   sample.accuracyMeters <= crowdingPresencePolicy.maxAccuracyMeters &&

@@ -6,11 +6,11 @@ import {
   distanceBetweenPointsMeters,
   getSampleAnchorLikelihood,
 } from './classifyStopPresence.ts'
-import { crowdingPresencePolicy } from './crowdingConfig.ts'
+import { crowdingPresencePolicy } from '../crowdingConfig.ts'
 import {
   crowdingStopAnchors,
   crowdingStopIds,
-} from '../../data/crowding/stopGeometry.ts'
+} from '../../../data/crowding/stopGeometry.ts'
 
 const outbound = crowdingStopAnchors.find(
   (anchor) => anchor.id === 'shuttlecoke_o',

@@ -1,6 +1,6 @@
-import type { CrowdingStopId } from '../../data/crowding/stopGeometry'
+import type { CrowdingStopId } from '../../../data/crowding/stopGeometry'
 
-export const scheduledRouteTypes = [
+const scheduledRouteTypes = [
   'C',
   'DH',
   'DY',

@@ -15,7 +15,7 @@ import {
   createScheduledTripDescriptor,
   createScheduledTripId,
   type ScheduledTripDescriptor,
-} from '@/components/crowding/scheduledTrip'
+} from '@/components/crowding/sync/scheduledTrip'
 import { openNaverMapApp } from '@/components/shuttle/map'
 import {
   convertUnixToTime,

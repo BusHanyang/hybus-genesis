@@ -68,7 +68,7 @@ test('presence POST uses the exact endpoint, credentials and coarse JSON keys', 
 
   const result = await postCrowdingPresence(request, { fetchImpl })
 
-  assert.equal(result, undefined)
+  assert.deepEqual(result, responseBody)
   assert.equal(capturedUrl, CROWDING_PRESENCE_ENDPOINT)
   assert.equal(capturedInit.credentials, 'include')
   assert.equal(capturedInit.method, 'POST')

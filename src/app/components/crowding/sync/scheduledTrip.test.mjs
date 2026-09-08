@@ -7,7 +7,7 @@ import {
   getKoreaServiceDateForMinute,
   normalizeScheduledRouteType,
 } from './scheduledTrip.ts'
-import { crowdingStopIds } from '../../data/crowding/stopGeometry.ts'
+import { crowdingStopIds } from '../../../data/crowding/stopGeometry.ts'
 
 test('duplicate ordinals use the full original timetable order', () => {
   const timetable = [

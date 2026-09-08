@@ -4,6 +4,7 @@ import test from 'node:test'
 import {
   CROWDING_PREVIEW_ORIGIN as origin,
   getCrowdingApiBase,
+  isCrowdingFieldTestOrigin,
 } from './crowdingEndpoints.ts'
 import { proxyCrowdingRequest } from './crowdingProxy.ts'
 
@@ -25,6 +26,29 @@ test('production defaults stay unchanged and Preview requests stay same-origin',
     getCrowdingApiBase('https://fake-hybus-genesis.pages.dev'),
     production,
   )
+})
+
+test('field diagnostics allow only canonical development Preview and loopback', () => {
+  assert.equal(isCrowdingFieldTestOrigin(origin), true)
+  for (const local of [
+    'http://localhost:5173',
+    'http://127.0.0.1:4173',
+    'http://[::1]:5173',
+  ]) {
+    assert.equal(isCrowdingFieldTestOrigin(local), true)
+    assert.equal(getCrowdingApiBase(local), `${local}/v1/crowding`)
+  }
+  for (const excluded of [
+    'https://hybus.app',
+    'https://hybus-genesis.pages.dev',
+    'https://other.hybus-genesis.pages.dev',
+    `${origin}.example.com`,
+    'https://localhost.example.com',
+    'file://localhost',
+    'invalid',
+  ]) {
+    assert.equal(isCrowdingFieldTestOrigin(excluded), false)
+  }
 })
 
 test('proxy preserves POST body, Cookie and response Set-Cookie', async () => {

@@ -3,7 +3,8 @@ import type { CrowdingPresencePayload } from '@/network/crowding'
 import {
   crowdingStopAnchors,
   type CrowdingStopId,
-} from '../../data/crowding/stopGeometry.ts'
+} from '../../../data/crowding/stopGeometry.ts'
+import { crowdingPresencePolicy } from '../crowdingConfig.ts'
 import {
   distanceBetweenPointsMeters,
   getSampleAnchorLikelihood,
@@ -11,7 +12,6 @@ import {
   isFreshUsableGpsSample,
   type PresenceClassification,
 } from './classifyStopPresence.ts'
-import { crowdingPresencePolicy } from './crowdingConfig.ts'
 
 export type PresenceSignal = CrowdingPresencePayload
 

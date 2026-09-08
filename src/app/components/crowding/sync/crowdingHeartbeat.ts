@@ -21,7 +21,7 @@ export type SerialHeartbeatOptions<Result> = {
   ) => TimerHandle
 }
 
-export class HeartbeatRequestTimeoutError extends Error {
+class HeartbeatRequestTimeoutError extends Error {
   constructor() {
     super('heartbeat_request_timeout')
     this.name = 'HeartbeatRequestTimeoutError'

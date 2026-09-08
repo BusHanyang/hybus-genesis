@@ -1,5 +1,9 @@
 import type { CrowdingStopId } from '../data/crowding/stopGeometry'
 import { getCrowdingApiBase } from './crowdingEndpoints.ts'
+import {
+  publishCrowdingRequest,
+  startCrowdingRequest,
+} from './crowdingObservation.ts'
 
 const crowdingApiBase = getCrowdingApiBase(
   typeof window === 'undefined' ? undefined : window.location.origin,
@@ -34,12 +38,19 @@ type CrowdingAggregatesRequest = {
   stopId: CrowdingStopId
 }
 
+export type CrowdingPresenceResponse = {
+  accepted: true
+  aggregate: CrowdingAggregate
+  expiresInSeconds: number
+  schemaVersion: 1
+}
+
 type CrowdingAggregateEntry = {
   aggregate: CrowdingAggregate
   scheduledTripId: string
 }
 
-type CrowdingAggregatesResponse = {
+export type CrowdingAggregatesResponse = {
   aggregates: Array<CrowdingAggregateEntry>
   expiresInSeconds: number
   schemaVersion: 1
@@ -99,7 +110,9 @@ const parseCrowdingAggregate = (value: unknown): CrowdingAggregate | null => {
   }
 }
 
-const isValidCrowdingPresenceResponse = (value: unknown): boolean => {
+const parseCrowdingPresenceResponse = (
+  value: unknown,
+): CrowdingPresenceResponse | null => {
   if (
     !isRecord(value) ||
     value.accepted !== true ||
@@ -108,10 +121,18 @@ const isValidCrowdingPresenceResponse = (value: unknown): boolean => {
     Number(value.expiresInSeconds) <= 0 ||
     !isRecord(value.aggregate)
   ) {
-    return false
+    return null
   }
 
-  return parseCrowdingAggregate(value.aggregate) !== null
+  const aggregate = parseCrowdingAggregate(value.aggregate)
+  if (aggregate === null) return null
+
+  return {
+    accepted: true,
+    aggregate,
+    expiresInSeconds: Number(value.expiresInSeconds),
+    schemaVersion: 1,
+  }
 }
 
 export const parseCrowdingAggregatesResponse = (
@@ -211,10 +232,22 @@ type CrowdingFetchOptions = {
 const isAbortError = (error: unknown): boolean =>
   error instanceof DOMException && error.name === 'AbortError'
 
+type CrowdingTransportResult = {
+  retryAfterMilliseconds: number | null
+  status: number | null
+}
+
+const getObservedError = (error: unknown): string => {
+  if (isAbortError(error)) return 'aborted'
+  if (error instanceof CrowdingApiError) return error.message
+  return 'request_failed'
+}
+
 const fetchCrowdingJson = async (
   input: RequestInfo | URL,
   init: RequestInit,
   options: CrowdingFetchOptions,
+  transport: CrowdingTransportResult,
 ): Promise<unknown> => {
   let response: Response
 
@@ -228,11 +261,13 @@ const fetchCrowdingJson = async (
     throw new CrowdingApiError('network_error')
   }
 
+  transport.status = response.status ?? null
   if (!response.ok) {
+    transport.retryAfterMilliseconds = parseRetryAfterMilliseconds(
+      response.headers.get('Retry-After'),
+    )
     throw new CrowdingApiError('http_error', {
-      retryAfterMilliseconds: parseRetryAfterMilliseconds(
-        response.headers.get('Retry-After'),
-      ),
+      retryAfterMilliseconds: transport.retryAfterMilliseconds,
       status: response.status,
     })
   }
@@ -248,20 +283,67 @@ const fetchCrowdingJson = async (
 export const postCrowdingPresence = async (
   request: CrowdingPresenceRequest,
   options: CrowdingFetchOptions = {},
-): Promise<void> => {
-  const body = await fetchCrowdingJson(
-    CROWDING_PRESENCE_ENDPOINT,
-    {
-      body: JSON.stringify(request),
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      method: 'POST',
-    },
-    options,
-  )
+): Promise<CrowdingPresenceResponse> => {
+  const requestBody = JSON.stringify(request)
+  const presenceRequest: CrowdingPresenceRequest = {
+    accuracyBucket: request.accuracyBucket,
+    confidence: request.confidence,
+    dwellBucket: request.dwellBucket,
+    observedAtMinute: request.observedAtMinute,
+    sampleCount: request.sampleCount,
+    scheduledTripId: request.scheduledTripId,
+    schemaVersion: request.schemaVersion,
+    state: request.state,
+    stopId: request.stopId,
+  }
+  const observation = startCrowdingRequest({
+    endpoint: CROWDING_PRESENCE_ENDPOINT,
+    operation: 'presence',
+    presenceRequest,
+    scheduledTripIds: [request.scheduledTripId],
+    stopId: request.stopId,
+  })
+  const transport: CrowdingTransportResult = {
+    retryAfterMilliseconds: null,
+    status: null,
+  }
 
-  if (!isValidCrowdingPresenceResponse(body)) {
-    throw new CrowdingApiError('invalid_response')
+  try {
+    const body = await fetchCrowdingJson(
+      CROWDING_PRESENCE_ENDPOINT,
+      {
+        body: requestBody,
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      },
+      options,
+      transport,
+    )
+
+    const parsed = parseCrowdingPresenceResponse(body)
+    if (parsed === null) throw new CrowdingApiError('invalid_response')
+
+    publishCrowdingRequest({
+      ...observation,
+      ...transport,
+      error: null,
+      observedAt: Date.now(),
+      operation: 'presence',
+      phase: 'succeeded',
+      presenceRequest,
+      response: parsed,
+    })
+    return parsed
+  } catch (error) {
+    publishCrowdingRequest({
+      ...observation,
+      ...transport,
+      error: getObservedError(error),
+      observedAt: Date.now(),
+      phase: 'failed',
+    })
+    throw error
   }
 }
 
@@ -288,26 +370,58 @@ export const getCrowdingAggregates = async (
     url.searchParams.append('scheduledTripId', scheduledTripId)
   })
 
-  const body = await fetchCrowdingJson(
-    url,
-    {
-      credentials: 'omit',
-      method: 'GET',
-    },
-    options,
-  )
-
-  const parsed = parseCrowdingAggregatesResponse(body)
-  if (
-    parsed === null ||
-    parsed.aggregates.length !== scheduledTripIds.length ||
-    parsed.aggregates.some(
-      (aggregate, index) =>
-        aggregate.scheduledTripId !== scheduledTripIds[index],
-    )
-  ) {
-    throw new CrowdingApiError('invalid_response')
+  const observation = startCrowdingRequest({
+    endpoint: CROWDING_AGGREGATES_ENDPOINT,
+    operation: 'aggregates',
+    scheduledTripIds,
+    stopId: request.stopId,
+  })
+  const transport: CrowdingTransportResult = {
+    retryAfterMilliseconds: null,
+    status: null,
   }
 
-  return parsed
+  try {
+    const body = await fetchCrowdingJson(
+      url,
+      {
+        credentials: 'omit',
+        method: 'GET',
+      },
+      options,
+      transport,
+    )
+
+    const parsed = parseCrowdingAggregatesResponse(body)
+    if (
+      parsed === null ||
+      parsed.aggregates.length !== scheduledTripIds.length ||
+      parsed.aggregates.some(
+        (aggregate, index) =>
+          aggregate.scheduledTripId !== scheduledTripIds[index],
+      )
+    ) {
+      throw new CrowdingApiError('invalid_response')
+    }
+
+    publishCrowdingRequest({
+      ...observation,
+      ...transport,
+      error: null,
+      observedAt: Date.now(),
+      operation: 'aggregates',
+      phase: 'succeeded',
+      response: parsed,
+    })
+    return parsed
+  } catch (error) {
+    publishCrowdingRequest({
+      ...observation,
+      ...transport,
+      error: getObservedError(error),
+      observedAt: Date.now(),
+      phase: 'failed',
+    })
+    throw error
+  }
 }

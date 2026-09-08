@@ -1,4 +1,6 @@
 import React, {
+  lazy,
+  Suspense,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -8,9 +10,7 @@ import React, {
   useState,
 } from 'react'
 
-import { createPresenceSignal } from '@/components/crowding/createPresenceSignal'
 import { crowdingNetworkIntervals } from '@/components/crowding/crowdingConfig'
-import { createSerialHeartbeat } from '@/components/crowding/crowdingHeartbeat'
 import {
   crowdingNativeActionClassName,
   CrowdingPreview,
@@ -26,12 +26,13 @@ import {
   initialCrowdingHeartbeatState,
   reduceCrowdingHeartbeatState,
 } from '@/components/crowding/crowdingState'
-import GpsDebugPanel from '@/components/crowding/GpsDebugPanel'
+import { createPresenceSignal } from '@/components/crowding/gps/createPresenceSignal'
 import NativeGeolocationRecovery, {
   supportsNativeGeolocationRecovery,
-} from '@/components/crowding/NativeGeolocationRecovery'
-import { createScheduledTripId } from '@/components/crowding/scheduledTrip'
-import { useStopPresence } from '@/components/crowding/useStopPresence'
+} from '@/components/crowding/gps/NativeGeolocationRecovery'
+import { useStopPresence } from '@/components/crowding/gps/useStopPresence'
+import { createSerialHeartbeat } from '@/components/crowding/sync/crowdingHeartbeat'
+import { createScheduledTripId } from '@/components/crowding/sync/scheduledTrip'
 import type { NextShuttleDeparture } from '@/components/shuttle/Shuttle'
 import type { CrowdingStopId } from '@/data/crowding/stopGeometry'
 import {
@@ -40,7 +41,12 @@ import {
   isRetryableCrowdingRequestError,
   postCrowdingPresence,
 } from '@/network/crowding'
+import { isCrowdingFieldTestOrigin } from '@/network/crowdingEndpoints'
 
+const FieldTestPanel = lazy(
+  () => import('@/components/crowding/field-test/FieldTestPanel'),
+)
+const fieldTestEnabled = isCrowdingFieldTestOrigin(window.location.origin)
 const HEARTBEAT_REQUEST_TIMEOUT_MILLISECONDS = 15_000
 
 class CrowdingHeartbeatContextExpiredError extends Error {
@@ -314,14 +320,24 @@ const CrowdingPresenceFeature = ({
           stopId={selectedStopId}
         />
       )}
-      {import.meta.env.DEV && (
-        <GpsDebugPanel
-          isParticipating={isEnabled}
-          onDisable={handleDisable}
-          onEnable={handleEnable}
-          presence={presence}
-          signal={signal}
-        />
+      {fieldTestEnabled && (
+        <Suspense fallback={null}>
+          <FieldTestPanel
+            canSend={canSend}
+            departure={departure}
+            hasTerminalHeartbeatError={hasTerminalHeartbeatError}
+            isParticipating={isEnabled}
+            isSummaryVisible={isSummaryVisible}
+            nextRequestAt={() => heartbeatScheduleRef.current.nextRequestAt}
+            onDisable={handleDisable}
+            onEnable={handleEnable}
+            onRetry={handleRetry}
+            presence={presence}
+            scheduledTripId={scheduledTripId}
+            selectedStopId={selectedStopId}
+            signal={signal}
+          />
+        </Suspense>
       )}
     </>
   )

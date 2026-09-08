@@ -2,12 +2,12 @@ import {
   type GpsSample,
   isFreshUsableGpsSample,
   type PresenceClassificationStatus,
-} from './classifyStopPresence.ts'
+} from './gps/classifyStopPresence.ts'
 import type {
   StopPresencePermission,
   StopPresenceSource,
   StopPresenceStatus,
-} from './useStopPresence'
+} from './gps/useStopPresence'
 
 export type CrowdingPresenceUiStatus =
   | 'collecting'
