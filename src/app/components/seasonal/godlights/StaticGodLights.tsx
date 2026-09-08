@@ -28,6 +28,16 @@ const StaticGodLights = ({ scene, className, style }: StaticGodLightsProps) => {
   const [useMainThreadFallback, setUseMainThreadFallback] = React.useState(
     () => !supportsStaticGodLightsWorker(),
   )
+  const fallbackScene = React.useMemo<SceneConfig>(() => {
+    if (typeof OffscreenCanvas !== 'undefined') return scene
+
+    return {
+      ...scene,
+      layers: scene.layers.map((layer) =>
+        layer.type === 'rays' ? { ...layer, blur: 0 } : layer,
+      ),
+    }
+  }, [scene])
 
   React.useEffect(() => {
     if (useMainThreadFallback) return
@@ -75,7 +85,7 @@ const StaticGodLights = ({ scene, className, style }: StaticGodLightsProps) => {
   }, [scene, useMainThreadFallback])
 
   if (useMainThreadFallback) {
-    return <GodLights className={className} scene={scene} style={style} />
+    return <GodLights className={className} scene={fallbackScene} style={style} />
   }
 
   return (

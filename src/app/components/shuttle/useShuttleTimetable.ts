@@ -142,11 +142,13 @@ export const useShuttleTimetable = (location: StopLocation) => {
     [departedScheduleCount, timetable.data],
   )
   const routeTimetable = useMemo(() => {
+    if (timetable.status !== 'success') return []
+
     const [first, second] = upcomingTimetable
     if (first === undefined) return []
     if (second?.time === first.time) return [first, second]
     return [first]
-  }, [upcomingTimetable])
+  }, [timetable.status, upcomingTimetable])
 
   return {
     currentTime,
