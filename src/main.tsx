@@ -23,7 +23,7 @@ root.classList.add('h-full')
 ReactDOM.createRoot(root).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
-      <Partytown debug={false} forward={['dataLayer.push']} />
+      <Partytown debug={false} />
       <DarkmodeContextProvider>
         <SeasonalEffect />
         <App />
