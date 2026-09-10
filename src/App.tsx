@@ -369,13 +369,10 @@ function App() {
   useEffect(() => {
     const savedLanguage =
       window.localStorage.getItem('language') || i18n.language
+    const nextLanguage = savedLanguage === 'ko' ? 'ko' : 'en'
     window.localStorage.removeItem('lang')
-    if (savedLanguage === 'ko') {
-      i18n.changeLanguage('ko')
-    } else {
-      i18n.changeLanguage('en')
-    }
-    window.localStorage.setItem('language', i18n.language)
+    window.localStorage.setItem('language', nextLanguage)
+    void i18n.changeLanguage(nextLanguage)
   }, [i18n])
 
   useEffect(() => {
