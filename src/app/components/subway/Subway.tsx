@@ -280,6 +280,8 @@ const openRailblue = (btrainNo: string): void => {
   )
 }
 
+const VALID_SOUTHBOUND_DESTINATIONS = ['안산', '오이도', '인천']
+
 const Subway = ({ station }: SubwayStop) => {
   const timetable = useQuery({
     queryKey: ['subway_timetable', station],
@@ -338,7 +340,11 @@ const Subway = ({ station }: SubwayStop) => {
     const filtered =
       timetable.data
         ?.filter(
-          (val) => val.direction === direction && val.destination !== null,
+          (val) =>
+            val.direction === direction &&
+            val.destination !== null &&
+            (direction !== 2 ||
+              VALID_SOUTHBOUND_DESTINATIONS.includes(val.destination)),
         )
         .sort(compare)
         .slice(0, 2) ?? []
