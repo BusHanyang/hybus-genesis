@@ -2,46 +2,69 @@ import { classed } from '@tw-classed/react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import CheckImg from '/public/image/check_outline_24dp.svg?react'
+import CloseImg from '/public/image/close_outline_24dp.svg?react'
+import { runThemeTransition } from '@/components/theme/themeTransition'
 import { isSeasonalTheme, THEME } from '@/context/ThemeContext'
 
+// No z-index on the root: the trigger stays under the FAB scrim, while the
+// open panel still sits above the cards.
 const ThemeDebugRoot = classed(
   'div',
-  'relative z-40 ml-2 inline-flex justify-self-start font-normal',
+  'relative ml-2 inline-flex justify-self-start font-normal',
 )
 const ThemeDebugTrigger = classed(
   'button',
-  'h-7 whitespace-nowrap rounded-md border border-solid border-gray-300 bg-theme-card px-2 text-[11px] font-medium text-theme-text shadow-sm hsm:h-6 hsm:px-1.5 hsm:text-[10px]',
+  'h-7 whitespace-nowrap rounded-[7px] border border-solid border-off bg-theme-card px-2 text-[11.5px] font-semibold text-theme-text shadow-[0_1px_2px_rgba(0,0,0,.06)] transition-[scale,background-color,color] duration-150 active:scale-[.96] hsm:h-6 hsm:px-1.5 hsm:text-[10px]',
 )
+const TriggerSuffix = classed('span', 'hsm:hidden')
 const ThemeDebugPanel = classed(
   'div',
-  'absolute right-0 top-full mt-2 w-64 max-w-[calc(100vw-2.5rem)] rounded-xl border border-solid border-gray-200 bg-theme-card p-3 text-theme-text shadow-[0_0.75rem_2rem_rgba(15,23,42,0.22)] hsm:-right-4',
+  'absolute right-0 top-[calc(100%+10px)] z-40 w-[262px] max-w-[calc(100vw-2.5rem)] origin-top-right rounded-[14px] border border-solid border-off bg-theme-card p-3 text-theme-text shadow-[0_12px_32px_rgba(15,23,42,.22)] animate-dev-in hsm:-right-4',
 )
 const ThemeDebugHeader = classed(
   'div',
   'mb-3 flex items-start justify-between gap-3 text-left',
 )
-const ThemeDebugTitle = classed('p', 'text-sm font-bold leading-5')
+const ThemeDebugTitle = classed('p', 'm-0 text-sm font-extrabold leading-[1.4]')
 const ThemeDebugDescription = classed(
   'p',
-  'text-[10px] leading-4 opacity-70',
+  'm-0 mt-0.5 text-[11px] leading-[1.45] text-ink-2',
 )
 const ThemeDebugClose = classed(
   'button',
-  'flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-solid border-gray-300 bg-theme-main text-sm leading-none text-theme-text',
+  'flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-solid border-off bg-theme-main text-theme-text transition-[scale] duration-150 active:scale-[.96]',
 )
-const ThemeDebugGrid = classed(
-  'div',
-  'grid grid-cols-2 gap-2',
-)
+const CloseIcon = classed(CloseImg, 'h-[13px] w-[13px]')
+const ThemeDebugGrid = classed('div', 'grid grid-cols-2 gap-2')
 const ThemeDebugOption = classed(
   'button',
-  'flex h-10 items-center justify-start gap-2 whitespace-nowrap rounded-lg border border-solid border-gray-200 bg-theme-main px-3 text-xs font-medium text-theme-text aria-pressed:border-gray-500 aria-pressed:font-bold aria-pressed:shadow-[inset_0_0_0_1px_currentColor]',
+  'flex h-10 items-center gap-2 whitespace-nowrap rounded-[10px] border border-solid bg-theme-main px-2.5 text-[12.5px] text-theme-text transition-[scale,box-shadow,border-color] duration-150 active:scale-[.96] animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_both]',
+  {
+    variants: {
+      'data-selected': {
+        true: 'border-ink-2 font-extrabold shadow-[inset_0_0_0_1px_var(--color-theme-text)]',
+        false: 'border-off font-semibold',
+      },
+      'data-span': {
+        true: 'col-span-2 justify-center',
+        false: 'justify-start',
+      },
+    },
+    defaultVariants: {
+      'data-selected': 'false',
+      'data-span': 'false',
+    },
+  },
 )
 const ThemeSwatch = classed(
   'span',
-  'block h-5 w-5 shrink-0 rounded-full border border-solid border-gray-300 shadow-sm',
+  'block h-5 w-5 shrink-0 rounded-full border border-solid border-black/15 shadow-[0_1px_2px_rgba(0,0,0,.08)]',
 )
-const SelectedMark = classed('span', 'ml-auto text-xs font-bold')
+const SelectedMark = classed(
+  CheckImg,
+  'ml-auto h-3.5 w-3.5 shrink-0 stroke-[3] animate-pop-sm',
+)
 
 interface ThemeDebugMenuProps {
   theme: THEME
@@ -103,6 +126,11 @@ const ThemeDebugMenu = ({
     onSelectAutomaticTheme()
     setIsOpen(false)
   }
+  // Same circle reveal as the FAB, growing from the picked option.
+  const withReveal =
+    (update: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
+      runThemeTransition(e.currentTarget, update)
+    }
 
   const themeActions: Array<{
     theme: THEME
@@ -134,10 +162,14 @@ const ThemeDebugMenu = ({
         aria-expanded={isOpen}
         onClick={() => setIsOpen((open) => !open)}
       >
-        테마<span className="hsm:hidden"> 설정</span>
+        테마<TriggerSuffix> 설정</TriggerSuffix>
       </ThemeDebugTrigger>
       {isOpen && (
-        <ThemeDebugPanel id="theme-debug-panel" aria-label="테마 설정 디버그">
+        <ThemeDebugPanel
+          id="theme-debug-panel"
+          role="dialog"
+          aria-label="테마 설정 디버그"
+        >
           <ThemeDebugHeader>
             <div>
               <ThemeDebugTitle>테마 미리보기</ThemeDebugTitle>
@@ -150,15 +182,17 @@ const ThemeDebugMenu = ({
               aria-label="테마 설정 닫기"
               onClick={() => setIsOpen(false)}
             >
-              ×
+              <CloseIcon aria-hidden="true" />
             </ThemeDebugClose>
           </ThemeDebugHeader>
           <ThemeDebugGrid>
             <ThemeDebugOption
-              className="col-span-2 justify-center"
               type="button"
               aria-pressed={automaticThemeSelected}
-              onClick={handleAutomaticThemeSelect}
+              data-selected={automaticThemeSelected ? 'true' : 'false'}
+              data-span="true"
+              style={{ animationDelay: '30ms' }}
+              onClick={withReveal(handleAutomaticThemeSelect)}
             >
               <ThemeSwatch
                 style={{
@@ -167,11 +201,9 @@ const ThemeDebugMenu = ({
                 }}
               />
               {t('theme_auto')}
-              {automaticThemeSelected && (
-                <SelectedMark aria-hidden="true">✓</SelectedMark>
-              )}
+              {automaticThemeSelected && <SelectedMark aria-hidden="true" />}
             </ThemeDebugOption>
-            {themeActions.map((themeAction) => {
+            {themeActions.map((themeAction, i) => {
               const isSelected = isSeasonalTheme(themeAction.theme)
                 ? seasonalThemeEnabled &&
                   manualSeasonalTheme === themeAction.theme
@@ -182,11 +214,15 @@ const ThemeDebugMenu = ({
                   key={themeAction.theme}
                   type="button"
                   aria-pressed={isSelected}
-                  onClick={() => handleThemeSelect(themeAction.theme)}
+                  data-selected={isSelected ? 'true' : 'false'}
+                  style={{ animationDelay: `${55 + i * 25}ms` }}
+                  onClick={withReveal(() =>
+                    handleThemeSelect(themeAction.theme),
+                  )}
                 >
                   <ThemeSwatch style={{ background: themeAction.swatch }} />
                   {themeAction.text}
-                  {isSelected && <SelectedMark aria-hidden="true">✓</SelectedMark>}
+                  {isSelected && <SelectedMark aria-hidden="true" />}
                 </ThemeDebugOption>
               )
             })}
