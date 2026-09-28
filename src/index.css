@@ -374,11 +374,6 @@
   animation: none;
 }
 
-::view-transition-group(hb-sun),
-::view-transition-group(hb-moon) {
-  mix-blend-mode: screen;
-}
-
 ::view-transition-old(hb-fx),
 ::view-transition-old(hb-sun),
 ::view-transition-old(hb-moon) {
@@ -641,6 +636,82 @@
   }
 }
 
+/* Night sky (dark mode with seasonal themes on) */
+@keyframes hb-moon-glow {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes hb-star-light {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+@keyframes hb-star-glint {
+  0%,
+  78%,
+  100% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  86% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  92% {
+    opacity: 0.2;
+    transform: scale(0.8);
+  }
+}
+
+@keyframes hb-star-twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes hb-firefly-drift {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  33% {
+    transform: translate(var(--fx1), var(--fy1));
+  }
+  66% {
+    transform: translate(var(--fx2), var(--fy2));
+  }
+}
+
+@keyframes hb-firefly-blink {
+  0%,
+  100% {
+    opacity: 0.04;
+  }
+  45% {
+    opacity: 1;
+  }
+  62% {
+    opacity: 0.8;
+  }
+}
+
 /* Countdown odometer: each digit strip holds [next, previous] and rolls down into place. */
 @keyframes hb-roll {
   from {
@@ -662,6 +733,153 @@
     background-size: 300px 100%;
     animation: shimmer 1.2s linear infinite;
     border-radius: 8px;
+  }
+
+  /* Night sky art: soft halos and a moon (or tree-topper star) per season. */
+  .hb-halo-spring {
+    background: radial-gradient(
+      circle,
+      rgba(255, 226, 232, 0.22) 0%,
+      rgba(255, 214, 226, 0.1) 32%,
+      rgba(255, 214, 226, 0.03) 52%,
+      rgba(255, 214, 226, 0) 70%
+    );
+  }
+
+  .hb-halo-summer {
+    background: radial-gradient(
+      circle,
+      rgba(255, 228, 150, 0.2) 0%,
+      rgba(255, 220, 140, 0.1) 28%,
+      rgba(255, 214, 130, 0.035) 50%,
+      rgba(255, 214, 130, 0) 68%
+    );
+  }
+
+  .hb-halo-autumn {
+    background: radial-gradient(
+      circle,
+      rgba(255, 214, 140, 0.24) 0%,
+      rgba(255, 204, 120, 0.11) 30%,
+      rgba(255, 200, 110, 0.035) 52%,
+      rgba(255, 200, 110, 0) 70%
+    );
+  }
+
+  .hb-halo-winter {
+    background: radial-gradient(
+      circle,
+      rgba(214, 228, 255, 0.16) 0%,
+      rgba(200, 220, 255, 0.07) 30%,
+      rgba(200, 220, 255, 0.02) 52%,
+      rgba(200, 220, 255, 0) 68%
+    );
+  }
+
+  .hb-halo-christmas {
+    background: radial-gradient(
+      circle,
+      rgba(255, 222, 140, 0.3) 0%,
+      rgba(255, 206, 110, 0.14) 26%,
+      rgba(255, 196, 96, 0.045) 48%,
+      rgba(255, 196, 96, 0) 66%
+    );
+  }
+
+  /* A hazy spring moon */
+  .hb-moon-spring {
+    background: radial-gradient(
+      circle at 40% 38%,
+      #fff7ec 0%,
+      #fceadb 58%,
+      #f2d8cc 100%
+    );
+    filter: blur(1.4px);
+    opacity: 0.88;
+    box-shadow: 0 0 22px 8px rgba(255, 218, 226, 0.3);
+  }
+
+  /* A warm yellow crescent: the lit rim is an inset shadow on an empty disc. */
+  .hb-moon-summer {
+    box-shadow: inset -8px 5px 0 0 #ffe7a3;
+    filter: drop-shadow(0 0 6px rgba(255, 224, 140, 0.55))
+      drop-shadow(0 0 18px rgba(255, 210, 120, 0.25));
+    transform: rotate(-12deg);
+  }
+
+  /* The full harvest moon, with a few soft craters */
+  .hb-moon-autumn {
+    background:
+      radial-gradient(
+        circle at 63% 58%,
+        rgba(206, 160, 72, 0.34) 0 4.5px,
+        rgba(206, 160, 72, 0) 6px
+      ),
+      radial-gradient(
+        circle at 34% 66%,
+        rgba(206, 160, 72, 0.26) 0 3.2px,
+        rgba(206, 160, 72, 0) 4.4px
+      ),
+      radial-gradient(
+        circle at 57% 29%,
+        rgba(206, 160, 72, 0.22) 0 2.6px,
+        rgba(206, 160, 72, 0) 3.8px
+      ),
+      radial-gradient(circle at 38% 36%, #fff3c8 0%, #ffe08a 56%, #f2c766 100%);
+    box-shadow:
+      0 0 18px 4px rgba(255, 214, 120, 0.45),
+      0 0 48px 14px rgba(255, 200, 100, 0.16);
+  }
+
+  /* A small, cold winter moon */
+  .hb-moon-winter {
+    background: radial-gradient(
+      circle at 40% 38%,
+      #ffffff 0%,
+      #eef4ff 60%,
+      #d6e2f7 100%
+    );
+    box-shadow:
+      0 0 12px 3px rgba(220, 232, 255, 0.45),
+      0 0 34px 10px rgba(200, 220, 255, 0.14);
+  }
+
+  /* A faceted gold tree-topper star */
+  .hb-tree-star {
+    filter: drop-shadow(0 0 5px rgba(255, 214, 120, 0.75))
+      drop-shadow(0 0 16px rgba(255, 196, 90, 0.32));
+    transform: rotate(-8deg);
+  }
+
+  .hb-tree-star-shape {
+    clip-path: polygon(
+      50% 0%,
+      61.2% 34.5%,
+      97.6% 34.5%,
+      68.2% 55.9%,
+      79.4% 90.5%,
+      50% 69.1%,
+      20.6% 90.5%,
+      31.8% 55.9%,
+      2.4% 34.5%,
+      38.8% 34.5%
+    );
+    background:
+      repeating-conic-gradient(
+        from -18deg at 50% 55%,
+        rgba(255, 255, 255, 0.26) 0deg 36deg,
+        rgba(140, 80, 0, 0.24) 36deg 72deg
+      ),
+      radial-gradient(circle at 42% 38%, #fff1b8 0%, #ffd35c 46%, #e39a2a 100%);
+  }
+
+  .hb-tree-star-glint {
+    background: radial-gradient(
+      circle,
+      #ffffff 0%,
+      rgba(255, 255, 255, 0.6) 35%,
+      rgba(255, 255, 255, 0) 70%
+    );
   }
 
   .hb-noscroll {

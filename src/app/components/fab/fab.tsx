@@ -1,5 +1,5 @@
 import { classed } from '@tw-classed/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import CafeImg from '/public/image/cafe_outline_24dp.svg?react'
@@ -117,6 +117,17 @@ const Fabs = (props: {
   const { t, i18n } = useTranslation()
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const open = isOpen ? 'true' : 'false'
+  const listRef = useRef<HTMLDivElement>(null)
+  const mainRef = useRef<HTMLButtonElement>(null)
+
+  // Closing hides the menu from assistive tech, so hand focus back to the main
+  // button if it was on one of the items.
+  useEffect(() => {
+    if (isOpen) return
+    if (listRef.current?.contains(document.activeElement)) {
+      mainRef.current?.focus({ preventScroll: true })
+    }
+  }, [isOpen])
 
   useEffect(() => {
     if (!isOpen) return
@@ -201,7 +212,12 @@ const Fabs = (props: {
         onClick={() => setIsOpen(false)}
       />
       <FabRoot onContextMenu={handleContextMenu}>
-        <FabList id="fab-menu" aria-hidden={!isOpen} data-open={open}>
+        <FabList
+          ref={listRef}
+          id="fab-menu"
+          aria-hidden={!isOpen}
+          data-open={open}
+        >
           {actions.map((action, i) => {
             // Items pop out from the bottom up and tuck back in top-down.
             const delay = isOpen ? (last - i) * 40 : i * 25
@@ -231,6 +247,7 @@ const Fabs = (props: {
           })}
         </FabList>
         <FabMain
+          ref={mainRef}
           type="button"
           aria-label={isOpen ? t('close_menu') : t('open_menu')}
           aria-expanded={isOpen}

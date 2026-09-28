@@ -1,7 +1,5 @@
 import React from 'react'
 
-import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
-
 import SummerGodlightRays from './godlights/SummerGodlightRays'
 import OpticalLensFlare, {
   type OpticalLensFlareProps,
@@ -57,13 +55,9 @@ const lensFlareOptions = {
   style: lensStyle,
 } satisfies OpticalLensFlareProps
 
+// Shown only by day; SeasonalEffect decides when, and fades it out on its way
+// to dark mode.
 const SummerLensFlareEffect = () => {
-  const { theme } = useDarkmodeContext()
-
-  if (theme === THEME.DARK) {
-    return null
-  }
-
   return (
     <div
       aria-hidden="true"
