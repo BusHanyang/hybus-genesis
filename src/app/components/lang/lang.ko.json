@@ -132,5 +132,9 @@
   "map_label": "지도에서 정류장 보기",
   "close_hint": "안내 닫기",
   "notice_label_general": "공지",
-  "notice_label_news": "소식"
+  "notice_label_news": "소식",
+  "route_map_toggle": "노선도 펼치기",
+  "route_head_dorm": "기숙사",
+  "route_head_shuttlecoke": "셔틀콕",
+  "route_head_subway": "한대앞역"
 }

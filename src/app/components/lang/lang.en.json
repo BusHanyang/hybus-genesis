@@ -132,5 +132,9 @@
   "map_label": "Show this stop on the map",
   "close_hint": "Close hint",
   "notice_label_general": "Notice",
-  "notice_label_news": "News"
+  "notice_label_news": "News",
+  "route_map_toggle": "Show the route map",
+  "route_head_dorm": "Dorm",
+  "route_head_shuttlecoke": "Shuttle\u200bCoke",
+  "route_head_subway": "HYU Stn."
 }

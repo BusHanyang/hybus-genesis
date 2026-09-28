@@ -16,22 +16,42 @@ const routeToneTable: Record<RouteStatus, DotColor> = {
   jungang: 'jungang',
 }
 
+// Horizontal position of each stop index on the track. Index 3 is the branch
+// stop (예술인 / 중앙역) between 한대앞역 and 셔틀콕; a full segment spans 20%.
+export const stopLeft = {
+  '0': 'left-[10%]',
+  '1': 'left-[30%]',
+  '2': 'left-[50%]',
+  '3': 'left-[60%]',
+  '4': 'left-[70%]',
+  '5': 'left-[90%]',
+}
+type StopKey = keyof typeof stopLeft
+export const stopKey = (index: number) => String(index) as StopKey
+
+const toneBackground = {
+  direct: 'bg-chip-blue',
+  cycle: 'bg-chip-red',
+  yesulin: 'bg-chip-green',
+  jungang: 'bg-chip-purple',
+  orange: 'bg-chip-orange',
+  inactive: 'bg-off',
+}
+
+const RouteTrack = classed('div', 'relative h-10 grow')
+
+// Colors cross-fade with a small per-row / per-stop delay, so switching the
+// stop sends a wave along the map instead of repainting it at once.
 const RouteLine = classed(
-  'div',
-  'absolute transition duration-150 ease-in-out z-0 h-[0.2rem] top-1 rt1:top-[0.2rem] rt1:h-[0.16rem] left-[0.6rem] max-w-52.5',
+  'span',
+  'absolute top-[23px] h-[3px] origin-left rounded-sm transition-[background-color] duration-[350ms] animate-draw',
   {
     variants: {
+      tone: toneBackground,
+      'data-from': stopLeft,
       'data-width': {
-        half: 'w-[7.8vw]',
-        full: 'w-[15.6vw]',
-      },
-      tone: {
-        direct: 'bg-chip-blue',
-        cycle: 'bg-chip-red',
-        yesulin: 'bg-chip-green',
-        jungang: 'bg-chip-purple',
-        orange: 'bg-chip-orange',
-        inactive: 'bg-[var(--color-route-inactive)] dark:bg-slate-500',
+        half: 'w-[10%]',
+        full: 'w-[20%]',
       },
     },
     defaultVariants: {
@@ -40,19 +60,22 @@ const RouteLine = classed(
   },
 )
 
-const Dot = classed(
+const RouteStop = classed(
   'span',
-  'flex rounded-full inline-block h-3 w-3 rt1:h-2.5 rt1:w-2.5 z-1 mx-2',
+  'absolute top-[19px] -ml-[5.5px] h-[11px] w-[11px]',
   {
     variants: {
-      tone: {
-        direct: 'bg-chip-blue',
-        cycle: 'bg-chip-red',
-        yesulin: 'bg-chip-green',
-        jungang: 'bg-chip-purple',
-        orange: 'bg-chip-orange',
-        inactive: 'bg-[var(--color-route-inactive)] dark:bg-slate-500',
-      },
+      'data-stop': stopLeft,
+    },
+  },
+)
+
+const Dot = classed(
+  'span',
+  'absolute inset-0 rounded-full transition-[background-color] duration-[350ms] animate-dot-pop',
+  {
+    variants: {
+      tone: toneBackground,
       'data-state': {
         hidden: 'opacity-0',
         visible: '',
@@ -64,14 +87,11 @@ const Dot = classed(
   },
 )
 
-const RouteStations = classed(
-  'div',
-  'transition duration-150 ease-in-out flex relative',
-)
+const PingLayer = classed('span', 'absolute inset-0 animate-ping-in')
 
 const SpecialStopsText = classed(
-  'p',
-  'absolute text-xs top-[-17px] left-[-6.5px] text-center w-10 font-bold',
+  'span',
+  'absolute bottom-[13px] left-1/2 -translate-x-1/2 whitespace-nowrap text-[11.5px] font-extrabold transition-colors duration-[350ms]',
   {
     variants: {
       lang: {
@@ -79,18 +99,13 @@ const SpecialStopsText = classed(
         other: 'tracking-tighter text-[0.7rem]',
       },
       tone: {
-        cycle: 'text-chip-red',
-        yesulin: 'text-chip-green',
-        jungang: 'text-chip-purple',
-        inactive: 'text-[var(--color-route-inactive-text)] dark:text-slate-500',
+        cycle: 'text-t-cycle',
+        yesulin: 'text-t-yesulin',
+        jungang: 'text-t-jungang',
+        inactive: 'text-off-text',
       },
     },
   },
-)
-
-const BranchRouteElementGroup = classed(
-  'div',
-  'col-span-2 grid grid-cols-3 w-[75%] place-items-center',
 )
 
 // The numbers in lineIndex and dotIndex represent the index numbers for each route.
@@ -158,130 +173,66 @@ const getSpecialStopTone = (
   return routeStatus === 'direct' ? 'inactive' : routeStatus
 }
 
-const RouteLines = (props: {
-  routeStatus: RouteStatus
-  index: number
-  tab: string
-}) => {
-  if (props.index === -1) return
-  const index = lineIndex[props.routeStatus][props.index]
-  return (
-    <RouteLine
-      data-width={
-        props.routeStatus !== 'direct' && (index === 2 || index === 3)
-          ? 'half'
-          : 'full'
-      }
-      tone={getLineTone(props.routeStatus, index, props.tab)}
-    />
-  )
-}
-
-const RouteElement = (props: {
-  routeStatus: RouteStatus
-  tab: string
-  animationFlagTable: RouteAnimationFlag
-  item: number
-}) => {
-  const { t, i18n } = useTranslation()
-
-  return (
-    <RouteStations>
-      <Dot
-        tone={getDotTone(props.routeStatus, props.item, props.tab)}
-        data-state={
-          props.item === 2 && props.routeStatus === 'yesulin'
-            ? 'hidden'
-            : 'visible'
-        }
-      >
-        {props.item === 3 ? (
-          <SpecialStopsText
-            key={0}
-            lang={i18n.language === 'ko' ? 'ko' : 'other'}
-            tone={getSpecialStopTone(props.routeStatus, props.item, props.tab)}
-          >
-            {props.routeStatus === 'jungang' ? t('jung') : t('yesul')}
-          </SpecialStopsText>
-        ) : (
-          <></>
-        )}
-      </Dot>
-      <RouteLines
-        routeStatus={props.routeStatus}
-        index={lineIndex[props.routeStatus].indexOf(props.item)}
-        tab={props.tab}
-      />
-      <DotAnimation
-        isOn={props.animationFlagTable[props.routeStatus][props.item]}
-        index={props.item}
-        color={props.item >= 5 ? 'orange' : routeToneTable[props.routeStatus]}
-        routeStatus={props.routeStatus}
-      />
-    </RouteStations>
-  )
-}
-
-const RouteElementGroup = (props: {
-  routeStatus: RouteStatus
-  tab: string
-  animationFlagTable: RouteAnimationFlag
-}) => {
-  return (
-    <>
-      {dotIndex[props.routeStatus]
-        .filter(
-          (item) => !(props.routeStatus !== 'direct' && item > 2 && item <= 4),
-        )
-        .map((item) => {
-          if (item === 2 && props.routeStatus !== 'direct')
-            return (
-              <BranchRouteElementGroup key={item}>
-                <RouteElement
-                  routeStatus={props.routeStatus}
-                  tab={props.tab}
-                  animationFlagTable={props.animationFlagTable}
-                  item={item}
-                />
-                <RouteElement
-                  routeStatus={props.routeStatus}
-                  tab={props.tab}
-                  animationFlagTable={props.animationFlagTable}
-                  item={item + 1}
-                />
-                <RouteElement
-                  routeStatus={props.routeStatus}
-                  tab={props.tab}
-                  animationFlagTable={props.animationFlagTable}
-                  item={item + 2}
-                />
-              </BranchRouteElementGroup>
-            )
-          return (
-            <RouteElement
-              key={item}
-              routeStatus={props.routeStatus}
-              tab={props.tab}
-              animationFlagTable={props.animationFlagTable}
-              item={item}
-            />
-          )
-        })}
-    </>
-  )
-}
-
 const RouteVisual = (props: {
   routeStatus: keyof RouteAnimationFlag
   tab: string
   animationFlagTable: RouteAnimationFlag
+  rowIndex: number
 }) => {
+  const { t, i18n } = useTranslation()
+  const { routeStatus, tab, rowIndex } = props
+  const stops = dotIndex[routeStatus]
+
   return (
-    <RouteElementGroup
-      routeStatus={props.routeStatus}
-      tab={props.tab}
-      animationFlagTable={props.animationFlagTable}
-    />
+    <RouteTrack>
+      {lineIndex[routeStatus].map((index, i) => (
+        <RouteLine
+          key={index}
+          tone={getLineTone(routeStatus, index, tab)}
+          data-from={stopKey(index)}
+          data-width={
+            routeStatus !== 'direct' && (index === 2 || index === 3)
+              ? 'half'
+              : 'full'
+          }
+          style={{
+            transitionDelay: `${rowIndex * 30 + i * 55}ms`,
+            animationDelay: `${180 + rowIndex * 60 + i * 55}ms`,
+          }}
+        />
+      ))}
+      {stops.map((item, j) => (
+        <RouteStop key={item} data-stop={stopKey(item)}>
+          <PingLayer>
+            <DotAnimation
+              isOn={props.animationFlagTable[routeStatus][item]}
+              index={item}
+              color={item >= 5 ? 'orange' : routeToneTable[routeStatus]}
+              routeStatus={routeStatus}
+            />
+          </PingLayer>
+          <Dot
+            tone={getDotTone(routeStatus, item, tab)}
+            data-state={
+              item === 2 && routeStatus === 'yesulin' ? 'hidden' : 'visible'
+            }
+            style={{
+              transitionDelay: `${rowIndex * 30 + j * 55}ms`,
+              animationDelay: `${120 + rowIndex * 60 + j * 55}ms`,
+            }}
+          />
+          {item === 3 && (
+            <SpecialStopsText
+              lang={i18n.language === 'ko' ? 'ko' : 'other'}
+              tone={getSpecialStopTone(routeStatus, item, tab)}
+              style={{ transitionDelay: `${rowIndex * 30 + j * 55}ms` }}
+            >
+              {routeStatus === 'jungang' ? t('jung') : t('yesul')}
+            </SpecialStopsText>
+          )}
+        </RouteStop>
+      ))}
+    </RouteTrack>
   )
 }
 
