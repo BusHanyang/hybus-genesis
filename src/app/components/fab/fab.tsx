@@ -31,16 +31,17 @@ const FabScrim = classed(
   },
 )
 // Fixed to the viewport, above the home indicator, and aligned with the right
-// edge of the (max 30rem) content column on wide screens.
+// edge of the (max 30rem) content column on wide screens. The box spans the
+// closed menu too, so it lets clicks through and only its buttons take them.
 const FabRoot = classed(
   'div',
-  'fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[max(1.5rem,calc((100%-30rem)/2+1.25rem))] z-30 flex select-none flex-col items-end font-Ptd',
+  'pointer-events-none fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[max(1.5rem,calc((100%-30rem)/2+1.25rem))] z-30 flex select-none flex-col items-end font-Ptd',
 )
 const FabList = classed('div', 'mb-3.5 flex flex-col items-end gap-3', {
   variants: {
     // Stay visible until the items have finished leaving.
     'data-open': {
-      true: 'visible',
+      true: 'pointer-events-auto visible',
       false: 'invisible [transition:visibility_0s_linear_.5s]',
     },
   },
@@ -75,7 +76,7 @@ const FabAction = classed(
 )
 const FabMain = classed(
   'button',
-  'flex h-[58px] w-[58px] items-center justify-center rounded-full bg-fab-color text-white shadow-fab transition-[scale,background-color] duration-150 active:scale-[.96]',
+  'pointer-events-auto flex h-[58px] w-[58px] items-center justify-center rounded-full bg-fab-color text-white shadow-fab transition-[scale,background-color] duration-150 active:scale-[.96]',
 )
 const FabMainIcon = classed(
   ChevronImg,
