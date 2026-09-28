@@ -40,6 +40,9 @@ const COMPACT_OFF_Y = 200
 // The sheet grows out of the home button, and shrinks back into it on close.
 const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
 const CLOSE_MS = 400
+// Glide to the next departure just as the sheet finishes opening.
+const GLIDE_DELAY_MS = 450
+const GLIDE_MS = 500
 // Cards already in the cache would otherwise finish rising while the content
 // is still fading in, so hold them until it shows.
 const CARD_ENTRY_DELAY_MS = 220
@@ -439,26 +442,34 @@ const FullTime = () => {
         ? currentHour
         : null
 
-  // Once the sheet has opened, glide down to that hour (and settle there once
-  // more if the cards were still rising), unless the user has already moved.
+  // Once the sheet has opened, glide down to that hour. The glide is driven
+  // frame by frame and stops the moment the user scrolls, taps or types, so
+  // it never fights them or pulls them back down.
   useEffect(() => {
     if (targetHour === null || scrolledToTargetRef.current) return
-    const scrollTo = (smooth: boolean) => {
+    let frame = 0
+    const start = window.setTimeout(() => {
       const scroller = scrollerRef.current
       const card = targetCardRef.current
       if (scroller === null || card === null || touchedRef.current) return
       // Marked only once it actually runs: StrictMode's mount/cleanup/mount
-      // would otherwise cancel the timers and skip the scroll for good.
+      // would otherwise cancel the timer and skip the scroll for good.
       scrolledToTargetRef.current = true
-      const top = Math.max(0, card.offsetTop - 72)
-      if (smooth) scroller.scrollTo({ top, behavior: 'smooth' })
-      else if (Math.abs(scroller.scrollTop - top) > 40) scroller.scrollTop = top
-    }
-    const glide = window.setTimeout(() => scrollTo(true), 450)
-    const settle = window.setTimeout(() => scrollTo(false), 1400)
+      const from = scroller.scrollTop
+      const to = Math.max(0, card.offsetTop - 72)
+      const startedAt = performance.now()
+      const step = (now: number) => {
+        if (touchedRef.current) return
+        const progress = Math.min(1, (now - startedAt) / GLIDE_MS)
+        const eased = 1 - Math.pow(1 - progress, 3)
+        scroller.scrollTop = from + (to - from) * eased
+        if (progress < 1) frame = window.requestAnimationFrame(step)
+      }
+      frame = window.requestAnimationFrame(step)
+    }, GLIDE_DELAY_MS)
     return () => {
-      window.clearTimeout(glide)
-      window.clearTimeout(settle)
+      window.clearTimeout(start)
+      window.cancelAnimationFrame(frame)
     }
   }, [targetHour])
 
@@ -616,6 +627,10 @@ const FullTime = () => {
     <ThemeRoot data-theme={theme}>
       <Sheet
         data-fulltime-page=""
+        onPointerDownCapture={markTouched}
+        onWheelCapture={markTouched}
+        onTouchStartCapture={markTouched}
+        onKeyDownCapture={markTouched}
         data-phase={phase}
         style={{ clipPath: clip }}
       >
@@ -650,9 +665,6 @@ const FullTime = () => {
           ref={scrollerRef}
           data-shown={phase === 'open' ? 'true' : 'false'}
           onScroll={handleScroll}
-          onPointerDown={markTouched}
-          onWheel={markTouched}
-          onTouchStart={markTouched}
         >
           <Column>
             <Header>
