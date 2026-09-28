@@ -1,12 +1,20 @@
 import { classed } from '@tw-classed/react'
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
+import {
+  BrowserRouter,
+  Link,
+  Navigate,
+  Route,
+  Routes,
+  useNavigate,
+} from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import HelpImg from '/public/image/help_outline_24dp.svg?react'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
+import { openFullTime } from '@/components/fulltime/fullTimeTransition'
 import RouteMap from '@/components/routemap/RouteMap'
 import StopPicker from '@/components/shuttle/StopPicker'
 import TimetableCard, {
@@ -26,7 +34,27 @@ import {
 import Refreshing from './app/components/ptr/refreshing-content'
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
-const FullTime = lazy(() => import('@/components/fulltime/FullTime'))
+// Code-split, but once preloaded it renders straight away: going through
+// Suspense would hold the page back ~300ms and stall the opening transition.
+type FullTimeModule = typeof import('@/components/fulltime/FullTime')
+let loadedFullTime: FullTimeModule | null = null
+const loadFullTime = () =>
+  import('@/components/fulltime/FullTime').then((module) => {
+    loadedFullTime = module
+    return module
+  })
+const LazyFullTime = lazy(loadFullTime)
+const FullTimeRoute = () => {
+  // Decided once per visit so a later re-render can't swap the tree and reset
+  // the page's filters.
+  const [Preloaded] = useState(() => loadedFullTime?.default ?? null)
+  if (Preloaded !== null) return <Preloaded />
+  return (
+    <Suspense fallback={<div />}>
+      <LazyFullTime />
+    </Suspense>
+  )
+}
 const ModalOpen = lazy(() => import('@/components/modal/modalOpen'))
 
 const CURRENT_YEAR = new Date().getFullYear()
@@ -81,6 +109,29 @@ const Title = classed(
   'h1',
   'm-0 text-center text-[27px] font-extrabold tracking-[-0.03em] hm:text-[1.625rem]',
 )
+
+// Opens the full timetable by growing it out of this button; modifier clicks
+// keep the browser's usual link behaviour.
+const FullTimeLink = () => {
+  const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  return (
+    <Link
+      to="/all"
+      onClick={(e) => {
+        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
+          return
+        e.preventDefault()
+        openFullTime(e.currentTarget.firstElementChild ?? e.currentTarget, () =>
+          navigate('/all'),
+        )
+      }}
+    >
+      <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
+    </Link>
+  )
+}
 
 function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
@@ -195,6 +246,20 @@ function App() {
     document.documentElement.classList.add('h-dfull')
   }, [])
 
+  // Fetch the full timetable page while idle so opening it doesn't stall the
+  // transition on a network request.
+  useEffect(() => {
+    const preload = () => {
+      void loadFullTime()
+    }
+    if (typeof window.requestIdleCallback === 'function') {
+      const handle = window.requestIdleCallback(preload, { timeout: 3000 })
+      return () => window.cancelIdleCallback(handle)
+    }
+    const timer = window.setTimeout(preload, 1500)
+    return () => window.clearTimeout(timer)
+  }, [])
+
   useEffect(() => {
     return () => {
       if (modalDismissTimeoutRef.current !== null) {
@@ -305,9 +370,7 @@ function App() {
                       <RouteMap tab={tab} />
                       <StopPicker tab={tab} onSelect={saveClicked} />
 
-                      <Link to="/all">
-                        <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
-                      </Link>
+                      <FullTimeLink />
                       <CopyRightText id="copyright">
                         Copyright © 2020-{CURRENT_YEAR}{' '}
                         <a
@@ -339,11 +402,7 @@ function App() {
           />
           <Route
             path="/all"
-            element={
-              <Suspense fallback={<div />}>
-                <FullTime />
-              </Suspense>
-            }
+            element={<FullTimeRoute />}
           />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

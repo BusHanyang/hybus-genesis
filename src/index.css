@@ -92,12 +92,17 @@
     --color-route-inactive: #e4e4e7;
     --color-route-inactive-text: #c4c4ca;
 
-    --color-ft-element: #e1e2ec;
+    /* Full timetable */
+    --color-ft-page: #ffffff;
+    --color-ft-element: #eef0f6;
+    --color-ft-hour-now: #e3ecfd;
+    --color-ft-now: #2563eb;
     --color-ft-active: #dbe2f9;
     --color-ft-active-text: #141b2c;
-    --color-ft-text: #44464e;
-    --color-ft-border: #75777f;
-    --color-ft-selected: #000000;
+    --color-ft-text: #5c616b;
+    --color-ft-border: #c4c7d0;
+    --color-ft-divider: #e4e6ec;
+    --color-ft-past: #a2a7b0;
   }
 
   /* Dark */
@@ -136,12 +141,17 @@
     --color-route-inactive: #4b4b53;
     --color-route-inactive-text: #5e5e67;
 
-    --color-ft-element: #44464e;
+    /* Full timetable */
+    --color-ft-page: #18181b;
+    --color-ft-element: #26272c;
+    --color-ft-hour-now: #1e2a44;
+    --color-ft-now: #93c5fd;
     --color-ft-active: #3f4759;
     --color-ft-active-text: #dbe2f9;
-    --color-ft-text: #c5c6d0;
-    --color-ft-border: #8e9099;
-    --color-ft-selected: #ffffff;
+    --color-ft-text: #a1a1aa;
+    --color-ft-border: #55565e;
+    --color-ft-divider: #2e2f35;
+    --color-ft-past: #5f5f68;
   }
 
   /* Christmas */
@@ -180,12 +190,17 @@
     --color-route-inactive: #5c7a69;
     --color-route-inactive-text: #7f9c8b;
 
-    --color-ft-element: #813333;
-    --color-ft-active: #397152;
-    --color-ft-active-text: #ffffff;
-    --color-ft-text: #ffffff;
-    --color-ft-border: #ffffff;
-    --color-ft-selected: #ffffff;
+    /* Full timetable */
+    --color-ft-page: #3e5f4b;
+    --color-ft-element: #4a6b57;
+    --color-ft-hour-now: #5e7e52;
+    --color-ft-now: #ffd27a;
+    --color-ft-active: #9be1c6;
+    --color-ft-active-text: #0f2e22;
+    --color-ft-text: #e3efe7;
+    --color-ft-border: #7f9c8b;
+    --color-ft-divider: #55735f;
+    --color-ft-past: #8fae9b;
   }
 
   .summer {
@@ -221,12 +236,17 @@
     --color-route-inactive: #a7cdd5;
     --color-route-inactive-text: #6f99a2;
 
-    --color-ft-element: #dff7f4;
-    --color-ft-active: #5eead4;
-    --color-ft-active-text: #12343b;
-    --color-ft-text: #335c61;
-    --color-ft-border: #8fcfca;
-    --color-ft-selected: #12343b;
+    /* Full timetable */
+    --color-ft-page: #e6f6f9;
+    --color-ft-element: #d2eef3;
+    --color-ft-hour-now: #bdeee9;
+    --color-ft-now: #0f766e;
+    --color-ft-active: #a7f3d0;
+    --color-ft-active-text: #064e3b;
+    --color-ft-text: #2d5760;
+    --color-ft-border: #9ccbd3;
+    --color-ft-divider: #c6e5eb;
+    --color-ft-past: #8cb0b7;
   }
 
   .autumn {
@@ -262,12 +282,17 @@
     --color-route-inactive: #efe0cc;
     --color-route-inactive-text: #d6bc9c;
 
-    --color-ft-element: #f6e3cb;
-    --color-ft-active: #f59e0b;
-    --color-ft-active-text: #ffffff;
-    --color-ft-text: #744210;
-    --color-ft-border: #c08438;
-    --color-ft-selected: #4a2b12;
+    /* Full timetable */
+    --color-ft-page: #fffdf8;
+    --color-ft-element: #fbf0e1;
+    --color-ft-hour-now: #ffe3c4;
+    --color-ft-now: #b45309;
+    --color-ft-active: #fdba74;
+    --color-ft-active-text: #5a2a06;
+    --color-ft-text: #7a5230;
+    --color-ft-border: #e2c9a8;
+    --color-ft-divider: #f1e4d2;
+    --color-ft-past: #c9ae8e;
   }
 
   .winter {
@@ -303,12 +328,17 @@
     --color-route-inactive: #d5e0f2;
     --color-route-inactive-text: #a9bcda;
 
-    --color-ft-element: #d8e3f1;
-    --color-ft-active: #c1d1ff;
-    --color-ft-active-text: #283963;
-    --color-ft-text: #5a687c;
-    --color-ft-border: #b0bac7;
-    --color-ft-selected: #283963;
+    /* Full timetable */
+    --color-ft-page: #fcffff;
+    --color-ft-element: #eaf2fd;
+    --color-ft-hour-now: #d6e2ff;
+    --color-ft-now: #3b5a8c;
+    --color-ft-active: #c4d2ff;
+    --color-ft-active-text: #0d2c61;
+    --color-ft-text: #3b5a8c;
+    --color-ft-border: #bccbe6;
+    --color-ft-divider: #e0e9f6;
+    --color-ft-past: #a3b5d3;
   }
 
   /* Spring */
@@ -343,12 +373,17 @@
     --color-route-inactive: #f4d7e2;
     --color-route-inactive-text: #ddafc3;
 
-    --color-ft-element: #ffe4ea;
-    --color-ft-active: #f16da4;
-    --color-ft-active-text: #ffffff;
-    --color-ft-text: #c9255e;
-    --color-ft-border: #c9255e;
-    --color-ft-selected: #ffffff;
+    /* Full timetable */
+    --color-ft-page: #fffafb;
+    --color-ft-element: #ffeef4;
+    --color-ft-hour-now: #ffddea;
+    --color-ft-now: #c9255e;
+    --color-ft-active: #fec1dc;
+    --color-ft-active-text: #6e0f33;
+    --color-ft-text: #93405f;
+    --color-ft-border: #ebb9cc;
+    --color-ft-divider: #f6e1e9;
+    --color-ft-past: #d7a3b8;
   }
 }
 
@@ -364,8 +399,42 @@
   mix-blend-mode: normal;
 }
 
-::view-transition-new(root) {
+/* Theme switches (html.hb-swap): the new theme grows out of the pressed icon. */
+.hb-swap::view-transition-new(root) {
   animation: hb-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Opening the full timetable: the page grows out of the home button. */
+.hb-open-all::view-transition-new(root) {
+  animation: hb-all-open 0.5s cubic-bezier(0.3, 0.9, 0.25, 1) both;
+}
+
+/* Closing it: the page shrinks back into the button over the home screen. */
+.hb-close-all::view-transition-old(root) {
+  z-index: 1;
+  animation: hb-all-close 0.42s cubic-bezier(0.3, 0.9, 0.25, 1) both;
+}
+
+@keyframes hb-all-open {
+  from {
+    clip-path: inset(var(--hb-all-inset, 45% 5%) round 16px);
+  }
+  to {
+    clip-path: inset(0 round 0);
+  }
+}
+
+@keyframes hb-all-close {
+  0% {
+    clip-path: inset(0 round 0);
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: inset(var(--hb-all-inset, 45% 5%) round 16px);
+    opacity: 0;
+  }
 }
 
 ::view-transition-group(hb-fx),

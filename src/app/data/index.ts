@@ -7,7 +7,6 @@ export type {
   RouteAnimationFlag,
 } from './routemap/dotAnimate'
 export type { ChipType } from './shuttle/chipType'
-export type { OrganizedTimetables } from './shuttle/organizedTimetables'
 export type { Period } from './shuttle/period'
 export type { Season } from './shuttle/season'
 export type { Settings } from './shuttle/settings'

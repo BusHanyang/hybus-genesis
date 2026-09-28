@@ -37,11 +37,16 @@ module.exports = {
         'load-color': 'var(--color-load-color)',
         'arrow-color': 'var(--color-arrow-color)',
 
+        'ft-page': 'var(--color-ft-page)',
         'ft-element' : 'var(--color-ft-element)',
+        'ft-hour-now': 'var(--color-ft-hour-now)',
+        'ft-now': 'var(--color-ft-now)',
         'ft-active' : 'var(--color-ft-active)',
         'ft-active-text' : 'var(--color-ft-active-text)',
         'ft-text' : 'var(--color-ft-text)',
         'ft-border' : 'var(--color-ft-border)',
+        'ft-divider': 'var(--color-ft-divider)',
+        'ft-past': 'var(--color-ft-past)',
 
         'ink-2': 'var(--color-ink-2)',
         'ink-3': 'var(--color-ink-3)',

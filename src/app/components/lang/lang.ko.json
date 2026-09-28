@@ -161,5 +161,8 @@
   "notice_title": "공지사항",
   "notice_empty": "등록된 공지가 없어요.",
   "notice_open_link": "관련 링크 열기",
-  "seasonal_now": "지금은 {{season}}"
+  "seasonal_now": "지금은 {{season}}",
+  "now_label": "지금",
+  "back_home": "홈으로 돌아가기",
+  "scroll_top": "맨 위로"
 }

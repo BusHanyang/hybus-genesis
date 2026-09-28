@@ -161,5 +161,8 @@
   "notice_title": "Announcements",
   "notice_empty": "No announcements yet.",
   "notice_open_link": "Open related link",
-  "seasonal_now": "Now: {{season}}"
+  "seasonal_now": "Now: {{season}}",
+  "now_label": "Now",
+  "back_home": "Back to home",
+  "scroll_top": "Back to top"
 }
