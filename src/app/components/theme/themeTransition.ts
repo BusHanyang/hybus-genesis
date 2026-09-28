@@ -30,15 +30,13 @@ export const runThemeTransition = (
   }
 
   if (origin !== null) {
+    // As a share of the viewport, so the circle starts on the icon whatever
+    // scale the browser renders the transition layer at.
     const box = origin.getBoundingClientRect()
-    root.style.setProperty(
-      '--hb-rx',
-      `${Math.round(box.left + box.width / 2)}px`,
-    )
-    root.style.setProperty(
-      '--hb-ry',
-      `${Math.round(box.top + box.height / 2)}px`,
-    )
+    const x = ((box.left + box.width / 2) / window.innerWidth) * 100
+    const y = ((box.top + box.height / 2) / window.innerHeight) * 100
+    root.style.setProperty('--hb-rx', `${x.toFixed(2)}%`)
+    root.style.setProperty('--hb-ry', `${y.toFixed(2)}%`)
   }
 
   const transition = document.startViewTransition(() => flushSync(update))

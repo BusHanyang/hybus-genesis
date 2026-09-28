@@ -392,12 +392,17 @@
   animation: none;
 }
 
+/*
+  Center and radius are percentages of the snapshot, not px: some zoomed or
+  high-DPR views scale the view-transition layer, and px coordinates then
+  land in the wrong place. A 150% radius covers the screen from any point.
+*/
 @keyframes hb-reveal {
   from {
-    clip-path: circle(0px at var(--hb-rx, 50%) var(--hb-ry, 50%));
+    clip-path: circle(0% at var(--hb-rx, 50%) var(--hb-ry, 50%));
   }
   to {
-    clip-path: circle(150vmax at var(--hb-rx, 50%) var(--hb-ry, 50%));
+    clip-path: circle(150% at var(--hb-rx, 50%) var(--hb-ry, 50%));
   }
 }
 
