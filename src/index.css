@@ -437,6 +437,44 @@
   }
 }
 
+/*
+  Full timetable (html.hb-sheet-open / .hb-sheet-close): like the theme
+  switch, but through the home button's box. Opening reveals the page as the
+  box grows to the full screen; closing shrinks the page's snapshot back into
+  the box above the home screen, then lets the button show through.
+  --hb-sheet-box is in percentages for the same reason as above.
+*/
+.hb-sheet-open::view-transition-new(root) {
+  animation: hb-sheet-open 0.5s cubic-bezier(0.3, 0, 0.2, 1);
+}
+
+.hb-sheet-close::view-transition-old(root) {
+  z-index: 1;
+  animation: hb-sheet-close 0.4s cubic-bezier(0.6, 0, 0.4, 1) forwards;
+}
+
+@keyframes hb-sheet-open {
+  from {
+    clip-path: var(--hb-sheet-box);
+  }
+  to {
+    clip-path: inset(0 round 0);
+  }
+}
+
+@keyframes hb-sheet-close {
+  0% {
+    clip-path: inset(0 round 0);
+  }
+  75% {
+    opacity: 1;
+  }
+  100% {
+    clip-path: var(--hb-sheet-box);
+    opacity: 0;
+  }
+}
+
 /* Redesign motion — referenced by the `animation` entries in tailwind.config.js */
 @keyframes shimmer {
   from {

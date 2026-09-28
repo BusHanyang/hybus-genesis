@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { classed } from '@tw-classed/react'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 
 import BackImg from '/public/image/arrow_back_outline_24dp.svg?react'
@@ -13,6 +14,11 @@ import { weekKeys } from '@/data/shuttle/week'
 import { shuttleAPI } from '@/network'
 
 import { useDarkMode } from '../useDarkMode'
+import {
+  canAnimateSheet,
+  runSheetTransition,
+  skipSheetTransition,
+} from './sheetTransition'
 
 type GroupKey = 'circle' | 'jungang' | 'directY' | 'direct'
 type MinuteState = 'past' | 'next' | 'upcoming'
@@ -78,8 +84,9 @@ const themeRootVariants = {
 const ThemeRoot = classed('div', '', themeRootVariants)
 // A full-screen sheet over the home screen (which stays mounted underneath).
 // Falling seasonal effects (z-2) still drift over it, as they did before.
-// Like the theme switch's circle, the page is revealed through a box: it
-// opens out of the home button and closes back into it.
+// It opens and closes through the home button's box with a view transition
+// (sheetTransition.ts); these phases do the same on the live page where that
+// isn't available, or when the browser's forward brings the page back.
 const Sheet = classed(
   'div',
   'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none',
@@ -357,6 +364,9 @@ const FullTime = (props: FullTimeProps) => {
   // throttled or hidden page may not deliver).
   useLayoutEffect(() => {
     if (openFrom === null) return
+    // Back while a snapshot is still shrinking (browser forward): drop it so
+    // the page grows again from the button instead.
+    skipSheetTransition()
     sheetRef.current?.getBoundingClientRect()
     setPhase((current) => (current === 'opening' ? 'open' : current))
   }, [openFrom])
@@ -366,6 +376,13 @@ const FullTime = (props: FullTimeProps) => {
   useEffect(() => {
     if (!closing) {
       setPhase((current) => (current === 'closing' ? 'open' : current))
+      return
+    }
+    // Like the theme switch: a snapshot of the page shrinks into the button
+    // while the home screen is already back underneath.
+    const button = document.getElementById('all')
+    if (button !== null && canAnimateSheet()) {
+      runSheetTransition('close', button, () => flushSync(onClosed))
       return
     }
     const to = prefersReducedMotion() ? null : buttonClip()

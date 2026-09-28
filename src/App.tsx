@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { flushSync } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import {
   BrowserRouter,
@@ -23,6 +24,11 @@ import PullToRefresh from 'react-simple-pull-to-refresh'
 import HelpImg from '/public/image/help_outline_24dp.svg?react'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
+import {
+  canAnimateSheet,
+  runningSheetTransition,
+  runSheetTransition,
+} from '@/components/fulltime/sheetTransition'
 import RouteMap from '@/components/routemap/RouteMap'
 import StopPicker from '@/components/shuttle/StopPicker'
 import TimetableCard, {
@@ -127,9 +133,33 @@ const Title = classed(
 
 const FullTimeLink = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
+
+  // Opens like the theme switch where view transitions work (waiting for the
+  // page's code if it isn't in yet); otherwise the link just navigates and
+  // the sheet reveals itself.
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    const button = document.getElementById('all')
+    if (
+      button === null ||
+      event.button !== 0 ||
+      event.metaKey ||
+      event.ctrlKey ||
+      event.shiftKey ||
+      event.altKey ||
+      !canAnimateSheet()
+    ) {
+      return
+    }
+    event.preventDefault()
+    runSheetTransition('open', button, async () => {
+      await loadFullTime()
+      flushSync(() => navigate('/all'))
+    })
+  }
 
   return (
-    <Link to="/all">
+    <Link to="/all" onClick={handleClick}>
       <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
     </Link>
   )
@@ -150,8 +180,9 @@ type SheetState = { animateOpen: boolean; closing: boolean }
 // routes only match the URL. The sheet stays up until it has shrunk back into
 // its button, whether the page was left with its back button, Esc or the
 // browser's back, and the FAB (home screen only) returns once it's gone. A
-// direct visit shows the page at once, and a swipe the browser has already
-// animated isn't animated again.
+// direct visit shows the page at once, a swipe the browser has already
+// animated isn't animated again, and while a view transition reveals the
+// page the sheet itself doesn't animate.
 const FullTimeLayer = (props: { fab: React.ReactNode }) => {
   const { pathname } = useLocation()
   const navigationType = useNavigationType()
@@ -165,7 +196,10 @@ const FullTimeLayer = (props: { fab: React.ReactNode }) => {
   const skipAnimation =
     navigationType === 'POP' && browserAnimatedPop && !leaving
   if (open && sheet === null) {
-    setSheet({ animateOpen: !skipAnimation, closing: false })
+    setSheet({
+      animateOpen: !skipAnimation && runningSheetTransition() !== 'open',
+      closing: false,
+    })
   } else if (open && sheet?.closing) {
     setSheet({ ...sheet, closing: false })
     setLeaving(false)
@@ -375,7 +409,8 @@ function App() {
 
   return (
     <>
-      <BrowserRouter>
+      {/* Navigations render synchronously, so a view transition can capture them. */}
+      <BrowserRouter useTransitions={false}>
         <Routes>
           <Route
             path="/"
