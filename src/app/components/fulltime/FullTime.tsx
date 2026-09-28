@@ -94,7 +94,7 @@ const Sheet = classed(
     variants: {
       'data-phase': {
         opening: '',
-        open: '[transition:clip-path_.5s_cubic-bezier(.2,0,.15,1),background-color_.35s_ease]',
+        open: '[transition:clip-path_.5s_cubic-bezier(.25,.5,.25,1),background-color_.35s_ease]',
         // Closing: an even curve with a short tail, so it doesn't hover just
         // above the button, and a late fade so it blends into the button.
         closing:
