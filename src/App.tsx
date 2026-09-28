@@ -147,7 +147,7 @@ window.addEventListener('popstate', (event) => {
 type SheetState = { animateOpen: boolean; closing: boolean }
 
 // /all opens the full timetable as a sheet over the home screen; the nested
-// routes only match the URL. The sheet stays up until it has folded back into
+// routes only match the URL. The sheet stays up until it has shrunk back into
 // its button, whether the page was left with its back button, Esc or the
 // browser's back, and the FAB (home screen only) returns once it's gone. A
 // direct visit shows the page at once, and a swipe the browser has already

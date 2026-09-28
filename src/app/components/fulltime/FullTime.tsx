@@ -38,30 +38,21 @@ const COMPACT_ON_Y = 240
 const COMPACT_OFF_Y = 200
 // Matches the closing transition on Sheet.
 const CLOSE_MS = 400
-// Glide to the next departure just as the sheet finishes opening.
-const GLIDE_DELAY_MS = 450
+// Glide to the next departure once the sheet has finished opening.
+const GLIDE_DELAY_MS = 550
 const GLIDE_MS = 500
-// Cards already in the cache rise in as the content fades in, instead of
-// having finished before it shows.
-const CARD_ENTRY_DELAY_MS = 220
 
 const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
 
-// The home button's box as a clip on the sheet (which covers the viewport),
-// and its center, where the content grows out of and shrinks back into.
-type ButtonFrame = { clipPath: string; origin: string }
-
-const buttonFrame = (): ButtonFrame | null => {
+// The home button's box as a clip on the sheet (which covers the viewport).
+const buttonClip = (): string | null => {
   const button = document.getElementById('all')
   if (button === null) return null
   const box = button.getBoundingClientRect()
   const width = document.documentElement.clientWidth
   const height = window.innerHeight
   if (box.width === 0 || box.bottom <= 0 || box.top >= height) return null
-  return {
-    clipPath: `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px round 16px)`,
-    origin: `${box.left + box.width / 2}px ${box.top + box.height / 2}px`,
-  }
+  return `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px round 16px)`
 }
 
 const prefersReducedMotion = () =>
@@ -85,41 +76,22 @@ const themeRootVariants = {
 } as const
 
 const ThemeRoot = classed('div', '', themeRootVariants)
-// Dims the home screen while the box grows or shrinks, so its edges stand
-// out against the cards around the button. On the way back it clears just
-// as the box turns into the button.
-const Scrim = classed(
-  'div',
-  'pointer-events-none fixed inset-0 z-[1] bg-modal-scrim',
-  {
-    variants: {
-      'data-phase': {
-        opening: 'opacity-0',
-        open: 'opacity-100 transition-opacity duration-300 ease-out',
-        closing: 'opacity-0 transition-opacity duration-[360ms] ease-in',
-      },
-    },
-    defaultVariants: {
-      'data-phase': 'opening',
-    },
-  },
-)
 // A full-screen sheet over the home screen (which stays mounted underneath).
 // Falling seasonal effects (z-2) still drift over it, as they did before.
+// Like the theme switch's circle, the page is revealed through a box: it
+// opens out of the home button and closes back into it.
 const Sheet = classed(
   'div',
-  'fixed inset-0 z-[1] overflow-hidden font-Ptd text-theme-text select-none',
+  'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none',
   {
     variants: {
       'data-phase': {
-        // Starts as the home button (its box and color, faded in over it),
-        // then grows into the page from there.
-        opening: 'bg-theme-card opacity-0',
-        open: 'bg-ft-page opacity-100 [transition:clip-path_.5s_cubic-bezier(.3,0,.1,1),opacity_.1s_ease,background-color_.35s_ease]',
+        opening: '',
+        open: '[transition:clip-path_.5s_cubic-bezier(.2,0,.15,1),background-color_.35s_ease]',
         // Closing: an even curve with a short tail, so it doesn't hover just
-        // above the button, then a late fade so it turns into the button.
+        // above the button, and a late fade so it blends into the button.
         closing:
-          'pointer-events-none bg-theme-card opacity-0 [transition:clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.12s_ease_.28s,background-color_.4s_ease]',
+          'pointer-events-none opacity-0 [transition:clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.1s_ease_.3s]',
       },
     },
     defaultVariants: {
@@ -127,22 +99,6 @@ const Sheet = classed(
     },
   },
 )
-// The page itself stays in place: it fades in over the first half of the
-// growth, scaling up a little from the button, and fades out early on the
-// way back so only the button's box is left to shrink.
-const Content = classed('div', 'absolute inset-0', {
-  variants: {
-    'data-phase': {
-      opening: 'scale-[.96] opacity-0',
-      open: 'scale-100 opacity-100 [transition:opacity_.22s_ease_60ms,scale_.5s_cubic-bezier(.3,0,.1,1)]',
-      closing:
-        'scale-[.96] opacity-0 [transition:opacity_.24s_ease,scale_.4s_cubic-bezier(.6,0,.4,1)]',
-    },
-  },
-  defaultVariants: {
-    'data-phase': 'opening',
-  },
-})
 const Scroller = classed(
   'div',
   'absolute inset-0 overflow-y-auto overscroll-contain',
@@ -205,16 +161,21 @@ const HourList = classed('div', 'mt-4 flex flex-col gap-2.5')
 const SkeletonCard = classed('div', 'hb-skeleton h-24 rounded-[20px]')
 const HourCard = classed(
   'div',
-  'grid grid-cols-[58px_minmax(0,1fr)] items-center gap-2.5 rounded-[20px] px-4 py-3.5 transition-[background-color,box-shadow] duration-300 animate-rise hm:grid-cols-[50px_minmax(0,1fr)] hm:px-3',
+  'grid grid-cols-[58px_minmax(0,1fr)] items-center gap-2.5 rounded-[20px] px-4 py-3.5 transition-[background-color,box-shadow] duration-300 hm:grid-cols-[50px_minmax(0,1fr)] hm:px-3',
   {
     variants: {
       'data-now': {
         true: 'bg-ft-hour-now shadow-[inset_0_0_0_1.5px_var(--color-ft-now)]',
         false: 'bg-ft-element',
       },
+      'data-enter': {
+        true: 'animate-rise',
+        false: '',
+      },
     },
     defaultVariants: {
       'data-now': 'false',
+      'data-enter': 'true',
     },
   },
 )
@@ -311,9 +272,9 @@ const openApiMonitor = () => {
 }
 
 type FullTimeProps = {
-  // Unfold from the home button (not on a direct visit or a browser swipe).
+  // Open out of the home button (not on a direct visit or a browser swipe).
   animateOpen: boolean
-  // The page has been left: fold back into the button, then onClosed.
+  // The page has been left: close back into the button, then onClosed.
   closing: boolean
   onBack: () => void
   onClosed: () => void
@@ -337,20 +298,19 @@ const FullTime = (props: FullTimeProps) => {
   }))
   const [clock, setClock] = useState<string>(clockNow)
   const [compact, setCompact] = useState<boolean>(false)
-  // Start on the home button from the very first style the sheet gets, so
-  // the growth starts there (not from a placeholder).
-  const [openFrom] = useState<ButtonFrame | null>(() =>
-    animateOpen && !prefersReducedMotion() ? buttonFrame() : null,
+  // Start clipped to the home button from the very first style the sheet
+  // gets, so the reveal starts there (not from a placeholder).
+  const [openFrom] = useState<string | null>(() =>
+    animateOpen && !prefersReducedMotion() ? buttonClip() : null,
   )
-  const [closeTo, setCloseTo] = useState<ButtonFrame | null>(null)
+  const [closeTo, setCloseTo] = useState<string | null>(null)
   const [phase, setPhase] = useState<'opening' | 'open' | 'closing'>(
     openFrom === null ? 'open' : 'opening',
   )
   const clipPath =
-    (phase === 'opening' ? openFrom : phase === 'closing' ? closeTo : null)
-      ?.clipPath ?? FULL_CLIP
-  // Kept while open, so the content settles toward the button it grew from.
-  const origin = (phase === 'closing' ? closeTo : openFrom)?.origin
+    (phase === 'opening' ? openFrom : phase === 'closing' ? closeTo : null) ??
+    FULL_CLIP
+  const sheetRef = useRef<HTMLDivElement>(null)
   const scrollerRef = useRef<HTMLDivElement>(null)
   const touchedRef = useRef<boolean>(false)
   const scrolledToTargetRef = useRef<boolean>(false)
@@ -360,13 +320,13 @@ const FullTime = (props: FullTimeProps) => {
     queryFn: async () => await shuttleAPI(season, week, location),
     staleTime: 5 * 60 * 1000,
   })
-  // The first list shown after opening (when it came straight from the cache)
-  // rises in only once the content has started to show.
+  // The list the page opens with, when it comes straight from the cache, is
+  // revealed along with the page; lists that load or are picked later rise in.
   const listKey = `${location}-${season}-${week}`
-  const [delayedListKey] = useState<string | null>(() =>
+  const [openedListKey, setOpenedListKey] = useState<string | null>(() =>
     timetable.data !== undefined ? listKey : null,
   )
-  const cardDelay = listKey === delayedListKey ? CARD_ENTRY_DELAY_MS : 0
+  const cardsEnter = listKey !== openedListKey
   const { theme } = useDarkmodeContext()
   const { setBackground } = useDarkMode()
   const { t } = useTranslation()
@@ -391,29 +351,24 @@ const FullTime = (props: FullTimeProps) => {
     return () => window.clearInterval(timer)
   }, [])
 
-  // Open: grow from the home button to full screen on the next frames.
+  // Open: reveal the page out of the home button. Reading the layout first
+  // settles the button's clip as the starting point, so the transition
+  // starts before the first paint instead of waiting for frames (which a
+  // throttled or hidden page may not deliver).
   useLayoutEffect(() => {
     if (openFrom === null) return
-    let second = 0
-    const first = window.requestAnimationFrame(() => {
-      second = window.requestAnimationFrame(() => {
-        setPhase((current) => (current === 'opening' ? 'open' : current))
-      })
-    })
-    return () => {
-      window.cancelAnimationFrame(first)
-      window.cancelAnimationFrame(second)
-    }
+    sheetRef.current?.getBoundingClientRect()
+    setPhase((current) => (current === 'opening' ? 'open' : current))
   }, [openFrom])
 
   // Close: shrink back into the home button, then let the page go. Coming
-  // back before that (browser forward) grows it again.
+  // back before that (browser forward) opens it again.
   useEffect(() => {
     if (!closing) {
       setPhase((current) => (current === 'closing' ? 'open' : current))
       return
     }
-    const to = prefersReducedMotion() ? null : buttonFrame()
+    const to = prefersReducedMotion() ? null : buttonClip()
     if (to === null) {
       onClosed()
       return
@@ -627,9 +582,8 @@ const FullTime = (props: FullTimeProps) => {
               key={entry.hour}
               ref={entry.hour === targetHour ? targetCardRef : undefined}
               data-now={now ? 'true' : 'false'}
-              style={{
-                animationDelay: `${cardDelay + Math.min(i * 40, 400)}ms`,
-              }}
+              data-enter={cardsEnter ? 'true' : 'false'}
+              style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
             >
               <HourLabel>
                 <HourText>
@@ -669,8 +623,8 @@ const FullTime = (props: FullTimeProps) => {
 
   return (
     <ThemeRoot data-theme={theme}>
-      <Scrim aria-hidden="true" data-phase={phase} />
       <Sheet
+        ref={sheetRef}
         data-fulltime-page=""
         onPointerDownCapture={markTouched}
         onWheelCapture={markTouched}
@@ -679,79 +633,79 @@ const FullTime = (props: FullTimeProps) => {
         data-phase={phase}
         style={{ clipPath }}
       >
-        <Content data-phase={phase} style={{ transformOrigin: origin }}>
-          <CompactBar
-            aria-hidden={!compact}
-            data-visible={compact ? 'true' : 'false'}
-          >
-            <CompactInner>
+        <CompactBar
+          aria-hidden={!compact}
+          data-visible={compact ? 'true' : 'false'}
+        >
+          <CompactInner>
+            <BackButton
+              type="button"
+              aria-label={t('back_home')}
+              tabIndex={compact ? 0 : -1}
+              onClick={onBack}
+            >
+              <BackIcon aria-hidden="true" />
+            </BackButton>
+            <CompactTitle>{t('all_btn')}</CompactTitle>
+            <SummaryButton
+              type="button"
+              aria-label={t('scroll_top')}
+              tabIndex={compact ? 0 : -1}
+              onClick={() =>
+                scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+              }
+            >
+              <SummaryText>{summary}</SummaryText>
+              <UpIcon aria-hidden="true" />
+            </SummaryButton>
+          </CompactInner>
+        </CompactBar>
+        <Scroller ref={scrollerRef} onScroll={handleScroll}>
+          <Column>
+            <Header>
               <BackButton
                 type="button"
                 aria-label={t('back_home')}
-                tabIndex={compact ? 0 : -1}
                 onClick={onBack}
               >
                 <BackIcon aria-hidden="true" />
               </BackButton>
-              <CompactTitle>{t('all_btn')}</CompactTitle>
-              <SummaryButton
-                type="button"
-                aria-label={t('scroll_top')}
-                tabIndex={compact ? 0 : -1}
-                onClick={() =>
-                  scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-                }
-              >
-                <SummaryText>{summary}</SummaryText>
-                <UpIcon aria-hidden="true" />
-              </SummaryButton>
-            </CompactInner>
-          </CompactBar>
-          <Scroller ref={scrollerRef} onScroll={handleScroll}>
-            <Column>
-              <Header>
-                <BackButton
-                  type="button"
-                  aria-label={t('back_home')}
-                  onClick={onBack}
-                >
-                  <BackIcon aria-hidden="true" />
-                </BackButton>
-                <Title>{t('all_btn')}</Title>
-              </Header>
-              {filters.map((filter) => (
-                <FilterGroup key={filter.title}>
-                  <FilterTitle>{filter.title}</FilterTitle>
-                  <FilterChips>
-                    {filter.options.map(([value, label]) => {
-                      const on = filter.value === value
-                      return (
-                        <FilterChip
-                          key={value}
-                          type="button"
-                          aria-pressed={on}
+              <Title>{t('all_btn')}</Title>
+            </Header>
+            {filters.map((filter) => (
+              <FilterGroup key={filter.title}>
+                <FilterTitle>{filter.title}</FilterTitle>
+                <FilterChips>
+                  {filter.options.map(([value, label]) => {
+                    const on = filter.value === value
+                    return (
+                      <FilterChip
+                        key={value}
+                        type="button"
+                        aria-pressed={on}
+                        data-on={on ? 'true' : 'false'}
+                        onClick={() => {
+                          if (on) return
+                          filter.onPick(value)
+                          setOpenedListKey(null)
+                        }}
+                      >
+                        <CheckWrap
+                          aria-hidden="true"
                           data-on={on ? 'true' : 'false'}
-                          onClick={() => {
-                            if (!on) filter.onPick(value)
-                          }}
                         >
-                          <CheckWrap
-                            aria-hidden="true"
-                            data-on={on ? 'true' : 'false'}
-                          >
-                            <CheckIcon />
-                          </CheckWrap>
-                          {label}
-                        </FilterChip>
-                      )
-                    })}
-                  </FilterChips>
-                </FilterGroup>
-              ))}
-              {renderHours()}
-            </Column>
-          </Scroller>
-        </Content>
+                          <CheckIcon />
+                        </CheckWrap>
+                        {label}
+                      </FilterChip>
+                    )
+                  })}
+                </FilterChips>
+              </FilterGroup>
+            ))}
+            {renderHours()}
+          </Column>
+        </Scroller>
       </Sheet>
     </ThemeRoot>
   )
