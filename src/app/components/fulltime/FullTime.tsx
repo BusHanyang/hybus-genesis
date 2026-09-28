@@ -443,11 +443,13 @@ const FullTime = () => {
   // more if the cards were still rising), unless the user has already moved.
   useEffect(() => {
     if (targetHour === null || scrolledToTargetRef.current) return
-    scrolledToTargetRef.current = true
     const scrollTo = (smooth: boolean) => {
       const scroller = scrollerRef.current
       const card = targetCardRef.current
       if (scroller === null || card === null || touchedRef.current) return
+      // Marked only once it actually runs: StrictMode's mount/cleanup/mount
+      // would otherwise cancel the timers and skip the scroll for good.
+      scrolledToTargetRef.current = true
       const top = Math.max(0, card.offsetTop - 72)
       if (smooth) scroller.scrollTo({ top, behavior: 'smooth' })
       else if (Math.abs(scroller.scrollTop - top) > 40) scroller.scrollTop = top
