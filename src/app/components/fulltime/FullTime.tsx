@@ -85,6 +85,25 @@ const themeRootVariants = {
 } as const
 
 const ThemeRoot = classed('div', '', themeRootVariants)
+// Dims the home screen while the box grows or shrinks, so its edges stand
+// out against the cards around the button. On the way back it clears just
+// as the box turns into the button.
+const Scrim = classed(
+  'div',
+  'pointer-events-none fixed inset-0 z-[1] bg-modal-scrim',
+  {
+    variants: {
+      'data-phase': {
+        opening: 'opacity-0',
+        open: 'opacity-100 transition-opacity duration-300 ease-out',
+        closing: 'opacity-0 transition-opacity duration-[360ms] ease-in',
+      },
+    },
+    defaultVariants: {
+      'data-phase': 'opening',
+    },
+  },
+)
 // A full-screen sheet over the home screen (which stays mounted underneath).
 // Falling seasonal effects (z-2) still drift over it, as they did before.
 const Sheet = classed(
@@ -650,6 +669,7 @@ const FullTime = (props: FullTimeProps) => {
 
   return (
     <ThemeRoot data-theme={theme}>
+      <Scrim aria-hidden="true" data-phase={phase} />
       <Sheet
         data-fulltime-page=""
         onPointerDownCapture={markTouched}
