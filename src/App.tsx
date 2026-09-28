@@ -65,11 +65,11 @@ const NoticeWrapper = classed(
 )
 const FulltimeButton = classed(
   'div',
-  `${cardBase} mt-3 flex h-[54px] w-full items-center justify-center rounded-2xl text-[15px] font-semibold transition-[background-color,color,box-shadow,scale] active:scale-[.96]`,
+  `${cardBase} mt-3 flex h-16 w-full items-center justify-center rounded-2xl text-[15px] font-semibold hm:h-12 transition-[background-color,color,box-shadow,scale] active:scale-[.96]`,
 )
 const TitleRow = classed(
   'div',
-  'grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center pt-[18px] pb-3',
+  'grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center py-3',
 )
 const HeaderTools = classed('div', 'relative flex min-w-0 items-center')
 const HelpButton = classed(

@@ -35,7 +35,7 @@ const SKELETON_WIDTHS = [
 const rowColumns =
   'grid-cols-[50px_minmax(0,136px)_20px_minmax(0,110px)] hm:grid-cols-[46px_minmax(0,128px)_18px_minmax(0,104px)]'
 
-const PaneBody = classed('div', 'px-3.5 pt-[18px]')
+const PaneBody = classed('div', 'px-3.5 pt-3')
 const PaneTitle = classed(
   'h2',
   'm-0 flex min-h-9 items-center justify-center px-11 text-[21px] leading-tight font-extrabold tracking-[-0.02em] text-balance hm:px-10 hm:text-[19px] hsm:text-[17px]',

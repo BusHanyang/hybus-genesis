@@ -84,7 +84,7 @@ const ArrivalStatus = classed('span', '', {
     'data-state': 'default',
   },
 })
-const PaneBody = classed('div', 'px-3.5 pt-[18px]')
+const PaneBody = classed('div', 'px-3.5 pt-3')
 const SkeletonRow = classed('div', 'flex h-[38px] items-center gap-2 px-1')
 const SkeletonBadge = classed(
   'span',

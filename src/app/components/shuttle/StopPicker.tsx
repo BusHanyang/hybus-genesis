@@ -5,29 +5,29 @@ import { useTranslation } from 'react-i18next'
 import { STOP_ORDER, StopTab } from '@/components/shuttle/TimetableCard'
 
 const Wrapper = classed('div', 'relative mt-3')
-const Grid = classed('div', 'grid grid-cols-3 gap-2.5')
+const Grid = classed('div', 'grid grid-cols-3 gap-3')
 const BackdropGrid = classed(Grid, 'pointer-events-none absolute inset-0')
 const ButtonGrid = classed(Grid, 'relative')
 const Backdrop = classed(
   'div',
-  'h-[58px] rounded-2xl bg-theme-card shadow-theme-shadow transition-[background-color,box-shadow] duration-[350ms]',
+  'h-16 rounded-2xl bg-theme-card shadow-theme-shadow hm:h-12 transition-[background-color,box-shadow] duration-[350ms]',
 )
 // One pill slides between the six buttons instead of each button repainting.
-// Each step is one button width plus the 10px gap.
+// Each step is one button width plus the 12px gap.
 const Pill = classed(
   'div',
-  'absolute left-0 top-0 h-[58px] w-[calc((100%-20px)/3)] rounded-2xl bg-button-active shadow-[inset_0_1px_3px_rgba(16,24,40,.14),0_2px_8px_rgba(59,130,246,.18)] transition-[translate,background-color] duration-500 ease-[cubic-bezier(.34,1.25,.64,1)]',
+  'absolute left-0 top-0 h-16 w-[calc((100%-24px)/3)] rounded-2xl bg-button-active shadow-[inset_0_1px_3px_rgba(16,24,40,.14),0_2px_8px_rgba(59,130,246,.18)] transition-[translate,background-color] duration-500 ease-[cubic-bezier(.34,1.25,.64,1)] hm:h-12',
   {
     variants: {
       'data-index': {
         'shuttlecoke_o': 'translate-x-0 translate-y-0',
-        'subway': 'translate-x-[calc(100%+10px)] translate-y-0',
-        'yesulin': 'translate-x-[calc(200%+20px)] translate-y-0',
-        'jungang': 'translate-x-0 translate-y-[calc(100%+10px)]',
+        'subway': 'translate-x-[calc(100%+12px)] translate-y-0',
+        'yesulin': 'translate-x-[calc(200%+24px)] translate-y-0',
+        'jungang': 'translate-x-0 translate-y-[calc(100%+12px)]',
         'shuttlecoke_i':
-          'translate-x-[calc(100%+10px)] translate-y-[calc(100%+10px)]',
+          'translate-x-[calc(100%+12px)] translate-y-[calc(100%+12px)]',
         'residence':
-          'translate-x-[calc(200%+20px)] translate-y-[calc(100%+10px)]',
+          'translate-x-[calc(200%+24px)] translate-y-[calc(100%+12px)]',
       },
     },
     defaultVariants: {
@@ -37,7 +37,7 @@ const Pill = classed(
 )
 const StopButton = classed(
   'button',
-  'flex h-[58px] flex-col items-center justify-center rounded-2xl bg-transparent px-1.5 text-[15px] leading-[1.2] text-balance transition-[color,scale] duration-300 active:scale-[.96] hm:text-sm hsm:text-[13px]',
+  'flex h-16 flex-col items-center justify-center rounded-2xl bg-transparent px-1.5 text-[15px] leading-[1.2] text-balance transition-[color,scale] duration-300 active:scale-[.96] hm:h-12 hm:text-sm hsm:text-[13px]',
   {
     variants: {
       'data-active': {

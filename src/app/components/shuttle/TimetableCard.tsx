@@ -54,7 +54,7 @@ const Card = classed(
 )
 const MapButton = classed(
   'button',
-  'absolute right-2.5 top-3.5 z-2 flex h-11 w-11 items-center justify-center transition-transform duration-150 active:scale-[.96]',
+  'absolute right-2.5 top-2 z-2 flex h-11 w-11 items-center justify-center transition-transform duration-150 active:scale-[.96]',
 )
 const MapIcon = classed(MapImg, 'h-[26px] w-[26px]')
 const PaneViewport = classed('div', 'relative', {
@@ -158,7 +158,7 @@ const ModeButton = classed(
     },
   },
 )
-const SubwayFallback = classed('div', 'h-[239px]')
+const SubwayFallback = classed('div', 'h-[233px]')
 
 const paneKeyOf = (tab: StopTab, realtimeMode: boolean): PaneKey => ({
   tab,
