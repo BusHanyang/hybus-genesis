@@ -39,7 +39,10 @@ const COMPACT_ON_Y = 240
 const COMPACT_OFF_Y = 200
 // The sheet grows out of the home button, and shrinks back into it on close.
 const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
-const CLOSE_MS = 560
+const CLOSE_MS = 400
+// Cards already in the cache would otherwise finish rising while the content
+// is still fading in, so hold them until it shows.
+const CARD_ENTRY_DELAY_MS = 220
 
 const buttonClip = (): string | null => {
   const button = document.getElementById('all')
@@ -73,7 +76,23 @@ const ThemeRoot = classed('div', '', themeRootVariants)
 // Falling seasonal effects (z-2) still drift over it, as they did before.
 const Sheet = classed(
   'div',
-  'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none [transition:clip-path_.55s_cubic-bezier(.3,.9,.25,1),background-color_.35s_ease]',
+  'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none',
+  {
+    variants: {
+      'data-phase': {
+        opening:
+          '[transition:clip-path_.55s_cubic-bezier(.3,.9,.25,1),background-color_.35s_ease]',
+        open: '[transition:clip-path_.55s_cubic-bezier(.3,.9,.25,1),background-color_.35s_ease]',
+        // Closing: an even curve with a short tail, so it doesn't hover just
+        // above the button, and a late fade so it blends into the button.
+        closing:
+          'opacity-0 [transition:clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.15s_ease_.25s]',
+      },
+    },
+    defaultVariants: {
+      'data-phase': 'opening',
+    },
+  },
 )
 const Scroller = classed(
   'div',
@@ -286,6 +305,13 @@ const FullTime = () => {
     queryFn: async () => await shuttleAPI(season, week, location),
     staleTime: 5 * 60 * 1000,
   })
+  // The first list shown after opening (when it came straight from the cache)
+  // rises in only once the content has started to show.
+  const listKey = `${location}-${season}-${week}`
+  const [delayedListKey] = useState<string | null>(() =>
+    timetable.data !== undefined ? listKey : null,
+  )
+  const cardDelay = listKey === delayedListKey ? CARD_ENTRY_DELAY_MS : 0
   const { theme } = useDarkmodeContext()
   const { setBackground } = useDarkMode()
   const navigate = useNavigate()
@@ -536,7 +562,7 @@ const FullTime = () => {
 
     // Keyed by the filters so the cards rise in again when they change.
     return (
-      <HourList key={`${location}-${season}-${week}`}>
+      <HourList key={listKey}>
         {hours.map((entry, i) => {
           const now = isToday && entry.hour === currentHour
           return (
@@ -544,7 +570,9 @@ const FullTime = () => {
               key={entry.hour}
               ref={entry.hour === targetHour ? targetCardRef : undefined}
               data-now={now ? 'true' : 'false'}
-              style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
+              style={{
+                animationDelay: `${cardDelay + Math.min(i * 40, 400)}ms`,
+              }}
             >
               <HourLabel>
                 <HourText>
@@ -584,7 +612,11 @@ const FullTime = () => {
 
   return (
     <ThemeRoot data-theme={theme}>
-      <Sheet data-fulltime-page="" style={{ clipPath: clip }}>
+      <Sheet
+        data-fulltime-page=""
+        data-phase={phase}
+        style={{ clipPath: clip }}
+      >
         <CompactBar
           aria-hidden={!compact}
           data-visible={compact ? 'true' : 'false'}
