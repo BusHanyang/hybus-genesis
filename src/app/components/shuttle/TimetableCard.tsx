@@ -184,7 +184,6 @@ const TimetableCard = (props: {
   const [paneLoading, setPaneLoading] = useState<boolean>(true)
   const [pressed, setPressed] = useState<boolean>(false)
   const [flipping, setFlipping] = useState<boolean>(false)
-  const [learned, setLearned] = useState<boolean>(false)
   const [hintClosed, setHintClosed] = useState<boolean>(
     () => window.localStorage.getItem('touch_info') === 'closed',
   )
@@ -263,7 +262,6 @@ const TimetableCard = (props: {
   const handlePressChange = useCallback((next: boolean) => {
     setPressed(next)
     setFlipping(true)
-    if (next) setLearned(true)
   }, [])
 
   const closeHint = () => {
@@ -334,8 +332,9 @@ const TimetableCard = (props: {
       >
         <HintWrap>
           <HintBar>
-            <HintText key={learned ? 'learned' : 'intro'}>
-              {learned ? t('now_actual_time') : t('check_on_touch')}
+            {/* Like the original: the actual-time line only while pressing. */}
+            <HintText key={pressed ? 'pressed' : 'idle'}>
+              {pressed ? t('now_actual_time') : t('check_on_touch')}
             </HintText>
             <HintClose
               type="button"
