@@ -41,36 +41,26 @@ const CLOSE_MS = 400
 // Glide to the next departure just as the sheet finishes opening.
 const GLIDE_DELAY_MS = 450
 const GLIDE_MS = 500
-// Cards already in the cache rise in while the page unfolds, instead of
-// having finished before it is open.
+// Cards already in the cache rise in as the content fades in, instead of
+// having finished before it shows.
 const CARD_ENTRY_DELAY_MS = 220
 
-type SheetFrame = { transform: string; clipPath: string }
+const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
 
-const FULL_FRAME: SheetFrame = {
-  transform: 'none',
-  clipPath: 'inset(0px 0px 0px 0px round 0px)',
-}
+// The home button's box as a clip on the sheet (which covers the viewport),
+// and its center, where the content grows out of and shrinks back into.
+type ButtonFrame = { clipPath: string; origin: string }
 
-// The page as the home button: its column scaled to the button's width with
-// its top on the button, seen through a window the size of the button. The
-// sheet unfolds from here to FULL_FRAME with its content showing, and folds
-// back into it on close.
-const buttonFrame = (): SheetFrame | null => {
+const buttonFrame = (): ButtonFrame | null => {
   const button = document.getElementById('all')
   if (button === null) return null
   const box = button.getBoundingClientRect()
   const width = document.documentElement.clientWidth
   const height = window.innerHeight
   if (box.width === 0 || box.bottom <= 0 || box.top >= height) return null
-  // Both columns are at most 30rem wide; the button spans the home one.
-  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
-  const column = Math.min(width, 30 * (rem || 16))
-  const side = (width - column) / 2
-  const scale = box.width / column
   return {
-    transform: `translate(${box.left - side * scale}px, ${box.top}px) scale(${scale})`,
-    clipPath: `inset(0px ${side}px ${height - box.height / scale}px ${side}px round ${16 / scale}px)`,
+    clipPath: `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px round 16px)`,
+    origin: `${box.left + box.width / 2}px ${box.top + box.height / 2}px`,
   }
 }
 
@@ -99,17 +89,18 @@ const ThemeRoot = classed('div', '', themeRootVariants)
 // Falling seasonal effects (z-2) still drift over it, as they did before.
 const Sheet = classed(
   'div',
-  'fixed inset-0 z-[1] origin-top-left overflow-hidden font-Ptd text-theme-text select-none',
+  'fixed inset-0 z-[1] overflow-hidden font-Ptd text-theme-text select-none',
   {
     variants: {
       'data-phase': {
-        // Starts on the home button in its color, then unfolds into the page.
-        opening: 'bg-theme-card',
-        open: 'bg-ft-page opacity-100 [transition:transform_.5s_cubic-bezier(.25,.8,.25,1),clip-path_.5s_cubic-bezier(.25,.8,.25,1),opacity_.12s_ease,background-color_.35s_ease]',
+        // Starts as the home button (its box and color, faded in over it),
+        // then grows into the page from there.
+        opening: 'bg-theme-card opacity-0',
+        open: 'bg-ft-page opacity-100 [transition:clip-path_.5s_cubic-bezier(.3,0,.1,1),opacity_.1s_ease,background-color_.35s_ease]',
         // Closing: an even curve with a short tail, so it doesn't hover just
-        // above the button, and a late fade so it blends into the button.
+        // above the button, then a late fade so it turns into the button.
         closing:
-          'pointer-events-none bg-theme-card opacity-0 [transition:transform_.4s_cubic-bezier(.6,0,.4,1),clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.15s_ease_.25s,background-color_.4s_ease]',
+          'pointer-events-none bg-theme-card opacity-0 [transition:clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.12s_ease_.28s,background-color_.4s_ease]',
       },
     },
     defaultVariants: {
@@ -117,6 +108,22 @@ const Sheet = classed(
     },
   },
 )
+// The page itself stays in place: it fades in over the first half of the
+// growth, scaling up a little from the button, and fades out early on the
+// way back so only the button's box is left to shrink.
+const Content = classed('div', 'absolute inset-0', {
+  variants: {
+    'data-phase': {
+      opening: 'scale-[.96] opacity-0',
+      open: 'scale-100 opacity-100 [transition:opacity_.22s_ease_60ms,scale_.5s_cubic-bezier(.3,0,.1,1)]',
+      closing:
+        'scale-[.96] opacity-0 [transition:opacity_.24s_ease,scale_.4s_cubic-bezier(.6,0,.4,1)]',
+    },
+  },
+  defaultVariants: {
+    'data-phase': 'opening',
+  },
+})
 const Scroller = classed(
   'div',
   'absolute inset-0 overflow-y-auto overscroll-contain',
@@ -312,17 +319,19 @@ const FullTime = (props: FullTimeProps) => {
   const [clock, setClock] = useState<string>(clockNow)
   const [compact, setCompact] = useState<boolean>(false)
   // Start on the home button from the very first style the sheet gets, so
-  // the unfold starts there (not from a placeholder).
-  const [openFrom] = useState<SheetFrame | null>(() =>
+  // the growth starts there (not from a placeholder).
+  const [openFrom] = useState<ButtonFrame | null>(() =>
     animateOpen && !prefersReducedMotion() ? buttonFrame() : null,
   )
-  const [closeTo, setCloseTo] = useState<SheetFrame | null>(null)
+  const [closeTo, setCloseTo] = useState<ButtonFrame | null>(null)
   const [phase, setPhase] = useState<'opening' | 'open' | 'closing'>(
     openFrom === null ? 'open' : 'opening',
   )
-  const frame =
-    (phase === 'opening' ? openFrom : phase === 'closing' ? closeTo : null) ??
-    FULL_FRAME
+  const clipPath =
+    (phase === 'opening' ? openFrom : phase === 'closing' ? closeTo : null)
+      ?.clipPath ?? FULL_CLIP
+  // Kept while open, so the content settles toward the button it grew from.
+  const origin = (phase === 'closing' ? closeTo : openFrom)?.origin
   const scrollerRef = useRef<HTMLDivElement>(null)
   const touchedRef = useRef<boolean>(false)
   const scrolledToTargetRef = useRef<boolean>(false)
@@ -363,7 +372,7 @@ const FullTime = (props: FullTimeProps) => {
     return () => window.clearInterval(timer)
   }, [])
 
-  // Open: unfold from the home button to full screen on the next frames.
+  // Open: grow from the home button to full screen on the next frames.
   useLayoutEffect(() => {
     if (openFrom === null) return
     let second = 0
@@ -378,8 +387,8 @@ const FullTime = (props: FullTimeProps) => {
     }
   }, [openFrom])
 
-  // Close: fold back into the home button, then let the page go. Coming back
-  // before that (browser forward) unfolds it again.
+  // Close: shrink back into the home button, then let the page go. Coming
+  // back before that (browser forward) grows it again.
   useEffect(() => {
     if (!closing) {
       setPhase((current) => (current === 'closing' ? 'open' : current))
@@ -648,79 +657,81 @@ const FullTime = (props: FullTimeProps) => {
         onTouchStartCapture={markTouched}
         onKeyDownCapture={markTouched}
         data-phase={phase}
-        style={frame}
+        style={{ clipPath }}
       >
-        <CompactBar
-          aria-hidden={!compact}
-          data-visible={compact ? 'true' : 'false'}
-        >
-          <CompactInner>
-            <BackButton
-              type="button"
-              aria-label={t('back_home')}
-              tabIndex={compact ? 0 : -1}
-              onClick={onBack}
-            >
-              <BackIcon aria-hidden="true" />
-            </BackButton>
-            <CompactTitle>{t('all_btn')}</CompactTitle>
-            <SummaryButton
-              type="button"
-              aria-label={t('scroll_top')}
-              tabIndex={compact ? 0 : -1}
-              onClick={() =>
-                scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
-              }
-            >
-              <SummaryText>{summary}</SummaryText>
-              <UpIcon aria-hidden="true" />
-            </SummaryButton>
-          </CompactInner>
-        </CompactBar>
-        <Scroller ref={scrollerRef} onScroll={handleScroll}>
-          <Column>
-            <Header>
+        <Content data-phase={phase} style={{ transformOrigin: origin }}>
+          <CompactBar
+            aria-hidden={!compact}
+            data-visible={compact ? 'true' : 'false'}
+          >
+            <CompactInner>
               <BackButton
                 type="button"
                 aria-label={t('back_home')}
+                tabIndex={compact ? 0 : -1}
                 onClick={onBack}
               >
                 <BackIcon aria-hidden="true" />
               </BackButton>
-              <Title>{t('all_btn')}</Title>
-            </Header>
-            {filters.map((filter) => (
-              <FilterGroup key={filter.title}>
-                <FilterTitle>{filter.title}</FilterTitle>
-                <FilterChips>
-                  {filter.options.map(([value, label]) => {
-                    const on = filter.value === value
-                    return (
-                      <FilterChip
-                        key={value}
-                        type="button"
-                        aria-pressed={on}
-                        data-on={on ? 'true' : 'false'}
-                        onClick={() => {
-                          if (!on) filter.onPick(value)
-                        }}
-                      >
-                        <CheckWrap
-                          aria-hidden="true"
+              <CompactTitle>{t('all_btn')}</CompactTitle>
+              <SummaryButton
+                type="button"
+                aria-label={t('scroll_top')}
+                tabIndex={compact ? 0 : -1}
+                onClick={() =>
+                  scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+                }
+              >
+                <SummaryText>{summary}</SummaryText>
+                <UpIcon aria-hidden="true" />
+              </SummaryButton>
+            </CompactInner>
+          </CompactBar>
+          <Scroller ref={scrollerRef} onScroll={handleScroll}>
+            <Column>
+              <Header>
+                <BackButton
+                  type="button"
+                  aria-label={t('back_home')}
+                  onClick={onBack}
+                >
+                  <BackIcon aria-hidden="true" />
+                </BackButton>
+                <Title>{t('all_btn')}</Title>
+              </Header>
+              {filters.map((filter) => (
+                <FilterGroup key={filter.title}>
+                  <FilterTitle>{filter.title}</FilterTitle>
+                  <FilterChips>
+                    {filter.options.map(([value, label]) => {
+                      const on = filter.value === value
+                      return (
+                        <FilterChip
+                          key={value}
+                          type="button"
+                          aria-pressed={on}
                           data-on={on ? 'true' : 'false'}
+                          onClick={() => {
+                            if (!on) filter.onPick(value)
+                          }}
                         >
-                          <CheckIcon />
-                        </CheckWrap>
-                        {label}
-                      </FilterChip>
-                    )
-                  })}
-                </FilterChips>
-              </FilterGroup>
-            ))}
-            {renderHours()}
-          </Column>
-        </Scroller>
+                          <CheckWrap
+                            aria-hidden="true"
+                            data-on={on ? 'true' : 'false'}
+                          >
+                            <CheckIcon />
+                          </CheckWrap>
+                          {label}
+                        </FilterChip>
+                      )
+                    })}
+                  </FilterChips>
+                </FilterGroup>
+              ))}
+              {renderHours()}
+            </Column>
+          </Scroller>
+        </Content>
       </Sheet>
     </ThemeRoot>
   )
