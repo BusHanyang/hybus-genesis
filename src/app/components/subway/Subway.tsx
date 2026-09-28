@@ -28,15 +28,21 @@ const DirectionGroup = classed('div', 'min-h-[84px] px-1.5 py-1', {
     'data-divider': 'false',
   },
 })
+// In dark mode a marked row sits on a light band, inset like the shuttle's
+// departure flash so two marked rows never merge; pressing darkens the band.
+const darkBand =
+  'dark:border-y-[3px] dark:border-transparent dark:bg-clip-padding dark:text-gray-800 dark:active:brightness-90'
 const TrainRow = classed(
   'button',
   'flex h-[38px] w-full items-center gap-2 rounded-[10px] px-1 text-left transition-[background-color,scale] duration-200 active:scale-[.985] active:bg-press-bg animate-rise',
   {
     variants: {
+      // The original colors: red for a train at or ending at this station,
+      // orange for one a stop away.
       'data-state': {
-        here: 'text-actual',
-        prev: 'text-actual',
-        default: '',
+        here: `font-bold text-[#ff3737] dark:bg-[#ffdede] dark:active:bg-[#ffdede] ${darkBand}`,
+        prev: `font-bold text-[#ff7433] dark:bg-[#ffe0ca] dark:active:bg-[#ffe0ca] ${darkBand}`,
+        default: 'font-semibold',
       },
     },
     defaultVariants: {
@@ -47,7 +53,7 @@ const TrainRow = classed(
 const TrainLineIcon = classed('img', 'h-[22px] w-[22px] shrink-0 drag-save-n')
 const Destination = classed(
   'span',
-  'flex min-w-0 items-center gap-1 text-base font-semibold hsm:text-sm',
+  'flex min-w-0 items-center gap-1 text-base hsm:text-sm',
 )
 const DestinationText = classed('span', 'truncate', {
   variants: {
@@ -65,11 +71,11 @@ const DestinationText = classed('span', 'truncate', {
 const TrainTypeIcon = classed('img', 'h-4 shrink-0 drag-save-n')
 const Status = classed(
   'span',
-  'ml-auto flex shrink-0 items-center gap-1.5 text-[15px] font-semibold tabular-nums whitespace-nowrap hsm:text-[13px]',
+  'ml-auto flex shrink-0 items-center gap-1.5 text-[15px] tabular-nums whitespace-nowrap hsm:text-[13px]',
 )
 const HotDot = classed(
   'span',
-  'h-[7px] w-[7px] rounded-full bg-actual animate-[hb-blink_1s_ease-in-out_infinite]',
+  'h-[7px] w-[7px] rounded-full bg-[#ff3737] animate-[hb-blink_1s_ease-in-out_infinite]',
 )
 const Empty = classed(
   'div',
