@@ -12,7 +12,10 @@ const ROTATE_MS = 7000
 const rowBase =
   'grid w-full grid-cols-[44px_minmax(0,1fr)_44px] items-center gap-1.5'
 const Row = classed('div', rowBase)
-const NoticeLink = classed('a', `${rowBase} animate-slide-up cursor-default`)
+const NoticeButton = classed(
+  'button',
+  `${rowBase} animate-slide-up cursor-default text-left`,
+)
 const Label = classed(
   'span',
   'text-left text-[14.5px] font-extrabold text-news hsm:text-[13px]',
@@ -37,9 +40,7 @@ const DateText = classed(
   'text-right text-sm font-medium tabular-nums text-ink-2 hsm:text-[13px]',
 )
 
-const Notice = (props: {
-  onModalOpen: (content: string, title: string) => void
-}) => {
+const Notice = (props: { onOpen: (index: number) => void }) => {
   const { t } = useTranslation()
   const notices = useQuery({
     queryKey: ['notice'],
@@ -70,15 +71,14 @@ const Notice = (props: {
   const item: NoticeInfo | undefined = notices.data?.[num % Math.max(count, 1)]
   if (item === undefined) return null
 
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (item.content.trim() !== '' || item.url.trim() === '') {
-      e.preventDefault()
-      props.onModalOpen(item.content, item.title)
-    }
-  }
-
   return (
-    <NoticeLink key={num} href={item.url} onClick={handleClick}>
+    <NoticeButton
+      key={num}
+      type="button"
+      aria-haspopup="dialog"
+      aria-label={`${t('notice_title')}: ${item.title}`}
+      onClick={() => props.onOpen(num % count)}
+    >
       <Label>
         {item.label === noticeType.GENERAL
           ? t('notice_label_general')
@@ -86,7 +86,7 @@ const Notice = (props: {
       </Label>
       <Title>{item.title}</Title>
       <DateText>{item.date}</DateText>
-    </NoticeLink>
+    </NoticeButton>
   )
 }
 

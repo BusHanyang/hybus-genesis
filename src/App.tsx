@@ -13,6 +13,7 @@ import TimetableCard, {
   isStopTab,
   StopTab,
 } from '@/components/shuttle/TimetableCard'
+import { runThemeTransition } from '@/components/theme/themeTransition'
 import { useDarkMode } from '@/components/useDarkMode'
 import {
   isSeasonalTheme,
@@ -85,8 +86,7 @@ function App() {
   const [modalTarget, setModalTarget] = useState<string>('')
   const [modalOpen, setModalOpen] = useState<boolean>(false)
   const [modalAni, setModalAni] = useState<boolean>(false)
-  const [noticeContent, setNoticeContent] = useState<string>('')
-  const [noticeTitle, setNoticeTitle] = useState<string>('')
+  const [noticeIndex, setNoticeIndex] = useState<number | null>(null)
   const {
     theme,
     automaticSeasonTheme,
@@ -122,9 +122,8 @@ function App() {
     setModalTarget('Info')
   }
 
-  const handleNoticeModalOpen = (content: string, title: string) => {
-    setNoticeContent(content)
-    setNoticeTitle(title)
+  const handleNoticeModalOpen = (index: number) => {
+    setNoticeIndex(index)
     setModalTarget('Notice')
     openModal()
   }
@@ -136,7 +135,7 @@ function App() {
       modalDismissTimeoutRef.current = null
       setModalAni(false)
       setModalOpen(false)
-    }, 300)
+    }, 200)
   }
 
   const closeModal = () => {
@@ -148,10 +147,10 @@ function App() {
     dismissModal()
   }
 
-  const handleEnableSeasonalTheme = () => {
+  const handleEnableSeasonalTheme = (origin: Element | null) => {
     if (seasonalChoiceHandledRef.current) return
     seasonalChoiceHandledRef.current = true
-    setAutomaticTheme()
+    runThemeTransition(origin, setAutomaticTheme)
     dismissModal()
   }
 
@@ -293,7 +292,7 @@ function App() {
                         </TitleRow>
                         <NoticeWrapper>
                           <Suspense fallback={<div />}>
-                            <Notice onModalOpen={handleNoticeModalOpen} />
+                            <Notice onOpen={handleNoticeModalOpen} />
                           </Suspense>
                         </NoticeWrapper>
                       </header>
@@ -331,8 +330,7 @@ function App() {
                     isOpen={modalOpen}
                     closeModal={closeModal}
                     mTarget={modalTarget}
-                    noticeContent={noticeContent}
-                    noticeTitle={noticeTitle}
+                    noticeIndex={noticeIndex}
                     onEnableSeasonalTheme={handleEnableSeasonalTheme}
                   />
                 </Suspense>

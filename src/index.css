@@ -595,6 +595,47 @@
   }
 }
 
+@keyframes hb-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-modal-out {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateY(8px) scale(0.97);
+  }
+}
+
+/* Falling particles: the outer element falls, the inner one sways. */
+@keyframes hb-fall-short {
+  from {
+    transform: translateY(-30px);
+  }
+  to {
+    transform: translateY(170px);
+  }
+}
+
+@keyframes hb-sway {
+  from {
+    transform: translateX(calc(var(--dx) * -1)) rotate(0deg);
+  }
+  to {
+    transform: translateX(var(--dx)) rotate(var(--rot));
+  }
+}
+
 /* Countdown odometer: each digit strip holds [next, previous] and rolls down into place. */
 @keyframes hb-roll {
   from {

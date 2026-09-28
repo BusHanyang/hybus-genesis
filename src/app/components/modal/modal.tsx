@@ -1,190 +1,115 @@
 import { classed } from '@tw-classed/react'
-import React, { useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 
-import { useDarkmodeContext } from '@/context/ThemeContext'
+import CloseImg from '/public/image/close_outline_24dp.svg?react'
 
-const ModalBackground = classed(
+const Overlay = classed(
   'div',
-  'fixed inset-0 z-99 bg-black/60 select-none',
+  'fixed inset-0 z-99 flex select-none items-center justify-center px-4 font-Ptd',
+)
+const Scrim = classed(
+  'div',
+  'absolute inset-0 bg-modal-scrim backdrop-blur-[4px]',
   {
     variants: {
-      'data-state': {
-        open: 'flex items-center',
-        closed: 'hidden',
+      'data-closing': {
+        true: 'animate-fade-out',
+        false: 'animate-fade-in',
       },
     },
     defaultVariants: {
-      'data-state': 'closed',
+      'data-closing': 'false',
     },
   },
 )
-
-const ModalMain = classed('div', 'fixed inset-0 z-99 bg-black/60 select-none', {
-  variants: {
-    'data-state': {
-      open: 'flex items-center',
-      closed: 'hidden',
+const Dialog = classed(
+  'section',
+  'relative flex max-h-[min(740px,calc(100dvh-2rem))] w-full max-w-md flex-col overflow-hidden rounded-3xl bg-theme-card text-theme-text shadow-modal transition-colors duration-[350ms]',
+  {
+    variants: {
+      'data-closing': {
+        true: 'animate-modal-out',
+        false: 'animate-modal-in',
+      },
     },
-    'data-ani': {
-      opening: 'animate-modalBgShow',
-      closing: 'animate-modalBgClose',
-      idle: '',
-    },
-  },
-  defaultVariants: {
-    'data-state': 'closed',
-    'data-ani': 'idle',
-  },
-})
-
-const ModalButton = classed('button', 'outline-hidden cursor-pointer border-0')
-
-const ModalSection = classed('section', 'w-11/12 mx-auto rounded-lg bg-white', {
-  variants: {
-    'data-ani': {
-      opening: 'animate-modalShow',
-      closing: 'animate-modalClose',
-      idle: '',
-    },
-    'data-content': {
-      notice: 'max-w-(--breakpoint-sm) overflow-hidden',
-      seasonal: 'max-w-(--breakpoint-sm) overflow-hidden',
-      default: 'max-w-(--breakpoint-sm) overflow-auto',
+    defaultVariants: {
+      'data-closing': 'false',
     },
   },
-  defaultVariants: {
-    'data-ani': 'idle',
-    'data-content': 'default',
-  },
-})
-
-const ModalHeader = classed(
+)
+const Header = classed(
   'header',
-  'relative pt-4 pr-16 pb-4 pl-4 font-bold font-Ptd',
-  {
-    variants: {
-      'data-theme': {
-        dark: 'bg-zinc-800 text-white',
-        light: 'bg-white',
-      },
-    },
-    defaultVariants: {
-      'data-theme': 'light',
-    },
-  },
+  'flex shrink-0 items-center gap-2 pb-1 pl-[22px] pr-2 pt-3.5',
 )
-
-const ModalFooterButton = classed(
-  ModalButton,
-  'py-2 px-4 text-white bg-gray-500 font-Ptd rounded-md text-xs',
+const Title = classed(
+  'h2',
+  'm-0 grow text-left text-[19px] font-extrabold tracking-[-0.02em]',
 )
-
-const ModalSubMain = classed('main', 'p-4 border-y border-solid', {
-  variants: {
-    'data-theme': {
-      dark: 'border-zinc-800 bg-gray-700 text-white',
-      light: 'border-sky-50',
-    },
-  },
-  defaultVariants: {
-    'data-theme': 'light',
-  },
-})
-
-const ModalFooter = classed('footer', 'py-3 px-4 text-right', {
-  variants: {
-    'data-theme': {
-      dark: 'text-white bg-gray-700',
-      light: '',
-    },
-  },
-  defaultVariants: {
-    'data-theme': 'light',
-  },
-})
+const CloseButton = classed(
+  'button',
+  'flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-ink-2 transition-transform duration-150 active:scale-[.96]',
+)
+const CloseIcon = classed(CloseImg, 'h-5 w-5')
+const Body = classed(
+  'div',
+  'hb-noscroll overflow-y-auto px-[22px] pb-[22px] pt-1.5 text-left break-keep',
+)
 
 export const Modal = (props: {
-  ani: boolean
   open: boolean
-  close: () => void
+  closing: boolean
+  title: string
+  onClose: () => void
   children: React.ReactNode
-  mTarget: string
-  seasonalFooter?: React.ReactNode
 }) => {
-  const modalBackgroundRef = useRef<HTMLDivElement>(null)
-  const handleClickModalBackground = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === modalBackgroundRef.current) {
-      props.close()
-    }
-  }
-
-  const { theme } = useDarkmodeContext()
-
   const { t } = useTranslation()
-  const modalAnimationState = props.ani
-    ? 'closing'
-    : props.open
-      ? 'opening'
-      : 'idle'
+  const closeRef = useRef<HTMLButtonElement>(null)
+  const { open, onClose } = props
+
+  // Focus the dialog while it's open and hand focus back to whatever opened it.
+  useEffect(() => {
+    if (!open) return
+    const opener = document.activeElement as HTMLElement | null
+    closeRef.current?.focus({ preventScroll: true })
+    return () => opener?.focus?.({ preventScroll: true })
+  }, [open])
+
+  useEffect(() => {
+    if (!open) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [open, onClose])
+
+  if (!open) return null
+
+  const closing = props.closing ? 'true' : 'false'
 
   return (
-    <ModalBackground
-      data-state={props.open ? 'open' : 'closed'}
-      onClick={handleClickModalBackground}
-    >
-      <ModalMain
-        data-state={props.open ? 'open' : 'closed'}
-        data-ani={modalAnimationState}
-        ref={modalBackgroundRef}
+    <Overlay>
+      <Scrim aria-hidden="true" data-closing={closing} onClick={onClose} />
+      <Dialog
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="hb-modal-title"
+        data-closing={closing}
       >
-        {props.open ? (
-          <ModalSection
-            data-ani={modalAnimationState}
-            data-content={
-              props.mTarget === 'Notice'
-                ? 'notice'
-                : props.mTarget === 'Seasonal'
-                  ? 'seasonal'
-                  : 'default'
-            }
+        <Header>
+          <Title id="hb-modal-title">{props.title}</Title>
+          <CloseButton
+            ref={closeRef}
+            type="button"
+            aria-label={t('close')}
+            onClick={onClose}
           >
-            {props.mTarget === 'Fabs' && (
-              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('changelog')}
-              </ModalHeader>
-            )}
-            {props.mTarget === 'Info' && (
-              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('info')}
-              </ModalHeader>
-            )}
-            {props.mTarget === 'Seasonal' && (
-              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('seasonal_prompt_title')}
-              </ModalHeader>
-            )}
-            {props.mTarget === 'Notice' && (
-              <ModalHeader data-theme={theme === 'dark' ? 'dark' : 'light'}>
-                {t('notice')}
-              </ModalHeader>
-            )}
-
-            <ModalSubMain data-theme={theme === 'dark' ? 'dark' : 'light'}>
-              {props.children}
-            </ModalSubMain>
-            <ModalFooter data-theme={theme === 'dark' ? 'dark' : 'light'}>
-              {props.mTarget === 'Seasonal' ? (
-                props.seasonalFooter
-              ) : (
-                <ModalFooterButton className="close" onClick={props.close}>
-                  {t('close')}
-                </ModalFooterButton>
-              )}
-            </ModalFooter>
-          </ModalSection>
-        ) : null}
-      </ModalMain>
-    </ModalBackground>
+            <CloseIcon aria-hidden="true" />
+          </CloseButton>
+        </Header>
+        <Body>{props.children}</Body>
+      </Dialog>
+    </Overlay>
   )
 }
