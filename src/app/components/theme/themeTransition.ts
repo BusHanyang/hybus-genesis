@@ -29,17 +29,17 @@ export const runThemeTransition = (
     return
   }
 
-  const box = origin?.getBoundingClientRect()
-  const x = box ? box.left + box.width / 2 : window.innerWidth / 2
-  const y = box ? box.top + box.height / 2 : window.innerHeight / 2
-  // Just far enough to reach the farthest corner of the viewport.
-  const radius = Math.hypot(
-    Math.max(x, window.innerWidth - x),
-    Math.max(y, window.innerHeight - y),
-  )
-  root.style.setProperty('--hb-rx', `${Math.round(x)}px`)
-  root.style.setProperty('--hb-ry', `${Math.round(y)}px`)
-  root.style.setProperty('--hb-r', `${Math.ceil(radius) + 2}px`)
+  if (origin !== null) {
+    const box = origin.getBoundingClientRect()
+    root.style.setProperty(
+      '--hb-rx',
+      `${Math.round(box.left + box.width / 2)}px`,
+    )
+    root.style.setProperty(
+      '--hb-ry',
+      `${Math.round(box.top + box.height / 2)}px`,
+    )
+  }
 
   const transition = document.startViewTransition(() => flushSync(update))
   transition.finished.then(finish, finish)
