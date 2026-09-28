@@ -1,14 +1,22 @@
 import { classed } from '@tw-classed/react'
-import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   BrowserRouter,
   Link,
   Navigate,
-  Outlet,
   Route,
   Routes,
   useLocation,
+  useNavigate,
+  useNavigationType,
 } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 
@@ -37,6 +45,7 @@ const Notice = lazy(() => import('@/components/notice/Notice'))
 // Code-split, but once preloaded it renders straight away: going through
 // Suspense would hold the page back ~300ms and stall the opening transition.
 type FullTimeModule = typeof import('@/components/fulltime/FullTime')
+type FullTimeProps = React.ComponentProps<FullTimeModule['default']>
 let loadedFullTime: FullTimeModule | null = null
 const loadFullTime = () =>
   import('@/components/fulltime/FullTime').then((module) => {
@@ -44,14 +53,14 @@ const loadFullTime = () =>
     return module
   })
 const LazyFullTime = lazy(loadFullTime)
-const FullTimeRoute = () => {
+const FullTimeSheet = (props: FullTimeProps) => {
   // Decided once per visit so a later re-render can't swap the tree and reset
   // the page's filters.
   const [Preloaded] = useState(() => loadedFullTime?.default ?? null)
-  if (Preloaded !== null) return <Preloaded />
+  if (Preloaded !== null) return <Preloaded {...props} />
   return (
     <Suspense fallback={<div />}>
-      <LazyFullTime />
+      <LazyFullTime {...props} />
     </Suspense>
   )
 }
@@ -126,10 +135,68 @@ const FullTimeLink = () => {
   )
 }
 
-// The FAB belongs to the home screen only, not the timetable sheet above it.
-const HomeOnly = (props: { children: React.ReactNode }) => {
+// Whether the browser has already animated the latest back or forward itself
+// (a swipe back in iOS Safari, say). Listening from import time puts this
+// ahead of the router's own popstate listener, which renders the new location
+// straight away: listeners on window run in the order they were added.
+let browserAnimatedPop = false
+window.addEventListener('popstate', (event) => {
+  browserAnimatedPop = event.hasUAVisualTransition === true
+})
+
+type SheetState = { animateOpen: boolean; closing: boolean }
+
+// /all opens the full timetable as a sheet over the home screen; the nested
+// routes only match the URL. The sheet stays up until it has folded back into
+// its button, whether the page was left with its back button, Esc or the
+// browser's back, and the FAB (home screen only) returns once it's gone. A
+// direct visit shows the page at once, and a swipe the browser has already
+// animated isn't animated again.
+const FullTimeLayer = (props: { fab: React.ReactNode }) => {
   const { pathname } = useLocation()
-  return pathname === '/' ? <>{props.children}</> : null
+  const navigationType = useNavigationType()
+  const navigate = useNavigate()
+  const open = pathname === '/all'
+  const [sheet, setSheet] = useState<SheetState | null>(() =>
+    open ? { animateOpen: false, closing: false } : null,
+  )
+  const [leaving, setLeaving] = useState(false)
+
+  const skipAnimation =
+    navigationType === 'POP' && browserAnimatedPop && !leaving
+  if (open && sheet === null) {
+    setSheet({ animateOpen: !skipAnimation, closing: false })
+  } else if (open && sheet?.closing) {
+    setSheet({ ...sheet, closing: false })
+    setLeaving(false)
+  } else if (!open && sheet !== null && !sheet.closing) {
+    setSheet(skipAnimation ? null : { ...sheet, closing: true })
+  }
+
+  const handleBack = useCallback(() => {
+    if (leaving) return
+    setLeaving(true)
+    // Back through history to the home screen, or replace a direct visit.
+    if ((window.history.state?.idx ?? 0) > 0) {
+      navigate(-1)
+    } else {
+      navigate('/', { replace: true })
+    }
+  }, [leaving, navigate])
+  const handleClosed = useCallback(() => {
+    setSheet(null)
+    setLeaving(false)
+  }, [])
+
+  if (sheet === null) return <>{props.fab}</>
+  return (
+    <FullTimeSheet
+      animateOpen={sheet.animateOpen}
+      closing={sheet.closing}
+      onBack={handleBack}
+      onClosed={handleClosed}
+    />
+  )
 }
 
 function App() {
@@ -385,11 +452,9 @@ function App() {
                     </Apps>
                   </ThemeRoot>
                 </PullToRefresh>
-                <HomeOnly>
-                  <Fabs openModal={openModal} mTarget={setModalTarget} />
-                </HomeOnly>
-                {/* /all opens the full timetable as a sheet over the home screen */}
-                <Outlet />
+                <FullTimeLayer
+                  fab={<Fabs openModal={openModal} mTarget={setModalTarget} />}
+                />
                 <Suspense fallback={<div />}>
                   <ModalOpen
                     isModalAni={modalAni}
@@ -404,7 +469,7 @@ function App() {
             }
           >
             <Route index element={null} />
-            <Route path="all" element={<FullTimeRoute />} />
+            <Route path="all" element={null} />
           </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>

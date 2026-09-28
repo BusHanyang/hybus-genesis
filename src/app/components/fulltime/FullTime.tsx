@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query'
 import { classed } from '@tw-classed/react'
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useNavigate } from 'react-router-dom'
 
 import BackImg from '/public/image/arrow_back_outline_24dp.svg?react'
 import CheckImg from '/public/image/check_outline_24dp.svg?react'
@@ -37,21 +36,42 @@ const groupOf = (type: string): GroupKey | null => {
 
 const COMPACT_ON_Y = 240
 const COMPACT_OFF_Y = 200
-// The sheet grows out of the home button, and shrinks back into it on close.
-const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
+// Matches the closing transition on Sheet.
 const CLOSE_MS = 400
 // Glide to the next departure just as the sheet finishes opening.
 const GLIDE_DELAY_MS = 450
 const GLIDE_MS = 500
-// Cards already in the cache would otherwise finish rising while the content
-// is still fading in, so hold them until it shows.
+// Cards already in the cache rise in while the page unfolds, instead of
+// having finished before it is open.
 const CARD_ENTRY_DELAY_MS = 220
 
-const buttonClip = (): string | null => {
+type SheetFrame = { transform: string; clipPath: string }
+
+const FULL_FRAME: SheetFrame = {
+  transform: 'none',
+  clipPath: 'inset(0px 0px 0px 0px round 0px)',
+}
+
+// The page as the home button: its column scaled to the button's width with
+// its top on the button, seen through a window the size of the button. The
+// sheet unfolds from here to FULL_FRAME with its content showing, and folds
+// back into it on close.
+const buttonFrame = (): SheetFrame | null => {
   const button = document.getElementById('all')
   if (button === null) return null
   const box = button.getBoundingClientRect()
-  return `inset(${box.top}px ${window.innerWidth - box.right}px ${window.innerHeight - box.bottom}px ${box.left}px round 16px)`
+  const width = document.documentElement.clientWidth
+  const height = window.innerHeight
+  if (box.width === 0 || box.bottom <= 0 || box.top >= height) return null
+  // Both columns are at most 30rem wide; the button spans the home one.
+  const rem = parseFloat(getComputedStyle(document.documentElement).fontSize)
+  const column = Math.min(width, 30 * (rem || 16))
+  const side = (width - column) / 2
+  const scale = box.width / column
+  return {
+    transform: `translate(${box.left - side * scale}px, ${box.top}px) scale(${scale})`,
+    clipPath: `inset(0px ${side}px ${height - box.height / scale}px ${side}px round ${16 / scale}px)`,
+  }
 }
 
 const prefersReducedMotion = () =>
@@ -79,17 +99,17 @@ const ThemeRoot = classed('div', '', themeRootVariants)
 // Falling seasonal effects (z-2) still drift over it, as they did before.
 const Sheet = classed(
   'div',
-  'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none',
+  'fixed inset-0 z-[1] origin-top-left overflow-hidden font-Ptd text-theme-text select-none',
   {
     variants: {
       'data-phase': {
-        opening:
-          '[transition:clip-path_.55s_cubic-bezier(.3,.9,.25,1),background-color_.35s_ease]',
-        open: '[transition:clip-path_.55s_cubic-bezier(.3,.9,.25,1),background-color_.35s_ease]',
+        // Starts on the home button in its color, then unfolds into the page.
+        opening: 'bg-theme-card',
+        open: 'bg-ft-page opacity-100 [transition:transform_.5s_cubic-bezier(.25,.8,.25,1),clip-path_.5s_cubic-bezier(.25,.8,.25,1),opacity_.12s_ease,background-color_.35s_ease]',
         // Closing: an even curve with a short tail, so it doesn't hover just
         // above the button, and a late fade so it blends into the button.
         closing:
-          'opacity-0 [transition:clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.15s_ease_.25s]',
+          'pointer-events-none bg-theme-card opacity-0 [transition:transform_.4s_cubic-bezier(.6,0,.4,1),clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.15s_ease_.25s,background-color_.4s_ease]',
       },
     },
     defaultVariants: {
@@ -99,19 +119,7 @@ const Sheet = classed(
 )
 const Scroller = classed(
   'div',
-  'absolute inset-0 overflow-y-auto overscroll-contain transition-opacity duration-[250ms]',
-  {
-    variants: {
-      // Content fades in a beat after the sheet starts growing.
-      'data-shown': {
-        true: 'opacity-100 delay-[160ms]',
-        false: 'opacity-0',
-      },
-    },
-    defaultVariants: {
-      'data-shown': 'false',
-    },
-  },
+  'absolute inset-0 overflow-y-auto overscroll-contain',
 )
 const Column = classed('div', 'mx-auto max-w-[30rem] px-5 pb-8 text-left')
 const Header = classed('header', '-ml-3 flex items-center gap-0.5 pb-1.5 pt-4')
@@ -276,7 +284,17 @@ const openApiMonitor = () => {
   )
 }
 
-const FullTime = () => {
+type FullTimeProps = {
+  // Unfold from the home button (not on a direct visit or a browser swipe).
+  animateOpen: boolean
+  // The page has been left: fold back into the button, then onClosed.
+  closing: boolean
+  onBack: () => void
+  onClosed: () => void
+}
+
+const FullTime = (props: FullTimeProps) => {
+  const { animateOpen, closing, onBack, onClosed } = props
   const [season, setSeason] = useState<Season>(
     (window.localStorage.getItem('season') as Season) || 'semester',
   )
@@ -293,12 +311,18 @@ const FullTime = () => {
   }))
   const [clock, setClock] = useState<string>(clockNow)
   const [compact, setCompact] = useState<boolean>(false)
-  const [phase, setPhase] = useState<'opening' | 'open' | 'closing'>('opening')
-  // Start clipped to the home button from the very first style the sheet
-  // gets, so the grow transition starts there (not from a placeholder).
-  const [clip, setClip] = useState<string>(() =>
-    prefersReducedMotion() ? FULL_CLIP : (buttonClip() ?? FULL_CLIP),
+  // Start on the home button from the very first style the sheet gets, so
+  // the unfold starts there (not from a placeholder).
+  const [openFrom] = useState<SheetFrame | null>(() =>
+    animateOpen && !prefersReducedMotion() ? buttonFrame() : null,
   )
+  const [closeTo, setCloseTo] = useState<SheetFrame | null>(null)
+  const [phase, setPhase] = useState<'opening' | 'open' | 'closing'>(
+    openFrom === null ? 'open' : 'opening',
+  )
+  const frame =
+    (phase === 'opening' ? openFrom : phase === 'closing' ? closeTo : null) ??
+    FULL_FRAME
   const scrollerRef = useRef<HTMLDivElement>(null)
   const touchedRef = useRef<boolean>(false)
   const scrolledToTargetRef = useRef<boolean>(false)
@@ -317,7 +341,6 @@ const FullTime = () => {
   const cardDelay = listKey === delayedListKey ? CARD_ENTRY_DELAY_MS : 0
   const { theme } = useDarkmodeContext()
   const { setBackground } = useDarkMode()
-  const navigate = useNavigate()
   const { t } = useTranslation()
 
   useLayoutEffect(() => {
@@ -340,26 +363,38 @@ const FullTime = () => {
     return () => window.clearInterval(timer)
   }, [])
 
-  // Open: grow from the home button to full screen on the next frames.
+  // Open: unfold from the home button to full screen on the next frames.
   useLayoutEffect(() => {
-    if (clip === FULL_CLIP) {
-      setPhase('open')
-      return
-    }
+    if (openFrom === null) return
     let second = 0
     const first = window.requestAnimationFrame(() => {
       second = window.requestAnimationFrame(() => {
-        setClip(FULL_CLIP)
-        setPhase('open')
+        setPhase((current) => (current === 'opening' ? 'open' : current))
       })
     })
     return () => {
       window.cancelAnimationFrame(first)
       window.cancelAnimationFrame(second)
     }
-    // Runs once on mount; later clip changes are the close animation.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [openFrom])
+
+  // Close: fold back into the home button, then let the page go. Coming back
+  // before that (browser forward) unfolds it again.
+  useEffect(() => {
+    if (!closing) {
+      setPhase((current) => (current === 'closing' ? 'open' : current))
+      return
+    }
+    const to = prefersReducedMotion() ? null : buttonFrame()
+    if (to === null) {
+      onClosed()
+      return
+    }
+    setCloseTo(to)
+    setPhase('closing')
+    const timer = window.setTimeout(onClosed, CLOSE_MS)
+    return () => window.clearTimeout(timer)
+  }, [closing, onClosed])
 
   const handleScroll = () => {
     const y = scrollerRef.current?.scrollTop ?? 0
@@ -473,32 +508,13 @@ const FullTime = () => {
     }
   }, [targetHour])
 
-  const goToHomeScreen = () => {
-    if (phase === 'closing') return
-    const goBack = () => {
-      if (window.history.state && window.history.length > 1) {
-        navigate(-1)
-      } else {
-        navigate('/', { replace: true })
-      }
-    }
-    const to = buttonClip()
-    if (to === null || prefersReducedMotion()) {
-      goBack()
-      return
-    }
-    setPhase('closing')
-    setClip(to)
-    window.setTimeout(goBack, CLOSE_MS)
-  }
-
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') goToHomeScreen()
+      if (event.key === 'Escape') onBack()
     }
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  })
+  }, [onBack])
 
   const locationOptions: Array<[StopLocation, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
@@ -632,7 +648,7 @@ const FullTime = () => {
         onTouchStartCapture={markTouched}
         onKeyDownCapture={markTouched}
         data-phase={phase}
-        style={{ clipPath: clip }}
+        style={frame}
       >
         <CompactBar
           aria-hidden={!compact}
@@ -643,7 +659,7 @@ const FullTime = () => {
               type="button"
               aria-label={t('back_home')}
               tabIndex={compact ? 0 : -1}
-              onClick={goToHomeScreen}
+              onClick={onBack}
             >
               <BackIcon aria-hidden="true" />
             </BackButton>
@@ -661,17 +677,13 @@ const FullTime = () => {
             </SummaryButton>
           </CompactInner>
         </CompactBar>
-        <Scroller
-          ref={scrollerRef}
-          data-shown={phase === 'open' ? 'true' : 'false'}
-          onScroll={handleScroll}
-        >
+        <Scroller ref={scrollerRef} onScroll={handleScroll}>
           <Column>
             <Header>
               <BackButton
                 type="button"
                 aria-label={t('back_home')}
-                onClick={goToHomeScreen}
+                onClick={onBack}
               >
                 <BackIcon aria-hidden="true" />
               </BackButton>
