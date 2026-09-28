@@ -364,8 +364,19 @@
   mix-blend-mode: normal;
 }
 
+/*
+  The circle ends exactly where it covers the farthest corner (--hb-r, set in
+  themeTransition.ts) and eases in without slowing down at the end, so it keeps
+  growing until the whole screen has switched instead of stalling part-way.
+*/
 ::view-transition-new(root) {
-  animation: hb-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: hb-reveal 0.5s cubic-bezier(0.3, 0, 0.8, 0.8);
+}
+
+/* Don't let the browser morph the whole page when the viewport size shifts
+   mid-switch (e.g. the mobile address bar); only the circle should move. */
+::view-transition-group(root) {
+  animation: none;
 }
 
 ::view-transition-group(hb-fx),
@@ -397,7 +408,7 @@
     clip-path: circle(0px at var(--hb-rx, 50%) var(--hb-ry, 50%));
   }
   to {
-    clip-path: circle(150vmax at var(--hb-rx, 50%) var(--hb-ry, 50%));
+    clip-path: circle(var(--hb-r, 150vmax) at var(--hb-rx, 50%) var(--hb-ry, 50%));
   }
 }
 
