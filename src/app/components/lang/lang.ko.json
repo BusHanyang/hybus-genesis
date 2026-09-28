@@ -124,5 +124,13 @@
   "seasonal_prompt_text": "계절에 맞춰 화면 색상과 햇살·눈 같은 효과가 함께 바뀝니다. 오른쪽 아래 메뉴에서 언제든 켜거나 끌 수 있어요.",
   "seasonal_prompt_once": "(이 안내는 처음 한 번만 표시됩니다.)",
   "seasonal_prompt_enable": "계절 테마 켜기",
-  "seasonal_prompt_keep": "계절 테마 사용 안 함"
+  "seasonal_prompt_keep": "계절 테마 사용 안 함",
+
+  "departing": "출발!",
+  "sleeping_mascot": "버스 정류장 옆에서 잠든 하냥이",
+  "press_hint_label": "길게 누르면 실제 출발 시각을 보여줘요",
+  "map_label": "지도에서 정류장 보기",
+  "close_hint": "안내 닫기",
+  "notice_label_general": "공지",
+  "notice_label_news": "소식"
 }

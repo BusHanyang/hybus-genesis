@@ -3,27 +3,39 @@ import { classed } from '@tw-classed/react'
 import { t, TFunction } from 'i18next'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { SyncLoader } from 'react-spinners'
 
 import { SingleTrainInfo, SubwayStop } from '@/data'
 import { subwayAPI } from '@/network/subway'
 
-const TimetableWrapper = classed('div', 'h-[14.8rem] hm:h-[15.3rem]')
-const HeadlineWrapper = classed('div', 'flex justify-center hsm:mb-0')
+const HeadlineWrapper = classed(
+  'div',
+  'flex min-h-9 items-center justify-center gap-1.5 px-11 hm:px-10',
+)
 const Headline = classed(
   'h2',
-  'font-bold text-2xl mb-3 hsm:text-lg hm:text-[1.375rem] hsm:mb-4 hsm:mt-2 hm:mb-2 hm:mt-2',
+  'm-0 text-[21px] font-extrabold tracking-[-0.02em] whitespace-pre hm:text-[19px] hsm:text-[17px]',
 )
-const StnListWrapper = classed(
-  'div',
-  'flex my-3 gap-2 hsm:gap-2 leading-6 rounded-full items-center hover:brightness-90 hover:bg-slate-50 dark:hover:text-black p-[0.3rem] my-[0.3rem]',
+const TitleLineIcon = classed('img', 'w-6 drag-save-n')
+const Body = classed('div', 'h-[185px] pt-2')
+const DirectionGroup = classed('div', 'min-h-[84px] px-1.5 py-1', {
+  variants: {
+    'data-divider': {
+      true: 'border-t border-control-main',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    'data-divider': 'false',
+  },
+})
+const TrainRow = classed(
+  'button',
+  'flex h-[38px] w-full items-center gap-2 rounded-[10px] px-1 text-left transition-[background-color,scale] duration-200 active:scale-[.985] active:bg-press-bg animate-rise',
   {
     variants: {
       'data-state': {
-        departed:
-          'text-[#ff3737] dark:bg-[#ffdede] dark:text-gray-800 font-bold items-center',
-        arrived:
-          'text-[#ff7433] dark:bg-[#ffe0ca] dark:text-gray-800 font-bold items-center',
+        here: 'text-actual',
+        prev: 'text-actual',
         default: '',
       },
     },
@@ -32,87 +44,60 @@ const StnListWrapper = classed(
     },
   },
 )
-const Chip = classed('img', 'my-auto inline-block')
-const DestStnLeftContainer = classed(
+const TrainLineIcon = classed('img', 'h-[22px] w-[22px] shrink-0 drag-save-n')
+const Destination = classed(
+  'span',
+  'flex min-w-0 items-center gap-1 text-base font-semibold hsm:text-sm',
+)
+const DestinationText = classed('span', 'truncate')
+const TrainTypeIcon = classed('img', 'h-4 shrink-0 drag-save-n')
+const Status = classed(
+  'span',
+  'ml-auto flex shrink-0 items-center gap-1.5 text-[15px] font-semibold tabular-nums whitespace-nowrap hsm:text-[13px]',
+)
+const HotDot = classed(
+  'span',
+  'h-[7px] w-[7px] rounded-full bg-actual animate-[hb-blink_1s_ease-in-out_infinite]',
+)
+const Empty = classed(
   'div',
-  'flex justify-end items-center font-Ptd tabular-nums text-right w-[5.1rem] hm:text-[0.9rem] hsm:text-sm hsm:w-16',
-  {
-    variants: {
-      'data-lang': {
-        en: 'tracking-tighter',
-        default: '',
-      },
-    },
-    defaultVariants: {
-      'data-lang': 'default',
-    },
-  },
+  'flex h-[76px] items-center justify-center px-2 text-center text-[15px] font-semibold text-ink-2 hsm:text-sm',
 )
-const DestStnLeftWrapper = classed('div', {
-  variants: {
-    'data-length': {
-      long: 'tracking-[-0.09em] text-sm hsm:text-xs',
-      default: '',
-    },
-  },
-  defaultVariants: {
-    'data-length': 'default',
-  },
-})
-const ArrivalStnStatusWrapper = classed(
-  'span',
-  'text-left inline-block hsm:text-sm hm:text-[0.9rem] pl-1 pr-2',
-  {
-    variants: {
-      'data-lang': {
-        en: 'tracking-tighter',
-        default: '',
-      },
-    },
-    defaultVariants: {
-      'data-lang': 'default',
-    },
-  },
+const ErrorBox = classed(
+  'div',
+  'flex h-full flex-col items-center justify-center text-base font-semibold',
 )
-const SingleDirTimetableWrapper = classed('div', 'h-20')
-const StatusWrapper = classed(
-  'span',
-  'font-Ptd tabular-nums inline-block px-1 w-20 text-right hm:text-[0.9rem] hm:w-16 hm:px-0 hsm:text-sm hsm:w-16',
-)
-const SubwayDivider = classed('hr', 'py-1 hsm:mb-4', {
-  variants: {
-    'data-state': {
-      loading: 'hidden',
-      idle: '',
-    },
-  },
-  defaultVariants: {
-    'data-state': 'idle',
-  },
-})
-const TimetableLoadingContainer = classed('div', 'h-48')
-const TitleLine4Icon = classed(
-  Chip,
-  'w-6 pb-2 hm:pb-0 hsm:pb-2 mr-[0.1rem]',
-)
-const TitleLineSUIcon = classed(
-  Chip,
-  'w-6 pb-2 hm:pb-0 hsm:pb-2 mr-1.5',
-)
-const TrainLineIcon = classed(Chip, 'mx-0.5 w-5')
-const TrainTypeIcon = classed('img', 'h-4 ml-[0.15rem]')
-const MainTimetable = classed('div', 'inline-block select-none h-full')
-const NoTimetable = classed('div', 'h-full flex items-center justify-center')
-const NoTimetableInner = classed(
-  'span',
-  'text-center hsm:text-sm table-cell align-middle',
-)
-const ApiErrorInner = classed(NoTimetableInner, 'mb-16')
-const LoaderCell = classed('div', 'table-cell align-middle')
 const ApiStatusButton = classed(
   'button',
-  'rounded-md bg-gray-200 text-gray-700 cursor-default px-2 py-1 mt-2',
+  'mt-3 rounded-[10px] bg-press-bg px-3 py-2 text-sm font-semibold text-ink-2',
 )
+const StatusSwap = classed('span', 'animate-fade-in')
+const ArrivalStatus = classed('span', '', {
+  variants: {
+    'data-state': {
+      here: '',
+      prev: '',
+      default: 'text-ink-2',
+    },
+  },
+  defaultVariants: {
+    'data-state': 'default',
+  },
+})
+const PaneBody = classed('div', 'px-3.5 pt-[18px]')
+const SkeletonRow = classed('div', 'flex h-[38px] items-center gap-2 px-1')
+const SkeletonBadge = classed(
+  'span',
+  'hb-skeleton h-[22px] w-[22px] rounded-full',
+)
+const SkeletonBar = classed('span', 'hb-skeleton h-3.5', {
+  variants: {
+    'data-part': {
+      destination: 'w-24',
+      status: 'ml-auto w-20',
+    },
+  },
+})
 
 const arrivalUntil = (stnUntilArrival: number): string => {
   if (stnUntilArrival === 1) {
@@ -288,7 +273,7 @@ const Subway = ({ station }: SubwayStop) => {
     staleTime: 5000,
   })
   const [isBlink, setBlink] = useState<boolean>(false)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -322,19 +307,27 @@ const Subway = ({ station }: SubwayStop) => {
     return 0
   }
 
-  const getStationRowState = (
-    prevDeparted: boolean,
-    prevArrived: boolean,
-  ) => {
-    if (prevArrived) return 'arrived'
-    if (prevDeparted) return 'departed'
+  const getStationRowState = (train: SingleTrainInfo) => {
+    if (train.stnUntilArrival === 1) return 'prev'
+    if (train.destination === station.trim() || train.stnUntilArrival === 0)
+      return 'here'
     return 'default'
   }
 
-  const renderTimetable = (
+  const renderDirection = (
     direction: number,
     t: TFunction<['translation', ...string[]], undefined>,
   ) => {
+    if (timetable.isPending) {
+      return [0, 1].map((i) => (
+        <SkeletonRow key={i}>
+          <SkeletonBadge />
+          <SkeletonBar data-part="destination" />
+          <SkeletonBar data-part="status" />
+        </SkeletonRow>
+      ))
+    }
+
     const filtered =
       timetable.data
         ?.filter(
@@ -343,149 +336,84 @@ const Subway = ({ station }: SubwayStop) => {
         .sort(compare)
         .slice(0, 2) ?? []
 
-    if (timetable.isPending) {
-      return <></>
-    }
-
-    if (timetable.isError) {
-      // Timetable API error
-      return (
-        <>
-          <NoTimetable>
-            <NoTimetableInner>
-              {t('api_error')}
-              <br />
-              <ApiStatusButton onClick={openApiMonitor}>
-                {t('status_check')}
-              </ApiStatusButton>
-            </NoTimetableInner>
-          </NoTimetable>
-        </>
-      )
-    }
-
     if (filtered.length === 0) {
       // Trains are done for today. User should refresh after midnight.
       return (
-        <>
-          <NoTimetable>
-            <NoTimetableInner>
-              {direction === 1 ? t('no_train_up') : t('no_train_down')}
-            </NoTimetableInner>
-          </NoTimetable>
-        </>
+        <Empty>{direction === 1 ? t('no_train_up') : t('no_train_down')}</Empty>
       )
     }
-    // Otherwise - normal case
-    return (
-      <>
-        {filtered.map((val, idx) => {
-          return (
-            <React.Fragment key={idx}>
-              <StnListWrapper
-                data-state={getStationRowState(
-                  val.destination === station.trim() ||
-                    val.stnUntilArrival === 0,
-                  val.stnUntilArrival === 1,
-                )}
-                onClick={() => openRailblue(val.trainCode)}
-              >
-                {getLineMarkElement(val.line)}
-                <DestStnLeftContainer
-                  data-lang={i18n.language === 'en' ? 'en' : 'default'}
-                >
-                  <DestStnLeftWrapper
-                    data-length={
-                      val.destination.includes('한성대') ||
-                      (i18n.language === 'en' &&
-                        val.destination.includes('청량리')) ||
-                      (getRapidOrLastElement(val.isLast, val.isExpress) !==
-                        undefined &&
-                        i18n.language === 'en' &&
-                        (val.destination.includes('왕십리') ||
-                          val.destination.includes('불암산') ||
-                          val.destination.includes('금정')))
-                        ? 'long'
-                        : 'default'
-                    }
-                  >
-                    {getDestination(val.destination, val.isLast, val.isExpress)}
-                  </DestStnLeftWrapper>
-                  {getRapidOrLastElement(val.isLast, val.isExpress)}
-                </DestStnLeftContainer>
-                <StatusWrapper>
-                  {isBlink
-                    ? stationName(val.currentStation)
-                    : arrivalUntil(val.stnUntilArrival)}
-                </StatusWrapper>
-                <ArrivalStnStatusWrapper
-                  data-lang={i18n.language === 'en' ? 'en' : 'default'}
-                >
-                  {arrivalStnStatus(
-                    val.status,
-                    val.orgStation,
-                    val.currentStation,
-                  )}
-                </ArrivalStnStatusWrapper>
-              </StnListWrapper>
-            </React.Fragment>
-          )
-        })}
-      </>
-    )
+
+    return filtered.map((val, idx) => {
+      const state = getStationRowState(val)
+
+      return (
+        <TrainRow
+          key={val.trainCode || idx}
+          type="button"
+          data-state={state}
+          style={{ animationDelay: `${((direction - 1) * 2 + idx) * 45}ms` }}
+          onClick={() => openRailblue(val.trainCode)}
+        >
+          {getLineMarkElement(val.line)}
+          <Destination>
+            <DestinationText>
+              {getDestination(val.destination, val.isLast, val.isExpress)}
+            </DestinationText>
+            {getRapidOrLastElement(val.isLast, val.isExpress)}
+          </Destination>
+          <Status>
+            {state === 'here' && <HotDot aria-hidden="true" />}
+            <StatusSwap key={isBlink ? 'station' : 'count'}>
+              {isBlink
+                ? stationName(val.currentStation)
+                : arrivalUntil(val.stnUntilArrival)}
+            </StatusSwap>
+            <ArrivalStatus data-state={state}>
+              {arrivalStnStatus(
+                val.status,
+                val.orgStation,
+                val.currentStation,
+              )}
+            </ArrivalStatus>
+          </Status>
+        </TrainRow>
+      )
+    })
   }
-  // Main Code for Implementation of DOM
+
   return (
-    <TimetableWrapper>
+    <PaneBody>
       <HeadlineWrapper>
-        <TitleLine4Icon src="/image/line4.svg" draggable="false" />
-        <TitleLineSUIcon src={`/image/${t('suin')}.svg`} draggable="false" />
+        <TitleLineIcon
+          src="/image/line4.svg"
+          alt=""
+          draggable="false"
+        />
+        <TitleLineIcon
+          src={`/image/${t('suin')}.svg`}
+          alt=""
+          draggable="false"
+        />
         <Headline>{titleText(station.trim())}</Headline>
       </HeadlineWrapper>
-      <MainTimetable>
-        {timetable.isPending ? (
-          <TimetableLoadingContainer>
-            <NoTimetable>
-              <LoaderCell>
-                <SyncLoader
-                  color="var(--color-load-color)"
-                  margin={4}
-                  size={8}
-                  loading={timetable.isPending}
-                />
-              </LoaderCell>
-            </NoTimetable>
-          </TimetableLoadingContainer>
-        ) : (
-          <></>
-        )}
+      <Body>
         {timetable.isError ? (
-          <>
-            <NoTimetable>
-              <ApiErrorInner>
-                {t('api_error')}
-                <br />
-                <ApiStatusButton onClick={openApiMonitor}>
-                  {t('status_check')}
-                </ApiStatusButton>
-              </ApiErrorInner>
-            </NoTimetable>
-          </>
+          <ErrorBox>
+            {t('api_error')}
+            <ApiStatusButton type="button" onClick={openApiMonitor}>
+              {t('status_check')}
+            </ApiStatusButton>
+          </ErrorBox>
         ) : (
           <>
-            <SingleDirTimetableWrapper>
-              {renderTimetable(1, t)}
-            </SingleDirTimetableWrapper>
-            <SubwayDivider
-              data-state={timetable.isPending ? 'loading' : 'idle'}
-            />
-            <SingleDirTimetableWrapper>
-              {renderTimetable(2, t)}
-            </SingleDirTimetableWrapper>
+            <DirectionGroup>{renderDirection(1, t)}</DirectionGroup>
+            <DirectionGroup data-divider="true">
+              {renderDirection(2, t)}
+            </DirectionGroup>
           </>
         )}
-      </MainTimetable>
-    </TimetableWrapper>
+      </Body>
+    </PaneBody>
   )
 }
 
