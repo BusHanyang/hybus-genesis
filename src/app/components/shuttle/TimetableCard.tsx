@@ -57,7 +57,7 @@ const MapButton = classed(
   'absolute right-2.5 top-2 z-2 flex h-11 w-11 items-center justify-center transition-transform duration-150 active:scale-[.96]',
 )
 const MapIcon = classed(MapImg, 'h-[26px] w-[26px]')
-const PaneViewport = classed('div', 'relative', {
+const PaneViewport = classed('div', 'relative overflow-hidden', {
   variants: {
     // Off for the very first measurement so the card doesn't grow from 0.
     'data-animate': {
@@ -178,7 +178,10 @@ const TimetableCard = (props: {
     prev: null,
     dir: 1,
   })
+  // The last settled state of the current stop (a stop that is still loading
+  // doesn't count), and whether the current stop is still loading.
   const [status, setStatus] = useState<ShuttlePaneStatus>('loading')
+  const [paneLoading, setPaneLoading] = useState<boolean>(true)
   const [pressed, setPressed] = useState<boolean>(false)
   const [flipping, setFlipping] = useState<boolean>(false)
   const [learned, setLearned] = useState<boolean>(false)
@@ -212,6 +215,7 @@ const TimetableCard = (props: {
       dir,
     })
     setPressed(false)
+    setPaneLoading(!nextKey.subway)
   }
 
   useEffect(() => {
@@ -225,16 +229,19 @@ const TimetableCard = (props: {
   }, [panes.gen, panes.prev])
 
   // The card follows the current pane's height; panes are absolutely positioned
-  // so the old and new ones can overlap while they swap.
+  // so the old and new ones can overlap while they swap. While a new stop is
+  // loading the card keeps its last height, so the skeleton doesn't nudge it
+  // on the way to what is often the same size.
+  const holdHeight = paneLoading && height !== null
   useLayoutEffect(() => {
     const element = currentPaneRef.current
-    if (element === null) return
+    if (element === null || holdHeight) return
     const update = () => setHeight(element.offsetHeight)
     update()
     const observer = new ResizeObserver(update)
     observer.observe(element)
     return () => observer.disconnect()
-  }, [panes.gen])
+  }, [panes.gen, holdHeight])
 
   useEffect(() => {
     if (height === null || heightReady) return
@@ -247,6 +254,11 @@ const TimetableCard = (props: {
     const timer = window.setTimeout(() => setFlipping(false), 700)
     return () => window.clearTimeout(timer)
   }, [flipping, pressed])
+
+  const handleStatusChange = useCallback((next: ShuttlePaneStatus) => {
+    setPaneLoading(next === 'loading')
+    if (next !== 'loading') setStatus(next)
+  }, [])
 
   const handlePressChange = useCallback((next: boolean) => {
     setPressed(next)
@@ -275,15 +287,18 @@ const TimetableCard = (props: {
         flipping={isCurrent && flipping}
         entryDelay={panes.gen === 0 ? 0 : 150}
         onPressChange={isCurrent ? handlePressChange : undefined}
-        onStatusChange={isCurrent ? setStatus : undefined}
+        onStatusChange={isCurrent ? handleStatusChange : undefined}
       />
     )
   }
 
   const currentMotion: PaneMotion =
     panes.gen === 0 ? 'initial' : panes.dir > 0 ? 'in-right' : 'in-left'
+  // Shown while the first stop is loading too, so it doesn't pop in after.
   const showHint =
-    !hintClosed && !panes.current.subway && status === 'rows'
+    !hintClosed &&
+    !panes.current.subway &&
+    (status === 'rows' || status === 'loading')
   const stationTab = isStation(props.tab)
 
   return (
