@@ -5,16 +5,16 @@ import {
   BrowserRouter,
   Link,
   Navigate,
+  Outlet,
   Route,
   Routes,
-  useNavigate,
+  useLocation,
 } from 'react-router-dom'
 import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import HelpImg from '/public/image/help_outline_24dp.svg?react'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
 import Fabs from '@/components/fab/fab'
-import { openFullTime } from '@/components/fulltime/fullTimeTransition'
 import RouteMap from '@/components/routemap/RouteMap'
 import StopPicker from '@/components/shuttle/StopPicker'
 import TimetableCard, {
@@ -78,7 +78,13 @@ const themeRootVariants = {
   },
 } as const
 
-const ThemeRoot = classed('div', 'relative min-h-dvh', themeRootVariants)
+// Isolated so the home screen's own z-indexes stay below the full timetable
+// sheet that opens on top of it.
+const ThemeRoot = classed(
+  'div',
+  'relative isolate min-h-dvh',
+  themeRootVariants,
+)
 const Apps = classed(
   'div',
   'min-h-dvh px-5 pb-26 font-Ptd text-center mx-auto select-none max-w-[30rem] relative bg-theme-main text-theme-text transition-colors duration-[350ms]',
@@ -110,27 +116,20 @@ const Title = classed(
   'm-0 text-center text-[27px] font-extrabold tracking-[-0.03em] hm:text-[1.625rem]',
 )
 
-// Opens the full timetable by growing it out of this button; modifier clicks
-// keep the browser's usual link behaviour.
 const FullTimeLink = () => {
-  const navigate = useNavigate()
   const { t } = useTranslation()
 
   return (
-    <Link
-      to="/all"
-      onClick={(e) => {
-        if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey)
-          return
-        e.preventDefault()
-        openFullTime(e.currentTarget.firstElementChild ?? e.currentTarget, () =>
-          navigate('/all'),
-        )
-      }}
-    >
+    <Link to="/all">
       <FulltimeButton id="all">{t('all_btn')}</FulltimeButton>
     </Link>
   )
+}
+
+// The FAB belongs to the home screen only, not the timetable sheet above it.
+const HomeOnly = (props: { children: React.ReactNode }) => {
+  const { pathname } = useLocation()
+  return pathname === '/' ? <>{props.children}</> : null
 }
 
 function App() {
@@ -386,7 +385,11 @@ function App() {
                     </Apps>
                   </ThemeRoot>
                 </PullToRefresh>
-                <Fabs openModal={openModal} mTarget={setModalTarget} />
+                <HomeOnly>
+                  <Fabs openModal={openModal} mTarget={setModalTarget} />
+                </HomeOnly>
+                {/* /all opens the full timetable as a sheet over the home screen */}
+                <Outlet />
                 <Suspense fallback={<div />}>
                   <ModalOpen
                     isModalAni={modalAni}
@@ -399,11 +402,10 @@ function App() {
                 </Suspense>
               </>
             }
-          />
-          <Route
-            path="/all"
-            element={<FullTimeRoute />}
-          />
+          >
+            <Route index element={null} />
+            <Route path="all" element={<FullTimeRoute />} />
+          </Route>
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>

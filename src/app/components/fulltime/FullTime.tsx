@@ -7,7 +7,6 @@ import { useNavigate } from 'react-router-dom'
 import BackImg from '/public/image/arrow_back_outline_24dp.svg?react'
 import CheckImg from '/public/image/check_outline_24dp.svg?react'
 import ChevronImg from '/public/image/chevron_up_24dp.svg?react'
-import { closeFullTime } from '@/components/fulltime/fullTimeTransition'
 import { useDarkmodeContext } from '@/context/ThemeContext'
 import { Season, SingleShuttleSchedule, StopLocation, Week } from '@/data'
 import { seasonKeys } from '@/data/shuttle/season'
@@ -38,6 +37,19 @@ const groupOf = (type: string): GroupKey | null => {
 
 const COMPACT_ON_Y = 240
 const COMPACT_OFF_Y = 200
+// The sheet grows out of the home button, and shrinks back into it on close.
+const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
+const CLOSE_MS = 560
+
+const buttonClip = (): string | null => {
+  const button = document.getElementById('all')
+  if (button === null) return null
+  const box = button.getBoundingClientRect()
+  return `inset(${box.top}px ${window.innerWidth - box.right}px ${window.innerHeight - box.bottom}px ${box.left}px round 16px)`
+}
+
+const prefersReducedMotion = () =>
+  window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
 
 const themeRootVariants = {
   variants: {
@@ -57,9 +69,27 @@ const themeRootVariants = {
 } as const
 
 const ThemeRoot = classed('div', '', themeRootVariants)
-const Page = classed(
+// A full-screen sheet over the home screen (which stays mounted underneath).
+// Falling seasonal effects (z-2) still drift over it, as they did before.
+const Sheet = classed(
   'div',
-  'relative min-h-dvh select-none bg-ft-page font-Ptd text-theme-text transition-colors duration-[350ms]',
+  'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none [transition:clip-path_.55s_cubic-bezier(.3,.9,.25,1),background-color_.35s_ease]',
+)
+const Scroller = classed(
+  'div',
+  'absolute inset-0 overflow-y-auto overscroll-contain transition-opacity duration-[250ms]',
+  {
+    variants: {
+      // Content fades in a beat after the sheet starts growing.
+      'data-shown': {
+        true: 'opacity-100 delay-[160ms]',
+        false: 'opacity-0',
+      },
+    },
+    defaultVariants: {
+      'data-shown': 'false',
+    },
+  },
 )
 const Column = classed('div', 'mx-auto max-w-[30rem] px-5 pb-8 text-left')
 const Header = classed('header', '-ml-3 flex items-center gap-0.5 pb-1.5 pt-4')
@@ -68,10 +98,7 @@ const BackButton = classed(
   'flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-[scale] duration-150 active:scale-[.96]',
 )
 const BackIcon = classed(BackImg, 'h-6 w-6')
-const Title = classed(
-  'h1',
-  'm-0 text-[23px] font-extrabold tracking-[-0.03em]',
-)
+const Title = classed('h1', 'm-0 text-[23px] font-extrabold tracking-[-0.03em]')
 const FilterGroup = classed(
   'section',
   'border-b border-ft-divider pb-3.5 pt-3 transition-colors duration-[350ms]',
@@ -141,7 +168,10 @@ const NowBadge = classed(
   'span',
   'flex items-center gap-1 text-[11px] font-extrabold text-ft-now',
 )
-const NowDot = classed('span', 'h-1.5 w-1.5 rounded-full bg-ft-now animate-blink')
+const NowDot = classed(
+  'span',
+  'h-1.5 w-1.5 rounded-full bg-ft-now animate-blink',
+)
 const Groups = classed('div', 'flex flex-col gap-2')
 const Group = classed(
   'div',
@@ -182,7 +212,7 @@ const Minute = classed(
 // Slides down once the filters have scrolled away.
 const CompactBar = classed(
   'div',
-  'fixed inset-x-0 top-0 z-10 bg-ft-page shadow-[0_1px_0_var(--color-ft-divider),0_6px_16px_rgba(16,24,40,.06)] transition-[translate,opacity] duration-[350ms] ease-smooth',
+  'absolute inset-x-0 top-0 z-10 bg-ft-page shadow-[0_1px_0_var(--color-ft-divider),0_6px_16px_rgba(16,24,40,.06)] transition-[translate,opacity] duration-[350ms] ease-smooth',
   {
     variants: {
       'data-visible': {
@@ -241,9 +271,16 @@ const FullTime = () => {
   }))
   const [clock, setClock] = useState<string>(clockNow)
   const [compact, setCompact] = useState<boolean>(false)
+  const [phase, setPhase] = useState<'opening' | 'open' | 'closing'>('opening')
+  // Start clipped to the home button from the very first style the sheet
+  // gets, so the grow transition starts there (not from a placeholder).
+  const [clip, setClip] = useState<string>(() =>
+    prefersReducedMotion() ? FULL_CLIP : (buttonClip() ?? FULL_CLIP),
+  )
+  const scrollerRef = useRef<HTMLDivElement>(null)
   const touchedRef = useRef<boolean>(false)
-  const scrolledToNowRef = useRef<boolean>(false)
-  const nowCardRef = useRef<HTMLDivElement>(null)
+  const scrolledToTargetRef = useRef<boolean>(false)
+  const targetCardRef = useRef<HTMLDivElement>(null)
   const timetable = useQuery({
     queryKey: ['fullTime', season, week, location],
     queryFn: async () => await shuttleAPI(season, week, location),
@@ -274,31 +311,40 @@ const FullTime = () => {
     return () => window.clearInterval(timer)
   }, [])
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const y = window.scrollY
-      setCompact((current) =>
-        !current && y > COMPACT_ON_Y
-          ? true
-          : current && y < COMPACT_OFF_Y
-            ? false
-            : current,
-      )
+  // Open: grow from the home button to full screen on the next frames.
+  useLayoutEffect(() => {
+    if (clip === FULL_CLIP) {
+      setPhase('open')
+      return
     }
-    const markTouched = () => {
-      touchedRef.current = true
-    }
-    window.addEventListener('scroll', handleScroll, { passive: true })
-    window.addEventListener('pointerdown', markTouched, { passive: true })
-    window.addEventListener('wheel', markTouched, { passive: true })
-    window.addEventListener('touchstart', markTouched, { passive: true })
+    let second = 0
+    const first = window.requestAnimationFrame(() => {
+      second = window.requestAnimationFrame(() => {
+        setClip(FULL_CLIP)
+        setPhase('open')
+      })
+    })
     return () => {
-      window.removeEventListener('scroll', handleScroll)
-      window.removeEventListener('pointerdown', markTouched)
-      window.removeEventListener('wheel', markTouched)
-      window.removeEventListener('touchstart', markTouched)
+      window.cancelAnimationFrame(first)
+      window.cancelAnimationFrame(second)
     }
+    // Runs once on mount; later clip changes are the close animation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const handleScroll = () => {
+    const y = scrollerRef.current?.scrollTop ?? 0
+    setCompact((current) =>
+      !current && y > COMPACT_ON_Y
+        ? true
+        : current && y < COMPACT_OFF_Y
+          ? false
+          : current,
+    )
+  }
+  const markTouched = () => {
+    touchedRef.current = true
+  }
 
   const isToday = season === today.season && week === today.week
   const list = timetable.data ?? []
@@ -358,31 +404,62 @@ const FullTime = () => {
     ),
   )
   const currentHour = clock.slice(0, 2)
+  // Scroll target: the hour of the next departure today, or the current hour.
+  const targetHour = !isToday
+    ? null
+    : nextIndex >= 0
+      ? list[nextIndex].time.slice(0, 2)
+      : hours.some((entry) => entry.hour === currentHour)
+        ? currentHour
+        : null
 
-  // Bring the current hour into view once, unless the user has already moved.
-  const hasNowCard =
-    isToday && hours.some((entry) => entry.hour === currentHour)
+  // Once the sheet has opened, glide down to that hour (and settle there once
+  // more if the cards were still rising), unless the user has already moved.
   useEffect(() => {
-    if (!hasNowCard || scrolledToNowRef.current) return
-    const timer = window.setTimeout(() => {
-      const card = nowCardRef.current
-      if (card === null || touchedRef.current) return
-      scrolledToNowRef.current = true
-      const top = card.getBoundingClientRect().top + window.scrollY - 72
-      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
-    }, 450)
-    return () => window.clearTimeout(timer)
-  }, [hasNowCard])
+    if (targetHour === null || scrolledToTargetRef.current) return
+    scrolledToTargetRef.current = true
+    const scrollTo = (smooth: boolean) => {
+      const scroller = scrollerRef.current
+      const card = targetCardRef.current
+      if (scroller === null || card === null || touchedRef.current) return
+      const top = Math.max(0, card.offsetTop - 72)
+      if (smooth) scroller.scrollTo({ top, behavior: 'smooth' })
+      else if (Math.abs(scroller.scrollTop - top) > 40) scroller.scrollTop = top
+    }
+    const glide = window.setTimeout(() => scrollTo(true), 450)
+    const settle = window.setTimeout(() => scrollTo(false), 1400)
+    return () => {
+      window.clearTimeout(glide)
+      window.clearTimeout(settle)
+    }
+  }, [targetHour])
 
   const goToHomeScreen = () => {
-    closeFullTime(() => {
+    if (phase === 'closing') return
+    const goBack = () => {
       if (window.history.state && window.history.length > 1) {
         navigate(-1)
       } else {
         navigate('/', { replace: true })
       }
-    })
+    }
+    const to = buttonClip()
+    if (to === null || prefersReducedMotion()) {
+      goBack()
+      return
+    }
+    setPhase('closing')
+    setClip(to)
+    window.setTimeout(goBack, CLOSE_MS)
   }
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') goToHomeScreen()
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  })
 
   const locationOptions: Array<[StopLocation, string]> = [
     ['shuttlecoke_o', t('shuttlecoke_o')],
@@ -465,7 +542,7 @@ const FullTime = () => {
           return (
             <HourCard
               key={entry.hour}
-              ref={now ? nowCardRef : undefined}
+              ref={entry.hour === targetHour ? targetCardRef : undefined}
               data-now={now ? 'true' : 'false'}
               style={{ animationDelay: `${Math.min(i * 40, 400)}ms` }}
             >
@@ -507,7 +584,7 @@ const FullTime = () => {
 
   return (
     <ThemeRoot data-theme={theme}>
-      <Page data-fulltime-page="">
+      <Sheet data-fulltime-page="" style={{ clipPath: clip }}>
         <CompactBar
           aria-hidden={!compact}
           data-visible={compact ? 'true' : 'false'}
@@ -526,56 +603,67 @@ const FullTime = () => {
               type="button"
               aria-label={t('scroll_top')}
               tabIndex={compact ? 0 : -1}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={() =>
+                scrollerRef.current?.scrollTo({ top: 0, behavior: 'smooth' })
+              }
             >
               <SummaryText>{summary}</SummaryText>
               <UpIcon aria-hidden="true" />
             </SummaryButton>
           </CompactInner>
         </CompactBar>
-        <Column>
-          <Header>
-            <BackButton
-              type="button"
-              aria-label={t('back_home')}
-              onClick={goToHomeScreen}
-            >
-              <BackIcon aria-hidden="true" />
-            </BackButton>
-            <Title>{t('all_btn')}</Title>
-          </Header>
-          {filters.map((filter) => (
-            <FilterGroup key={filter.title}>
-              <FilterTitle>{filter.title}</FilterTitle>
-              <FilterChips>
-                {filter.options.map(([value, label]) => {
-                  const on = filter.value === value
-                  return (
-                    <FilterChip
-                      key={value}
-                      type="button"
-                      aria-pressed={on}
-                      data-on={on ? 'true' : 'false'}
-                      onClick={() => {
-                        if (!on) filter.onPick(value)
-                      }}
-                    >
-                      <CheckWrap
-                        aria-hidden="true"
+        <Scroller
+          ref={scrollerRef}
+          data-shown={phase === 'open' ? 'true' : 'false'}
+          onScroll={handleScroll}
+          onPointerDown={markTouched}
+          onWheel={markTouched}
+          onTouchStart={markTouched}
+        >
+          <Column>
+            <Header>
+              <BackButton
+                type="button"
+                aria-label={t('back_home')}
+                onClick={goToHomeScreen}
+              >
+                <BackIcon aria-hidden="true" />
+              </BackButton>
+              <Title>{t('all_btn')}</Title>
+            </Header>
+            {filters.map((filter) => (
+              <FilterGroup key={filter.title}>
+                <FilterTitle>{filter.title}</FilterTitle>
+                <FilterChips>
+                  {filter.options.map(([value, label]) => {
+                    const on = filter.value === value
+                    return (
+                      <FilterChip
+                        key={value}
+                        type="button"
+                        aria-pressed={on}
                         data-on={on ? 'true' : 'false'}
+                        onClick={() => {
+                          if (!on) filter.onPick(value)
+                        }}
                       >
-                        <CheckIcon />
-                      </CheckWrap>
-                      {label}
-                    </FilterChip>
-                  )
-                })}
-              </FilterChips>
-            </FilterGroup>
-          ))}
-          {renderHours()}
-        </Column>
-      </Page>
+                        <CheckWrap
+                          aria-hidden="true"
+                          data-on={on ? 'true' : 'false'}
+                        >
+                          <CheckIcon />
+                        </CheckWrap>
+                        {label}
+                      </FilterChip>
+                    )
+                  })}
+                </FilterChips>
+              </FilterGroup>
+            ))}
+            {renderHours()}
+          </Column>
+        </Scroller>
+      </Sheet>
     </ThemeRoot>
   )
 }
