@@ -49,7 +49,19 @@ const Destination = classed(
   'span',
   'flex min-w-0 items-center gap-1 text-base font-semibold hsm:text-sm',
 )
-const DestinationText = classed('span', 'truncate')
+const DestinationText = classed('span', 'truncate', {
+  variants: {
+    // Long names get tighter type (as they did before) rather than an
+    // ellipsis on narrow phones.
+    'data-long': {
+      true: 'text-sm tracking-[-0.06em] hsm:text-[13px]',
+      false: '',
+    },
+  },
+  defaultVariants: {
+    'data-long': 'false',
+  },
+})
 const TrainTypeIcon = classed('img', 'h-4 shrink-0 drag-save-n')
 const Status = classed(
   'span',
@@ -192,6 +204,16 @@ const getDestination = (
   return getStationName(destination) + (!isLast && !isExpress ? t('for') : '')
 }
 
+// The English names the original tightened; Korean names fit as they are.
+const isLongDestination = (train: SingleTrainInfo, english: boolean) =>
+  english &&
+  (train.destination.includes('한성대') ||
+    train.destination.includes('청량리') ||
+    ((train.isLast || train.isExpress) &&
+      ['왕십리', '불암산', '금정'].some((name) =>
+        train.destination.includes(name),
+      )))
+
 const getRapidOrLastElement = (isLast: boolean, isExpress: boolean) => {
   if (isLast) {
     return (
@@ -273,7 +295,7 @@ const Subway = ({ station }: SubwayStop) => {
     staleTime: 5000,
   })
   const [isBlink, setBlink] = useState<boolean>(false)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -356,24 +378,28 @@ const Subway = ({ station }: SubwayStop) => {
         >
           {getLineMarkElement(val.line)}
           <Destination>
-            <DestinationText>
+            <DestinationText
+              data-long={
+                isLongDestination(val, i18n.language === 'en')
+                  ? 'true'
+                  : 'false'
+              }
+            >
               {getDestination(val.destination, val.isLast, val.isExpress)}
             </DestinationText>
             {getRapidOrLastElement(val.isLast, val.isExpress)}
           </Destination>
           <Status>
-            {state === 'here' && <HotDot aria-hidden="true" />}
+            {/* Only a train that is at this station now; one that merely ends
+                here keeps the color but not the blink. */}
+            {val.stnUntilArrival === 0 && <HotDot aria-hidden="true" />}
             <StatusSwap key={isBlink ? 'station' : 'count'}>
               {isBlink
                 ? stationName(val.currentStation)
                 : arrivalUntil(val.stnUntilArrival)}
             </StatusSwap>
             <ArrivalStatus data-state={state}>
-              {arrivalStnStatus(
-                val.status,
-                val.orgStation,
-                val.currentStation,
-              )}
+              {arrivalStnStatus(val.status, val.orgStation, val.currentStation)}
             </ArrivalStatus>
           </Status>
         </TrainRow>
@@ -384,11 +410,7 @@ const Subway = ({ station }: SubwayStop) => {
   return (
     <PaneBody>
       <HeadlineWrapper>
-        <TitleLineIcon
-          src="/image/line4.svg"
-          alt=""
-          draggable="false"
-        />
+        <TitleLineIcon src="/image/line4.svg" alt="" draggable="false" />
         <TitleLineIcon
           src={`/image/${t('suin')}.svg`}
           alt=""
