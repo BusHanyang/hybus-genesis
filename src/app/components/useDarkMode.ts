@@ -15,10 +15,10 @@ import {
 } from '@/context/ThemeContext'
 
 const themeBackgrounds: Record<THEME, string> = {
-  [THEME.LIGHT]: '#FFFFFF',
-  [THEME.DARK]: '#27272A',
+  [THEME.LIGHT]: '#F5F6F8',
+  [THEME.DARK]: '#18181B',
   [THEME.CHRISTMAS]: '#b23e3e',
-  [THEME.SPRING]: '#fff4f4',
+  [THEME.SPRING]: '#fff3f6',
   [THEME.SUMMER]: '#8ed4ea',
   [THEME.AUTUMN]: '#fff8ef',
   [THEME.WINTER]: '#eff8ff',

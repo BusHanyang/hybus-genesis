@@ -35,8 +35,8 @@
 
 @layer base {
   :root {
-    --color-route-inactive: var(--color-zinc-200);
-    --color-route-inactive-text: var(--color-zinc-200);
+    --color-line4: #00a5de;
+    --color-suin: #f5a200;
   }
 
   body {
@@ -51,22 +51,46 @@
     line-height: 1;
   }
 
-  /* Light */
+  /* Light — also the fallback for tokens a seasonal theme doesn't override */
+  :root,
   .light {
-    --color-theme-main: #ffffff;
+    --color-theme-main: #f5f6f8;
     --color-theme-card: #ffffff;
-    --color-theme-text: #000000;
+    --color-theme-text: #111318;
+    --color-ink-2: #5c616b;
+    --color-ink-3: #8f95a0;
     --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.2);
-    --color-control-main: var(--color-gray-200);
-    --color-control-active: var(--color-blue-400);
-    --color-button-active: var(--color-blue-300);
+    --color-theme-shadow: 0 1px 2px rgba(16, 24, 40, 0.05),
+      0 4px 14px rgba(16, 24, 40, 0.07);
+    --color-control-main: #eceef2;
+    --color-control-active: #60a5fa;
+    --color-control-on-ink: #ffffff;
+    --color-button-active: #93c5fd;
+    --color-button-active-ink: #0b1b33;
     --color-fab-color: #7099c1;
-    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
-    --color-ontouch-bg: var(--color-slate-200);
+    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, 0.14),
+      0 4px 10px rgba(0, 0, 0, 0.24);
+    --color-ontouch-bg: #e6ebf2;
+    --color-press-bg: #f1f4f9;
+    --color-off: #e4e4e7;
+    --color-off-text: #c4c4ca;
+    --color-actual: #e0502a;
+    --color-depart-bg: #ffe7dc;
+    --color-news: #e0503f;
+    --color-scrim: rgba(245, 246, 248, 0.66);
+    --color-modal-scrim: rgba(17, 19, 24, 0.42);
+    --color-modal-shadow: 0 24px 60px rgba(16, 24, 40, 0.22);
+    --color-sk: #eceef2;
+    --color-sk-hi: #f7f8fa;
+    --color-focus: #2563eb;
+    --color-t-cycle: #d2533f;
+    --color-t-yesulin: #3c8e47;
+    --color-t-jungang: #8a5cd0;
     --color-ptr-color: var(--color-gray-700);
     --color-load-color: #afbdce;
     --color-arrow-color: #ababab;
+    --color-route-inactive: #e4e4e7;
+    --color-route-inactive-text: #c4c4ca;
 
     --color-ft-element: #e1e2ec;
     --color-ft-active: #dbe2f9;
@@ -78,22 +102,39 @@
 
   /* Dark */
   .dark {
-    --color-theme-main: var(--color-zinc-800);
-    --color-theme-card: var(--color-gray-700);
-    --color-theme-text: #ffffff;
-    --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(10, 10, 10, 0.8);
-    --color-control-main: var(--color-gray-800);
-    --color-control-active: var(--color-blue-400);
-    --color-button-active: var(--color-blue-300);
+    --color-theme-main: #18181b;
+    --color-theme-card: #27272a;
+    --color-theme-text: #fafafa;
+    --color-ink-2: #a1a1aa;
+    --color-ink-3: #71717a;
+    --color-theme-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --color-control-main: #3f3f46;
+    --color-control-active: #60a5fa;
+    --color-control-on-ink: #ffffff;
+    --color-button-active: #93c5fd;
+    --color-button-active-ink: #0b1b33;
     --color-fab-color: #7099c1;
-    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
-    --color-ontouch-bg: var(--color-slate-500);
+    --color-ontouch-bg: #3a404c;
+    --color-press-bg: #303036;
+    --color-off: #4b4b53;
+    --color-off-text: #5e5e67;
+    --color-actual: #ff996a;
+    --color-depart-bg: #4a2c20;
+    --color-news: #ff8a7a;
+    --color-scrim: rgba(24, 24, 27, 0.66);
+    --color-modal-scrim: rgba(0, 0, 0, 0.6);
+    --color-modal-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    --color-sk: #34343a;
+    --color-sk-hi: #3e3e45;
+    --color-focus: #93c5fd;
+    --color-t-cycle: #ff9c8f;
+    --color-t-yesulin: #95d398;
+    --color-t-jungang: #d9befc;
     --color-ptr-color: #ffffff;
     --color-load-color: #afbdce;
     --color-arrow-color: #dbdbdb;
-    --color-route-inactive: var(--color-slate-500);
-    --color-route-inactive-text: var(--color-slate-500);
+    --color-route-inactive: #4b4b53;
+    --color-route-inactive-text: #5e5e67;
 
     --color-ft-element: #44464e;
     --color-ft-active: #3f4759;
@@ -108,17 +149,36 @@
     --color-theme-main: #b23e3e;
     --color-theme-card: #3e5f4b;
     --color-theme-text: #ffffff;
-    --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(23, 23, 23, 0.8);
-    --color-control-main: #1d3c33;
-    --color-control-active: #6ba768;
+    --color-ink-2: #e3efe7;
+    --color-ink-3: #b9cfc1;
+    --color-theme-shadow: 0 1px 2px rgba(40, 10, 10, 0.25),
+      0 6px 16px rgba(40, 10, 10, 0.25);
+    --color-control-main: #2c4a3a;
+    --color-control-active: #9be1c6;
+    --color-control-on-ink: #0f2e22;
     --color-button-active: #9be1c6;
-    --color-fab-color: #7099c1;
-    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
-    --color-ontouch-bg: var(--color-slate-500);
+    --color-button-active-ink: #0f2e22;
+    --color-fab-color: #2c4a3a;
+    --color-ontouch-bg: #4d7360;
+    --color-press-bg: #476a56;
+    --color-off: #5c7a69;
+    --color-off-text: #7f9c8b;
+    --color-actual: #ffd27a;
+    --color-depart-bg: #5e7e52;
+    --color-news: #ffd27a;
+    --color-scrim: rgba(90, 20, 20, 0.5);
+    --color-modal-scrim: rgba(40, 8, 8, 0.55);
+    --color-sk: #4a6b57;
+    --color-sk-hi: #58796a;
+    --color-focus: #ffd27a;
+    --color-t-cycle: #ffb3a8;
+    --color-t-yesulin: #b5e6b8;
+    --color-t-jungang: #e4ccfd;
     --color-ptr-color: #ffffff;
     --color-load-color: #afbdce;
-    --color-arrow-color: #000000;
+    --color-arrow-color: #ffffff;
+    --color-route-inactive: #5c7a69;
+    --color-route-inactive-text: #7f9c8b;
 
     --color-ft-element: #813333;
     --color-ft-active: #397152;
@@ -130,22 +190,36 @@
 
   .summer {
     --color-theme-main: #8ed4ea;
-    --color-theme-card: #c6e6ed;
+    --color-theme-card: #d9f0f5;
     --color-theme-text: #12343b;
-    --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(45, 153, 161, 0.35);
-    --color-control-main: #d7f4f2;
-    --color-control-active: #2dd4bf;
+    --color-ink-2: #2d5760;
+    --color-ink-3: #5b8791;
+    --color-theme-shadow: 0 1px 2px rgba(18, 52, 59, 0.06),
+      0 4px 14px rgba(18, 52, 59, 0.1);
+    --color-control-main: #bfe5ec;
+    --color-control-active: #5eead4;
+    --color-control-on-ink: #053b35;
     --color-button-active: #a7f3d0;
+    --color-button-active-ink: #064e3b;
     --color-fab-color: #2ca6a4;
-    --color-fab-shadow:
-      0 0 4px rgba(39, 143, 142, 0.24), 0 4px 8px rgba(39, 143, 142, 0.38);
+    --color-fab-shadow: 0 0 4px rgba(39, 143, 142, 0.24),
+      0 4px 8px rgba(39, 143, 142, 0.38);
     --color-ontouch-bg: #bdeee9;
+    --color-press-bg: #cdedf3;
+    --color-off: #a7cdd5;
+    --color-off-text: #6f99a2;
+    --color-actual: #b13d12;
+    --color-depart-bg: #ffe1c4;
+    --color-news: #b13d12;
+    --color-scrim: rgba(142, 212, 234, 0.6);
+    --color-sk: #bfe3ea;
+    --color-sk-hi: #ddf2f6;
+    --color-focus: #0f766e;
     --color-ptr-color: #0f766e;
     --color-load-color: #67e8f9;
     --color-arrow-color: #469391;
-    --color-route-inactive: #7ea2aa;
-    --color-route-inactive-text: #3f6670;
+    --color-route-inactive: #a7cdd5;
+    --color-route-inactive-text: #6f99a2;
 
     --color-ft-element: #dff7f4;
     --color-ft-active: #5eead4;
@@ -159,18 +233,34 @@
     --color-theme-main: #fff8ef;
     --color-theme-card: #fffdf8;
     --color-theme-text: #4a2b12;
-    --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(190, 101, 24, 0.36);
-    --color-control-main: #f3e3d2;
-    --color-control-active: #d97706;
+    --color-ink-2: #7a5230;
+    --color-ink-3: #a98763;
+    --color-theme-shadow: 0 1px 2px rgba(120, 70, 20, 0.05),
+      0 4px 14px rgba(120, 70, 20, 0.08);
+    --color-control-main: #fbebd5;
+    --color-control-active: #fdba74;
+    --color-control-on-ink: #5a2a06;
     --color-button-active: #fdba74;
+    --color-button-active-ink: #5a2a06;
     --color-fab-color: #b45309;
-    --color-fab-shadow:
-      0 0 4px rgba(133, 77, 14, 0.24), 0 4px 8px rgba(133, 77, 14, 0.38);
+    --color-fab-shadow: 0 0 4px rgba(133, 77, 14, 0.24),
+      0 4px 8px rgba(133, 77, 14, 0.38);
     --color-ontouch-bg: #fed7aa;
+    --color-press-bg: #fff2e2;
+    --color-off: #efe0cc;
+    --color-off-text: #d6bc9c;
+    --color-actual: #c2410c;
+    --color-depart-bg: #ffe3cc;
+    --color-news: #c2410c;
+    --color-scrim: rgba(255, 248, 239, 0.66);
+    --color-sk: #f6e8d6;
+    --color-sk-hi: #fff6ea;
+    --color-focus: #b45309;
     --color-ptr-color: #92400e;
     --color-load-color: #fb923c;
     --color-arrow-color: #a16207;
+    --color-route-inactive: #efe0cc;
+    --color-route-inactive-text: #d6bc9c;
 
     --color-ft-element: #f6e3cb;
     --color-ft-active: #f59e0b;
@@ -183,18 +273,35 @@
   .winter {
     --color-theme-main: #eff8ff;
     --color-theme-card: #fcffff;
-    --color-theme-text: #0D2C61;
-    --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(155, 175, 240, 0.53);
-    --color-control-main: #e2e8f0;
-    --color-control-active: #83a4ff;
-    --color-button-active: #C4D2FF;
+    --color-theme-text: #0d2c61;
+    --color-ink-2: #3b5a8c;
+    --color-ink-3: #7c93ba;
+    --color-theme-shadow: 0 1px 2px rgba(40, 80, 160, 0.05),
+      0 4px 14px rgba(40, 80, 160, 0.08);
+    --color-control-main: #dce8fa;
+    --color-control-active: #b3c7ff;
+    --color-control-on-ink: #0d2c61;
+    --color-button-active: #c4d2ff;
+    --color-button-active-ink: #0d2c61;
     --color-fab-color: #7d94d3;
-    --color-fab-shadow: 0 0 4px rgba(92, 119, 191, .34), 0 4px 8px rgba(92, 119, 191, .48);
-    --color-ontouch-bg: #c1d1ff;
+    --color-fab-shadow: 0 0 4px rgba(92, 119, 191, 0.34),
+      0 4px 8px rgba(92, 119, 191, 0.48);
+    --color-ontouch-bg: #d6e2ff;
+    --color-press-bg: #eaf2fe;
+    --color-off: #d5e0f2;
+    --color-off-text: #a9bcda;
+    --color-actual: #c8414f;
+    --color-depart-bg: #fde2e6;
+    --color-news: #c8414f;
+    --color-scrim: rgba(239, 248, 255, 0.66);
+    --color-sk: #dde8f7;
+    --color-sk-hi: #f1f6fd;
+    --color-focus: #3b5a8c;
     --color-ptr-color: #697fb9;
     --color-load-color: #bae6fd;
     --color-arrow-color: #94a3b8;
+    --color-route-inactive: #d5e0f2;
+    --color-route-inactive-text: #a9bcda;
 
     --color-ft-element: #d8e3f1;
     --color-ft-active: #c1d1ff;
@@ -206,20 +313,35 @@
 
   /* Spring */
   .spring {
-    --color-theme-main: #fff4f4;
-    --color-theme-card: #fffafa;
-    --color-theme-text: #c9255e;
-    --color-theme-border: none;
-    --color-theme-shadow: 0 0.175rem 0.5rem rgba(241, 139, 178, 0.6);
-    --color-control-main: #ffd3e6;
-    --color-control-active: #f16da4;
+    --color-theme-main: #fff3f6;
+    --color-theme-card: #fffafb;
+    --color-theme-text: #b3214f;
+    --color-ink-2: #93405f;
+    --color-ink-3: #c2819c;
+    --color-theme-shadow: 0 1px 2px rgba(201, 37, 94, 0.05),
+      0 4px 14px rgba(201, 37, 94, 0.08);
+    --color-control-main: #ffe3ee;
+    --color-control-active: #fbb3d2;
+    --color-control-on-ink: #6e0f33;
     --color-button-active: #fec1dc;
+    --color-button-active-ink: #6e0f33;
     --color-fab-color: #db659e;
-    --color-fab-shadow: 0 0 4px rgba(0, 0, 0, .14), 0 4px 8px rgba(0, 0, 0, .28);
     --color-ontouch-bg: #ffd8ea;
+    --color-press-bg: #fff0f5;
+    --color-off: #f4d7e2;
+    --color-off-text: #ddafc3;
+    --color-actual: #d12e68;
+    --color-depart-bg: #ffe0ec;
+    --color-news: #d12e68;
+    --color-scrim: rgba(255, 243, 246, 0.66);
+    --color-sk: #fbe3ec;
+    --color-sk-hi: #fff3f7;
+    --color-focus: #c9255e;
     --color-ptr-color: #c9255e;
     --color-load-color: #c9255e;
     --color-arrow-color: #bf6081;
+    --color-route-inactive: #f4d7e2;
+    --color-route-inactive-text: #ddafc3;
 
     --color-ft-element: #ffe4ea;
     --color-ft-active: #f16da4;
@@ -227,6 +349,298 @@
     --color-ft-text: #c9255e;
     --color-ft-border: #c9255e;
     --color-ft-selected: #ffffff;
+  }
+}
+
+/* Theme swap: colors flip in one frame while the circle reveal supplies the motion. */
+.hb-swap,
+.hb-swap * {
+  transition: none !important;
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-new(root) {
+  animation: hb-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::view-transition-group(hb-fx),
+::view-transition-group(hb-sun),
+::view-transition-group(hb-moon) {
+  animation: none;
+}
+
+::view-transition-group(hb-sun),
+::view-transition-group(hb-moon) {
+  mix-blend-mode: screen;
+}
+
+::view-transition-old(hb-fx),
+::view-transition-old(hb-sun),
+::view-transition-old(hb-moon) {
+  animation: none;
+  opacity: 0;
+}
+
+::view-transition-new(hb-fx),
+::view-transition-new(hb-sun),
+::view-transition-new(hb-moon) {
+  animation: none;
+}
+
+@keyframes hb-reveal {
+  from {
+    clip-path: circle(0px at var(--hb-rx, 50%) var(--hb-ry, 50%));
+  }
+  to {
+    clip-path: circle(150vmax at var(--hb-rx, 50%) var(--hb-ry, 50%));
+  }
+}
+
+/* Redesign motion — referenced by the `animation` entries in tailwind.config.js */
+@keyframes shimmer {
+  from {
+    background-position: -150px 0;
+  }
+  to {
+    background-position: 150px 0;
+  }
+}
+
+@keyframes hb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hb-fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes hb-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(36px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-36px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-out-left {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+}
+
+@keyframes hb-out-right {
+  from {
+    opacity: 1;
+    transform: none;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+}
+
+@keyframes hb-flip-in {
+  from {
+    opacity: 0;
+    transform: perspective(300px) rotateX(-85deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-flash {
+  0% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes hb-blink-soft {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes hb-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@keyframes hb-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes hb-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(60%);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-dev-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hb-draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes hb-dot-pop {
+  0% {
+    transform: scale(0);
+  }
+  70% {
+    transform: scale(1.3);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Countdown odometer: each digit strip holds [next, previous] and rolls down into place. */
+@keyframes hb-roll {
+  from {
+    transform: translateY(-50%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@layer components {
+  .hb-skeleton {
+    background: linear-gradient(
+      90deg,
+      var(--color-sk) 0%,
+      var(--color-sk-hi) 50%,
+      var(--color-sk) 100%
+    );
+    background-size: 300px 100%;
+    animation: shimmer 1.2s linear infinite;
+    border-radius: 8px;
+  }
+
+  .hb-noscroll {
+    scrollbar-width: none;
+  }
+
+  .hb-noscroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hb-motion,
+  .hb-motion * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .hb-fx {
+    display: none;
+  }
+
+  ::view-transition-new(root) {
+    animation: none;
   }
 }
 
