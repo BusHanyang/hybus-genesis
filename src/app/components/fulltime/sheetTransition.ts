@@ -39,11 +39,12 @@ export const runSheetTransition = (
   const height = window.innerHeight
   // As shares of the viewport, like the theme reveal's circle, so the box
   // lands on the button whatever scale the transition layer is drawn at.
+  // No rounded corners: those keep the animation off the compositor.
   const share = (value: number, total: number) =>
     `${((value / total) * 100).toFixed(3)}%`
   root.style.setProperty(
     '--hb-sheet-box',
-    `inset(${share(box.top, height)} ${share(width - box.right, width)} ${share(height - box.bottom, height)} ${share(box.left, width)} round ${share(16, width)} / ${share(16, height)})`,
+    `inset(${share(box.top, height)} ${share(width - box.right, width)} ${share(height - box.bottom, height)} ${share(box.left, width)})`,
   )
   root.classList.remove(OPEN_CLASS, CLOSE_CLASS)
   root.classList.add(kind === 'open' ? OPEN_CLASS : CLOSE_CLASS)

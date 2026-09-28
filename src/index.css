@@ -447,6 +447,10 @@
   Opening starts moving at once and settles: unlike the theme's circle, the
   box already has the button's size, so an ease-in start reads as the box
   stalling on the button and then jumping open.
+
+  The box has square corners on purpose: a rounded inset() can't be
+  animated on the compositor, so Chrome repaints it on the main thread and
+  drops the first frames of the reveal; a plain inset() stays smooth.
 */
 .hb-sheet-open::view-transition-new(root) {
   animation: hb-sheet-open 0.5s cubic-bezier(0.25, 0.5, 0.25, 1);
@@ -462,13 +466,13 @@
     clip-path: var(--hb-sheet-box);
   }
   to {
-    clip-path: inset(0 round 0);
+    clip-path: inset(0);
   }
 }
 
 @keyframes hb-sheet-close {
   0% {
-    clip-path: inset(0 round 0);
+    clip-path: inset(0);
   }
   75% {
     opacity: 1;

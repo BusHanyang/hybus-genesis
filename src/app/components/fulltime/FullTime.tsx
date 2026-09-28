@@ -48,9 +48,10 @@ const CLOSE_MS = 400
 const GLIDE_DELAY_MS = 550
 const GLIDE_MS = 500
 
-const FULL_CLIP = 'inset(0px 0px 0px 0px round 0px)'
+const FULL_CLIP = 'inset(0px 0px 0px 0px)'
 
-// The home button's box as a clip on the sheet (which covers the viewport).
+// The home button's box as a clip on the sheet (which covers the viewport);
+// square, as rounded corners would keep the animation off the compositor.
 const buttonClip = (): string | null => {
   const button = document.getElementById('all')
   if (button === null) return null
@@ -58,7 +59,7 @@ const buttonClip = (): string | null => {
   const width = document.documentElement.clientWidth
   const height = window.innerHeight
   if (box.width === 0 || box.bottom <= 0 || box.top >= height) return null
-  return `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px round 16px)`
+  return `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px)`
 }
 
 const prefersReducedMotion = () =>
