@@ -136,5 +136,7 @@
   "route_map_toggle": "노선도 펼치기",
   "route_head_dorm": "기숙사",
   "route_head_shuttlecoke": "셔틀콕",
-  "route_head_subway": "한대앞역"
+  "route_head_subway": "한대앞역",
+  "open_menu": "메뉴 열기",
+  "close_menu": "메뉴 닫기"
 }

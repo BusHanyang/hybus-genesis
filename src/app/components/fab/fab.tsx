@@ -1,355 +1,244 @@
-import 'react-tiny-fab/dist/styles.css'
-import './fab.css'
-
 import { classed } from '@tw-classed/react'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Action, Fab } from 'react-tiny-fab'
 
-import DarkImg from '/image/dark_mode_black_48dp.svg'
-import Email from '/image/email_black_48dp.svg'
-import Arrow from '/image/expand_less_white_48dp.svg'
-import ThemeImg from '/image/flower.svg'
-import Info from '/image/infoblack.svg'
-import LangImg from '/image/lang_black_48dp.svg'
-import LightImg from '/image/light_mode_black_48dp.svg'
-import Donate from '/image/local_cafe_black_48dp.svg'
-import { useDarkmodeContext } from '@/context/ThemeContext'
+import CafeImg from '/public/image/cafe_outline_24dp.svg?react'
+import ChevronImg from '/public/image/chevron_up_24dp.svg?react'
+import DarkImg from '/public/image/dark_mode_outline_24dp.svg?react'
+import ThemeImg from '/public/image/flower_outline_24dp.svg?react'
+import LangImg from '/public/image/language_outline_24dp.svg?react'
+import LightImg from '/public/image/light_mode_outline_24dp.svg?react'
+import ChangelogImg from '/public/image/list_outline_24dp.svg?react'
+import EmailImg from '/public/image/mail_outline_24dp.svg?react'
+import { runThemeTransition } from '@/components/theme/themeTransition'
+import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
 import { useDarkMode } from '../useDarkMode'
 
-const Icons = classed('div', 'transition duration-300', {
+const closedByDefault = { 'data-open': 'false' } as const
+
+const FabScrim = classed(
+  'div',
+  'fixed inset-0 z-20 bg-scrim backdrop-blur-[3px] transition-opacity duration-300',
+  {
+    variants: {
+      'data-open': {
+        true: 'pointer-events-auto opacity-100',
+        false: 'pointer-events-none opacity-0',
+      },
+    },
+    defaultVariants: closedByDefault,
+  },
+)
+// Fixed to the viewport, above the home indicator, and aligned with the right
+// edge of the (max 30rem) content column on wide screens.
+const FabRoot = classed(
+  'div',
+  'fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[max(1.5rem,calc((100%-30rem)/2+1.25rem))] z-30 flex select-none flex-col items-end font-Ptd',
+)
+const FabList = classed('div', 'mb-3.5 flex flex-col items-end gap-3', {
   variants: {
-    'data-theme': {
-      light: '',
-      inverted: 'invert',
+    // Stay visible until the items have finished leaving.
+    'data-open': {
+      true: 'visible',
+      false: 'invisible [transition:visibility_0s_linear_.5s]',
     },
   },
-  defaultVariants: {
-    'data-theme': 'light',
-  },
+  defaultVariants: closedByDefault,
 })
-const FabBackground = classed('div', 'select-none font-Ptd', {
-  variants: {
-    'data-state': {
-      open: 'fixed inset-0 z-10',
-      closed: '',
+const FabItem = classed('button', 'flex items-center gap-2.5')
+const FabLabel = classed(
+  'span',
+  'flex h-[30px] items-center whitespace-nowrap rounded-[15px] bg-theme-card px-3 text-[13.5px] font-bold text-theme-text shadow-theme-shadow [transition:opacity_.25s_ease,translate_.45s_cubic-bezier(.34,1.45,.64,1),background-color_.35s_ease,color_.35s_ease]',
+  {
+    variants: {
+      'data-open': {
+        true: 'translate-x-0 opacity-100',
+        false: 'translate-x-3 opacity-0',
+      },
     },
+    defaultVariants: closedByDefault,
   },
-  defaultVariants: {
-    'data-state': 'closed',
+)
+const FabAction = classed(
+  'span',
+  'flex h-[46px] w-[46px] items-center justify-center rounded-full bg-theme-card text-theme-text shadow-theme-shadow [transition:opacity_.25s_ease,translate_.45s_cubic-bezier(.34,1.45,.64,1),scale_.45s_cubic-bezier(.34,1.45,.64,1),background-color_.35s_ease,color_.35s_ease]',
+  {
+    variants: {
+      'data-open': {
+        true: 'translate-y-0 scale-100 opacity-100',
+        false: 'translate-y-[18px] scale-50 opacity-0',
+      },
+    },
+    defaultVariants: closedByDefault,
   },
-})
+)
+const FabMain = classed(
+  'button',
+  'flex h-[58px] w-[58px] items-center justify-center rounded-full bg-fab-color text-white shadow-fab transition-[scale,background-color] duration-150 active:scale-[.96]',
+)
+const FabMainIcon = classed(
+  ChevronImg,
+  'h-7 w-7 stroke-[2.6] transition-transform duration-[450ms] ease-bouncy',
+  {
+    variants: {
+      'data-open': {
+        true: 'rotate-180',
+        false: 'rotate-0',
+      },
+    },
+    defaultVariants: closedByDefault,
+  },
+)
+const iconClass = 'h-[21px] w-[21px]'
+const DarkIcon = classed(DarkImg, iconClass)
+const LightIcon = classed(LightImg, iconClass)
+const ThemeIcon = classed(ThemeImg, iconClass)
+const LangIcon = classed(LangImg, iconClass)
+const ChangelogIcon = classed(ChangelogImg, iconClass)
+const DonateIcon = classed(CafeImg, iconClass)
+const EmailIcon = classed(EmailImg, iconClass)
+
+type FabMenuAction = {
+  key: string
+  label: string
+  icon: React.ReactNode
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void
+}
+
 const Fabs = (props: {
   openModal: () => void
   mTarget: React.Dispatch<React.SetStateAction<string>>
 }) => {
-  const {
-    toggleTheme,
-    seasonalThemeEnabled,
-    toggleSeasonalTheme,
-  } = useDarkMode()
-  const { t, i18n } = useTranslation()
-  const [isOpen, setIsOpen] = useState(false)
+  const { toggleTheme, toggleSeasonalTheme, seasonalThemeEnabled } =
+    useDarkMode()
   const { theme } = useDarkmodeContext()
-  const [metadata, setMetadata] = useState<Record<string, string>>({
-    changeText: t('dark'),
-    changeColor: '#ffffff',
-    iconColor: 'black',
-    dataTheme: 'light',
-    imgIcon: DarkImg,
-  }) // white theme is default
+  const { t, i18n } = useTranslation()
+  const [isOpen, setIsOpen] = useState<boolean>(false)
+  const open = isOpen ? 'true' : 'false'
 
-  const fabMainStyle: React.CSSProperties = {
-    backgroundColor: metadata.changeColor,
-    color: metadata.iconColor,
-    userSelect: 'none',
-    msUserSelect: 'none',
-    MozUserSelect: 'none',
-    WebkitUserSelect: 'none',
-    WebkitTouchCallout: 'none',
-  }
+  useEffect(() => {
+    if (!isOpen) return
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsOpen(false)
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [isOpen])
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
 
-  const isOpenClass = document.getElementsByClassName('rtf')
-
-  const fabBackgroundRef = useRef<HTMLDivElement>(null)
-  const handleClickFabBackground = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (e.target === fabBackgroundRef.current) {
-      handleClose()
-    }
-  }
-
-  const handleModalOpen = () => {
-    props.openModal()
-    props.mTarget('Fabs')
-  }
-
-  const handleOpen = (): Promise<React.FC> => {
-    return new Promise(() => {
-      if (isOpen) {
+  // The reveal grows from the icon that was pressed.
+  const switchTheme =
+    (update: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
+      const origin = e.currentTarget.lastElementChild ?? e.currentTarget
+      runThemeTransition(origin, () => {
+        update()
         setIsOpen(false)
-        isOpenClass[0].classList.remove('open')
-        isOpenClass[0].classList.add('closed')
-      } else {
-        setIsOpen(true)
-        isOpenClass[0].classList.remove('closed')
-        isOpenClass[0].classList.add('open')
-      }
-    })
-  }
-  const handleClose = (): Promise<React.FC> => {
-    return new Promise(() => {
-      setIsOpen(false)
-      isOpenClass[0].classList.remove('open')
-      isOpenClass[0].classList.add('closed')
-    })
-  }
-
-  const handleEmailOnClick = (): Promise<React.FC> => {
-    return new Promise(() => {
-      window.location.href = 'mailto:admin@hybus.app'
-    })
-  }
-  const handleDonateOnClick = (): Promise<React.FC> => {
-    return new Promise(() => {
-      window.open('https://toss.me/bushanyang/1000', '_blank')
-    })
-  }
-  const handleDarkOnClick = (): Promise<React.FC> => {
-    return new Promise(() => {
-      toggleTheme()
-    })
-  }
-  const handleSeasonalThemeOnClick = (): Promise<React.FC> => {
-    return new Promise(() => {
-      toggleSeasonalTheme()
-    })
-  }
-  const handleLangOnClick = (): Promise<React.FC> => {
-    return new Promise(() => {
-      if (i18n.language === 'en') {
-        i18n.changeLanguage('ko')
-        window.localStorage.setItem('language', 'ko')
-      } else {
-        i18n.changeLanguage('en')
-        window.localStorage.setItem('language', 'en')
-      }
-    })
-  }
-
-  React.useLayoutEffect(() => {
-    if (theme === 'dark') {
-      setMetadata({
-        changeColor: '#374151',
-        changeText: t('light'),
-        imgIcon: LightImg,
-        iconColor: 'white',
-        dataTheme: 'dark',
-      })
-    } else if (theme === 'christmas') {
-      setMetadata({
-        changeText: t('dark'),
-        changeColor: 'var(--color-theme-main)',
-        iconColor: 'white',
-        dataTheme: 'christmas',
-        imgIcon: DarkImg,
-      })
-    } else if (theme === 'spring') {
-      setMetadata({
-        changeText: t('dark'),
-        changeColor: '#e37da6',
-        iconColor: 'white',
-        dataTheme: 'spring',
-        imgIcon: DarkImg,
-      })
-    } else if (theme === 'summer') {
-      setMetadata({
-        changeText: t('dark'),
-        changeColor: '#2ca6a4',
-        iconColor: 'white',
-        dataTheme: 'summer',
-        imgIcon: DarkImg,
-      })
-    } else if (theme === 'autumn') {
-      setMetadata({
-        changeText: t('dark'),
-        changeColor: '#b45309',
-        iconColor: 'white',
-        dataTheme: 'autumn',
-        imgIcon: DarkImg,
-      })
-    } else if (theme === 'winter') {
-      setMetadata({
-        changeText: t('dark'),
-        changeColor: '#647ab3',
-        iconColor: 'white',
-        dataTheme: 'winter',
-        imgIcon: DarkImg,
-      })
-    } else {
-      setMetadata({
-        changeText: t('dark'),
-        changeColor: '#FFFFFF',
-        iconColor: 'black',
-        dataTheme: 'light',
-        imgIcon: DarkImg,
       })
     }
-  }, [t, theme])
+
+  const actions: Array<FabMenuAction> = [
+    {
+      key: 'dark',
+      label: theme === THEME.DARK ? t('light') : t('dark'),
+      icon: theme === THEME.DARK ? <LightIcon /> : <DarkIcon />,
+      onClick: switchTheme(toggleTheme),
+    },
+    {
+      key: 'theme',
+      label: seasonalThemeEnabled ? t('theme_off') : t('theme_on'),
+      icon: <ThemeIcon />,
+      onClick: switchTheme(toggleSeasonalTheme),
+    },
+    {
+      key: 'lang',
+      label: t('changeLang'),
+      icon: <LangIcon />,
+      onClick: () => {
+        const nextLanguage = i18n.language === 'en' ? 'ko' : 'en'
+        void i18n.changeLanguage(nextLanguage)
+        window.localStorage.setItem('language', nextLanguage)
+      },
+    },
+    {
+      key: 'changelog',
+      label: t('changelog'),
+      icon: <ChangelogIcon />,
+      onClick: () => {
+        setIsOpen(false)
+        props.openModal()
+        props.mTarget('Fabs')
+      },
+    },
+    {
+      key: 'donate',
+      label: t('donate'),
+      icon: <DonateIcon />,
+      onClick: () => {
+        window.open('https://toss.me/bushanyang/1000', '_blank')
+      },
+    },
+    {
+      key: 'ask',
+      label: t('ask'),
+      icon: <EmailIcon />,
+      onClick: () => {
+        window.location.href = 'mailto:admin@hybus.app'
+      },
+    },
+  ]
+  const last = actions.length - 1
 
   return (
     <>
-      <FabBackground
-        data-state={isOpen ? 'open' : 'closed'}
-        onClick={handleClickFabBackground}
-        ref={fabBackgroundRef}
+      <FabScrim
+        aria-hidden="true"
+        data-open={open}
+        onClick={() => setIsOpen(false)}
       />
-      <Fab
-        icon={
-          <img
-            className="iconImg w-12 h-12 cursor-default mx-auto drag-save-n"
-            src={Arrow}
-            data-theme={metadata.dataTheme}
-            alt="floating action button icon"
-            draggable="false"
-            onContextMenu={handleContextMenu}
-          />
-        }
-        mainButtonStyles={{
-          backgroundColor:
-            metadata.dataTheme === 'light'
-              ? '#7099C1'
-              : 'var(--color-fab-color)',
-          fontSize: '10px',
-        }}
-        style={{
-          position: 'absolute',
-          bottom: '1.5rem',
-          right: '1.5rem',
-          margin: '0px',
-          padding: '0px',
-          zIndex: 15,
-          fontFamily: 'Pretendard',
-        }}
-        alwaysShowTitle={true}
-        onClick={handleOpen}
-      >
-        <Action
-          text={metadata.changeText}
-          style={fabMainStyle}
-          onClick={handleDarkOnClick}
-          onContextMenu={handleContextMenu}
+      <FabRoot onContextMenu={handleContextMenu}>
+        <FabList id="fab-menu" aria-hidden={!isOpen} data-open={open}>
+          {actions.map((action, i) => {
+            // Items pop out from the bottom up and tuck back in top-down.
+            const delay = isOpen ? (last - i) * 40 : i * 25
+
+            return (
+              <FabItem
+                key={action.key}
+                type="button"
+                tabIndex={isOpen ? 0 : -1}
+                onClick={action.onClick}
+              >
+                <FabLabel
+                  data-open={open}
+                  style={{ transitionDelay: `${isOpen ? delay + 70 : delay}ms` }}
+                >
+                  {action.label}
+                </FabLabel>
+                <FabAction
+                  aria-hidden="true"
+                  data-open={open}
+                  style={{ transitionDelay: `${delay}ms` }}
+                >
+                  {action.icon}
+                </FabAction>
+              </FabItem>
+            )
+          })}
+        </FabList>
+        <FabMain
+          type="button"
+          aria-label={isOpen ? t('close_menu') : t('open_menu')}
+          aria-expanded={isOpen}
+          aria-controls="fab-menu"
+          onClick={() => setIsOpen(!isOpen)}
         >
-          <Icons
-            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
-          >
-            <img
-              className="cursor-default mx-auto drag-save-n"
-              src={metadata.imgIcon}
-              style={{ padding: 8 }}
-              alt="light and dark mode icon"
-              draggable="false"
-              onContextMenu={(e) => e.preventDefault()}
-            />
-          </Icons>
-        </Action>
-        <Action
-          text={seasonalThemeEnabled ? t('theme_off') : t('theme_on')}
-          style={fabMainStyle}
-          onClick={handleSeasonalThemeOnClick}
-          onContextMenu={handleContextMenu}
-        >
-          <Icons
-            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
-          >
-            <img
-              className="cursor-default mx-auto drag-save-n"
-              src={ThemeImg}
-              style={{ padding: 8 }}
-              alt="seasonal theme icon"
-              draggable="false"
-              onContextMenu={(e) => e.preventDefault()}
-            />
-          </Icons>
-        </Action>
-        <Action
-          text={t('changeLang')}
-          style={fabMainStyle}
-          onClick={handleLangOnClick}
-          onContextMenu={handleContextMenu}
-        >
-          <Icons
-            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
-          >
-            <img
-              className="cursor-default mx-auto drag-save-n"
-              src={LangImg}
-              style={{ padding: 8 }}
-              alt="language icon"
-              draggable="false"
-              onContextMenu={(e) => e.preventDefault()}
-            />
-          </Icons>
-        </Action>
-        <Action
-          text={t('changelog')}
-          style={fabMainStyle}
-          onClick={handleModalOpen}
-          onContextMenu={handleContextMenu}
-        >
-          <Icons
-            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
-          >
-            <img
-              className="cursor-default mx-auto drag-save-n"
-              src={Info}
-              style={{ padding: 8 }}
-              alt="changelog icon"
-              draggable="false"
-            />
-          </Icons>
-        </Action>
-        <Action
-          text={t('donate')}
-          style={fabMainStyle}
-          onClick={handleDonateOnClick}
-          onContextMenu={handleContextMenu}
-        >
-          <Icons
-            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
-          >
-            <img
-              className="cursor-default mx-auto drag-save-n"
-              src={Donate}
-              style={{ padding: 8 }}
-              alt="donate a cup of coffee icon"
-              draggable="false"
-            />
-          </Icons>
-        </Action>
-        <Action
-          text={t('ask')}
-          style={fabMainStyle}
-          onClick={handleEmailOnClick}
-          onContextMenu={handleContextMenu}
-        >
-          <Icons
-            data-theme={metadata.dataTheme === 'light' ? 'light' : 'inverted'}
-          >
-            <img
-              className="cursor-default mx-auto drag-save-n"
-              src={Email}
-              style={{ padding: 8 }}
-              alt="email icon"
-              draggable="false"
-            />
-          </Icons>
-        </Action>
-      </Fab>
+          <FabMainIcon aria-hidden="true" data-open={open} />
+        </FabMain>
+      </FabRoot>
     </>
   )
 }

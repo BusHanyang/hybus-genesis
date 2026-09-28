@@ -136,5 +136,7 @@
   "route_map_toggle": "Show the route map",
   "route_head_dorm": "Dorm",
   "route_head_shuttlecoke": "Shuttle\u200bCoke",
-  "route_head_subway": "HYU Stn."
+  "route_head_subway": "HYU Stn.",
+  "open_menu": "Open menu",
+  "close_menu": "Close menu"
 }

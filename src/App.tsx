@@ -49,14 +49,10 @@ const themeRootVariants = {
   },
 } as const
 
-const ThemeRoot = classed(
-  'div',
-  'mobile-fab-scroll-root relative h-full',
-  themeRootVariants,
-)
+const ThemeRoot = classed('div', 'relative min-h-dvh', themeRootVariants)
 const Apps = classed(
   'div',
-  'mobile-fab-scroll-content h-full px-5 pb-26 font-Ptd text-center mx-auto select-none max-w-7xl relative bg-theme-main text-theme-text transition-colors duration-[350ms]',
+  'min-h-dvh px-5 pb-26 font-Ptd text-center mx-auto select-none max-w-[30rem] relative bg-theme-main text-theme-text transition-colors duration-[350ms]',
 )
 const CopyRightText = classed(
   'p',
@@ -267,7 +263,6 @@ function App() {
                     data-theme={theme}
                     onContextMenu={(e) => e.preventDefault()}
                   >
-                    <Fabs openModal={openModal} mTarget={setModalTarget} />
                     <Apps>
                       <header>
                         <TitleRow>
@@ -329,6 +324,7 @@ function App() {
                     </Apps>
                   </ThemeRoot>
                 </PullToRefresh>
+                <Fabs openModal={openModal} mTarget={setModalTarget} />
                 <Suspense fallback={<div />}>
                   <ModalOpen
                     isModalAni={modalAni}
