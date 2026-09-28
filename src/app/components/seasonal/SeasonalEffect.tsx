@@ -31,14 +31,16 @@ const snowfallStyle: React.CSSProperties = {
 */
 const EffectLayer = classed(
   'div',
-  'pointer-events-none fixed inset-0 z-2 overflow-hidden',
+  'pointer-events-none inset-0 overflow-hidden',
   {
     variants: {
       'data-layer': {
         // Falling particles are skipped when the user prefers less motion.
-        particles: 'hb-fx [view-transition-name:hb-fx]',
-        sun: '[view-transition-name:hb-sun]',
-        night: '[view-transition-name:hb-moon]',
+        particles: 'hb-fx fixed z-2 [view-transition-name:hb-fx]',
+        sun: 'fixed z-2 [view-transition-name:hb-sun]',
+        // The night sky belongs to the top of the page: the moon stays up
+        // there when the page scrolls, and the full timetable covers it.
+        night: 'absolute z-[1] [view-transition-name:hb-moon]',
       },
     },
   },
