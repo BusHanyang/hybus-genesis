@@ -17,7 +17,7 @@ const Headline = classed(
 )
 const TitleLineIcon = classed('img', 'w-6 drag-save-n')
 const Body = classed('div', 'h-[185px] pt-2')
-const DirectionGroup = classed('div', 'min-h-[84px] px-1.5 py-1', {
+const DirectionGroup = classed('div', 'min-h-[84px] px-1.5 py-1 hxs:px-1', {
   variants: {
     'data-divider': {
       true: 'border-t border-control-main',
@@ -34,7 +34,7 @@ const darkBand =
   'dark:border-y-[3px] dark:border-transparent dark:bg-clip-padding dark:text-gray-800 dark:active:brightness-90'
 const TrainRow = classed(
   'button',
-  'flex h-[38px] w-full items-center gap-2 rounded-[10px] px-1 text-left transition-[background-color,scale] duration-200 active:scale-[.985] active:bg-press-bg animate-rise',
+  'flex h-[38px] w-full items-center gap-2 rounded-[10px] px-1 text-left transition-[background-color,scale] duration-200 active:scale-[.985] active:bg-press-bg animate-rise hxs:gap-1.5',
   {
     variants: {
       // The original colors: red for a train at or ending at this station,
@@ -50,17 +50,21 @@ const TrainRow = classed(
     },
   },
 )
-const TrainLineIcon = classed('img', 'h-[22px] w-[22px] shrink-0 drag-save-n')
+const TrainLineIcon = classed(
+  'img',
+  'h-[22px] w-[22px] shrink-0 drag-save-n hxs:h-5 hxs:w-5',
+)
 const Destination = classed(
   'span',
-  'flex min-w-0 items-center gap-1 text-base hsm:text-sm',
+  'flex min-w-0 items-center gap-1 text-base hsm:text-sm hxs:gap-0.5',
 )
 const DestinationText = classed('span', 'truncate', {
   variants: {
-    // Long names get tighter type (as they did before) rather than an
-    // ellipsis on narrow phones.
+    // Long names take the original's tight spacing and smaller type. With
+    // the rest of the row tightened below 350px (`hxs`), they fit beside the
+    // widest status even at 320px; the ellipsis is only a last resort.
     'data-long': {
-      true: 'text-sm tracking-[-0.06em] hsm:text-[13px]',
+      true: 'text-sm tracking-[-0.09em] hsm:text-[13px] hxs:text-xs',
       false: '',
     },
   },
@@ -71,7 +75,7 @@ const DestinationText = classed('span', 'truncate', {
 const TrainTypeIcon = classed('img', 'h-4 shrink-0 drag-save-n')
 const Status = classed(
   'span',
-  'ml-auto flex shrink-0 items-center gap-1.5 text-[15px] tabular-nums whitespace-nowrap hsm:text-[13px]',
+  'ml-auto flex shrink-0 items-center gap-1.5 text-[15px] tabular-nums whitespace-nowrap hsm:text-[13px] hxs:gap-1 hxs:text-xs',
 )
 const HotDot = classed(
   'span',
@@ -103,10 +107,13 @@ const ArrivalStatus = classed('span', '', {
   },
 })
 const PaneBody = classed('div', 'px-3.5 pt-3')
-const SkeletonRow = classed('div', 'flex h-[38px] items-center gap-2 px-1')
+const SkeletonRow = classed(
+  'div',
+  'flex h-[38px] items-center gap-2 px-1 hxs:gap-1.5',
+)
 const SkeletonBadge = classed(
   'span',
-  'hb-skeleton h-[22px] w-[22px] rounded-full',
+  'hb-skeleton h-[22px] w-[22px] rounded-full hxs:h-5 hxs:w-5',
 )
 const SkeletonBar = classed('span', 'hb-skeleton h-3.5', {
   variants: {

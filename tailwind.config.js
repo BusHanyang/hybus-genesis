@@ -8,6 +8,7 @@ module.exports = {
       screens: {
         hm: { max: '400px' },
         hsm: { max: '360px' },
+        hxs: { max: '350px' },
         shuttlei: { max: '580px' },
         rt1: { max: '495px' },
         rt2: { max: '440px' },
