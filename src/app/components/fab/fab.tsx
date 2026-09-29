@@ -30,16 +30,12 @@ const FabScrim = classed(
     defaultVariants: closedByDefault,
   },
 )
-// Fixed to the viewport, above the home indicator, and aligned with the right
-// edge of the (max 30rem) content column on wide screens. The box spans the
-// closed menu too, so it lets clicks through and only its buttons take them.
 const FabRoot = classed(
   'div',
   'pointer-events-none fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-[max(1.5rem,calc((100%-30rem)/2+1.25rem))] z-30 flex select-none flex-col items-end font-Ptd',
 )
 const FabList = classed('div', 'mb-3.5 flex flex-col items-end gap-3', {
   variants: {
-    // Stay visible until the items have finished leaving.
     'data-open': {
       true: 'pointer-events-auto visible',
       false: 'invisible [transition:visibility_0s_linear_.5s]',
@@ -120,8 +116,6 @@ const Fabs = (props: {
   const listRef = useRef<HTMLDivElement>(null)
   const mainRef = useRef<HTMLButtonElement>(null)
 
-  // Closing hides the menu from assistive tech, so hand focus back to the main
-  // button if it was on one of the items.
   useEffect(() => {
     if (isOpen) return
     if (listRef.current?.contains(document.activeElement)) {
@@ -142,7 +136,6 @@ const Fabs = (props: {
     e.preventDefault()
   }
 
-  // The reveal grows from the icon that was pressed.
   const switchTheme =
     (update: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
       const origin = e.currentTarget.lastElementChild ?? e.currentTarget
@@ -219,7 +212,6 @@ const Fabs = (props: {
           data-open={open}
         >
           {actions.map((action, i) => {
-            // Items pop out from the bottom up and tuck back in top-down.
             const delay = isOpen ? (last - i) * 40 : i * 25
 
             return (

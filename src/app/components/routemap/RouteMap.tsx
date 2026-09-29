@@ -44,8 +44,6 @@ const Card = classed(
   'div',
   'relative mt-3 block w-full cursor-default overflow-hidden rounded-[20px] bg-theme-card text-theme-text shadow-theme-shadow outline-none transition-[height,background-color,box-shadow] duration-[450ms] ease-smooth focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus',
 )
-// The legend slides up and out as the map opens, and comes back a beat after
-// the map has faded when it closes.
 const Legend = classed(
   'div',
   'absolute inset-x-0 top-0 flex flex-wrap items-center justify-center gap-x-3 gap-y-1.5 px-4 py-3 hm:gap-x-2.5',
@@ -77,7 +75,6 @@ const LegendDot = classed(
         yesulin: 'bg-chip-green',
         jungang: 'bg-chip-purple',
       },
-      // The spring theme turns the legend dots into little blossoms.
       'data-theme': {
         spring:
           "rotate-45 scale-75 rounded-none before:absolute before:left-[-50%] before:top-0 before:h-full before:w-full before:rounded-full before:bg-inherit before:content-[''] after:absolute after:left-0 after:top-[-50%] after:h-full after:w-full after:rounded-full after:bg-inherit after:content-['']",
@@ -107,8 +104,6 @@ const MapArea = classed(
 const HeadRow = classed('div', 'flex gap-2.5 animate-map-row hm:gap-2')
 const ChipColumn = classed('span', 'w-[60px] shrink-0 hm:w-[52px] hsm:w-[46px]')
 const HeadTrack = classed('span', 'relative h-5 grow')
-// English stop names are long, so they may wrap onto a second line within
-// the gap between two stops (the translations carry break opportunities).
 const HeadLabel = classed(
   'span',
   'absolute top-0 -translate-x-1/2 text-center font-bold',
@@ -173,8 +168,6 @@ const RouteMap = (props: { tab: StopLocation }) => {
   const legendRef = useRef<HTMLDivElement>(null)
   const lang = i18n.language === 'ko' ? 'ko' : 'other'
 
-  // The collapsed card hugs the legend, which wraps onto two lines in English
-  // on narrow screens.
   useLayoutEffect(() => {
     const element = legendRef.current
     if (element === null) return
@@ -185,7 +178,6 @@ const RouteMap = (props: { tab: StopLocation }) => {
     return () => observer.disconnect()
   }, [])
 
-  // Keep the map mounted while it fades out, then drop it so the pings stop.
   useEffect(() => {
     if (open) return
     const timer = window.setTimeout(

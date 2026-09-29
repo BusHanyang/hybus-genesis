@@ -7,8 +7,6 @@ import CloseImg from '/public/image/close_outline_24dp.svg?react'
 import { runThemeTransition } from '@/components/theme/themeTransition'
 import { isSeasonalTheme, THEME } from '@/context/ThemeContext'
 
-// No z-index on the root: the trigger stays under the FAB scrim, while the
-// open panel still sits above the cards.
 const ThemeDebugRoot = classed(
   'div',
   'relative ml-2 inline-flex justify-self-start font-normal',
@@ -126,7 +124,6 @@ const ThemeDebugMenu = ({
     onSelectAutomaticTheme()
     setIsOpen(false)
   }
-  // Same circle reveal as the FAB, growing from the picked option.
   const withReveal =
     (update: () => void) => (e: React.MouseEvent<HTMLButtonElement>) => {
       runThemeTransition(e.currentTarget, update)

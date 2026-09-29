@@ -54,10 +54,6 @@ const Message = classed(
 
 const hasContent = (notice: NoticeInfo) => notice.content.trim() !== ''
 
-/**
- * Every announcement in one list. Ones with text expand in place (the one
- * tapped on the banner starts open); link-only ones open their page.
- */
 const NoticeList = (props: { initialIndex: number | null }) => {
   const { t } = useTranslation()
   const notices = useQuery({

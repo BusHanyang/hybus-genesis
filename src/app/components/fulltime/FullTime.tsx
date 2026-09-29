@@ -28,8 +28,6 @@ type HourGroup = {
   minutes: Array<{ mm: string; state: MinuteState }>
 }
 
-// Same grouping as before: 순환, 중앙역, 예술인, then 직행 (orange for the
-// dorm-bound R runs).
 const GROUP_ORDER: Array<GroupKey> = ['circle', 'jungang', 'directY', 'direct']
 const groupOf = (type: string): GroupKey | null => {
   if (type === 'C') return 'circle'
@@ -41,15 +39,11 @@ const groupOf = (type: string): GroupKey | null => {
 
 const COMPACT_ON_Y = 240
 const COMPACT_OFF_Y = 200
-// Matches the closing transition on Sheet.
-// Glide to the next departure once the sheet has finished opening.
 const GLIDE_DELAY_MS = 550
 const GLIDE_MS = 500
 
 const FULL_CLIP = 'inset(0px 0px 0px 0px)'
 
-// The home button's box as a clip on the sheet (which covers the viewport);
-// square, as rounded corners would keep the animation off the compositor.
 const buttonClip = (): string | null => {
   const button = document.getElementById('all')
   if (button === null) return null
@@ -81,11 +75,6 @@ const themeRootVariants = {
 } as const
 
 const ThemeRoot = classed('div', '', themeRootVariants)
-// A full-screen sheet over the home screen (which stays mounted underneath).
-// Falling seasonal effects (z-2) still drift over it, as they did before.
-// It opens and closes through the home button's box with a view transition
-// (sheetTransition.ts); these phases do the same on the live page where that
-// isn't available, or when the browser's forward brings the page back.
 const Sheet = classed(
   'div',
   'fixed inset-0 z-[1] overflow-hidden bg-ft-page font-Ptd text-theme-text select-none',
@@ -94,8 +83,6 @@ const Sheet = classed(
       'data-phase': {
         opening: '',
         open: '[transition:clip-path_.5s_cubic-bezier(.25,.5,.25,1),background-color_.35s_ease]',
-        // Closing: an even curve with a short tail, so it doesn't hover just
-        // above the button, and a late fade so it blends into the button.
         closing:
           'pointer-events-none opacity-0 [transition:clip-path_.4s_cubic-bezier(.6,0,.4,1),opacity_.1s_ease_.3s]',
       },
@@ -138,7 +125,6 @@ const FilterChip = classed(
     },
   },
 )
-// The check mark opens up in front of the selected chip's label.
 const CheckWrap = classed(
   'span',
   'inline-flex overflow-hidden transition-[width,margin,opacity] duration-[280ms] ease-smooth',
@@ -232,7 +218,6 @@ const Minute = classed(
     },
   },
 )
-// Slides down once the filters have scrolled away.
 const CompactBar = classed(
   'div',
   'absolute inset-x-0 top-0 z-10 bg-ft-page shadow-[0_1px_0_var(--color-ft-divider),0_6px_16px_rgba(16,24,40,.06)] transition-[translate,opacity] duration-[350ms] ease-smooth',
@@ -278,9 +263,7 @@ const openApiMonitor = () => {
 }
 
 type FullTimeProps = {
-  // Open out of the home button (not on a direct visit or a browser swipe).
   animateOpen: boolean
-  // The page has been left: close back into the button, then onClosed.
   closing: boolean
   onBack: () => void
   onClosed: () => void
@@ -297,15 +280,12 @@ const FullTime = (props: FullTimeProps) => {
   const [location, setLocation] = useState<StopLocation>(
     (window.localStorage.getItem('tab') as StopLocation) || 'shuttlecoke_o',
   )
-  // The home screen saves today's season and week, so those are "today".
   const [today] = useState(() => ({
     season: window.localStorage.getItem('season') || 'semester',
     week: window.localStorage.getItem('week') || 'week',
   }))
   const [clock, setClock] = useState<string>(clockNow)
   const [compact, setCompact] = useState<boolean>(false)
-  // Start clipped to the home button from the very first style the sheet
-  // gets, so the reveal starts there (not from a placeholder).
   const [openFrom] = useState<string | null>(() =>
     animateOpen && !prefersReducedMotion() ? buttonClip() : null,
   )
@@ -326,8 +306,6 @@ const FullTime = (props: FullTimeProps) => {
     queryFn: async () => await shuttleAPI(season, week, location),
     staleTime: 5 * 60 * 1000,
   })
-  // The list the page opens with, when it comes straight from the cache, is
-  // revealed along with the page; lists that load or are picked later rise in.
   const listKey = `${location}-${season}-${week}`
   const [openedListKey, setOpenedListKey] = useState<string | null>(() =>
     timetable.data !== undefined ? listKey : null,
@@ -346,34 +324,23 @@ const FullTime = (props: FullTimeProps) => {
     }
   }, [season, week])
 
-  // Keep "now" and the next departure current while the page stays open.
   useEffect(() => {
     const timer = window.setInterval(() => setClock(clockNow()), 15000)
     return () => window.clearInterval(timer)
   }, [])
 
-  // Open: reveal the page out of the home button. Reading the layout first
-  // settles the button's clip as the starting point, so the transition
-  // starts before the first paint instead of waiting for frames (which a
-  // throttled or hidden page may not deliver).
   useLayoutEffect(() => {
     if (openFrom === null) return
-    // Back while a snapshot is still shrinking (browser forward): drop it so
-    // the page grows again from the button instead.
     skipSheetTransition()
     sheetRef.current?.getBoundingClientRect()
     setPhase((current) => (current === 'opening' ? 'open' : current))
   }, [openFrom])
 
-  // Close: shrink back into the home button, then let the page go. Coming
-  // back before that (browser forward) opens it again.
   useEffect(() => {
     if (!closing) {
       setPhase((current) => (current === 'closing' ? 'open' : current))
       return
     }
-    // Like the theme switch: a snapshot of the page shrinks into the button
-    // while the home screen is already back underneath.
     const button = document.getElementById('all')
     if (button !== null && canAnimateSheet()) {
       runSheetTransition('close', button, () => flushSync(onClosed))
@@ -477,7 +444,6 @@ const FullTime = (props: FullTimeProps) => {
     ),
   )
   const currentHour = clock.slice(0, 2)
-  // Scroll target: the hour of the next departure today, or the current hour.
   const targetHour = !isToday
     ? null
     : nextIndex >= 0
@@ -486,9 +452,6 @@ const FullTime = (props: FullTimeProps) => {
         ? currentHour
         : null
 
-  // Once the sheet has opened, glide down to that hour. The glide is driven
-  // frame by frame and stops the moment the user scrolls, taps or types, so
-  // it never fights them or pulls them back down.
   useEffect(() => {
     if (targetHour === null || scrolledToTargetRef.current) return
     let frame = 0
@@ -496,8 +459,6 @@ const FullTime = (props: FullTimeProps) => {
       const scroller = scrollerRef.current
       const card = targetCardRef.current
       if (scroller === null || card === null || touchedRef.current) return
-      // Marked only once it actually runs: StrictMode's mount/cleanup/mount
-      // would otherwise cancel the timer and skip the scroll for good.
       scrolledToTargetRef.current = true
       const from = scroller.scrollTop
       const to = Math.max(0, card.offsetTop - 72)
@@ -598,7 +559,6 @@ const FullTime = (props: FullTimeProps) => {
 
     if (hours.length === 0) return <Message>{t('none_data')}</Message>
 
-    // Keyed by the filters so the cards rise in again when they change.
     return (
       <HourList key={listKey}>
         {hours.map((entry, i) => {

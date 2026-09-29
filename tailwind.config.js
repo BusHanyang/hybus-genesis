@@ -86,7 +86,6 @@ module.exports = {
         ldsEllipsis1: 'ldsEllipsis1 0.6s infinite',
         ldsEllipsis2: 'ldsEllipsis2 0.6s infinite',
         ldsEllipsis3: 'ldsEllipsis3 0.6s infinite',
-        // Redesign motion (keyframes live in index.css)
         rise: 'hb-rise .45s cubic-bezier(.2,.8,.2,1) both',
         'row-fade': 'hb-fade .3s ease both',
         'fade-in': 'hb-fade .25s ease both',

@@ -28,8 +28,6 @@ const DirectionGroup = classed('div', 'min-h-[84px] px-1.5 py-1 hxs:px-1', {
     'data-divider': 'false',
   },
 })
-// In dark mode a marked row sits on a light band, inset like the shuttle's
-// departure flash so two marked rows never merge; pressing darkens the band.
 const darkBand =
   'dark:border-y-[3px] dark:border-transparent dark:bg-clip-padding dark:text-gray-800 dark:active:brightness-90'
 const TrainRow = classed(
@@ -37,8 +35,6 @@ const TrainRow = classed(
   'flex h-[38px] w-full items-center gap-2 rounded-[10px] px-1 text-left transition-[background-color,scale] duration-200 active:scale-[.985] active:bg-press-bg animate-rise hxs:gap-1.5',
   {
     variants: {
-      // The original colors: red for a train at or ending at this station,
-      // orange for one a stop away.
       'data-state': {
         here: `font-bold text-[#ff3737] dark:bg-[#ffdede] dark:active:bg-[#ffdede] ${darkBand}`,
         prev: `font-bold text-[#ff7433] dark:bg-[#ffe0ca] dark:active:bg-[#ffe0ca] ${darkBand}`,
@@ -60,9 +56,6 @@ const Destination = classed(
 )
 const DestinationText = classed('span', 'truncate', {
   variants: {
-    // Long names take the original's tight spacing and smaller type. With
-    // the rest of the row tightened below 350px (`hxs`), they fit beside the
-    // widest status even at 320px; the ellipsis is only a last resort.
     'data-long': {
       true: 'text-sm tracking-[-0.09em] hsm:text-[13px] hxs:text-xs',
       false: '',
@@ -217,7 +210,6 @@ const getDestination = (
   return getStationName(destination) + (!isLast && !isExpress ? t('for') : '')
 }
 
-// The English names the original tightened; Korean names fit as they are.
 const isLongDestination = (train: SingleTrainInfo, english: boolean) =>
   english &&
   (train.destination.includes('한성대') ||
@@ -403,8 +395,6 @@ const Subway = ({ station }: SubwayStop) => {
             {getRapidOrLastElement(val.isLast, val.isExpress)}
           </Destination>
           <Status>
-            {/* Only a train that is at this station now; one that merely ends
-                here keeps the color but not the blink. */}
             {val.stnUntilArrival === 0 && <HotDot aria-hidden="true" />}
             <StatusSwap key={isBlink ? 'station' : 'count'}>
               {isBlink

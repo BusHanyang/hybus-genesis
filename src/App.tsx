@@ -48,8 +48,6 @@ import {
 import Refreshing from './app/components/ptr/refreshing-content'
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
-// Code-split, but once preloaded it renders straight away: going through
-// Suspense would hold the page back ~300ms and stall the opening transition.
 type FullTimeModule = typeof import('@/components/fulltime/FullTime')
 type FullTimeProps = React.ComponentProps<FullTimeModule['default']>
 let loadedFullTime: FullTimeModule | null = null
@@ -60,8 +58,6 @@ const loadFullTime = () =>
   })
 const LazyFullTime = lazy(loadFullTime)
 const FullTimeSheet = (props: FullTimeProps) => {
-  // Decided once per visit so a later re-render can't swap the tree and reset
-  // the page's filters.
   const [Preloaded] = useState(() => loadedFullTime?.default ?? null)
   if (Preloaded !== null) return <Preloaded {...props} />
   return (
@@ -93,8 +89,6 @@ const themeRootVariants = {
   },
 } as const
 
-// Isolated so the home screen's own z-indexes stay below the full timetable
-// sheet that opens on top of it.
 const ThemeRoot = classed(
   'div',
   'relative isolate min-h-dvh',
@@ -135,9 +129,6 @@ const FullTimeLink = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
 
-  // Opens like the theme switch where view transitions work (waiting for the
-  // page's code if it isn't in yet); otherwise the link just navigates and
-  // the sheet reveals itself.
   const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
     const button = document.getElementById('all')
     if (
@@ -165,10 +156,6 @@ const FullTimeLink = () => {
   )
 }
 
-// Whether the browser has already animated the latest back or forward itself
-// (a swipe back in iOS Safari, say). Listening from import time puts this
-// ahead of the router's own popstate listener, which renders the new location
-// straight away: listeners on window run in the order they were added.
 let browserAnimatedPop = false
 window.addEventListener('popstate', (event) => {
   browserAnimatedPop = event.hasUAVisualTransition === true
@@ -176,13 +163,6 @@ window.addEventListener('popstate', (event) => {
 
 type SheetState = { animateOpen: boolean; closing: boolean }
 
-// /all opens the full timetable as a sheet over the home screen; the nested
-// routes only match the URL. The sheet stays up until it has shrunk back into
-// its button, whether the page was left with its back button, Esc or the
-// browser's back, and the FAB (home screen only) returns once it's gone. A
-// direct visit shows the page at once, a swipe the browser has already
-// animated isn't animated again, and while a view transition reveals the
-// page the sheet itself doesn't animate.
 const FullTimeLayer = (props: { fab: React.ReactNode }) => {
   const { pathname } = useLocation()
   const navigationType = useNavigationType()
@@ -210,7 +190,6 @@ const FullTimeLayer = (props: { fab: React.ReactNode }) => {
   const handleBack = useCallback(() => {
     if (leaving) return
     setLeaving(true)
-    // Back through history to the home screen, or replace a direct visit.
     if ((window.history.state?.idx ?? 0) > 0) {
       navigate(-1)
     } else {
@@ -339,8 +318,6 @@ function App() {
     document.documentElement.classList.add('h-dfull')
   }, [])
 
-  // Fetch the full timetable page while idle so opening it doesn't stall the
-  // transition on a network request.
   useEffect(() => {
     const preload = () => {
       void loadFullTime()
@@ -389,7 +366,6 @@ function App() {
 
   return (
     <>
-      {/* Navigations render synchronously, so a view transition can capture them. */}
       <BrowserRouter useTransitions={false}>
         <Routes>
           <Route

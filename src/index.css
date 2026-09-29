@@ -20,12 +20,6 @@
   }
 }
 
-/*
-  react-simple-pull-to-refresh sizes its wrappers to the viewport with
-  overflow hidden, which clipped anything below the fold on short phones.
-  Let the document scroll instead; the library still only pulls to refresh
-  when the page is at the top.
-*/
 #root .ptr,
 #root .ptr__children {
   height: auto;
@@ -52,7 +46,7 @@
     background-color: var(--color-theme-main);
   }
 
-  /* Light — also the fallback for tokens a seasonal theme doesn't override */
+  /* Light */
   :root,
   .light {
     --color-theme-main: #f5f6f8;
@@ -93,7 +87,6 @@
     --color-route-inactive: #e4e4e7;
     --color-route-inactive-text: #c4c4ca;
 
-    /* Full timetable */
     --color-ft-page: #ffffff;
     --color-ft-element: #eef0f6;
     --color-ft-hour-now: #e3ecfd;
@@ -142,7 +135,6 @@
     --color-route-inactive: #4b4b53;
     --color-route-inactive-text: #5e5e67;
 
-    /* Full timetable */
     --color-ft-page: #18181b;
     --color-ft-element: #26272c;
     --color-ft-hour-now: #1e2a44;
@@ -191,7 +183,6 @@
     --color-route-inactive: #5c7a69;
     --color-route-inactive-text: #7f9c8b;
 
-    /* Full timetable */
     --color-ft-page: #3e5f4b;
     --color-ft-element: #4a6b57;
     --color-ft-hour-now: #5e7e52;
@@ -237,7 +228,6 @@
     --color-route-inactive: #a7cdd5;
     --color-route-inactive-text: #6f99a2;
 
-    /* Full timetable */
     --color-ft-page: #e6f6f9;
     --color-ft-element: #d2eef3;
     --color-ft-hour-now: #bdeee9;
@@ -283,7 +273,6 @@
     --color-route-inactive: #efe0cc;
     --color-route-inactive-text: #d6bc9c;
 
-    /* Full timetable */
     --color-ft-page: #fffdf8;
     --color-ft-element: #fbf0e1;
     --color-ft-hour-now: #ffe3c4;
@@ -329,7 +318,6 @@
     --color-route-inactive: #d5e0f2;
     --color-route-inactive-text: #a9bcda;
 
-    /* Full timetable */
     --color-ft-page: #fcffff;
     --color-ft-element: #eaf2fd;
     --color-ft-hour-now: #d6e2ff;
@@ -374,7 +362,6 @@
     --color-route-inactive: #f4d7e2;
     --color-route-inactive-text: #ddafc3;
 
-    /* Full timetable */
     --color-ft-page: #fffafb;
     --color-ft-element: #ffeef4;
     --color-ft-hour-now: #ffddea;
@@ -388,7 +375,6 @@
   }
 }
 
-/* Theme swap: colors flip in one frame while the circle reveal supplies the motion. */
 .hb-swap,
 .hb-swap * {
   transition: none !important;
@@ -400,7 +386,6 @@
   mix-blend-mode: normal;
 }
 
-/* Theme switches (html.hb-swap): the new theme grows out of the pressed icon. */
 .hb-swap::view-transition-new(root) {
   animation: hb-reveal 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -424,11 +409,6 @@
   animation: none;
 }
 
-/*
-  Center and radius are percentages of the snapshot, not px: some zoomed or
-  high-DPR views scale the view-transition layer, and px coordinates then
-  land in the wrong place. A 150% radius covers the screen from any point.
-*/
 @keyframes hb-reveal {
   from {
     clip-path: circle(0% at var(--hb-rx, 50%) var(--hb-ry, 50%));
@@ -438,21 +418,6 @@
   }
 }
 
-/*
-  Full timetable (html.hb-sheet-open / .hb-sheet-close): like the theme
-  switch, but through the home button's box. Opening reveals the page as the
-  box grows to the full screen; closing shrinks the page's snapshot back into
-  the box above the home screen, then lets the button show through.
-  --hb-sheet-box is in percentages for the same reason as above.
-
-  Opening starts moving at once and settles: unlike the theme's circle, the
-  box already has the button's size, so an ease-in start reads as the box
-  stalling on the button and then jumping open.
-
-  The box has square corners on purpose: a rounded inset() can't be
-  animated on the compositor, so Chrome repaints it on the main thread and
-  drops the first frames of the reveal; a plain inset() stays smooth.
-*/
 .hb-sheet-open::view-transition-new(root) {
   animation: hb-sheet-open 0.5s cubic-bezier(0.25, 0.5, 0.25, 1);
 }
@@ -484,7 +449,6 @@
   }
 }
 
-/* Redesign motion — referenced by the `animation` entries in tailwind.config.js */
 @keyframes shimmer {
   from {
     background-position: -150px 0;
@@ -700,7 +664,6 @@
   }
 }
 
-/* Falling particles: the outer element falls, the inner one sways. */
 @keyframes hb-fall-short {
   from {
     transform: translateY(-30px);
@@ -719,7 +682,6 @@
   }
 }
 
-/* Night sky (dark mode with seasonal themes on) */
 @keyframes hb-moon-glow {
   0%,
   100% {
@@ -795,7 +757,6 @@
   }
 }
 
-/* Countdown odometer: each digit strip holds [next, previous] and rolls down into place. */
 @keyframes hb-roll {
   from {
     transform: translateY(-50%);
@@ -818,7 +779,6 @@
     border-radius: 8px;
   }
 
-  /* Night sky art: soft halos and a moon (or tree-topper star) per season. */
   .hb-halo-spring {
     background: radial-gradient(
       circle,
@@ -869,7 +829,6 @@
     );
   }
 
-  /* A hazy spring moon */
   .hb-moon-spring {
     background: radial-gradient(
       circle at 40% 38%,
@@ -882,7 +841,6 @@
     box-shadow: 0 0 22px 8px rgba(255, 218, 226, 0.3);
   }
 
-  /* A warm yellow crescent: the lit rim is an inset shadow on an empty disc. */
   .hb-moon-summer {
     box-shadow: inset -8px 5px 0 0 #ffe7a3;
     filter: drop-shadow(0 0 6px rgba(255, 224, 140, 0.55))
@@ -890,7 +848,6 @@
     transform: rotate(-12deg);
   }
 
-  /* The full harvest moon, with a few soft craters */
   .hb-moon-autumn {
     background:
       radial-gradient(
@@ -914,7 +871,6 @@
       0 0 48px 14px rgba(255, 200, 100, 0.16);
   }
 
-  /* A small, cold winter moon */
   .hb-moon-winter {
     background: radial-gradient(
       circle at 40% 38%,
@@ -927,7 +883,6 @@
       0 0 34px 10px rgba(200, 220, 255, 0.14);
   }
 
-  /* A faceted gold tree-topper star */
   .hb-tree-star {
     filter: drop-shadow(0 0 5px rgba(255, 214, 120, 0.75))
       drop-shadow(0 0 16px rgba(255, 196, 90, 0.32));

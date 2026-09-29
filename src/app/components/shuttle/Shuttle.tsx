@@ -14,12 +14,8 @@ import { weekKeys } from '@/data/shuttle/week'
 
 export type ShuttlePaneStatus = 'loading' | 'rows' | 'ended' | 'empty' | 'error'
 
-// Rows are absolutely positioned at `slot * ROW_HEIGHT`, so a departing bus
-// can slide out while the next ones move up instead of the list re-rendering.
 const ROW_HEIGHT = 38
 const VISIBLE_ROWS = 5
-// A bus that has just left shows "출발!" for FLASH seconds, then slides up and
-// fades out over EXIT seconds.
 const FLASH_SECONDS = 1.5
 const EXIT_SECONDS = 1
 const FRESH_MS = 700
@@ -31,7 +27,6 @@ const SKELETON_WIDTHS = [
   [92, 80],
 ]
 
-// Shared by the rows and their loading skeleton so both line up.
 const rowColumns =
   'grid-cols-[50px_minmax(0,136px)_20px_minmax(0,110px)] hm:grid-cols-[46px_minmax(0,128px)_18px_minmax(0,104px)]'
 
@@ -59,8 +54,6 @@ const RowsWindow = classed(
   'div',
   'relative overflow-hidden transition-[height] duration-[450ms] ease-smooth',
 )
-// Each row sits at `translateY(slot * ROW_HEIGHT)`; a departed row (slot < 0)
-// slides up and fades out.
 const RowSlot = classed(
   'div',
   'absolute inset-x-0 top-0 block h-[38px] transition-[transform,opacity] duration-[650ms,500ms] ease-[cubic-bezier(.3,.9,.25,1),ease]',
@@ -110,7 +103,6 @@ const TimeCell = classed(
   'span',
   'flex h-[26px] items-center justify-end justify-self-end overflow-hidden whitespace-nowrap text-base hsm:text-sm',
 )
-// Countdown and actual time flip in (per-row delay) when the press toggles.
 const flipVariants = {
   variants: {
     'data-flip': {
@@ -138,7 +130,6 @@ const CountdownText = classed(
   'flex items-center transition-colors duration-300',
   {
     variants: {
-      // Under a minute left: orange and softly blinking.
       'data-soon': {
         true: 'font-bold text-actual animate-blink-soft',
         false: 'font-medium',
@@ -305,13 +296,6 @@ const openApiMonitor = () => {
   )
 }
 
-/**
- * Countdown whose digits roll like an odometer. Each digit is keyed by its
- * position from the right plus its value, so only the digits that changed
- * remount and replay the roll. The roll starts from the text this countdown
- * actually showed on the previous tick; a fresh mount (pane switch, releasing
- * a long press) shows the digits without rolling.
- */
 const Countdown = (props: { seconds: number }) => {
   const text = formatSecondsLeft(props.seconds)
   const [shown, setShown] = useState({ text, previous: text })
@@ -474,7 +458,6 @@ export const Shuttle = (props: {
     onStatusChange?.(status)
   }, [onStatusChange, status])
 
-  // Rows fade in once when they first appear; after that only the digits move.
   useEffect(() => {
     if (status !== 'rows') return
     const timer = window.setTimeout(() => setFresh(false), FRESH_MS)
@@ -486,9 +469,7 @@ export const Shuttle = (props: {
     if (next) {
       try {
         navigator.vibrate?.(12)
-      } catch {
-        // Vibration is optional.
-      }
+      } catch {}
     }
     props.onPressChange?.(next)
   }

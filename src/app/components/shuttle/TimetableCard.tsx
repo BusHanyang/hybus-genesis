@@ -42,8 +42,6 @@ type PaneState = {
   dir: 1 | -1
 }
 
-// The outgoing pane leaves in .15s and the incoming one starts at .13s, so the
-// previous pane only needs to stay mounted briefly.
 const PREV_PANE_MS = 320
 
 type PaneMotion = 'initial' | 'in-right' | 'in-left' | 'out-left' | 'out-right'
@@ -59,7 +57,6 @@ const MapButton = classed(
 const MapIcon = classed(MapImg, 'h-[26px] w-[26px]')
 const PaneViewport = classed('div', 'relative overflow-hidden', {
   variants: {
-    // Off for the very first measurement so the card doesn't grow from 0.
     'data-animate': {
       true: 'transition-[height] duration-[450ms] ease-smooth',
       false: '',
@@ -84,8 +81,6 @@ const Pane = classed('div', 'absolute inset-x-0 top-0', {
   },
 })
 
-// Collapsible rows under the panes: height and opacity ease together, and
-// visibility flips only after closing so hidden buttons can't take focus.
 const collapseOpen =
   'visible opacity-100 [transition:height_.4s_cubic-bezier(.3,.9,.25,1),opacity_.3s_ease]'
 const collapseClosed =
@@ -178,8 +173,6 @@ const TimetableCard = (props: {
     prev: null,
     dir: 1,
   })
-  // The last settled state of the current stop (a stop that is still loading
-  // doesn't count), and whether the current stop is still loading.
   const [status, setStatus] = useState<ShuttlePaneStatus>('loading')
   const [paneLoading, setPaneLoading] = useState<boolean>(true)
   const [pressed, setPressed] = useState<boolean>(false)
@@ -191,8 +184,6 @@ const TimetableCard = (props: {
   const [heightReady, setHeightReady] = useState<boolean>(false)
   const currentPaneRef = useRef<HTMLDivElement>(null)
 
-  // Adjust the pane state while rendering when the stop or mode changes, so the
-  // outgoing pane and the incoming one are committed in the same frame.
   if (
     panes.current.tab !== nextKey.tab ||
     panes.current.subway !== nextKey.subway
@@ -227,10 +218,6 @@ const TimetableCard = (props: {
     return () => window.clearTimeout(timer)
   }, [panes.gen, panes.prev])
 
-  // The card follows the current pane's height; panes are absolutely positioned
-  // so the old and new ones can overlap while they swap. While a new stop is
-  // loading the card keeps its last height, so the skeleton doesn't nudge it
-  // on the way to what is often the same size.
   const holdHeight = paneLoading && height !== null
   useLayoutEffect(() => {
     const element = currentPaneRef.current
@@ -292,7 +279,6 @@ const TimetableCard = (props: {
 
   const currentMotion: PaneMotion =
     panes.gen === 0 ? 'initial' : panes.dir > 0 ? 'in-right' : 'in-left'
-  // Shown while the first stop is loading too, so it doesn't pop in after.
   const showHint =
     !hintClosed &&
     !panes.current.subway &&
@@ -332,7 +318,6 @@ const TimetableCard = (props: {
       >
         <HintWrap>
           <HintBar>
-            {/* Like the original: the actual-time line only while pressing. */}
             <HintText key={pressed ? 'pressed' : 'idle'}>
               {pressed ? t('now_actual_time') : t('check_on_touch')}
             </HintText>

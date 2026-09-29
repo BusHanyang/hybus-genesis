@@ -13,7 +13,6 @@ const STEP_KEYS: Record<Platform, Array<string>> = {
 }
 
 const Guide = classed('div', 'flex flex-col gap-5')
-// Sections rise in one after another.
 const Section = classed('div', '', {
   variants: {
     'data-order': {

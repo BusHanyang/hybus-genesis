@@ -6,7 +6,6 @@ import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
 type Season = 'spring' | 'summer' | 'autumn' | 'winter' | 'christmas'
 
-// [left %, fall seconds, delay seconds, sway px, spin deg, size px]
 const PARTICLES: Array<[number, number, number, number, number, number]> = [
   [8, 4.6, -1.2, 14, 160, 16],
   [22, 5.8, -3.9, 20, -220, 18],
@@ -31,8 +30,6 @@ const seasonOf = (theme: THEME): Season =>
     ? theme
     : 'spring'
 
-// The preview wears the season's own theme class, so its tokens resolve to
-// that season's palette whatever the page currently uses.
 const Preview = classed(
   'div',
   'relative h-[150px] overflow-hidden rounded-[18px] bg-theme-main text-theme-text animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.06s_both]',

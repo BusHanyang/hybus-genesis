@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { changelogAPI } from '@/network/changelog'
 
 const Timeline = classed('ol', 'relative m-0 list-none p-0 pt-1')
-// The rail behind the dots.
 const Rail = classed(
   'span',
   'absolute bottom-4 left-1.5 top-3 w-0.5 rounded-sm bg-off',

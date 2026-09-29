@@ -128,8 +128,6 @@ export const useShuttleTimetable = (location: StopLocation) => {
   })
   const [currentTime, setCurrentTime] = useState<number>(() => Date.now())
 
-  // Tick on the wall-clock second so every stop's countdown (and the outgoing
-  // pane during a switch) changes on the same boundary.
   useEffect(() => {
     let timer: number
     const schedule = () => {

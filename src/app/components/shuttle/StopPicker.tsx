@@ -12,8 +12,6 @@ const Backdrop = classed(
   'div',
   'h-16 rounded-2xl bg-theme-card shadow-theme-shadow hm:h-12 transition-[background-color,box-shadow] duration-[350ms]',
 )
-// One pill slides between the six buttons instead of each button repainting.
-// Each step is one button width plus the 12px gap.
 const Pill = classed(
   'div',
   'absolute left-0 top-0 h-16 w-[calc((100%-24px)/3)] rounded-2xl bg-button-active shadow-[inset_0_1px_3px_rgba(16,24,40,.14),0_2px_8px_rgba(59,130,246,.18)] transition-[translate,background-color] duration-500 ease-[cubic-bezier(.34,1.25,.64,1)] hm:h-12',

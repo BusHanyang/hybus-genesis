@@ -8,13 +8,11 @@ export type NightSeason =
   | 'winter'
   | 'christmas'
 
-// Deterministic "random" so the sky looks the same on every render.
 const seeded = (seed: number) => () => {
   seed = (seed * 1664525 + 1013904223) % 4294967296
   return seed / 4294967296
 }
 
-// Laid out on a 390x844 phone and stretched to the viewport. Summer only.
 const STARS = [
   [62, 10, 1.8],
   [96, 34, 1.4],
@@ -42,8 +40,6 @@ const STARS = [
   }
 })
 
-// Fireflies stay on the side edges and along the bottom so they never sit on
-// the timetable rows.
 const FIREFLIES = (() => {
   const random = seeded(777)
   const zones = [
@@ -78,7 +74,6 @@ const FIREFLIES = (() => {
 })()
 
 const Sky = classed('div', 'absolute inset-0')
-// The halo breathes slowly; the Christmas one pulses like a string light.
 const Halo = classed('span', 'absolute rounded-full', {
   variants: {
     'data-season': {

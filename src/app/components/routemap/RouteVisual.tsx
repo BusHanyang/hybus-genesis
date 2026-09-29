@@ -16,8 +16,6 @@ const routeToneTable: Record<RouteStatus, DotColor> = {
   jungang: 'jungang',
 }
 
-// Horizontal position of each stop index on the track. Index 3 is the branch
-// stop (예술인 / 중앙역) between 한대앞역 and 셔틀콕; a full segment spans 20%.
 export const stopLeft = {
   '0': 'left-[10%]',
   '1': 'left-[30%]',
@@ -40,8 +38,6 @@ const toneBackground = {
 
 const RouteTrack = classed('div', 'relative h-10 grow')
 
-// Colors cross-fade with a small per-row / per-stop delay, so switching the
-// stop sends a wave along the map instead of repainting it at once.
 const RouteLine = classed(
   'span',
   'absolute top-[23px] h-[3px] origin-left rounded-sm transition-[background-color] duration-[350ms] animate-draw',

@@ -16,25 +16,14 @@ const SummerLensFlareEffect = React.lazy(
   () => import('./SummerLensFlareEffect'),
 )
 
-/*
-  Each kind of effect lives in its own full-screen layer with a
-  view-transition-name. During the theme reveal the layers are left out of
-  the page snapshot and stay live (see index.css), so falling particles never
-  freeze in the old snapshot, and effects that switch on or off fade instead
-  of popping. The layers stay mounted even when empty: removing a named
-  element mid-transition makes the browser cut the reveal short.
-*/
 const EffectLayer = classed(
   'div',
   'pointer-events-none inset-0 overflow-hidden',
   {
     variants: {
       'data-layer': {
-        // Falling particles are skipped when the user prefers less motion.
         particles: 'hb-fx fixed z-2 [view-transition-name:hb-fx]',
         sun: 'fixed z-2 [view-transition-name:hb-sun]',
-        // The night sky belongs to the top of the page: the moon stays up
-        // there when the page scrolls, and the full timetable covers it.
         night: 'absolute z-[1] [view-transition-name:hb-moon]',
       },
     },
@@ -54,10 +43,6 @@ const FadeSlot = classed('div', 'absolute inset-0', {
 
 type Slot = { id: number; value: string; leaving: boolean }
 
-/**
- * Keeps the previous value around (marked as leaving) for FADE_OUT_MS after
- * it changes, so the old effect can fade out while the new one fades in.
- */
 const useFadeSlots = (value: string | null) => {
   const [state, setState] = useState<{ value: string | null; slots: Slot[] }>(
     () => ({
@@ -168,16 +153,8 @@ const particleConfig = (season: string): Partial<SnowfallCanvasConfig> => {
   }
 }
 
-/*
-  One falling-particle simulation per season, kept for the whole visit.
-  Turning the theme off only pauses it, so turning it back on (or coming back
-  to the page) carries on from where the leaves were instead of dropping a
-  fresh batch in from the top.
-*/
 const engines = new Map<string, SnowfallCanvas>()
 
-// Restarts the loop from the current positions: without resetting the clock
-// the loop would fast-forward by the whole pause and scatter the particles.
 const resume = (engine: SnowfallCanvas) => {
   engine.pause()
   Object.assign(engine, { lastUpdate: Date.now() })
@@ -199,9 +176,6 @@ const getEffectTheme = (
 const Particles = ({ season }: { season: string }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  // A layout effect, so the hand-over happens in the same commit that swaps
-  // the canvases: a frame drawn in between would measure the detached canvas
-  // as 0×0 and wrap every particle into the corner.
   useLayoutEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -224,8 +198,6 @@ const Particles = ({ season }: { season: string }) => {
     }
     const running = engine
 
-    // A hidden page draws nothing; pause so the particles don't jump ahead
-    // when it comes back.
     const handleVisibility = () => {
       if (running.canvas !== canvas) return
       if (document.visibilityState === 'hidden') running.pause()
@@ -236,7 +208,6 @@ const Particles = ({ season }: { season: string }) => {
     return () => {
       observer.disconnect()
       document.removeEventListener('visibilitychange', handleVisibility)
-      // A newer layer for the same season may have taken the particles over.
       if (running.canvas === canvas) running.pause()
     }
   }, [season])
@@ -258,8 +229,6 @@ const SeasonalEffect = () => {
   )
   const dark = theme === THEME.DARK
 
-  // Particles fall in light and dark alike; summer shows the sun by day and a
-  // night sky after dark; every other season adds its moon after dark.
   const particles =
     seasonalThemeEnabled && effectTheme !== THEME.SUMMER ? effectTheme : null
   const sun =

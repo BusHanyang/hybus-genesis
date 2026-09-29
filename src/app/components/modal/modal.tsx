@@ -87,7 +87,6 @@ export const Modal = (props: {
     }
   }, [closing, onClosed])
 
-  // Focus the dialog while it's open and hand focus back to whatever opened it.
   useEffect(() => {
     if (!open) return
     const opener = document.activeElement as HTMLElement | null
