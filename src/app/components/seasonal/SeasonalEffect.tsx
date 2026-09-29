@@ -1,6 +1,6 @@
 import { classed } from '@tw-classed/react'
-import React, { useEffect, useState } from 'react'
-import { Snowfall } from 'react-snowfall'
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { SnowfallCanvas, type SnowfallCanvasConfig } from 'react-snowfall'
 
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
 
@@ -12,14 +12,6 @@ const SummerLensFlareEffect = React.lazy(
 
 // How long a layer that is switching off keeps fading out.
 const FADE_OUT_MS = 450
-
-const snowfallStyle: React.CSSProperties = {
-  position: 'absolute',
-  inset: 0,
-  width: '100%',
-  height: '100%',
-  pointerEvents: 'none',
-}
 
 /*
   Each kind of effect lives in its own full-screen layer with a
@@ -99,11 +91,66 @@ const useFadeSlots = (value: string | null): Array<Slot> => {
   return state.slots
 }
 
+const ParticleCanvas = classed(
+  'canvas',
+  'pointer-events-none absolute inset-0 h-full w-full',
+)
+
 const createImage = (src: string): HTMLImageElement => {
   const image = document.createElement('img')
   image.src = src
 
   return image
+}
+
+const particleConfig = (season: string): Partial<SnowfallCanvasConfig> => {
+  if (season === THEME.SPRING) {
+    return {
+      images: [
+        createImage('/image/flower_pink.png'),
+        createImage('/image/flower_bpink.png'),
+      ],
+      snowflakeCount: 18,
+      wind: [-0.3, 0.8],
+      radius: [14.0, 16.0],
+      speed: [0.5, 1.0],
+    }
+  }
+
+  if (season === THEME.AUTUMN) {
+    return {
+      images: [
+        createImage('/image/autumn_orange.svg'),
+        createImage('/image/autumn_brown.svg'),
+      ],
+      snowflakeCount: 18,
+      wind: [-0.8, 1.2],
+      radius: [14.0, 16.0],
+      speed: [0.6, 1.2],
+    }
+  }
+
+  return {
+    color: season === THEME.CHRISTMAS ? '#fff7ed' : '#cfd8f4',
+    snowflakeCount: season === THEME.CHRISTMAS ? 36 : 28,
+    wind: [-0.5, 0.5],
+  }
+}
+
+/*
+  One falling-particle simulation per season, kept for the whole visit.
+  Turning the theme off only pauses it, so turning it back on (or coming back
+  to the page) carries on from where the leaves were instead of dropping a
+  fresh batch in from the top.
+*/
+const engines = new Map<string, SnowfallCanvas>()
+
+// Restarts the loop from the current positions: without resetting the clock
+// the loop would fast-forward by the whole pause and scatter the particles.
+const resume = (engine: SnowfallCanvas) => {
+  engine.pause()
+  Object.assign(engine, { lastUpdate: Date.now() })
+  engine.play()
 }
 
 const getEffectTheme = (
@@ -118,45 +165,52 @@ const getEffectTheme = (
   return theme
 }
 
-const Particles = (props: {
-  season: string
-  springImages: HTMLImageElement[]
-  autumnImages: HTMLImageElement[]
-}) => {
-  if (props.season === THEME.SPRING) {
-    return (
-      <Snowfall
-        images={props.springImages}
-        snowflakeCount={18}
-        wind={[-0.3, 0.8]}
-        radius={[14.0, 16.0]}
-        speed={[0.5, 1.0]}
-        style={snowfallStyle}
-      />
-    )
-  }
+const Particles = ({ season }: { season: string }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  if (props.season === THEME.AUTUMN) {
-    return (
-      <Snowfall
-        images={props.autumnImages}
-        snowflakeCount={18}
-        wind={[-0.8, 1.2]}
-        radius={[14.0, 16.0]}
-        speed={[0.6, 1.2]}
-        style={snowfallStyle}
-      />
-    )
-  }
+  // A layout effect, so the hand-over happens in the same commit that swaps
+  // the canvases: a frame drawn in between would measure the detached canvas
+  // as 0×0 and wrap every particle into the corner.
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-  return (
-    <Snowfall
-      color={props.season === THEME.CHRISTMAS ? '#fff7ed' : '#cfd8f4'}
-      snowflakeCount={props.season === THEME.CHRISTMAS ? 36 : 28}
-      wind={[-0.5, 0.5]}
-      style={snowfallStyle}
-    />
-  )
+    const fit = () => {
+      canvas.width = canvas.offsetWidth
+      canvas.height = canvas.offsetHeight
+    }
+    fit()
+    const observer = new ResizeObserver(fit)
+    observer.observe(canvas)
+
+    let engine = engines.get(season)
+    if (engine) {
+      engine.canvas = canvas
+      resume(engine)
+    } else {
+      engine = new SnowfallCanvas(canvas, particleConfig(season))
+      engines.set(season, engine)
+    }
+    const running = engine
+
+    // A hidden page draws nothing; pause so the particles don't jump ahead
+    // when it comes back.
+    const handleVisibility = () => {
+      if (running.canvas !== canvas) return
+      if (document.visibilityState === 'hidden') running.pause()
+      else resume(running)
+    }
+    document.addEventListener('visibilitychange', handleVisibility)
+
+    return () => {
+      observer.disconnect()
+      document.removeEventListener('visibilitychange', handleVisibility)
+      // A newer layer for the same season may have taken the particles over.
+      if (running.canvas === canvas) running.pause()
+    }
+  }, [season])
+
+  return <ParticleCanvas ref={canvasRef} />
 }
 
 const SeasonalEffect = () => {
@@ -170,20 +224,6 @@ const SeasonalEffect = () => {
     theme,
     manualSeasonalTheme,
     automaticSeasonTheme,
-  )
-  const springImages = React.useMemo(
-    () => [
-      createImage('/image/flower_pink.png'),
-      createImage('/image/flower_bpink.png'),
-    ],
-    [],
-  )
-  const autumnImages = React.useMemo(
-    () => [
-      createImage('/image/autumn_orange.svg'),
-      createImage('/image/autumn_brown.svg'),
-    ],
-    [],
   )
   const dark = theme === THEME.DARK
 
@@ -209,11 +249,7 @@ const SeasonalEffect = () => {
             key={slot.id}
             data-leaving={slot.leaving ? 'true' : 'false'}
           >
-            <Particles
-              season={slot.value}
-              springImages={springImages}
-              autumnImages={autumnImages}
-            />
+            <Particles season={slot.value} />
           </FadeSlot>
         ))}
       </EffectLayer>
