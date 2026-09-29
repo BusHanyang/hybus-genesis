@@ -11,6 +11,7 @@ const ModalOpen = (props: {
   isOpen: boolean
   isModalAni: boolean
   closeModal: () => void
+  onClosed: () => void
   mTarget: string
   noticeIndex: number | null
   onEnableSeasonalTheme: (origin: Element | null) => void
@@ -29,6 +30,7 @@ const ModalOpen = (props: {
       closing={props.isModalAni}
       title={titles[props.mTarget] ?? ''}
       onClose={props.closeModal}
+      onClosed={props.onClosed}
     >
       {props.mTarget === 'Info' && <InfoGuide />}
       {props.mTarget === 'Fabs' && <ChangelogTimeline />}

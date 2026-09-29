@@ -61,11 +61,31 @@ export const Modal = (props: {
   closing: boolean
   title: string
   onClose: () => void
+  onClosed: () => void
   children: React.ReactNode
 }) => {
   const { t } = useTranslation()
   const closeRef = useRef<HTMLButtonElement>(null)
-  const { open, onClose } = props
+  const scrimRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLElement>(null)
+  const { open, closing, onClose, onClosed } = props
+
+  useEffect(() => {
+    if (!closing) return
+    const animations = [scrimRef.current, dialogRef.current].flatMap(
+      (element) => element?.getAnimations() ?? [],
+    )
+    let active = true
+    Promise.all(animations.map((animation) => animation.finished)).then(
+      () => {
+        if (active) onClosed()
+      },
+      () => undefined,
+    )
+    return () => {
+      active = false
+    }
+  }, [closing, onClosed])
 
   // Focus the dialog while it's open and hand focus back to whatever opened it.
   useEffect(() => {
@@ -86,16 +106,20 @@ export const Modal = (props: {
 
   if (!open) return null
 
-  const closing = props.closing ? 'true' : 'false'
-
   return (
     <Overlay>
-      <Scrim aria-hidden="true" data-closing={closing} onClick={onClose} />
+      <Scrim
+        ref={scrimRef}
+        aria-hidden="true"
+        data-closing={closing ? 'true' : 'false'}
+        onClick={onClose}
+      />
       <Dialog
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="hb-modal-title"
-        data-closing={closing}
+        data-closing={closing ? 'true' : 'false'}
       >
         <Header>
           <Title id="hb-modal-title">{props.title}</Title>

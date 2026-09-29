@@ -113,6 +113,70 @@ export const getResolvedTheme = (
   return THEME.LIGHT
 }
 
+export const setThemeCookie = (theme: THEME) => {
+  const expires = new Date(Date.now() + 180 * DAY_IN_MILLISECONDS)
+  document.cookie = `_theme=${theme}; expires=${expires.toUTCString()}; path=/; domain=hybus.app;`
+}
+
+export const storeManualSeasonalTheme = (theme: THEME | null): THEME | null => {
+  const manualTheme =
+    import.meta.env.DEV && isSeasonalTheme(theme) ? theme : null
+
+  if (manualTheme === null) {
+    window.localStorage.removeItem(MANUAL_SEASONAL_THEME_STORAGE_KEY)
+  } else {
+    window.localStorage.setItem(MANUAL_SEASONAL_THEME_STORAGE_KEY, manualTheme)
+  }
+
+  return manualTheme
+}
+
+const applyTheme = (theme: THEME) => {
+  const body = document.body
+  body.classList.add('transition-colors')
+  body.classList.remove(...themeValues, 'frozen')
+  body.classList.add(theme)
+  document
+    .querySelector('meta[name=theme-color]')
+    ?.setAttribute(
+      'content',
+      getComputedStyle(body).getPropertyValue('--color-theme-main').trim(),
+    )
+}
+
+const migrateStoredTheme = () => {
+  const localTheme = window.localStorage.getItem('theme')
+  const normalizedTheme = normalizeTheme(localTheme)
+  const seasonalThemeEnabled = getStoredSeasonalThemeEnabled(normalizedTheme)
+  const manualSeasonalTheme = getStoredManualSeasonalTheme(
+    normalizedTheme,
+    seasonalThemeEnabled,
+  )
+  const theme = getResolvedTheme(
+    normalizedTheme,
+    seasonalThemeEnabled,
+    manualSeasonalTheme,
+  )
+
+  const storedSeasonalPreference = window.localStorage.getItem(
+    SEASONAL_THEME_ENABLED_STORAGE_KEY,
+  )
+  const hasStoredSeasonalPreference =
+    storedSeasonalPreference === 'true' || storedSeasonalPreference === 'false'
+
+  if (!hasStoredSeasonalPreference && isSeasonalTheme(normalizedTheme)) {
+    window.localStorage.setItem(SEASONAL_THEME_ENABLED_STORAGE_KEY, 'true')
+  }
+
+  if (!import.meta.env.DEV && isSeasonalTheme(normalizedTheme)) {
+    window.localStorage.removeItem('theme')
+  } else if (localTheme === 'frozen') {
+    window.localStorage.setItem('theme', theme)
+  }
+  storeManualSeasonalTheme(manualSeasonalTheme)
+  setThemeCookie(theme)
+}
+
 interface ThemeContextProps {
   theme: THEME
   setTheme: React.Dispatch<React.SetStateAction<THEME>>
@@ -153,6 +217,14 @@ export const DarkmodeContextProvider = ({
     React.useState<boolean>(storedSeasonalThemeEnabled)
   const [manualSeasonalTheme, setManualSeasonalTheme] =
     React.useState<THEME | null>(storedManualSeasonalTheme)
+
+  React.useLayoutEffect(() => {
+    migrateStoredTheme()
+  }, [])
+
+  React.useLayoutEffect(() => {
+    applyTheme(theme)
+  }, [theme])
 
   React.useEffect(() => {
     let refreshTimer: number | null = null

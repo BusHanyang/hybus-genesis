@@ -1,5 +1,11 @@
 import { classed } from '@tw-classed/react'
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react'
 import { SnowfallCanvas, type SnowfallCanvasConfig } from 'react-snowfall'
 
 import { THEME, useDarkmodeContext } from '@/context/ThemeContext'
@@ -9,9 +15,6 @@ import NightSky, { NightSeason } from './NightSky'
 const SummerLensFlareEffect = React.lazy(
   () => import('./SummerLensFlareEffect'),
 )
-
-// How long a layer that is switching off keeps fading out.
-const FADE_OUT_MS = 450
 
 /*
   Each kind of effect lives in its own full-screen layer with a
@@ -55,7 +58,7 @@ type Slot = { id: number; value: string; leaving: boolean }
  * Keeps the previous value around (marked as leaving) for FADE_OUT_MS after
  * it changes, so the old effect can fade out while the new one fades in.
  */
-const useFadeSlots = (value: string | null): Array<Slot> => {
+const useFadeSlots = (value: string | null) => {
   const [state, setState] = useState<{ value: string | null; slots: Slot[] }>(
     () => ({
       value,
@@ -76,19 +79,47 @@ const useFadeSlots = (value: string | null): Array<Slot> => {
     })
   }
 
-  const hasLeaving = state.slots.some((slot) => slot.leaving)
-  useEffect(() => {
-    if (!hasLeaving) return
-    const timer = window.setTimeout(() => {
-      setState((current) => ({
-        ...current,
-        slots: current.slots.filter((slot) => !slot.leaving),
-      }))
-    }, FADE_OUT_MS)
-    return () => window.clearTimeout(timer)
-  }, [hasLeaving, state.value])
+  const remove = useCallback((id: number) => {
+    setState((current) => ({
+      ...current,
+      slots: current.slots.filter((slot) => slot.id !== id),
+    }))
+  }, [])
 
-  return state.slots
+  return [state.slots, remove] as const
+}
+
+const Fade = (props: {
+  slot: Slot
+  onGone: (id: number) => void
+  children: React.ReactNode
+}) => {
+  const ref = useRef<HTMLDivElement>(null)
+  const { id, leaving } = props.slot
+  const { onGone } = props
+
+  useEffect(() => {
+    const element = ref.current
+    if (!leaving || element === null) return
+    let active = true
+    Promise.all(
+      element.getAnimations().map((animation) => animation.finished),
+    ).then(
+      () => {
+        if (active) onGone(id)
+      },
+      () => undefined,
+    )
+    return () => {
+      active = false
+    }
+  }, [id, leaving, onGone])
+
+  return (
+    <FadeSlot ref={ref} data-leaving={leaving ? 'true' : 'false'}>
+      {props.children}
+    </FadeSlot>
+  )
 }
 
 const ParticleCanvas = classed(
@@ -237,42 +268,33 @@ const SeasonalEffect = () => {
       : null
   const night = seasonalThemeEnabled && dark ? effectTheme : null
 
-  const particleSlots = useFadeSlots(particles)
-  const sunSlots = useFadeSlots(sun)
-  const nightSlots = useFadeSlots(night)
+  const [particleSlots, removeParticleSlot] = useFadeSlots(particles)
+  const [sunSlots, removeSunSlot] = useFadeSlots(sun)
+  const [nightSlots, removeNightSlot] = useFadeSlots(night)
 
   return (
     <>
       <EffectLayer aria-hidden="true" data-layer="particles">
         {particleSlots.map((slot) => (
-          <FadeSlot
-            key={slot.id}
-            data-leaving={slot.leaving ? 'true' : 'false'}
-          >
+          <Fade key={slot.id} slot={slot} onGone={removeParticleSlot}>
             <Particles season={slot.value} />
-          </FadeSlot>
+          </Fade>
         ))}
       </EffectLayer>
       <EffectLayer aria-hidden="true" data-layer="sun">
         {sunSlots.map((slot) => (
-          <FadeSlot
-            key={slot.id}
-            data-leaving={slot.leaving ? 'true' : 'false'}
-          >
+          <Fade key={slot.id} slot={slot} onGone={removeSunSlot}>
             <React.Suspense fallback={null}>
               <SummerLensFlareEffect />
             </React.Suspense>
-          </FadeSlot>
+          </Fade>
         ))}
       </EffectLayer>
       <EffectLayer aria-hidden="true" data-layer="night">
         {nightSlots.map((slot) => (
-          <FadeSlot
-            key={slot.id}
-            data-leaving={slot.leaving ? 'true' : 'false'}
-          >
+          <Fade key={slot.id} slot={slot} onGone={removeNightSlot}>
             <NightSky season={slot.value as NightSeason} />
-          </FadeSlot>
+          </Fade>
         ))}
       </EffectLayer>
     </>

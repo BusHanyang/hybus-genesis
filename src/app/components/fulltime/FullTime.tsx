@@ -13,7 +13,6 @@ import { seasonKeys } from '@/data/shuttle/season'
 import { weekKeys } from '@/data/shuttle/week'
 import { shuttleAPI } from '@/network'
 
-import { useDarkMode } from '../useDarkMode'
 import {
   canAnimateSheet,
   runSheetTransition,
@@ -43,7 +42,6 @@ const groupOf = (type: string): GroupKey | null => {
 const COMPACT_ON_Y = 240
 const COMPACT_OFF_Y = 200
 // Matches the closing transition on Sheet.
-const CLOSE_MS = 400
 // Glide to the next departure once the sheet has finished opening.
 const GLIDE_DELAY_MS = 550
 const GLIDE_MS = 500
@@ -336,12 +334,7 @@ const FullTime = (props: FullTimeProps) => {
   )
   const cardsEnter = listKey !== openedListKey
   const { theme } = useDarkmodeContext()
-  const { setBackground } = useDarkMode()
   const { t } = useTranslation()
-
-  useLayoutEffect(() => {
-    setBackground()
-  })
 
   useEffect(() => {
     if (season === seasonKeys.HALT) {
@@ -393,9 +386,24 @@ const FullTime = (props: FullTimeProps) => {
     }
     setCloseTo(to)
     setPhase('closing')
-    const timer = window.setTimeout(onClosed, CLOSE_MS)
-    return () => window.clearTimeout(timer)
   }, [closing, onClosed])
+
+  useEffect(() => {
+    const sheet = sheetRef.current
+    if (phase !== 'closing' || sheet === null) return
+    let active = true
+    Promise.all(
+      sheet.getAnimations().map((animation) => animation.finished),
+    ).then(
+      () => {
+        if (active) onClosed()
+      },
+      () => undefined,
+    )
+    return () => {
+      active = false
+    }
+  }, [phase, onClosed])
 
   const handleScroll = () => {
     const y = scrollerRef.current?.scrollTop ?? 0

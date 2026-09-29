@@ -49,6 +49,7 @@
     user-select: none;
     -user-drag: none;
     line-height: 1;
+    background-color: var(--color-theme-main);
   }
 
   /* Light — also the fallback for tokens a seasonal theme doesn't override */

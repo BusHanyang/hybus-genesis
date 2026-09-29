@@ -246,24 +246,18 @@ function App() {
   } = useDarkmodeContext()
   const {
     setAutomaticTheme,
-    setBackground,
     setManualSeasonalThemeMode,
     setSeasonalThemeEnabledMode,
     setThemeMode,
     toggleTheme,
   } = useDarkMode()
   const seasonalChoiceHandledRef = useRef(false)
-  const modalDismissTimeoutRef = useRef<number | null>(null)
 
   const handleContextMenu = (e: { preventDefault: () => void }) => {
     e.preventDefault()
   }
 
   const openModal = () => {
-    if (modalDismissTimeoutRef.current !== null) {
-      window.clearTimeout(modalDismissTimeoutRef.current)
-      modalDismissTimeoutRef.current = null
-    }
     setModalAni(false)
     setModalOpen(true)
   }
@@ -280,13 +274,12 @@ function App() {
   }
 
   const dismissModal = () => {
-    if (modalDismissTimeoutRef.current !== null) return
     setModalAni(true)
-    modalDismissTimeoutRef.current = window.setTimeout(() => {
-      modalDismissTimeoutRef.current = null
-      setModalAni(false)
-      setModalOpen(false)
-    }, 200)
+  }
+
+  const handleModalClosed = () => {
+    setModalAni(false)
+    setModalOpen(false)
   }
 
   const closeModal = () => {
@@ -359,19 +352,6 @@ function App() {
     const timer = window.setTimeout(preload, 1500)
     return () => window.clearTimeout(timer)
   }, [])
-
-  useEffect(() => {
-    return () => {
-      if (modalDismissTimeoutRef.current !== null) {
-        window.clearTimeout(modalDismissTimeoutRef.current)
-        modalDismissTimeoutRef.current = null
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    setBackground()
-  }, [setBackground, theme])
 
   useEffect(() => {
     const automaticThemeIsVisible =
@@ -495,6 +475,7 @@ function App() {
                     isModalAni={modalAni}
                     isOpen={modalOpen}
                     closeModal={closeModal}
+                    onClosed={handleModalClosed}
                     mTarget={modalTarget}
                     noticeIndex={noticeIndex}
                     onEnableSeasonalTheme={handleEnableSeasonalTheme}
