@@ -26,6 +26,10 @@
     --color-suin: #f5a200;
   }
 
+  html {
+    overscroll-behavior-y: none;
+  }
+
   body {
     -webkit-touch-callout: none;
     -webkit-user-select: none;
