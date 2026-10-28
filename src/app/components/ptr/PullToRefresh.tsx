@@ -82,10 +82,6 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
   }, [])
 
   useEffect(() => {
-    busy.current = phase === 'refreshing' || phase === 'loading'
-  }, [phase])
-
-  useEffect(() => {
     if (phase !== 'loading') return
     const timer = window.setTimeout(
       () => setPhase('done'),
@@ -112,6 +108,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     }
 
     const begin = (x: number, y: number) => {
+      cancel()
       start = busy.current || window.scrollY > 0 ? null : { x, y }
     }
 
@@ -155,17 +152,45 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       window.location.reload()
     }
 
-    const onTouchStart = (event: TouchEvent) => {
-      if (event.touches.length === 1) {
-        begin(event.touches[0].clientX, event.touches[0].clientY)
-      } else {
-        cancel()
+    let touched: EventTarget | null = null
+
+    const onTouchMove = (event: Event) => {
+      const { touches } = event as TouchEvent
+      if (touches.length === 1) {
+        move(touches[0].clientX, touches[0].clientY, event)
       }
     }
-    const onTouchMove = (event: TouchEvent) => {
-      if (event.touches.length === 1) {
-        move(event.touches[0].clientX, event.touches[0].clientY, event)
+    const onTouchEnd = () => {
+      untrack()
+      end()
+    }
+    const onTouchCancel = () => {
+      untrack()
+      cancel()
+    }
+    const whenRemoved = (handler: (event: Event) => void) => (event: Event) => {
+      if (!(touched instanceof Node && touched.isConnected)) handler(event)
+    }
+    const removedMove = whenRemoved(onTouchMove)
+    const removedEnd = whenRemoved(onTouchEnd)
+    const removedCancel = whenRemoved(onTouchCancel)
+    const untrack = () => {
+      touched?.removeEventListener('touchmove', removedMove)
+      touched?.removeEventListener('touchend', removedEnd)
+      touched?.removeEventListener('touchcancel', removedCancel)
+      touched = null
+    }
+    const onTouchStart = (event: TouchEvent) => {
+      untrack()
+      if (event.touches.length !== 1) {
+        cancel()
+        return
       }
+      touched = event.target
+      touched?.addEventListener('touchmove', removedMove, { passive: false })
+      touched?.addEventListener('touchend', removedEnd)
+      touched?.addEventListener('touchcancel', removedCancel)
+      begin(event.touches[0].clientX, event.touches[0].clientY)
     }
     const onMouseDown = (event: MouseEvent) => {
       if (event.button === 0) begin(event.clientX, event.clientY)
@@ -177,17 +202,18 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
 
     element.addEventListener('touchstart', onTouchStart, { passive: true })
     element.addEventListener('touchmove', onTouchMove, { passive: false })
-    element.addEventListener('touchend', end)
-    element.addEventListener('touchcancel', cancel)
+    element.addEventListener('touchend', onTouchEnd)
+    element.addEventListener('touchcancel', onTouchCancel)
     element.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('mouseup', end)
 
     return () => {
+      untrack()
       element.removeEventListener('touchstart', onTouchStart)
       element.removeEventListener('touchmove', onTouchMove)
-      element.removeEventListener('touchend', end)
-      element.removeEventListener('touchcancel', cancel)
+      element.removeEventListener('touchend', onTouchEnd)
+      element.removeEventListener('touchcancel', onTouchCancel)
       element.removeEventListener('mousedown', onMouseDown)
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', end)
