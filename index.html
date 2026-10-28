@@ -73,6 +73,14 @@
     </script>
   </head>
   <body>
+    <script>
+      try {
+        var appliedTheme = localStorage.getItem('appliedTheme')
+        if (/^(light|dark|christmas|spring|summer|autumn|winter)$/.test(appliedTheme)) {
+          document.body.classList.add(appliedTheme)
+        }
+      } catch (e) {}
+    </script>
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-WVQ7FQG"
       height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>

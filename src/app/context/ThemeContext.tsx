@@ -136,6 +136,7 @@ const applyTheme = (theme: THEME) => {
   body.classList.add('transition-colors')
   body.classList.remove(...themeValues, 'frozen')
   body.classList.add(theme)
+  window.localStorage.setItem('appliedTheme', theme)
   document
     .querySelector('meta[name=theme-color]')
     ?.setAttribute(
