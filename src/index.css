@@ -20,13 +20,6 @@
   }
 }
 
-#root .ptr,
-#root .ptr__children {
-  height: auto;
-  min-height: 100%;
-  overflow: visible;
-}
-
 @layer base {
   :root {
     --color-line4: #00a5de;

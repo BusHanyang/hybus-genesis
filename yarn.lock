@@ -5046,7 +5046,6 @@ __metadata:
     react-dom: "npm:^19.2.6"
     react-i18next: "npm:^17.0.8"
     react-router-dom: "npm:^7.16.0"
-    react-simple-pull-to-refresh: "patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch"
     react-snowfall: "patch:react-snowfall@npm%3A2.4.0#~/.yarn/patches/react-snowfall-npm-2.4.0-3cb562b551.patch"
     rolldown: "npm:1.0.3"
     tailwindcss: "npm:^4.3.0"
@@ -6810,26 +6809,6 @@ __metadata:
     react-dom:
       optional: true
   checksum: 10/2c77d27170eab1dfa6f0593e846f9d352424cc789a505aaee9bee9c9da1ed9d6a044d0a476e3eaf240e73b09169b4ffb85b5910d026a34abd055aed5b2f5a5cb
-  languageName: node
-  linkType: hard
-
-"react-simple-pull-to-refresh@npm:1.3.4":
-  version: 1.3.4
-  resolution: "react-simple-pull-to-refresh@npm:1.3.4"
-  peerDependencies:
-    react: ^16.10.2 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^16.10.2 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/e89dffd516b20a2d4f794134e2b9c5af4f32557c0c760ed1f42b11c46f9a44f26abc6abe41f72fb3c8dc80ee8559116a9d3f7e996901019582ed99b71e8c7983
-  languageName: node
-  linkType: hard
-
-"react-simple-pull-to-refresh@patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch":
-  version: 1.3.4
-  resolution: "react-simple-pull-to-refresh@patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd"
-  peerDependencies:
-    react: ^16.10.2 || ^17.0.0 || ^18.0.0 || ^19.0.0
-    react-dom: ^16.10.2 || ^17.0.0 || ^18.0.0 || ^19.0.0
-  checksum: 10/447a17aa4e9a47fc19dd56c7e0ad1975d52f9e4cb01d38e077bb1547a8ce67371c62ec77bb9cc2436799632cf1d12bfb25a8849d44cb7fc6bb5d6a664724b20b
   languageName: node
   linkType: hard
 

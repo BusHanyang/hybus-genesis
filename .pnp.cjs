@@ -61,7 +61,6 @@ const RAW_RUNTIME_STATE =
           ["react-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:19.2.6"],\
           ["react-i18next", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:17.0.8"],\
           ["react-router-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:7.16.0"],\
-          ["react-simple-pull-to-refresh", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd"],\
           ["react-snowfall", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#patch:react-snowfall@npm%3A2.4.0#~/.yarn/patches/react-snowfall-npm-2.4.0-3cb562b551.patch::version=2.4.0&hash=c12e9e"],\
           ["rolldown", "npm:1.0.3"],\
           ["tailwindcss", "npm:4.3.0"],\
@@ -6870,7 +6869,6 @@ const RAW_RUNTIME_STATE =
           ["react-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:19.2.6"],\
           ["react-i18next", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:17.0.8"],\
           ["react-router-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:7.16.0"],\
-          ["react-simple-pull-to-refresh", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd"],\
           ["react-snowfall", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#patch:react-snowfall@npm%3A2.4.0#~/.yarn/patches/react-snowfall-npm-2.4.0-3cb562b551.patch::version=2.4.0&hash=c12e9e"],\
           ["rolldown", "npm:1.0.3"],\
           ["tailwindcss", "npm:4.3.0"],\
@@ -8844,32 +8842,6 @@ const RAW_RUNTIME_STATE =
           ["react-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:19.2.6"],\
           ["react-router", "virtual:8779f75706836a51b665f12683b02b08800fe10c5cb8509c9a53b97833ca8e3c866617e2b92cc76d71c4f7e0d753cc9b5d692b1a31a4a8c092714b4f1bceed47#npm:7.16.0"],\
           ["react-router-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:7.16.0"]\
-        ],\
-        "packagePeers": [\
-          "@types/react-dom",\
-          "@types/react",\
-          "react-dom",\
-          "react"\
-        ],\
-        "linkType": "HARD"\
-      }]\
-    ]],\
-    ["react-simple-pull-to-refresh", [\
-      ["patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd", {\
-        "packageLocation": "./.yarn/cache/react-simple-pull-to-refresh-patch-59a4976b80-447a17aa4e.zip/node_modules/react-simple-pull-to-refresh/",\
-        "packageDependencies": [\
-          ["react-simple-pull-to-refresh", "patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd"]\
-        ],\
-        "linkType": "SOFT"\
-      }],\
-      ["virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd", {\
-        "packageLocation": "./.yarn/__virtual__/react-simple-pull-to-refresh-virtual-15cd50ba17/0/cache/react-simple-pull-to-refresh-patch-59a4976b80-447a17aa4e.zip/node_modules/react-simple-pull-to-refresh/",\
-        "packageDependencies": [\
-          ["@types/react", "npm:19.2.15"],\
-          ["@types/react-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:19.2.3"],\
-          ["react", "npm:19.2.6"],\
-          ["react-dom", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#npm:19.2.6"],\
-          ["react-simple-pull-to-refresh", "virtual:a0dcacbc896eccf189caadb21dc337a943d120637d608a889ce480f30d60747b2e369188c5cb540e65c153429bc715bc64aac1ec96b7e01c4ef9b6515ffe1d10#patch:react-simple-pull-to-refresh@npm%3A1.3.4#~/.yarn/patches/react-simple-pull-to-refresh-npm-1.3.4-4e4715c092.patch::version=1.3.4&hash=b582cd"]\
         ],\
         "packagePeers": [\
           "@types/react-dom",\

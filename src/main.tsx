@@ -10,7 +10,6 @@ import SeasonalEffect from '@/components/seasonal/SeasonalEffect'
 import { DarkmodeContextProvider } from '@/context/ThemeContext'
 
 import App from './App'
-// import { Ptr } from './app/components/ptr/Ptr'
 
 const queryClient = new QueryClient()
 

@@ -19,7 +19,6 @@ import {
   useNavigate,
   useNavigationType,
 } from 'react-router-dom'
-import PullToRefresh from 'react-simple-pull-to-refresh'
 
 import HelpImg from '/public/image/help_outline_24dp.svg?react'
 import ThemeDebugMenu from '@/components/debug/ThemeDebugMenu'
@@ -29,6 +28,7 @@ import {
   runningSheetTransition,
   runSheetTransition,
 } from '@/components/fulltime/sheetTransition'
+import PullToRefresh from '@/components/ptr/PullToRefresh'
 import RouteMap from '@/components/routemap/RouteMap'
 import StopPicker from '@/components/shuttle/StopPicker'
 import TimetableCard, {
@@ -44,10 +44,6 @@ import {
   THEME,
   useDarkmodeContext,
 } from '@/context/ThemeContext'
-
-import Refreshing, {
-  PullingContent,
-} from './app/components/ptr/refreshing-content'
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
 type FullTimeModule = typeof import('@/components/fulltime/FullTime')
@@ -279,12 +275,6 @@ function App() {
     dismissModal()
   }
 
-  const handleRefresh = (): Promise<React.FC> => {
-    return new Promise(() => {
-      location.reload()
-    })
-  }
-
   const { t, i18n } = useTranslation()
 
   const [tab, setTab] = useState<StopTab>(() => {
@@ -374,14 +364,7 @@ function App() {
             path="/"
             element={
               <>
-                <PullToRefresh
-                  onRefresh={handleRefresh}
-                  //backgroundColor={}
-                  pullingContent={<PullingContent />}
-                  refreshingContent={<Refreshing />}
-                  resistance={3}
-                  //className="transition-colors"
-                >
+                <PullToRefresh>
                   <ThemeRoot
                     data-theme={theme}
                     onContextMenu={(e) => e.preventDefault()}
