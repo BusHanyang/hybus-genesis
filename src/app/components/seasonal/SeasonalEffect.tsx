@@ -180,35 +180,41 @@ const Particles = ({ season }: { season: string }) => {
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const fit = () => {
+    let engine: SnowfallCanvas | undefined
+
+    const sync = () => {
       canvas.width = canvas.offsetWidth
       canvas.height = canvas.offsetHeight
+      const drawable =
+        canvas.width > 0 &&
+        canvas.height > 0 &&
+        document.visibilityState === 'visible'
+
+      if (!drawable) {
+        if (engine?.canvas === canvas) engine.pause()
+        return
+      }
+      if (engine === undefined) {
+        engine = engines.get(season)
+        if (engine === undefined) {
+          engine = new SnowfallCanvas(canvas, particleConfig(season))
+          engines.set(season, engine)
+          return
+        }
+        engine.canvas = canvas
+      }
+      if (engine.canvas === canvas) resume(engine)
     }
-    fit()
-    const observer = new ResizeObserver(fit)
+
+    sync()
+    const observer = new ResizeObserver(sync)
     observer.observe(canvas)
-
-    let engine = engines.get(season)
-    if (engine) {
-      engine.canvas = canvas
-      resume(engine)
-    } else {
-      engine = new SnowfallCanvas(canvas, particleConfig(season))
-      engines.set(season, engine)
-    }
-    const running = engine
-
-    const handleVisibility = () => {
-      if (running.canvas !== canvas) return
-      if (document.visibilityState === 'hidden') running.pause()
-      else resume(running)
-    }
-    document.addEventListener('visibilitychange', handleVisibility)
+    document.addEventListener('visibilitychange', sync)
 
     return () => {
       observer.disconnect()
-      document.removeEventListener('visibilitychange', handleVisibility)
-      if (running.canvas === canvas) running.pause()
+      document.removeEventListener('visibilitychange', sync)
+      if (engine?.canvas === canvas) engine.pause()
     }
   }, [season])
 
