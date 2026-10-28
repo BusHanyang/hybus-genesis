@@ -3,6 +3,7 @@ import { classed } from '@tw-classed/react'
 import React, { useEffect, useRef, useState } from 'react'
 
 const DISTANCE = 64
+const SLOP = 8
 const START = -40
 const REST = START + DISTANCE
 const RADIUS = 8.75
@@ -114,17 +115,23 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
 
     const move = (x: number, y: number, event: Event) => {
       if (!start) return
-      const dy = y - start.y
       if (!pulling) {
-        const dx = Math.abs(x - start.x)
-        if (dx === 0 && dy === 0) return
-        if (dy <= dx) {
+        const moved = y - start.y
+        if (moved <= -SLOP || window.scrollY > 0) {
+          start = null
+          return
+        }
+        if (moved > 0 && event.cancelable) event.preventDefault()
+        if (moved < SLOP) return
+        if (Math.abs(x - start.x) > moved) {
           start = null
           return
         }
         pulling = true
+        start = { x: start.x, y: start.y + SLOP }
         setPhase('pulling')
       }
+      const dy = y - start.y
       if (dy < 0) {
         cancel()
         return
@@ -150,6 +157,10 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       setPhase('refreshing')
       window.sessionStorage.setItem(RESUME_KEY, String(Date.now()))
       window.location.reload()
+      window.setTimeout(() => {
+        busy.current = false
+        setPhase('done')
+      }, 8000)
     }
 
     let touched: EventTarget | null = null
