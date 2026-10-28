@@ -45,7 +45,9 @@ import {
   useDarkmodeContext,
 } from '@/context/ThemeContext'
 
-import Refreshing from './app/components/ptr/refreshing-content'
+import Refreshing, {
+  PullingContent,
+} from './app/components/ptr/refreshing-content'
 
 const Notice = lazy(() => import('@/components/notice/Notice'))
 type FullTimeModule = typeof import('@/components/fulltime/FullTime')
@@ -375,8 +377,8 @@ function App() {
                 <PullToRefresh
                   onRefresh={handleRefresh}
                   //backgroundColor={}
-                  pullingContent=""
-                  refreshingContent={<Refreshing mode={theme} />}
+                  pullingContent={<PullingContent />}
+                  refreshingContent={<Refreshing />}
                   resistance={3}
                   //className="transition-colors"
                 >

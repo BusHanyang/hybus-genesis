@@ -1,38 +1,40 @@
 import { classed } from '@tw-classed/react'
 import React from 'react'
 
-// Source: https://loading.io/css/
+import ArrowImg from '/public/image/arrow_back_outline_24dp.svg?react'
 
-const LdsEllipsis = classed('div', 'inline-block relative w-16 h-16')
+const Indicator = classed('div', 'flex justify-center pt-3.5 pb-5')
 
-const LdsEllipsisDiv = classed(
+const Chip = classed(
   'div',
-  'absolute top-7 w-3 h-3 rounded-full bg-ptr-color ease-ptrTran',
-  {
-    variants: {
-      position: {
-        first: 'left-1.5 animate-ldsEllipsis1',
-        second: 'left-1.5 animate-ldsEllipsis2',
-        third: 'left-7 animate-ldsEllipsis2',
-        fourth: 'left-11 animate-ldsEllipsis3',
-      },
-    },
-  },
+  'flex h-10 w-10 items-center justify-center rounded-full bg-theme-card text-ptr-color shadow-theme-shadow',
 )
 
-interface RefreshingContentProps {
-  mode: string
-}
+const PullArrow = classed(ArrowImg, 'h-5 w-5 -rotate-90 stroke-[2.6]')
 
-const RefreshingContent: React.FC<RefreshingContentProps> = () => {
-  return (
-    <LdsEllipsis>
-      <LdsEllipsisDiv position="first"></LdsEllipsisDiv>
-      <LdsEllipsisDiv position="second"></LdsEllipsisDiv>
-      <LdsEllipsisDiv position="third"></LdsEllipsisDiv>
-      <LdsEllipsisDiv position="fourth"></LdsEllipsisDiv>
-    </LdsEllipsis>
-  )
-}
+const SpinnerPop = classed('span', 'flex animate-pop-sm')
+
+const Spinner = classed(
+  'span',
+  'h-5 w-5 animate-spin rounded-full border-[2.5px] border-control-main border-t-ptr-color',
+)
+
+export const PullingContent = () => (
+  <Indicator>
+    <Chip>
+      <PullArrow aria-hidden="true" />
+    </Chip>
+  </Indicator>
+)
+
+const RefreshingContent = () => (
+  <Indicator>
+    <Chip>
+      <SpinnerPop>
+        <Spinner />
+      </SpinnerPop>
+    </Chip>
+  </Indicator>
+)
 
 export default RefreshingContent

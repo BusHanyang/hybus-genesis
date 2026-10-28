@@ -16,7 +16,6 @@ module.exports = {
         mwide: { min: '430px' },
       },
       transitionTimingFunction: {
-        ptrTran: 'cubic-bezier(0, 1, 1, 0)',
         smooth: 'cubic-bezier(.3, .9, .25, 1)',
         spring: 'cubic-bezier(.34, 1.3, .64, 1)',
         bouncy: 'cubic-bezier(.34, 1.45, .64, 1)',
@@ -83,9 +82,6 @@ module.exports = {
         Ptd: ['Pretendard'],
       },
       animation: {
-        ldsEllipsis1: 'ldsEllipsis1 0.6s infinite',
-        ldsEllipsis2: 'ldsEllipsis2 0.6s infinite',
-        ldsEllipsis3: 'ldsEllipsis3 0.6s infinite',
         rise: 'hb-rise .45s cubic-bezier(.2,.8,.2,1) both',
         'row-fade': 'hb-fade .3s ease both',
         'fade-in': 'hb-fade .25s ease both',
@@ -112,32 +108,6 @@ module.exports = {
         'ping-in': 'hb-fade .3s ease .95s both',
         'modal-in': 'hb-modal-in .42s cubic-bezier(.34,1.3,.64,1) both',
         'modal-out': 'hb-modal-out .19s ease both',
-      },
-      keyframes: {
-        ldsEllipsis1: {
-          '0%': {
-            transform: 'scale(0)',
-          },
-          '100%': {
-            transform: 'scale(1)',
-          },
-        },
-        ldsEllipsis2: {
-          '0%': {
-            transform: 'translate(0, 0)',
-          },
-          '100%': {
-            transform: 'translate(19px, 0)',
-          },
-        },
-        ldsEllipsis3: {
-          '0%': {
-            transform: 'scale(1)',
-          },
-          '100%': {
-            transform: 'scale(0)',
-          },
-        },
       },
       transitionProperty:{
         'height': 'height',
