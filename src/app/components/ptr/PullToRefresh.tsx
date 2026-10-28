@@ -54,6 +54,24 @@ const SPIN_DELAY = { animationDelay: '-0.7s' }
 const wait = (ms: number) =>
   new Promise((resolve) => window.setTimeout(resolve, ms))
 
+const ENTRY = 'script[type="module"][src*="/assets/"]'
+const runningEntry = document.querySelector(ENTRY)?.getAttribute('src')
+
+const hasNewVersion = async () => {
+  if (!runningEntry) return false
+  try {
+    const response = await fetch(`/?v=${Date.now()}`, { cache: 'no-store' })
+    const page = new DOMParser().parseFromString(
+      await response.text(),
+      'text/html',
+    )
+    const latestEntry = page.querySelector(ENTRY)?.getAttribute('src')
+    return Boolean(latestEntry) && latestEntry !== runningEntry
+  } catch {
+    return false
+  }
+}
+
 const PullToRefresh = ({ children }: React.PropsWithChildren) => {
   const ref = useRef<HTMLDivElement>(null)
   const queryClient = useQueryClient()
@@ -133,14 +151,24 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       latched = false
       distance = 0
       const current = generation
+      const shown = wait(500)
       setPhase('refreshing')
       setArmed(false)
-      Promise.race([
-        Promise.all([queryClient.resetQueries(), wait(500)]),
-        wait(8000),
-      ]).then(() => {
-        if (current === generation) setPhase('done')
-      })
+      Promise.race([hasNewVersion(), wait(1500).then(() => false)])
+        .then((updated) => {
+          if (current !== generation) return
+          if (updated) {
+            window.location.reload()
+            return
+          }
+          return Promise.race([
+            Promise.all([queryClient.resetQueries(), shown]),
+            wait(8000),
+          ])
+        })
+        .then(() => {
+          if (current === generation) setPhase('done')
+        })
     }
 
     let touched: EventTarget | null = null
