@@ -27,18 +27,7 @@ const Chip = classed(
   },
 )
 
-const PullRing = classed(
-  'svg',
-  'h-10 w-10 shrink-0 transition-opacity duration-300',
-  {
-    variants: {
-      'data-armed': {
-        true: 'opacity-100',
-        false: 'opacity-30',
-      },
-    },
-  },
-)
+const PullRing = classed('svg', 'h-10 w-10 shrink-0')
 
 const Spinner = classed(
   'svg',
@@ -51,13 +40,11 @@ const SpinnerArc = classed(
 )
 
 const pose = (pulled: number) => {
-  const drag = Math.min(pulled / DISTANCE, 1)
-  const adjusted = (Math.max(drag - 0.4, 0) * 5) / 3
+  const progress = Math.min(pulled / DISTANCE, 1)
   return {
-    top: START + DISTANCE * drag,
-    trim: adjusted * 0.8,
-    arrow: adjusted,
-    angle: (-0.25 + 0.4 * adjusted) * 180,
+    top: START + DISTANCE * progress,
+    trim: 0.1 + 0.69 * progress,
+    angle: -90 + 270 * progress,
   }
 }
 
@@ -228,10 +215,12 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     }
   }, [queryClient])
 
-  const { top, trim, arrow, angle } = pose(pulled)
+  const { top, trim, angle } = pose(pulled)
   const offset = phase === 'idle' ? START : phase === 'pulling' ? top : REST
-  const width = 10 * arrow
-  const height = 5 * arrow
+  const spinning =
+    phase === 'refreshing' ||
+    phase === 'done' ||
+    (phase === 'pulling' && pulled >= DISTANCE)
 
   return (
     <>
@@ -241,27 +230,18 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
         data-phase={phase}
         style={{ translate: `0 ${offset}px` }}
       >
-        {phase === 'idle' || phase === 'pulling' ? (
-          <PullRing viewBox="-20 -20 40 40" data-armed={pulled >= DISTANCE}>
-            {trim > 0 && (
-              <circle
-                r={RADIUS}
-                pathLength={100}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={STROKE}
-                strokeLinecap="square"
-                strokeDasharray={`${trim * 100} 100`}
-                transform={`rotate(${angle})`}
-              />
-            )}
-            {arrow > 0 && (
-              <path
-                d={`M${RADIUS - width / 2} ${STROKE / 2}L${RADIUS + width / 2} ${STROKE / 2}L${RADIUS} ${STROKE / 2 + height}Z`}
-                fill="currentColor"
-                transform={`rotate(${angle + trim * 360})`}
-              />
-            )}
+        {!spinning ? (
+          <PullRing viewBox="-20 -20 40 40">
+            <circle
+              r={RADIUS}
+              pathLength={100}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={STROKE}
+              strokeLinecap="square"
+              strokeDasharray={`${trim * 100} 100`}
+              transform={`rotate(${angle})`}
+            />
           </PullRing>
         ) : (
           <Spinner viewBox="-20 -20 40 40" style={SPIN_DELAY}>
