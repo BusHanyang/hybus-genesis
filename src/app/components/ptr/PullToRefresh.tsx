@@ -20,7 +20,7 @@ const Chip = classed(
       'data-phase': {
         idle: 'opacity-0 transition-[translate,opacity] duration-200 ease-smooth',
         pulling: '',
-        refreshing: '',
+        refreshing: 'transition-[translate] duration-200 ease-smooth',
         done: 'scale-0 transition-[scale] duration-150 ease-in',
       },
     },
@@ -59,6 +59,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
   const queryClient = useQueryClient()
   const [phase, setPhase] = useState<Phase>('idle')
   const [pulled, setPulled] = useState(0)
+  const [armed, setArmed] = useState(false)
 
   useEffect(() => {
     const element = ref.current
@@ -66,16 +67,20 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
 
     let start: { x: number; y: number } | null = null
     let pulling = false
+    let latched = false
     let distance = 0
     let generation = 0
+    let mousing = false
 
     const cancel = () => {
       start = null
       if (!pulling) return
       pulling = false
+      latched = false
       distance = 0
       setPhase('idle')
       setPulled(0)
+      setArmed(false)
     }
 
     const begin = (x: number, y: number) => {
@@ -109,7 +114,9 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       }
       if (event.cancelable) event.preventDefault()
       distance = dy / 2
+      latched = distance >= DISTANCE || (latched && distance >= DISTANCE * 0.75)
       setPulled(Math.min(distance, DISTANCE))
+      setArmed(latched)
     }
 
     const end = () => {
@@ -117,17 +124,19 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
         start = null
         return
       }
-      if (distance < DISTANCE) {
+      if (!latched) {
         cancel()
         return
       }
       start = null
       pulling = false
+      latched = false
       distance = 0
       const current = generation
       setPhase('refreshing')
+      setArmed(false)
       Promise.race([
-        Promise.all([queryClient.invalidateQueries(), wait(500)]),
+        Promise.all([queryClient.resetQueries(), wait(500)]),
         wait(8000),
       ]).then(() => {
         if (current === generation) setPhase('done')
@@ -185,11 +194,19 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       if (event.pointerType === 'touch') track(event.target)
     }
     const onMouseDown = (event: MouseEvent) => {
-      if (event.button === 0) begin(event.clientX, event.clientY)
+      if (event.button !== 0) return
+      mousing = true
+      begin(event.clientX, event.clientY)
+    }
+    const onMouseUp = () => {
+      if (!mousing) return
+      mousing = false
+      end()
     }
     const onMouseMove = (event: MouseEvent) => {
-      if (event.buttons === 1) move(event.clientX, event.clientY, event)
-      else if (start) cancel()
+      if (!mousing) return
+      if (event.buttons & 1) move(event.clientX, event.clientY, event)
+      else onMouseUp()
     }
 
     element.addEventListener('pointerdown', onPointerDown)
@@ -199,7 +216,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     element.addEventListener('touchcancel', onTouchCancel)
     element.addEventListener('mousedown', onMouseDown)
     window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', end)
+    window.addEventListener('mouseup', onMouseUp)
 
     return () => {
       generation += 1
@@ -211,16 +228,14 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       element.removeEventListener('touchcancel', onTouchCancel)
       element.removeEventListener('mousedown', onMouseDown)
       window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', end)
+      window.removeEventListener('mouseup', onMouseUp)
     }
   }, [queryClient])
 
   const { top, trim, angle } = pose(pulled)
   const offset = phase === 'idle' ? START : phase === 'pulling' ? top : REST
   const spinning =
-    phase === 'refreshing' ||
-    phase === 'done' ||
-    (phase === 'pulling' && pulled >= DISTANCE)
+    phase === 'refreshing' || phase === 'done' || (phase === 'pulling' && armed)
 
   return (
     <>
