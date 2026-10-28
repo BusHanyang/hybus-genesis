@@ -1,4 +1,4 @@
-import { useIsFetching } from '@tanstack/react-query'
+import { useQueryClient } from '@tanstack/react-query'
 import { classed } from '@tw-classed/react'
 import React, { useEffect, useRef, useState } from 'react'
 
@@ -9,9 +9,8 @@ const REST = START + DISTANCE
 const RADIUS = 8.75
 const STROKE = 2.5
 const HALFWAY_ANGLE = 180 + 0.12 * 360
-const RESUME_KEY = 'ptrRefreshAt'
 
-type Phase = 'idle' | 'pulling' | 'refreshing' | 'loading' | 'done'
+type Phase = 'idle' | 'pulling' | 'refreshing' | 'done'
 
 const Chip = classed(
   'div',
@@ -21,8 +20,7 @@ const Chip = classed(
       'data-phase': {
         idle: 'opacity-0 transition-[translate,opacity] duration-200 ease-smooth',
         pulling: '',
-        refreshing: 'transition-[translate] duration-200 ease-smooth',
-        loading: '',
+        refreshing: '',
         done: 'scale-0 transition-[scale] duration-150 ease-in',
       },
     },
@@ -55,41 +53,25 @@ const SpinnerArc = classed(
 const pose = (pulled: number) => {
   const drag = Math.min(pulled / DISTANCE, 1)
   const adjusted = (Math.max(drag - 0.4, 0) * 5) / 3
-  const slingshot =
-    Math.max(0, Math.min(pulled - DISTANCE, DISTANCE * 2)) / DISTANCE
-  const tension = (slingshot / 4 - (slingshot / 4) ** 2) * 2
   return {
-    top: START + DISTANCE * drag + DISTANCE * tension * 2,
-    trim: Math.min(adjusted * 0.8, 0.8),
-    arrow: Math.min(adjusted, 1),
-    angle: (-0.25 + 0.4 * adjusted + tension * 2) * 0.5 * 360,
+    top: START + DISTANCE * drag,
+    trim: adjusted * 0.8,
+    arrow: adjusted,
+    angle: (-0.25 + 0.4 * adjusted) * 180,
   }
 }
 
+const SPIN_TURN = pose(DISTANCE).angle - HALFWAY_ANGLE
+const SPIN_DELAY = { animationDelay: '-0.7s' }
+
+const wait = (ms: number) =>
+  new Promise((resolve) => window.setTimeout(resolve, ms))
+
 const PullToRefresh = ({ children }: React.PropsWithChildren) => {
   const ref = useRef<HTMLDivElement>(null)
-  const busy = useRef(false)
-  const [phase, setPhase] = useState<Phase>(() =>
-    Date.now() - Number(window.sessionStorage.getItem(RESUME_KEY)) < 10000
-      ? 'loading'
-      : 'idle',
-  )
+  const queryClient = useQueryClient()
+  const [phase, setPhase] = useState<Phase>('idle')
   const [pulled, setPulled] = useState(0)
-  const [turn, setTurn] = useState(0)
-  const fetching = useIsFetching() > 0
-
-  useEffect(() => {
-    window.sessionStorage.removeItem(RESUME_KEY)
-  }, [])
-
-  useEffect(() => {
-    if (phase !== 'loading') return
-    const timer = window.setTimeout(
-      () => setPhase('done'),
-      fetching ? 8000 : 500,
-    )
-    return () => window.clearTimeout(timer)
-  }, [phase, fetching])
 
   useEffect(() => {
     const element = ref.current
@@ -98,6 +80,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     let start: { x: number; y: number } | null = null
     let pulling = false
     let distance = 0
+    let generation = 0
 
     const cancel = () => {
       start = null
@@ -110,7 +93,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
 
     const begin = (x: number, y: number) => {
       cancel()
-      start = busy.current || window.scrollY > 0 ? null : { x, y }
+      start = window.scrollY > 0 ? null : { x, y }
     }
 
     const move = (x: number, y: number, event: Event) => {
@@ -128,6 +111,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
           return
         }
         pulling = true
+        generation += 1
         start = { x: start.x, y: start.y + SLOP }
         setPhase('pulling')
       }
@@ -138,7 +122,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       }
       if (event.cancelable) event.preventDefault()
       distance = dy / 2
-      setPulled(distance)
+      setPulled(Math.min(distance, DISTANCE))
     }
 
     const end = () => {
@@ -152,19 +136,28 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       }
       start = null
       pulling = false
-      busy.current = true
-      setTurn(pose(distance).angle - HALFWAY_ANGLE)
+      distance = 0
+      const current = generation
       setPhase('refreshing')
-      window.sessionStorage.setItem(RESUME_KEY, String(Date.now()))
-      window.location.reload()
-      window.setTimeout(() => {
-        busy.current = false
-        setPhase('done')
-      }, 8000)
+      Promise.race([
+        Promise.all([queryClient.invalidateQueries(), wait(500)]),
+        wait(8000),
+      ]).then(() => {
+        if (current === generation) setPhase('done')
+      })
     }
 
     let touched: EventTarget | null = null
 
+    const onTouchStart = (event: Event) => {
+      const { touches, target } = event as TouchEvent
+      if (target !== touched) track(target)
+      if (touches.length !== 1) {
+        cancel()
+        return
+      }
+      begin(touches[0].clientX, touches[0].clientY)
+    }
     const onTouchMove = (event: Event) => {
       const { touches } = event as TouchEvent
       if (touches.length === 1) {
@@ -182,26 +175,27 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     const whenRemoved = (handler: (event: Event) => void) => (event: Event) => {
       if (!(touched instanceof Node && touched.isConnected)) handler(event)
     }
+    const removedStart = whenRemoved(onTouchStart)
     const removedMove = whenRemoved(onTouchMove)
     const removedEnd = whenRemoved(onTouchEnd)
     const removedCancel = whenRemoved(onTouchCancel)
     const untrack = () => {
+      touched?.removeEventListener('touchstart', removedStart)
       touched?.removeEventListener('touchmove', removedMove)
       touched?.removeEventListener('touchend', removedEnd)
       touched?.removeEventListener('touchcancel', removedCancel)
       touched = null
     }
-    const onTouchStart = (event: TouchEvent) => {
+    const track = (target: EventTarget | null) => {
       untrack()
-      if (event.touches.length !== 1) {
-        cancel()
-        return
-      }
-      touched = event.target
+      touched = target
+      touched?.addEventListener('touchstart', removedStart)
       touched?.addEventListener('touchmove', removedMove, { passive: false })
       touched?.addEventListener('touchend', removedEnd)
       touched?.addEventListener('touchcancel', removedCancel)
-      begin(event.touches[0].clientX, event.touches[0].clientY)
+    }
+    const onPointerDown = (event: PointerEvent) => {
+      if (event.pointerType === 'touch') track(event.target)
     }
     const onMouseDown = (event: MouseEvent) => {
       if (event.button === 0) begin(event.clientX, event.clientY)
@@ -211,6 +205,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       else if (start) cancel()
     }
 
+    element.addEventListener('pointerdown', onPointerDown)
     element.addEventListener('touchstart', onTouchStart, { passive: true })
     element.addEventListener('touchmove', onTouchMove, { passive: false })
     element.addEventListener('touchend', onTouchEnd)
@@ -220,7 +215,9 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     window.addEventListener('mouseup', end)
 
     return () => {
+      generation += 1
       untrack()
+      element.removeEventListener('pointerdown', onPointerDown)
       element.removeEventListener('touchstart', onTouchStart)
       element.removeEventListener('touchmove', onTouchMove)
       element.removeEventListener('touchend', onTouchEnd)
@@ -229,11 +226,10 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('mouseup', end)
     }
-  }, [])
+  }, [queryClient])
 
   const { top, trim, arrow, angle } = pose(pulled)
   const offset = phase === 'idle' ? START : phase === 'pulling' ? top : REST
-  const delay = phase === 'refreshing' ? { animationDelay: '-0.7s' } : {}
   const width = 10 * arrow
   const height = 5 * arrow
 
@@ -268,8 +264,8 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
             )}
           </PullRing>
         ) : (
-          <Spinner viewBox="-20 -20 40 40" style={delay}>
-            <g transform={`rotate(${turn})`}>
+          <Spinner viewBox="-20 -20 40 40" style={SPIN_DELAY}>
+            <g transform={`rotate(${SPIN_TURN})`}>
               <SpinnerArc
                 r={RADIUS}
                 pathLength={100}
@@ -278,7 +274,7 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
                 strokeWidth={STROKE}
                 strokeLinecap="square"
                 strokeDasharray="25 100"
-                style={delay}
+                style={SPIN_DELAY}
               />
             </g>
           </Spinner>
