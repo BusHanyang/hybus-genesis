@@ -759,6 +759,27 @@
   }
 }
 
+@keyframes hb-ptr-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes hb-ptr-arc {
+  0% {
+    stroke-dasharray: 1 200;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 79 200;
+    stroke-dashoffset: -12;
+  }
+  100% {
+    stroke-dasharray: 79 200;
+    stroke-dashoffset: -98.5;
+  }
+}
+
 @layer components {
   .hb-skeleton {
     background: linear-gradient(
