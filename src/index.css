@@ -128,16 +128,21 @@
     --color-route-inactive: #4b4b53;
     --color-route-inactive-text: #5e5e67;
 
-    --color-ft-page: #18181b;
-    --color-ft-element: #26272c;
-    --color-ft-hour-now: #1e2a44;
+    --color-ft-page: #0f172a;
+    --color-ft-element: #1e293b;
+    --color-ft-hour-now: #1d3363;
     --color-ft-now: #93c5fd;
-    --color-ft-active: #3f4759;
+    --color-ft-active: #34476e;
     --color-ft-active-text: #dbe2f9;
-    --color-ft-text: #a1a1aa;
-    --color-ft-border: #55565e;
-    --color-ft-divider: #2e2f35;
-    --color-ft-past: #5f5f68;
+    --color-ft-text: #94a3b8;
+    --color-ft-border: #475569;
+    --color-ft-divider: #243047;
+    --color-ft-past: #56647f;
+  }
+
+  .dark [data-fulltime-page] {
+    --color-sk: #1e293b;
+    --color-sk-hi: #263248;
   }
 
   /* Christmas */
