@@ -19,12 +19,12 @@ const closedByDefault = { 'data-open': 'false' } as const
 
 const FabScrim = classed(
   'div',
-  'fixed inset-0 z-20 bg-scrim backdrop-blur-[3px] transition-opacity duration-300',
+  'fixed inset-0 z-20 bg-scrim backdrop-blur-[3px] transition-[opacity,visibility] duration-300',
   {
     variants: {
       'data-open': {
-        true: 'pointer-events-auto opacity-100',
-        false: 'pointer-events-none opacity-0',
+        true: 'pointer-events-auto visible opacity-100',
+        false: 'pointer-events-none invisible opacity-0',
       },
     },
     defaultVariants: closedByDefault,

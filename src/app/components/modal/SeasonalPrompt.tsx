@@ -32,7 +32,7 @@ const seasonOf = (theme: THEME): Season =>
 
 const Preview = classed(
   'div',
-  'relative h-[150px] overflow-hidden rounded-[18px] bg-theme-main text-theme-text animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.06s_both]',
+  'relative h-[150px] overflow-hidden rounded-[18px] bg-theme-main text-theme-text animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.06s_backwards]',
   {
     variants: {
       'data-season': {
@@ -97,19 +97,19 @@ const SnowDot = classed('span', 'block rounded-full', {
 })
 const Description = classed(
   'p',
-  'm-0 mt-4 text-[15px] leading-[1.6] animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.12s_both] hsm:text-sm',
+  'm-0 mt-4 text-[15px] leading-[1.6] animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.12s_backwards] hsm:text-sm',
 )
 const Hint = classed(
   'p',
-  'm-0 mt-2 text-[13.5px] leading-normal text-ink-2 animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.16s_both]',
+  'm-0 mt-2 text-[13.5px] leading-normal text-ink-2 animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.16s_backwards]',
 )
 const EnableButton = classed(
   'button',
-  'mt-[18px] h-14 w-full rounded-2xl bg-theme-text text-[16.5px] font-extrabold text-theme-card transition-[scale] duration-150 active:scale-[.98] animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.2s_both]',
+  'mt-[18px] h-14 w-full rounded-2xl bg-theme-text text-[16.5px] font-extrabold text-theme-card transition-[scale] duration-150 active:scale-[.98] animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.2s_backwards]',
 )
 const KeepOffButton = classed(
   'button',
-  'mt-1.5 h-[46px] w-full rounded-[14px] text-[14.5px] font-bold text-ink-2 transition-[scale] duration-150 active:scale-[.98] animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.24s_both]',
+  'mt-1.5 h-[46px] w-full rounded-[14px] text-[14.5px] font-bold text-ink-2 transition-[scale] duration-150 active:scale-[.98] animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.24s_backwards]',
 )
 
 const Particles = (props: { season: Season }) => {

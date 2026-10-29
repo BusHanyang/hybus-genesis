@@ -37,7 +37,7 @@ const CloseIcon = classed(CloseImg, 'h-[13px] w-[13px]')
 const ThemeDebugGrid = classed('div', 'grid grid-cols-2 gap-2')
 const ThemeDebugOption = classed(
   'button',
-  'flex h-10 items-center gap-2 whitespace-nowrap rounded-[10px] border border-solid bg-theme-main px-2.5 text-[12.5px] text-theme-text transition-[scale,box-shadow,border-color] duration-150 active:scale-[.96] animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_both]',
+  'flex h-10 items-center gap-2 whitespace-nowrap rounded-[10px] border border-solid bg-theme-main px-2.5 text-[12.5px] text-theme-text transition-[scale,box-shadow,border-color] duration-150 active:scale-[.96] animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_backwards]',
   {
     variants: {
       'data-selected': {

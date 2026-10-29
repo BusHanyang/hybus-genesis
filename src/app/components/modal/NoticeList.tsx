@@ -40,7 +40,7 @@ const ExpandIcon = classed(
 const LinkIcon = classed(OpenImg, 'h-4 w-4 shrink-0 text-ink-3')
 const Content = classed(
   'div',
-  'whitespace-pre-wrap px-3.5 pb-4 text-[14.5px] leading-relaxed animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_both]',
+  'whitespace-pre-wrap px-3.5 pb-4 text-[14.5px] leading-relaxed animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_backwards]',
 )
 const ContentLink = classed(
   'a',

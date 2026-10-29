@@ -33,7 +33,7 @@ const FadeSlot = classed('div', 'absolute inset-0', {
   variants: {
     'data-leaving': {
       true: 'animate-[hb-fade-out_.45s_ease_both]',
-      false: 'animate-[hb-fade_.9s_ease_both]',
+      false: 'animate-[hb-fade_.9s_ease_backwards]',
     },
   },
   defaultVariants: {

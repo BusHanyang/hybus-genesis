@@ -16,10 +16,10 @@ const Guide = classed('div', 'flex flex-col gap-5')
 const Section = classed('div', '', {
   variants: {
     'data-order': {
-      '1': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.06s_both]',
-      '2': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.12s_both]',
-      '3': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.18s_both]',
-      '4': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.24s_both]',
+      '1': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.06s_backwards]',
+      '2': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.12s_backwards]',
+      '3': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.18s_backwards]',
+      '4': 'animate-[hb-rise_.45s_cubic-bezier(.2,.8,.2,1)_.24s_backwards]',
     },
   },
 })
@@ -62,7 +62,7 @@ const PlatformButton = classed(
 )
 const StepList = classed(
   'ol',
-  'm-0 mt-3 flex list-none flex-col gap-2 p-0 animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_both]',
+  'm-0 mt-3 flex list-none flex-col gap-2 p-0 animate-[hb-rise_.3s_cubic-bezier(.2,.8,.2,1)_backwards]',
 )
 const Step = classed(
   'li',
