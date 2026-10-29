@@ -24,7 +24,8 @@ const EffectLayer = classed(
       'data-layer': {
         particles: 'hb-fx fixed z-2 [view-transition-name:hb-fx]',
         sun: 'fixed z-[1] [view-transition-name:hb-sun] in-[.hb-sheet-open]:[view-transition-name:none] in-[.hb-sheet-close]:[view-transition-name:none]',
-        night: 'absolute z-[1] [view-transition-name:hb-moon]',
+        night:
+          'absolute z-[1] [view-transition-name:hb-moon] in-[.hb-sheet-open]:[view-transition-name:none] in-[.hb-sheet-close]:[view-transition-name:none]',
       },
     },
   },
