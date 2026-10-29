@@ -84,8 +84,6 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
     if (!element) return
 
     let start: { x: number; y: number } | null = null
-    let last = 0
-    let scrolled = false
     let pulling = false
     let latched = false
     let distance = 0
@@ -105,29 +103,14 @@ const PullToRefresh = ({ children }: React.PropsWithChildren) => {
 
     const begin = (x: number, y: number) => {
       cancel()
-      start = { x, y }
-      last = y
-      scrolled = false
+      start = window.scrollY > 0 ? null : { x, y }
     }
 
     const move = (x: number, y: number, event: Event) => {
       if (!start) return
-      if (!pulling && window.scrollY > 0) {
-        if (event.type === 'mousemove' && y - start.y >= SLOP) {
-          window.scrollBy(0, last - y)
-        }
-        scrolled = true
-        last = y
-        return
-      }
-      if (scrolled) {
-        scrolled = false
-        start = { x, y: last }
-      }
-      last = y
       if (!pulling) {
         const moved = y - start.y
-        if (moved <= -SLOP) {
+        if (moved <= -SLOP || window.scrollY > 0) {
           start = null
           return
         }
