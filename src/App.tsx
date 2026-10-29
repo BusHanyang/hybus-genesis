@@ -94,7 +94,7 @@ const ThemeRoot = classed(
 )
 const Apps = classed(
   'div',
-  'min-h-dvh px-5 pb-26 font-Ptd text-center mx-auto select-none max-w-[30rem] relative bg-theme-main text-theme-text transition-colors duration-[350ms]',
+  'min-h-dvh px-5 font-Ptd text-center mx-auto select-none max-w-[30rem] relative bg-theme-main text-theme-text transition-colors duration-[350ms]',
 )
 const CopyRightText = classed(
   'p',
