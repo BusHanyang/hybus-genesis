@@ -50,8 +50,9 @@ const buttonClip = (): string | null => {
   const box = button.getBoundingClientRect()
   const width = document.documentElement.clientWidth
   const height = window.innerHeight
+  const radius = getComputedStyle(button).borderRadius
   if (box.width === 0 || box.bottom <= 0 || box.top >= height) return null
-  return `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px)`
+  return `inset(${box.top}px ${width - box.right}px ${height - box.bottom}px ${box.left}px round ${radius})`
 }
 
 const prefersReducedMotion = () =>

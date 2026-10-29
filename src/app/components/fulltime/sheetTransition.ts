@@ -22,11 +22,12 @@ export const runSheetTransition = (
   const box = button.getBoundingClientRect()
   const width = window.innerWidth
   const height = window.innerHeight
+  const radius = getComputedStyle(button).borderRadius
   const share = (value: number, total: number) =>
     `${((value / total) * 100).toFixed(3)}%`
   root.style.setProperty(
     '--hb-sheet-box',
-    `inset(${share(box.top, height)} ${share(width - box.right, width)} ${share(height - box.bottom, height)} ${share(box.left, width)})`,
+    `inset(${share(box.top, height)} ${share(width - box.right, width)} ${share(height - box.bottom, height)} ${share(box.left, width)} round ${radius})`,
   )
   root.classList.remove(OPEN_CLASS, CLOSE_CLASS)
   root.classList.add(kind === 'open' ? OPEN_CLASS : CLOSE_CLASS)
