@@ -74,6 +74,10 @@ const FIREFLIES = (() => {
 })()
 
 const Sky = classed('div', 'absolute inset-0')
+const Corner = classed(
+  'div',
+  'absolute left-[max(0px,calc((100%-30rem)/2))] top-0',
+)
 const Halo = classed('span', 'absolute rounded-full', {
   variants: {
     'data-season': {
@@ -127,15 +131,17 @@ const NightSky = (props: { season: NightSeason }) => {
 
   return (
     <Sky aria-hidden="true">
-      <Halo data-season={season} />
-      {season === 'christmas' ? (
-        <TreeStar>
-          <TreeStarShape />
-          <TreeStarGlint />
-        </TreeStar>
-      ) : (
-        <Moon data-season={season} />
-      )}
+      <Corner>
+        <Halo data-season={season} />
+        {season === 'christmas' ? (
+          <TreeStar>
+            <TreeStarShape />
+            <TreeStarGlint />
+          </TreeStar>
+        ) : (
+          <Moon data-season={season} />
+        )}
+      </Corner>
       {season === 'summer' && (
         <>
           {STARS.map((star, i) => (
