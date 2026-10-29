@@ -25,7 +25,7 @@ const EffectLayer = classed(
         particles: 'hb-fx fixed z-2 [view-transition-name:hb-fx]',
         sun: 'fixed z-[1] [view-transition-name:hb-sun] in-[.hb-sheet-open]:[view-transition-name:none] in-[.hb-sheet-close]:[view-transition-name:none]',
         night:
-          'absolute z-[1] [view-transition-name:hb-moon] in-[.hb-sheet-open]:[view-transition-name:none] in-[.hb-sheet-close]:[view-transition-name:none]',
+          'absolute -top-40 z-[1] [view-transition-name:hb-moon] in-[.hb-sheet-open]:[view-transition-name:none] in-[.hb-sheet-close]:[view-transition-name:none]',
       },
     },
   },
@@ -41,6 +41,7 @@ const FadeSlot = classed('div', 'absolute inset-0', {
     'data-leaving': 'false',
   },
 })
+const NightFrame = classed('div', 'absolute inset-x-0 top-40 bottom-0')
 
 type Slot = { id: number; value: string; leaving: boolean }
 
@@ -296,7 +297,9 @@ const SeasonalEffect = () => {
       <EffectLayer aria-hidden="true" data-layer="night">
         {nightSlots.map((slot) => (
           <Fade key={slot.id} slot={slot} onGone={removeNightSlot}>
-            <NightSky season={slot.value as NightSeason} />
+            <NightFrame>
+              <NightSky season={slot.value as NightSeason} />
+            </NightFrame>
           </Fade>
         ))}
       </EffectLayer>
