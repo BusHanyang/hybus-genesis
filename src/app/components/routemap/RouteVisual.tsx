@@ -48,6 +48,7 @@ const RouteLine = classed(
       'data-width': {
         half: 'w-[10%]',
         full: 'w-[20%]',
+        through: 'w-[30%]',
       },
     },
     defaultVariants: {
@@ -111,7 +112,7 @@ const SpecialStopsText = classed(
 const lineIndex: Record<RouteStatus, Array<number>> = {
   direct: [0, 1, 2, 4],
   cycle: [0, 1, 2, 3, 4],
-  yesulin: [0, 1, 2, 3, 4],
+  yesulin: [0, 1, 3, 4],
   jungang: [0, 1, 2, 3, 4],
 }
 
@@ -151,6 +152,12 @@ const getLineTone = (
   return index === 4 ? 'orange' : routeToneTable[routeStatus]
 }
 
+const getLineWidth = (routeStatus: RouteStatus, index: number) => {
+  if (routeStatus === 'yesulin' && index === 1) return 'through'
+  if (routeStatus !== 'direct' && (index === 2 || index === 3)) return 'half'
+  return 'full'
+}
+
 const getDotTone = (
   routeStatus: RouteStatus,
   item: number,
@@ -186,11 +193,7 @@ const RouteVisual = (props: {
           key={index}
           tone={getLineTone(routeStatus, index, tab)}
           data-from={stopKey(index)}
-          data-width={
-            routeStatus !== 'direct' && (index === 2 || index === 3)
-              ? 'half'
-              : 'full'
-          }
+          data-width={getLineWidth(routeStatus, index)}
           style={{
             transitionDelay: `${rowIndex * 30 + i * 55}ms`,
             animationDelay: `${180 + rowIndex * 60 + i * 55}ms`,
