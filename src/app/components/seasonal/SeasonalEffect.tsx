@@ -154,11 +154,27 @@ const particleConfig = (season: string): Partial<SnowfallCanvasConfig> => {
 }
 
 const engines = new Map<string, SnowfallCanvas>()
+const engineWidths = new WeakMap<SnowfallCanvas, number>()
+
+const redraw = (engine: SnowfallCanvas) => {
+  engine.pause()
+  engine.play()
+}
 
 const resume = (engine: SnowfallCanvas) => {
-  engine.pause()
   Object.assign(engine, { lastUpdate: Date.now() })
-  engine.play()
+  redraw(engine)
+}
+
+const fitWidth = (engine: SnowfallCanvas) => {
+  const from = engineWidths.get(engine)
+  const to = engine.canvas.width
+  engineWidths.set(engine, to)
+  if (!from || from === to) return
+  const { snowflakes } = engine as unknown as {
+    snowflakes: Array<{ params: { x: number } }>
+  }
+  for (const snowflake of snowflakes) snowflake.params.x *= to / from
 }
 
 const getEffectTheme = (
@@ -181,6 +197,7 @@ const Particles = ({ season }: { season: string }) => {
     if (!canvas) return
 
     let engine: SnowfallCanvas | undefined
+    let running = false
 
     const sync = () => {
       canvas.width = canvas.offsetWidth
@@ -192,6 +209,7 @@ const Particles = ({ season }: { season: string }) => {
 
       if (!drawable) {
         if (engine?.canvas === canvas) engine.pause()
+        running = false
         return
       }
       if (engine === undefined) {
@@ -199,20 +217,29 @@ const Particles = ({ season }: { season: string }) => {
         if (engine === undefined) {
           engine = new SnowfallCanvas(canvas, particleConfig(season))
           engines.set(season, engine)
+          engineWidths.set(engine, canvas.width)
+          running = true
           return
         }
         engine.canvas = canvas
       }
-      if (engine.canvas === canvas) resume(engine)
+      if (engine.canvas === canvas) {
+        fitWidth(engine)
+        if (running) redraw(engine)
+        else resume(engine)
+        running = true
+      }
     }
 
     sync()
     const observer = new ResizeObserver(sync)
     observer.observe(canvas)
+    window.addEventListener('resize', sync)
     document.addEventListener('visibilitychange', sync)
 
     return () => {
       observer.disconnect()
+      window.removeEventListener('resize', sync)
       document.removeEventListener('visibilitychange', sync)
       if (engine?.canvas === canvas) engine.pause()
     }
